@@ -1,0 +1,71 @@
+<div class="row">
+  <div class="col-md-10 category-header">
+    <a href="">TAG: {{ .Title }} </a>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-10 category-description">
+  
+  </div>
+</div>
+
+{{ range $index, $element := (where .Data.Pages "Section" "post") }}
+{{if mod (add $index 1) 2 }}
+<div class="row content">
+  {{ if and (isset .Params "image") .Params.image }}
+  <div class="col-md-6 content-excerpt">
+    {{ else }}
+    <div class="col-md-12 content-excerpt">
+      {{end}}
+      <div class="row">
+        <div class="col-md-12">
+          <div class="row content-date">
+            {{ .Date.Format "January 02" }}
+          </div>
+          <div class="row content-title">
+            <h2> <a href="{{ .Permalink }} "> {{ .Title }} </a> </h2>
+          </div>
+          <div class="row content-summary">
+            <p> {{ .Summary }} </p>
+            <a class="more-link" href="{{ .Permalink }} "> READ THE POST </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {{ if and (isset .Params "image") .Params.image }}
+    <div class="col-md-6 content-image" style="background-image: url(/{{ .Params.image }})">
+    </div>
+    {{ end }}
+  </div>
+  {{ else }}
+  <div class="row content">
+    {{ if and (isset .Params "image") .Params.image }}
+    <div class="col-md-6 content-image" style="background-image: url(/{{ .Params.image }})">
+    </div>
+    {{ end }}
+
+    {{ if and (isset .Params "image") .Params.image }}
+    <div class="col-md-6 content-excerpt">
+      {{ else }}
+      <div class="col-md-12 content-excerpt">
+        {{end}}
+        <div class="row">
+          <div class="col-md-12">
+            <div class="content-date">
+              {{ .Date.Format "January 02" }}
+            </div>
+            <div class="content-title">
+              <h2> <a href="{{ .Permalink }} "> {{ .Title }} </a> </h2>
+            </div>
+            <div class="content-summary">
+              <p> {{ .Summary }} </p>
+              <a class="more-link" href="{{ .Permalink }} "> READ THE POST </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    {{end}}
+    {{ end }}

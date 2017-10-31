@@ -1,0 +1,37 @@
+<div class="row">
+  <div class="col-md-10 category-header">
+  <a href="">CATEGORY: All</a>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-10 category-description">
+  </div>
+</div>
+
+{{ range $index, $element := (where .Data.Pages "Section" "post") }}
+<div class="row content">
+  {{ if and (isset .Params "image") .Params.image }}
+  <div class="col-sm-6 content-image" style="background-image: url({{ .Params.image }})">
+  </div>
+  <div class="col-sm-6 content-excerpt">
+  {{ else }}
+  <div class="col-sm-12 content-excerpt">
+  {{ end }}
+    <div class="row">
+      <div class="col-md-12">
+        <div class="row content-date">
+          {{ .Date.Format "January 02" }}
+        </div>
+        <div class="row content-title">
+          <h2> <a href="{{ .Permalink }} "> {{ .Title }} </a> </h2>
+        </div>
+        <div class="row content-summary">
+          {{ .Summary }}
+          <a class="more-link" href="{{ .Permalink }} ">Read the post</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{{ end }}
