@@ -27,9 +27,9 @@ using a dataset of seasonal influenza isolates sampled in the US from 1993 to
 2008.
 
 
-## Introduction
+# Introduction
 
-### Phylogenetics in a nutshell
+## Phylogenetics in a nutshell
 
 The reconstruction of evolutionary relationships of a set of organisms can be a
 tricky task, and has led to the development of a variety of methods over the
@@ -70,15 +70,13 @@ methods, including all of the above except for Bayesian reconstruction.
 
 
 
-### Required packages
+## Required packages
 
-This practical
-requires a working version of \Rlogo~ \cite{np145} greater than or equal to
-2.15.2.  It uses the following packages: *stats* implements basic
-hierarchical clustering routines, *ade4* \cite{tj548} and
-*adegenet* \cite{tjart05} are here used essentially for their graphics,
-*ape* \cite{tj527} is the core package for phylogenetics, and
-*phangorn* \cite{tj843} implements parsimony and likelihood-based
+This practical requires a working version of \Rlogo~ [@np145] greater than or
+equal to 2.15.2.  It uses the following packages: *stats* implements basic
+hierarchical clustering routines, *ade4* [@tj548] and *adegenet* [@tjart05] are
+here used essentially for their graphics, *ape* [@tj527] is the core package for
+phylogenetics, and *phangorn* [@tj843] implements parsimony and likelihood-based
 methods.  Make sure that the dependencies are installed as well when installing
 the packages:
 
@@ -101,7 +99,7 @@ library(phangorn)
 
 
 
-### The data
+## The data
 
 The data used in this practical are DNA sequences of seasonal influenza (H3N2)
 downloaded from Genbank
@@ -155,7 +153,7 @@ While the present dataset is very small, such compression can become essential
 for larger genomes (bacterial genomes are typically a few millions of
 nucleotides long).  Note that for even larger datasets, more efficient data
 reduction can be achieved using the bit-level coding of polymorphic sites
-implemented in *adegenet* \cite{tjart23}.
+implemented in *adegenet* [@tjart23].
 
 The annotation file is read in R using the standard procedure:
 ```{r, eval = FALSE}
@@ -192,18 +190,18 @@ Good!  The data we will analyse are 80 isolates (5 per year) typed for the same
 
 
 
-## Distance-based phylogenies
+# Distance-based phylogenies
 
 Distance-based phylogenetic reconstruction consists in i) computing pairwise
 genetic distances between individuals (here, isolates), ii) representing these
 distances using a tree, and iii) evaluating the relevance of this
 representation.
 
-### Computing genetic distances
+## Computing genetic distances
 
 We first compute genetic distances using *ape*'s `dist.dna`, which
 proposes no less than 15 different genetic distances (see `?dist.dna` for
-details).  Here, we use Tamura and Nei 1993's model \cite{tj841} which allows
+details).  Here, we use Tamura and Nei 1993's model [@tj841] which allows
 for different rates of transitions and transversions, heterogeneous base
 frequencies, and between-site variation of the substitution rate.
 
@@ -223,7 +221,7 @@ described by *80 \times 79 / 2 = 3160* pairwise distances.  Most of the time,
 summarising such information is not entirely trivial.  The simplest approach is
 plotting directly the matrix of pairwise distances:
 
-```{r}
+```{r, fig.width = 7, fig.height = 7}
 temp <- as.data.frame(as.matrix(D))
 table.paint(temp, cleg = 0, clabel.row = .5, clabel.col = .5)
 ```
@@ -236,7 +234,7 @@ produce similar plots, data need to be transformed first; for instance:
 temp <- t(as.matrix(D))
 temp <- temp[,ncol(temp):1]
 ```
-```{r}
+```{r, fig.width = 7, fig.height = 7}
 par(mar = c(1,5,5,1))
 image(x = 1:80, y = 1:80, temp, col = rev(heat.colors(100)),
       xaxt = "n", yaxt = "n", xlab="",ylab="")
@@ -254,7 +252,7 @@ between our isolates.
 
 
 
-### Building trees
+## Building trees
 
 We use trees to get a better representation of the genetic distances between
 individuals.  It is important, however, to bear in mind that the obtained trees
@@ -290,7 +288,7 @@ See `?read.tree` for a description of this class.
 
 
 
-### Plotting trees
+## Plotting trees
 
 The plotting method offers many possibilities for plotting trees; see
 `?plot.phylo` for more details.  Functions such as `tiplabels`, `nodelabels`,
@@ -356,7 +354,7 @@ represent?  Would there be any interest in predicting the genome of the trunk?
 
 
 
-### Estimating a molecular clock
+## Estimating a molecular clock
 
 Rooted trees are also useful for assessing the rate of evolution of a given
 gene.  We call **molecular clock** the accumulation of mutations over time.  Can
@@ -390,7 +388,7 @@ epidemics?  What alternative would you suggest?
 
 
 
-### Assessing the quality of a phylogeny
+## Assessing the quality of a phylogeny
 
 Many genetic distances and hierarchical clustering algorithms can be used to
 build trees; not all of them are appropriate for a given dataset. Genetic
@@ -398,8 +396,8 @@ distances rely on hypotheses about the evolution of DNA sequences which should
 be taken into account.  For instance, the mere proportion of differing
 nucleotides between sequences (`model = 'raw`} in `dist.dna`) is easy to
 interprete, but only makes sense if all substitutions are equally frequent. In
-practice, simple yet flexible models such as that of Tamura and Nei (1993,
-\cite{tj841}) are probably fair choices.  At the very least, the genetic
+practice, simple yet flexible models such as that of Tamura and Nei
+[@tj841] are probably fair choices.  At the very least, the genetic
 distance used should allow different rates for transitions (*a <-> g*, *c <->
 t*) and transversions (other changes).
 
@@ -475,7 +473,7 @@ The output gives the number of times each node was identified in bootstrapped
 analyses (the order is the same as in the original object).  It is easily
 represented using `nodelabels`:
 
-```{r fig.width = 8, out.width = "\\textwidth"}
+```{r}
 plot(tre2, show.tip = FALSE, edge.width = 2)
 title("NJ tree + bootstrap values")
 tiplabels(frame = "none", pch = 20,
@@ -505,7 +503,7 @@ tre3 <- di2multi(temp, tol = 0.00001)
 The new tree might be slightly less informative, but more robust than the
 previous one:
 
-```{r fig.width = 8, out.width = "\\textwidth"}
+```{r }
 plot(tre3, show.tip = FALSE, edge.width = 2)
 title("NJ tree after collapsing weak nodes")
 tiplabels(tre3$tip.label, bg = transp(num2col(annot$year, col.pal = myPal), .7),
@@ -521,9 +519,9 @@ legend("topright", fill = transp(num2col(temp, col.pal = myPal), .7),
 
 
 
-## Maximum parsimony phylogenies
+# Maximum parsimony phylogenies
 
-### Introduction
+## Introduction
 
 Phylogenetic reconstruction based on parsimony seeks trees which minimize the
 total number of changes (substitutions) from ancestors to descendents.  While a
@@ -540,7 +538,7 @@ retain those leading to better parsimony, until the parsimony score stops
 improving.
 
 
-### Implementation
+## Implementation
 
 Parsimony-based phylogenetic reconstruction is implemented in the package
 *phangorn*.  It requires a tree (in *ape*'s format, i.e. a `phylo` object) and
@@ -586,10 +584,10 @@ sequences is fairly low, as is the case in our data.
 
 
 
-## Maximum likelihood phylogenies
+# Maximum likelihood phylogenies
 
 
-### Introduction
+## Introduction
 
 Maximum likelihood phylogenetic reconstruction is somehow similar to parsimony
 methods in that it browses a space of possible tree topologies looking for the
@@ -605,13 +603,13 @@ thinking about which parameters should be included in a model.  Usually, all
 possible substitutions are allowed to have different rates, and the substitution
 rate is allowed to vary across sites according to a gamma distribution.  We
 refer to this model as $\mbox{GTR} + \Gamma(4)$ (GTR: global time reversible).
-More information about phylogenetic models can be found in \cite{tj842}.
+More information about phylogenetic models can be found in [@tj842].
 
 
 
 
 
-### Getting a ML tree
+## Getting a ML tree
 
 Likelihood-based phylogenetic reconstruction is implemented in the package
 *phangorn*.  As in the previous section, we use the data `dna2`, converted into
@@ -630,6 +628,7 @@ tre.ini
 This tree is most likely not the ML tree, but we need it as a 'reasonable'
 starting point to initialize the optimization procedure. The likelihood of this
 initial tree is computed using `pml`:
+	
 ```{r options2, include = FALSE}
 opts_chunk$set(eval = TRUE)
 ```
@@ -695,10 +694,14 @@ legend("topright", fill = transp(num2col(temp, col.pal = myPal), .7),
 ```
 
 This tree is statistically better than the original NJ tree based on Tamura and
-Nei's distance \cite{tj841}.  However, we can note that it is remarkably similar
+Nei's distance [tj841].  However, we can note that it is remarkably similar
 to the 'robust' version of this distance-based tree (after collapsing weakly
 supported nodes).  The structure of this dataset is fairly simple, and all
 methods give fairly consistent results.  In practice, different methods can lead
 to different interpretations, and it is often worth exploring different
 approaches before drawing conclusions on the data.
 
+
+     
+	   
+# References
