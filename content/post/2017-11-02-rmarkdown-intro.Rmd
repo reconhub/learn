@@ -1,0 +1,37 @@
+---
+title: Introduction to rmarkdown
+author: Thibaut Jombart
+categories: ["practicals"]
+tags: ["Rmarkdown", "reproducibility"]
+date: '2017-11-02'
+image: img/highres/printing-press.jpg
+slug: rmarkdown-intro
+showonlyimage: true
+---
+
+	
+```{r options, include = FALSE}
+opts_chunk$set(collapse = TRUE)
+```
+
+Beyond the availability of data and methods, reproducible science requires the traceability of the analyses
+
+<br>
+
+# Installing the packages
+
+To install the current stable, CRAN version of the package, type:
+```{r install, eval=FALSE}
+install.packages("rmarkdown")
+```
+
+To benefit from the latest features and bug fixes, install the development, *github* version of the package using:
+```{r install2, eval=FALSE}
+devtools::install_github("rstudio/rmarkdown")
+```
+
+Note that this requires the package *devtools* installed.
+
+
+
+<br>
