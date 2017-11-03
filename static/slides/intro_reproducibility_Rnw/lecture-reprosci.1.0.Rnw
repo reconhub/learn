@@ -1,0 +1,729 @@
+\documentclass[Xcolor=svgnames,mathserif]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\usepackage[english]{babel}
+% pour les images
+\usepackage{graphicx}
+% pour les espaces entre les lignes : 1, 1.5, 2
+\usepackage{setspace}
+% pour les marges
+\usepackage{geometry}
+%infos générales du document
+\usepackage{amsmath,amsfonts}
+% pour les couleurs
+\usepackage{color}
+% pour mettre des url
+\usepackage{url}
+% pour les schémas
+\usepackage[all]{xy}
+% for bold symbols in mathmode
+\usepackage{bm}
+% biblio exotique
+\usepackage{natbib}
+% strikethrough
+\usepackage{soul}
+% for tick marks
+\usepackage{wasysym}
+
+\usetheme{metropolis}
+
+% Customisation of the metropolis theme
+\definecolor{deeppurple}{HTML}{29293D}
+\definecolor{lightpurple}{HTML}{B3B3CC}
+\definecolor{medpurple}{HTML}{666699}
+
+\definecolor{deepblue}{HTML}{19194D}
+\definecolor{medblue}{HTML}{333399}
+\definecolor{lightblue}{HTML}{B3B3E6}
+
+
+\definecolor{mygreen}{HTML}{3E750A}
+\definecolor{mypink}{HTML}{B30047}
+%% \definecolor{mypink}{HTML}{CC0052}
+
+\setbeamercolor{normal text}{fg=deeppurple}
+\setbeamercolor{frametitle}{bg=deeppurple}
+\setbeamercolor{example text}{fg=mypink}
+\setbeamercolor{accent text}{fg=myblue}
+\setbeamercolor{alerted text}{fg=mypink}
+\setbeamercolor{progress bar}{fg=mypink}
+
+\metroset{sectionpage=progressbar, subsectionpage=none, progressbar=frametitle}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\beq}{\begin{equation}}
+\newcommand{\eeq}{\end{equation}}
+\newcommand{\m}[1]{\mathbf{#1}}
+
+\newcommand{\Rcmd}[1]{
+%	\begin{columns}[c]
+%		\column{0.2\textwidth}
+%		\column{0.5cm}
+%		\includegraphics[width=.5cm]{figs/Rinvit.png}
+%		\column{0.8\textwidth}
+%		\alert{\scriptsize \texttt{#1}}
+%	\end{columns}
+}
+
+%% \newcommand{\Rlogo}{
+%% 		\includegraphics[width=.5cm]{figs/Rlogo-transp.png}
+%% }
+\newcommand{\Rlogo}{
+		\includegraphics[width=.5cm]{../../img/slides/Rlogo.pdf}
+}
+
+
+
+\definecolor{gris}{gray}{0.45}
+
+\title[~]{An introduction to \Rlogo eproducible science}
+\author[~]{Thibaut Jombart}
+
+\institute{MRC Centre for Outbreak Analysis and Modelling\\ Imperial College London}
+
+\date{3$^{\mbox{rd}}$ November 2017}
+
+
+%% Pour rappeler le plan a chaque changement de subsection.
+\AtBeginSection[]
+{
+ \begin{frame}<beamer>
+   \frametitle{Plan}
+   % \tableofcontents[currentsection,currentsubsection]
+   \tableofcontents[currentsection]
+ \end{frame}
+}
+
+% \AtBeginSubsection[]
+% {
+%  \begin{frame}<beamer>
+%    \frametitle{Plan}
+%    % \tableofcontents[currentsection,currentsubsection]
+%    \tableofcontents[currentsubsection]
+%  \end{frame}
+% }
+
+
+%% % Pour rappeler le plan a chaque changement de subsection.
+%% \AtBeginSubsection[]
+%% {
+%%    \begin{frame}
+%%        \frametitle{Outline}
+%%        \tableofcontents[currentsection,currentsubsection]
+%%    \end{frame}
+%% }
+
+
+
+% Pour rappeler le plan a chaque changement de section.
+% \AtBeginSection[]
+% {
+%   \begin{frame}<beamer>
+%     \frametitle{Outline}
+%     \tableofcontents[currentsection]
+%   \end{frame}
+% }
+% 
+
+\usefonttheme[onlymath]{serif}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+  \frametitle{~}
+  \titlepage
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+\frametitle{Outline}
+\tableofcontents
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{On the idea of reproducibility}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+  \frametitle{What is reproducibility in science?}
+
+\begin{center}
+\includegraphics[width=.5\textwidth]{../../img/slides/printing-press.jpg}
+
+\end{center}
+
+\pause
+\begin{itemize}
+\item ability to reproduce results by a peer
+  \pause
+\item requires \alert{data}, \alert{methods}, and \alert{procedures}
+  \pause
+\item increasingly, science is supposed to be reproducible
+\end{itemize}
+
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+  \frametitle{Why does it not happen, in practice?}
+
+  Some opinions on whether reproducibility is needed:
+  
+  \begin{itemize}
+  \item ``\textit{Ideally, yes but we don't have time for this.}''
+  \pause
+  \item ``\textit{If it gets published, yes.}``
+  \pause
+  \item ''\textit{If it gets published, yes; unless it is in PLoS One...}``
+  \pause
+  \item ''\textit{No need: I work on my own.}``
+  \pause
+  \item ''\textit{For others to copy us? You crazy?!}``
+  \pause
+  \item ''\textit{No way! We rigged the data, the method does not work, and we ran the analyses in Excel.}``
+  \end{itemize}
+  
+ 
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+  \frametitle{Main obstacles to reproducibility}
+\begin{columns}
+\column{.65\textwidth}
+  \begin{itemize}
+  \item \only<1>{lack of time}\visible<2->{\st{lack of time}~\\Ultimately, faster.}
+  \pause
+  \vspace{.3cm}
+  \item \only<3>{fear of plagiarism}\visible<4->{\st{fear of plagiarism}~\\Low risks in practice.}
+  \pause 
+  \vspace{.3cm}
+  \item \only<5>{internal work, no need to share}\visible<6->{\st{internal work, no need to share}~\\Almost never true.}
+  \end{itemize}
+
+\column{.4\textwidth}
+\includegraphics[width=.9\textwidth]{../../img/slides/wecandoit}
+\end{columns}
+
+  \vspace{.8cm}
+  \only<7->{\large \alert{Also lack of tools to facilitate reproducibility}}
+    
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+  \frametitle{Working with others, even when you don't}
+
+\begin{center}
+\includegraphics[width=\textwidth]{../../img/slides/looper}
+
+\pause
+%\vspace{.35cm}
+\large Be nice to your future selves!
+\end{center}
+
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+  \frametitle{Two aspects of reproducible science with \Rlogo}
+
+\begin{center}
+\includegraphics[width=.75\textwidth]{../../img/slides/2pills}
+\end{center}
+   \pause
+   \vspace{.5cm}
+
+  \begin{itemize}
+   \item \textbf<4->{making transparent and reproducible analyses}
+   \pause
+   \vspace{.5cm}
+   \item sharing procedures (package development)
+  \end{itemize}
+
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\Rlogo eproducibility in practice}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+  \frametitle{Literate programming}
+  
+\begin{center}
+\includegraphics[width=.45\textwidth]{../../img/slides/knuth}
+\end{center}
+   \pause
+   \vspace{.25cm}
+
+  \begin{quote}
+Let us change our traditional attitude to the construction of programs: Instead of imagining that our main task is to instruct a computer what to do, let us concentrate rather on explaining to humans what we want the computer to do.
+  \end{quote}
+(Donald E. Knuth, Literate Programming, 1984) 
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+  \frametitle{Implementing literate programming for \Rlogo}
+
+  \begin{block}{\Rlogo~offers several options}
+  \begin{itemize}
+   \item \textbf{Sweave} (.Rnw): \LaTeX + \Rlogo ~$\rightarrow$ .tex document\\ e.g.: \texttt{Sweave('foo.Rnw')}
+   \pause
+   \vspace{.5cm}
+   \item \textbf{knitr}: \begin{itemize}
+      \item '\textbf{Sweave}' (.Rnw) $\rightarrow$ pdf with large improvements on Sweave\\ \texttt{knit2pdf('foo.Rnw')}
+      \item \textbf{rmarkdown} (.Rmd): markdown + \Rlogo ~$\rightarrow$ html document\\ e.g.: \texttt{knit2html('foo.Rmd')}
+      \end{itemize}
+   \pause
+   \vspace{.5cm}
+   \item \textbf{rmarkdown} (.Rmd) extends knitr to various output formats such as pdf\\ e.g.: \texttt{render('foo.Rmd')}
+  \end{itemize}   
+  \end{block}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+  \frametitle{Rationale for Sweave}
+
+  Sweave is a normal \LaTeX document where \Rlogo~ code is included as: 
+
+\begin{verbatim}
+\Sexpr{''}<<chunkTitle , ...>>=
+a <- rnorm(1000)
+hist(a)
+@
+\end{verbatim}
+  Where '...' are options for the chunk\\(see: \url{http://yihui.name/knitr/options/})
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+  \frametitle{Rationale for Rmarkdown}
+
+  A .Rmd file is a normal markdown (.md) file where \Rlogo~ code is included as: 
+  
+  \begin{verbatim}
+```{r chunkTitle, ...}
+a <- rnorm(1000)
+hist(a)
+```
+  \end{verbatim}
+  Where '...' are options for the chunk\\(see: \url{http://yihui.name/knitr/options/})
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+  \frametitle{One format, several outputs}
+  
+  \texttt{rmarkdown} can generate different types of documents:
+  
+  \begin{itemize}
+  \item \texttt{html} report \pause
+  \item \texttt{pdf} report \pause
+  \item \texttt{pdf} journal articles \pause
+  \item \texttt{pdf} Tufte handouts \pause
+  \item \texttt{word} documents \pause
+  \item \texttt{html5} slides \pause
+  \item websites  
+  \end{itemize}
+
+  \pause
+  and more:\\ \url{http://rmarkdown.rstudio.com/gallery.html}
+  
+  
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+  \frametitle{\texttt{rmarkdown} example 1/2}
+
+Let us consider the file \texttt{foo.Rmd}:
+\begin{verbatim}
+ ---
+title: "A toy example of rmarkdown"
+author: "John Snow"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+This is some nice R code:
+```{r rnorm-example}
+x <- rnorm(100)
+x[1:6]
+hist(x, col = "grey", border = "white")
+```
+\end{verbatim}
+
+
+  
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+  \frametitle{\texttt{rmarkdown} example 2/2}
+
+<<toy-rmd, eval = FALSE>>=
+rmarkdown::render("foo.Rmd")
+@ 
+
+\begin{center}
+  \includegraphics[width = .7\textwidth]{../../img/slides/rmarkdown-toy.png}
+\end{center}
+
+  
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Good practices}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+  \frametitle{Because Rmarkdown is only the beginning}
+
+  \begin{columns}
+\column{.5\textwidth}
+~\\
+~\\
+\includegraphics[width=.85\textwidth]{../../img/slides/tablets.png}
+\column{.5\textwidth}
+
+You may still:
+  \begin{itemize}
+  \item alter your original data
+    \pause
+  \item have a messy project
+    \pause
+  \item make non-portable code
+    \pause
+  \item write horrible code
+    \pause
+  \item lose work permanently
+  \end{itemize}
+\end{columns}
+    
+  \pause
+  \begin{center}
+  \Large And that's on a good day.
+  \end{center}
+  
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+  \frametitle{How to treat your original data}
+
+  \begin{center}
+    \includegraphics[width=.5\textwidth]{../../img/slides/gold}
+  \end{center}
+
+  \begin{itemize}
+  \item \textbf{do not touch your original data}
+    \pause
+  \item save it as \alert{read-only}
+    \pause
+  \item \alert{make copies} - you can play with these
+    \pause
+  \item keep track of the changes made to the original data
+  \end{itemize}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+  \frametitle{How to avoid messy projects?}
+
+  \begin{center}
+    \includegraphics[width=.5\textwidth]{../../img/slides/messy-office.jpg}
+  \end{center}
+
+  \begin{itemize}
+  \item 1 project = 1 folder
+    \pause
+  \item subfolders for: data, analyses, figures, manuscripts, ...
+    \pause
+  \item document the project using a \texttt{README} file
+   \pause
+  \item use the Rstudio projects (if you use Rstudio)
+  \end{itemize}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+  \frametitle{How to write portable code?}
+
+  \begin{center}
+    \includegraphics[width=.5\textwidth]{../../img/slides/communication.png}
+  \end{center}
+
+  \begin{itemize}
+  \item never refer to absolute path to files, e.g.\\ \noindent \texttt{my\_file <- "C:\textbackslash foo\textbackslash bar\textbackslash data.csv"} 
+    \pause
+  \item use the package \alert{\texttt{here}} for portable paths
+   \pause
+  \item avoid special characters and spaces in all names
+   \pause
+  \item assume case sensitivity: \texttt{FoBar} $\neq$ \texttt{foobar} $\neq$ \texttt{FOOBAR}
+  \end{itemize}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+  \frametitle{How to write readable code?}
+
+  \begin{center}
+    \includegraphics[width=.4\textwidth]{../../img/slides/readable}
+  \end{center}
+
+  \begin{itemize}
+  \item name things explicitely
+    \pause
+  \item settle for one \alert{naming convention}; \texttt{snake\_case} is currently recommended for \Rlogo~packages
+   \pause
+  \item document your code using \alert{comments} (``\texttt{\#\#}'')
+   \pause
+ \item write \alert{simple code}, in short sections
+   \pause
+ \item use current coding standards -- see the \alert{\texttt{lintr}} package
+  \end{itemize}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+  \frametitle{How to avoid losing work?}
+
+  \begin{center}
+    \includegraphics[width=.4\textwidth]{../../img/slides/lost}
+  \end{center}
+
+  \begin{itemize}
+  \item \textbf{never rely on a single computer} to store your work
+    \pause
+  \item \alert{backups} are good, \alert{syncing} with a server is better (e.g. Dropbox)
+    \pause
+  \item use \alert{version numbers} to track progress
+    \pause
+  \item use \alert{version control systems} if needed (e.g. GIT), especially for serious
+    coding projects
+  \end{itemize}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+  \frametitle{Time for some practice!}
+
+  \begin{center}
+    \includegraphics[width=.8\textwidth]{../../img/slides/coffee.png}
+  \end{center}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\end{document}
+
+
+
+%% Useful commands for later
+
+% rmarkdown::draft("foo.Rmd", template = "html_vignette", edit = FALSE, package = "rmarkdown")
+
+

@@ -1,0 +1,49 @@
+---
+title: "Reproducible science <br>using ![Rlogo](../../img/slides/Rlogo-small.png)<br><br>"
+author: Thibaut Jombart
+date: "2017-11-03"
+output:
+  ioslides_presentation:
+    incremental: true
+---
+
+# On reproducibility
+
+
+## What is reproducibility in science?
+
+<center><img src="../../img/slides/printing-press.jpg" width="60%"></center>
+<br>
+
+- ability to reproduce results by a peer
+- requires <font color="#99004d">data</font>, <font color="#99004d">methods</font>, and <font color="#99004d">procedures</font>
+- increasingly, science is supposed to be reproducible
+
+
+
+
+
+
+## Why does it not happen, in practice?
+
+  Some opinions on whether reproducibility is needed:
+  
+- *Ideally, yes but we don't have time for this.*
+- *If it gets published, yes.*
+- *If it gets published, yes; unless it is in PLoS One...*
+- *No need: I work on my own.*
+- *For others to copy us? You crazy?!*
+- *No way! We rigged the data, the method does not work, and we ran the analyses in Excel.*
+
+
+
+
+
+## Main obstacles to reproducibility {.columns-2}
+
+<center><img src="../../img/slides/wecandoit.jpg" width="85%"></center>
+
+- lack of time: ultimately, reproducibility is faster
+- fear of plagiarism: low risks in practice
+- internal work, no need to share: almost never true
+- one good reason: <font color="#99004d">lack of tools to facilitate reproducibility</font>
