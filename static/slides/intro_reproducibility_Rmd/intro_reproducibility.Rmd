@@ -7,6 +7,27 @@ output:
     incremental: true
 ---
 
+
+
+```{r setup, include=FALSE}
+## This code defines the 'verbatim' option for chunks
+## which will include the chunk with its header and the
+## trailing "```".
+
+require(knitr)
+hook_source_def = knit_hooks$get('source')
+knit_hooks$set(source = function(x, options){
+  if (!is.null(options$verbatim) && options$verbatim){
+    opts = gsub(",\\s*verbatim\\s*=\\s*TRUE\\s*.*$", "", options$params.src)
+    bef = sprintf('\n\n    ```{r %s}\n', opts, "\n")
+    stringr::str_c(bef, paste(knitr:::indent_block(x, "    "), collapse = '\n'), "\n    ```\n")
+  } else {
+     hook_source_def(x, options)
+  }
+})
+```
+
+
 # On reproducibility
 
 
@@ -41,9 +62,140 @@ output:
 
 ## Main obstacles to reproducibility {.columns-2}
 
-<center><img src="../../img/slides/wecandoit.jpg" width="85%"></center>
+<center><img src="../../img/slides/wecandoit.jpg" width="65%"></center>
 
 - lack of time: ultimately, reproducibility is faster
 - fear of plagiarism: low risks in practice
 - internal work, no need to share: almost never true
+<br>
 - one good reason: <font color="#99004d">lack of tools to facilitate reproducibility</font>
+
+
+
+
+
+## You never work alone
+
+<center>
+<img src="../../img/slides/looper.jpg" width="85%">
+<br>
+
+Be nice to your future selves!
+
+</center>
+
+
+
+
+
+## Two aspects of reproducibility using <img src="../../img/slides/Rlogo-small.png" width="50px">
+
+
+<center>
+<img src="../../img/slides/2pills.jpg" width="85%">
+</center>
+
+<br>
+
+- implementing methods as <img src="../../img/slides/Rlogo-small.png" width="30px"> packages
+- making <font color="#99004d">transparent</font> and <font color="#99004d">reproducible</font> analyses
+
+
+
+
+
+# <img src="../../img/slides/Rlogo.png" width="50px">eproducibility in practice
+
+## Literate programming
+
+<center>
+<img src="../../img/slides/knuth.jpg" width="55%">
+</center>
+
+> *Let us change our traditional attitude to the construction of programs: instead
+of imagining that our main task is to instruct a computer what to do, let us
+concentrate rather on <font color="#99004d">explaining to humans what we want
+the computer to do</font>.* </center> (Donald E. Knuth, Literate Programming,
+1984)
+
+
+
+
+## A data-centred approach to programming
+
+<center>
+<img src="../../img/slides/literate-prog.png" width="85%">
+</center>
+
+
+
+
+## Literate programming in <img src="../../img/slides/Rlogo.png" width="50px">
+
+- **Sweave** (`.Rnw`): LaTeX + <img src="../../img/slides/Rlogo.png" width="40px">
+<br><br>Example:<br>
+`knitr::knit2pdf("foo.Rnw")` $\rightarrow$ `foo.pdf`<br>
+
+- **Rmarkdown** (`.Rmd`): markdown + <img src="../../img/slides/Rlogo.png" width="40px">
+<br><br>Example:<br>
+`knitr::knit2html("foo.Rmd")`  $\rightarrow$  `foo.html`<br>
+`rmarkdown::render("foo.Rmd")`  $\rightarrow$  `foo.pdf`<br>
+`rmarkdown::render("foo.Rmd")`  $\rightarrow$  `foo.doc`<br>
+`...`
+
+
+
+
+## **Sweave**: <img src="../../img/slides/Rlogo.png" width="50px"> chunks in LaTeX {.smaller}
+
+<pre><code>
+&lt;&lt;chunk-title , ...&gt;&gt;=
+a <- rnorm(1000)
+hist(a, col = terrain.colors(15), border = "white", main = "Normal distribution")
+@
+</code></pre>
+
+results in:
+```{r sweave2, out.width = "80%", fig.width = 12, echo = c(2,3)}
+set.seed(1)
+a <- rnorm(1000)
+hist(a, col = terrain.colors(15), border = "white", main = "Normal distribution")
+```
+
+
+
+
+## **Rmarkdown**: <img src="../../img/slides/Rlogo.png" width="50px"> chunks in markdown {.smaller}
+
+```{r chunk-title, ..., verbatim = TRUE, eval = FALSE}
+a <- rnorm(1000)
+hist(a, col = terrain.colors(15), border = "white", main = "Normal distribution")
+```
+
+results in:
+```{r rmarkdown, out.width = "80%", fig.width = 12, echo = c(2,3)}
+set.seed(1)
+a <- rnorm(1000)
+hist(a, col = terrain.colors(15), border = "white", main = "Normal distribution")
+```
+
+
+
+
+## Formatting outputs
+
+```{r another-chunk-title, ..., verbatim = TRUE, eval = FALSE}
+[some R code here]
+```
+
+where `...` are options for processing and formatting, e.g:
+
+- `eval` (`TRUE`/`FALSE`): evaluate code?
+- `echo` (`TRUE`/`FALSE`): show code input?
+- `results` (`"markup"/"hide"/"asis"`): show/format code output
+- `message/warning/error`: show messages, warnings, errors?
+- `cache` (`TRUE`/`FALSE`): cache analyses?
+<br>
+
+See: [http://yihui.name/knitr/options](http://yihui.name/knitr/options) for details on all options.
+
