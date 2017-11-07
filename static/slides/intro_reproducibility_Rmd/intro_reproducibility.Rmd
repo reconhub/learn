@@ -33,7 +33,9 @@ knit_hooks$set(source = function(x, options){
 
 ## What is reproducibility in science?
 
-<center><img src="../../img/slides/printing-press.jpg" width="60%"></center>
+<center>
+<img src="../../img/slides/printing-press.jpg" width="60%">
+</center>
 <br>
 
 > - ability to reproduce results by a peer
@@ -324,3 +326,62 @@ rmarkdown::render("foo.Rmd")
 > - avoid special characters and spaces in all names e.g.:<br> `éèçêäÏ*%~!?&`
 
 > - assume case sensitivity: <br>`FoBar` $\neq$ `foobar` $\neq$ `FOOBAR`
+
+
+
+
+
+## How to write better code?
+
+<center>
+<img src="../../img/slides/readable.jpg" width="50%">
+</center>
+
+> - name things explicitely
+    
+> - settle for one \alert{naming convention}; \texttt{snake\_case} is currently recommended for <img src="../../img/slides/Rlogo.png" width="40px"> packages
+   
+> - document your code using <font color="#99004d">comments</font> (`##`)
+    
+> - write <font color="#99004d">simple code</font>, in short sections
+   
+> - use current coding standards -- see the <font color="#99004d">`lintr`</font> package
+
+
+
+
+
+## Example of `lintr`
+
+<center>
+<img src="../../img/slides/lintr.png" width="80%"><br>
+<small>source: [https://github.com/jimhester/lintr](https://github.com/jimhester/lintr)</small>
+</center>
+
+
+
+
+## Do not lose your work!
+
+Because you never know what can happen..
+
+<center>
+<img src="../../img/slides/smashing-panda.gif" width="50%">
+</center>
+
+
+
+
+## How to avoid losing work?
+
+<center>
+<img src="../../img/slides/lost.jpg" width="40%">
+</center>
+
+> - **never rely on a single computer** to store your work
+> - <font color="#99004d">backups</font> are good, <font color="#99004d">syncing</font> with a server is better (e.g. Dropbox)
+> - use <font color="#99004d">version numbers</font> to track progress
+> - use <font color="#99004d">version control systems</font> if needed (e.g. GIT), especially for serious
+    coding projects
+
+
