@@ -4,7 +4,7 @@ author: Thibaut Jombart
 date: "2017-11-03"
 output:
   ioslides_presentation:
-    incremental: true
+    incremental: false
 ---
 
 
@@ -36,9 +36,9 @@ knit_hooks$set(source = function(x, options){
 <center><img src="../../img/slides/printing-press.jpg" width="60%"></center>
 <br>
 
-- ability to reproduce results by a peer
-- requires <font color="#99004d">data</font>, <font color="#99004d">methods</font>, and <font color="#99004d">procedures</font>
-- increasingly, science is supposed to be reproducible
+> - ability to reproduce results by a peer
+> - requires <font color="#99004d">data</font>, <font color="#99004d">methods</font>, and <font color="#99004d">procedures</font>
+> - increasingly, science is supposed to be reproducible
 
 
 
@@ -49,12 +49,12 @@ knit_hooks$set(source = function(x, options){
 
   Some opinions on whether reproducibility is needed:
   
-- *Ideally, yes but we don't have time for this.*
-- *If it gets published, yes.*
-- *If it gets published, yes; unless it is in PLoS One...*
-- *No need: I work on my own.*
-- *For others to copy us? You crazy?!*
-- *No way! We rigged the data, the method does not work, and we ran the analyses in Excel.*
+> - *Ideally, yes but we don't have time for this.*
+> - *If it gets published, yes.*
+> - *If it gets published, yes; unless it is in PLoS One...*
+> - *No need: I work on my own.*
+> - *For others to copy us? You crazy?!*
+> - *No way! We rigged the data, the method does not work, and we ran the analyses in Excel.*
 
 
 
@@ -64,11 +64,11 @@ knit_hooks$set(source = function(x, options){
 
 <center><img src="../../img/slides/wecandoit.jpg" width="65%"></center>
 
-- lack of time: ultimately, reproducibility is faster
-- fear of plagiarism: low risks in practice
-- internal work, no need to share: almost never true
+> - lack of time: ultimately, reproducibility is faster
+> - fear of plagiarism: low risks in practice
+> - internal work, no need to share: almost never true
 <br>
-- one good reason: <font color="#99004d">lack of tools to facilitate reproducibility</font>
+> - one good reason: <font color="#99004d">lack of tools to facilitate reproducibility</font>
 
 
 
@@ -97,8 +97,8 @@ Be nice to your future selves!
 
 <br>
 
-- implementing methods as <img src="../../img/slides/Rlogo-small.png" width="30px"> packages
-- making <font color="#99004d">transparent</font> and <font color="#99004d">reproducible</font> analyses
+> - implementing methods as <img src="../../img/slides/Rlogo-small.png" width="30px"> packages
+> - making <font color="#99004d">transparent</font> and <font color="#99004d">reproducible</font> analyses
 
 
 
@@ -132,11 +132,13 @@ the computer to do</font>.* </center> (Donald E. Knuth, Literate Programming,
 
 ## Literate programming in <img src="../../img/slides/Rlogo.png" width="50px">
 
-- **Sweave** (`.Rnw`): LaTeX + <img src="../../img/slides/Rlogo.png" width="40px">
+> - **Sweave** (`.Rnw`): LaTeX + <img src="../../img/slides/Rlogo.png" width="40px">
 <br><br>Example:<br>
 `knitr::knit2pdf("foo.Rnw")` $\rightarrow$ `foo.pdf`<br>
 
-- **Rmarkdown** (`.Rmd`): markdown + <img src="../../img/slides/Rlogo.png" width="40px">
+<br>
+
+> - **Rmarkdown** (`.Rmd`): markdown + <img src="../../img/slides/Rlogo.png" width="40px">
 <br><br>Example:<br>
 `knitr::knit2html("foo.Rmd")`  $\rightarrow$  `foo.html`<br>
 `rmarkdown::render("foo.Rmd")`  $\rightarrow$  `foo.pdf`<br>
@@ -197,5 +199,128 @@ where `...` are options for processing and formatting, e.g:
 - `cache` (`TRUE`/`FALSE`): cache analyses?
 <br>
 
-See: [http://yihui.name/knitr/options](http://yihui.name/knitr/options) for details on all options.
+See [http://yihui.name/knitr/options](http://yihui.name/knitr/options) for details on all options.
 
+
+
+
+## One format, several outputs
+
+**`rmarkdown`** can generate different types of documents:
+
+- standardised reports (`html`, `pdf`) 
+- journal articles. using the `rticles` package (`.pdf`)
+- Tufte handouts (`.pdf`)
+- word documents (`.doc`)
+- slides for presentations (`html`, `pdf`)
+- ...
+
+See: [http://rmarkdown.rstudio.com/gallery.html](http://rmarkdown.rstudio.com/gallery.html).
+
+
+
+
+## **`rmarkdown`**: toy example 1/2 {.smaller}
+
+Let us consider the file \texttt{foo.Rmd}:
+<pre><code>
+---
+title: "A toy example of rmarkdown"
+author: "John Snow"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+This is some nice R code:
+```{r rnorm-example, verbatim = TRUE, eval = FALSE, echo = 2:4}
+set.seed(1)
+x <- rnorm(100)
+x[1:6]
+hist(x, col = "grey", border = "white")
+```
+</pre></code>
+
+
+
+
+## **`rmarkdown`**: toy example 1/2 {.smaller}
+
+```{r toy-rmd, eval = FALSE}
+rmarkdown::render("foo.Rmd")
+```
+
+<center>
+<img src="../../img/slides/rmarkdown-toy.png" width="70%">
+</center>
+
+
+
+
+
+
+# Good practices
+
+## **`rmarkdown`** is just the beginning {.columns-2}
+
+<center>
+<img src="../../img/slides/tablets.png" width="90%">
+</center>
+
+<br>
+
+> - alter your original data
+
+> - have a messy project
+
+> - write non-portable code
+
+> - write horrible code
+
+> - lose work permanently
+
+
+
+
+## How to treat your original data
+
+<center>
+<img src="../../img/slides/gold.jpg" width="50%">
+</center>
+
+> - **do not touch your original data**
+> - save it as <font color="#99004d">read-only</font>
+> - <font color="#99004d">make copies</font> - you can play with these
+> - <font color="#99004d">track the changes</font> made to the original data
+
+
+
+
+## How to avoid messy projects
+
+<center>
+<img src="../../img/slides/messy-office.jpg" width="50%">
+</center>
+
+> - **1 project = 1 folder**
+> - subfolders for: data, analyses, figures, manuscripts, ...
+> - document the project using a `README` file
+> - use the Rstudio projects (if you use Rstudio)
+
+
+
+
+## How to write portable code?
+
+<center>
+<img src="../../img/slides/communication.jpg" width="50%">
+</center>
+
+> - avoid absolute paths e.g.:<br>
+`my_file <- "C:\project1\data\data.csv"`<br>
+
+> - use the package <font color="#99004d">`here`</font> for portable paths e.g.:<br>
+`my_file <- here("data/data.csv")`
+
+> - avoid special characters and spaces in all names e.g.:<br> `éèçêäÏ*%~!?&`
+
+> - assume case sensitivity: <br>`FoBar` $\neq$ `foobar` $\neq$ `FOOBAR`
