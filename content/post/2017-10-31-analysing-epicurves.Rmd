@@ -3,7 +3,7 @@ title: Analysing epicurves
 author: Thibaut Jombart
 categories: ["practicals"]
 tags: ["Rmarkdown", "incidence", "epicurves"]
-date: '2017-10-31'
+date: 2017-11-03T14:00:00-00:00
 image: img/highres/curves-canyon.jpg
 slug: analysing-epicurves
 showonlyimage: true
