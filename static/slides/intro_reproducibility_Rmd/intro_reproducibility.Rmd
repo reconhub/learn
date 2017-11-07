@@ -134,38 +134,14 @@ the computer to do</font>.* </center> (Donald E. Knuth, Literate Programming,
 
 ## Literate programming in <img src="../../img/slides/Rlogo.png" width="50px">
 
-> - **Sweave** (`.Rnw`): LaTeX + <img src="../../img/slides/Rlogo.png" width="40px">
-<br><br>Example:<br>
-`knitr::knit2pdf("foo.Rnw")` $\rightarrow$ `foo.pdf`<br>
-
 <br>
 
 > - **Rmarkdown** (`.Rmd`): markdown + <img src="../../img/slides/Rlogo.png" width="40px">
 <br><br>Example:<br>
-`knitr::knit2html("foo.Rmd")`  $\rightarrow$  `foo.html`<br>
+`rmarkdown::render("foo.Rmd")`  $\rightarrow$  `foo.html`<br>
 `rmarkdown::render("foo.Rmd")`  $\rightarrow$  `foo.pdf`<br>
 `rmarkdown::render("foo.Rmd")`  $\rightarrow$  `foo.doc`<br>
 `...`
-
-
-
-
-## **Sweave**: <img src="../../img/slides/Rlogo.png" width="50px"> chunks in LaTeX {.smaller}
-
-<pre><code>
-&lt;&lt;chunk-title , ...&gt;&gt;=
-a <- rnorm(1000)
-hist(a, col = terrain.colors(15), border = "white", main = "Normal distribution")
-@
-</code></pre>
-
-results in:
-```{r sweave2, out.width = "80%", fig.width = 12, echo = c(2,3)}
-set.seed(1)
-a <- rnorm(1000)
-hist(a, col = terrain.colors(15), border = "white", main = "Normal distribution")
-```
-
 
 
 
