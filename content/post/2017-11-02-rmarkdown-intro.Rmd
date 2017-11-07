@@ -105,9 +105,9 @@ install.packages("lintr")
 
 Contributions are welcome via [pull requests](https://github.com/reconhub/learn/pulls). The source files include:
 
-- [the slides](https://raw.githubusercontent.com/reconhub/learn/master/static/slides/intro_reproducibility_Rmd/intro_reproducibility.Rmd)
+- [**the slides**](https://raw.githubusercontent.com/reconhub/learn/master/static/slides/intro_reproducibility_Rmd/intro_reproducibility.Rmd)
 
-- [this document](https://raw.githubusercontent.com/reconhub/learn/master/content/post/2017-11-02-rmarkdown-intro.Rmd)
+- [**this document**](https://raw.githubusercontent.com/reconhub/learn/master/content/post/2017-11-02-rmarkdown-intro.Rmd)
 
 
 
