@@ -160,6 +160,9 @@ to the slides; for an example, look at
 
 For the slides, we recommended using `.Rmd` there again, as such slides will be
 automatically compiled and updated in real time when running
-`blogdown::serve_site()`. For an example, look at
+`blogdown::serve_site()`. If your slides use images, store them in
+`static/img/slides`. You will be able to refer to them using
+`../../img/slides/your-image.jpg`. For an example of `rmarkdown+ioslides`
+slides, look at
 `static/slides/intro_reproducibility_Rmd/intro_reproducibility.Rmd`.
 
