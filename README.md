@@ -16,7 +16,8 @@ for a website through the compilation of a series of
 ## Running the website locally
 
 You will need to install `blogdown` and its dependencies (especially Hugo):
-```{r eval = FALSE}
+
+```r
 install.packages("blogdown") # install blogdown
 blogdown::install_hugo() # install hugo
 ```
@@ -30,13 +31,15 @@ information.
 You will also need to `git clone` this project, which using `git` command
 lines would look like:
 
-```{bash eval = FALSE}
+
+```bash
 git clone https://github.com/reconhub/learn
 cd learn
 ```
 
 Once this is done, start R and type:
-```{r eval = FALSE}
+
+```r
 blogdown::serve_site()
 ```
 
@@ -61,7 +64,8 @@ The general workflow would include the following steps:
 This will create a copy of the project in your own github account. You will need
 to clone this archive, and make the modifications there. You `git clone` would look like:
 
-```{bash eval = FALSE}
+
+```bash
 git clone https://github.com/johnsnow/learn
 ```
 
