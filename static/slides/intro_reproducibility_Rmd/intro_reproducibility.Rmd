@@ -1,7 +1,7 @@
 ---
 title: "Reproducible science <br>using ![Rlogo](../../img/slides/Rlogo-small.png)<br><br>"
 author: Thibaut Jombart
-date: "2017-11-03"
+date: "2017-11-10"
 output:
   ioslides_presentation:
     incremental: false
@@ -319,12 +319,9 @@ rmarkdown::render("foo.Rmd")
 
 > - avoid absolute paths e.g.:<br>
 `my_file <- "C:\project1\data\data.csv"`<br>
-
 > - use the package <font color="#99004d">`here`</font> for portable paths e.g.:<br>
 `my_file <- here("data/data.csv")`
-
 > - avoid special characters and spaces in all names e.g.:<br> `éèçêäÏ*%~!?&`
-
 > - assume case sensitivity: <br>`FoBar` $\neq$ `foobar` $\neq$ `FOOBAR`
 
 
