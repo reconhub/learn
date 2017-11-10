@@ -69,9 +69,10 @@ If your github user name is `johnsnow`.
 
 
 2. **Add new content**, typically in the form of a new `.Rmd` file and
-associated media (most often images). Regular posts are stored in
-`content/post/`. Other content which is not rendered as typical html reports
-such as lectures can be stored in `static`.
+associated media (most often images). Regular posts such as practicals,
+tutorials, and case studies are stored in `content/post/`. Other content which
+is not rendered as typical html reports such as lecture slides can be stored in
+`static`.
 
 3. **Test new content** and revise until satisfying by visualising the local website
 using `blogdown::serve_site()`, where the current working directory is set to
@@ -86,11 +87,77 @@ well (run `git status` to see which files haven't been added).
 <img src="data/img/shot-pr.png" width="800px">
 </center>
 
+Make sure you use `reconhub/learn`, branch `master` as base fork:
+
+<center>
+<img src="data/img/shot-pr-2.png" width="800px">
+</center>
+
 
 
 
 ### Contributing practicals and case studies
 
+#### Create a new file
+
+Practicals, tuorials, case studies are contributed as
+[Rmarkdown](http://rmarkdown.rstudio.com/) (`.Rmd`) documents. They are stored
+in `content/post`. The best way to create a new document is copy-paste an
+existing one and rename it. The name must:
+
+- include the date in the format `yyyy-mm-dd` as prefix
+- be explicit
+- use `-` as separator
 
 
+#### Editing the YAML header
+
+The YAML header is the beginning of the `Rmd` document, within the `---`. For instance:
+```{r eval = FALSE}
+---
+title: Phylogenetic tree reconstruction
+author: Thibaut Jombart
+categories: ["practicals"]
+tags: ["Rmarkdown", "phylogenetics", "genetics"]
+date: 2017-11-01T14:00:00-00:00
+image: img/highres/logs.jpg
+showonlyimage: true
+bibliography: practical-phylogenetics.bib
+---
+```
+
+Fields are mostly self-explanatory, and can be adapted to your needs. The date
+should respect the format provided.
+
+
+The **image** will be the image associated with the document on the website. We
+try using natural, high-resolution, evocative images having a link, if only
+figurative, with the topic covered. These images are stored in
+`static/img/highres/`. Do not forget to add and push this file as well, as it
+will be required for your post to be successfully integrated. The path to the
+file provided in the header assumes `static/` as root folder (see example
+above), so that the right path will look like: `img/highres/your-image.jpg`.
+
+
+The **`bibliography`** is optional. If provided,
+it should contain references cited in the document as a `bibtex` file
+(`.bib`). Do not forget to add and push this file as well, as it will be
+required for your post to be successfully integrated.
+
+
+
+
+### Contributing slides
+
+Slides cannot be rendered as usual `html` reports using `blogdown`. Instead,
+material for slides is stored in `static/slides`. Currently, two files are needed for a lecture:
+
+1. a `.Rmd` post in `content/post` (see above) to introduce the lecture and link to the slides
+
+2. the slides themselves, stored in `static/slides`.
+
+For the slides, we recommended using `.Rmd` there again, as such slides will be
+automatically compiled and updated in real time when running
+`blogdown::serve_site()`. For an example, look at the content of
+`static/slides/intro_reproducibility_Rmd/`.
 

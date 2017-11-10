@@ -3,7 +3,7 @@ title: Reproducibility using R
 author: Thibaut Jombart
 categories: ["lectures"]
 tags: ["Rmarkdown", "reproducibility"]
-date: 2017-11-07T14:00:00-00:00
+date: 2017-11-10T14:00:00-00:00
 image: img/highres/printing-press.jpg
 slug: reproducibility
 showonlyimage: true
