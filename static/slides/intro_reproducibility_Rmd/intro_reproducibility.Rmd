@@ -337,7 +337,7 @@ rmarkdown::render("foo.Rmd")
 <img src="../../img/slides/readable.jpg" width="50%">
 </center>
 
-> - name things explicitely
+> - name things explicitly
     
 > - settle for one \alert{naming convention}; \texttt{snake\_case} is currently recommended for <img src="../../img/slides/Rlogo.png" width="40px"> packages
    
