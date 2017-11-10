@@ -314,7 +314,7 @@ rmarkdown::render("foo.Rmd")
 ## How to write portable code?
 
 <center>
-<img src="../../img/slides/communication.jpg" width="50%">
+<img src="../../img/slides/communication.png" width="50%">
 </center>
 
 > - avoid absolute paths e.g.:<br>
