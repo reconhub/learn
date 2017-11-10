@@ -152,12 +152,14 @@ required for your post to be successfully integrated.
 Slides cannot be rendered as usual `html` reports using `blogdown`. Instead,
 material for slides is stored in `static/slides`. Currently, two files are needed for a lecture:
 
-1. a `.Rmd` post in `content/post` (see above) to introduce the lecture and link to the slides
+1. a `.Rmd` post in `content/post` (see above) to introduce the lecture and link
+to the slides; for an example, look at
+`content/post/2017-11-10-lecture-reproducibility.Rmd`.
 
 2. the slides themselves, stored in `static/slides`.
 
 For the slides, we recommended using `.Rmd` there again, as such slides will be
 automatically compiled and updated in real time when running
-`blogdown::serve_site()`. For an example, look at the content of
-`static/slides/intro_reproducibility_Rmd/`.
+`blogdown::serve_site()`. For an example, look at
+`static/slides/intro_reproducibility_Rmd/intro_reproducibility.Rmd`.
 
