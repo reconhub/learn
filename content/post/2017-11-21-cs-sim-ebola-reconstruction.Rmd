@@ -28,12 +28,14 @@ reconstruction using *outbreaker2*.
 
 The following packages, available on CRAN, are needed for this case study:
 
+- [`xlsx`](http://www.repidemicsconsortium.org/incidence/) to read `.xlsx` files
 - [`incidence`](http://www.repidemicsconsortium.org/incidence/) for epicurves
 - [`epicontacts`](http://www.repidemicsconsortium.org/epicontacts/) for contact data visualisation
   
 To install these packages, use `install.packages`, e.g.:
    
 ```{r install, eval = FALSE}
+install.packages("xlsx")
 install.packages("incidence")
 install.packages("epicontacts")
 ```
@@ -60,4 +62,29 @@ devtools::install_github("reconhub/outbreaker2")
 ```
 
 
-# 
+	
+# A novel EVD outbreak in Ankh, Republic of Morporkia
+
+A new EVD outbreak has been notified in the small city of Ankh, located in the
+Northern, rural district of the Republic of Morporkia. Public Health Morporkia
+(PHM) is in charge of coordinating the outbreak response, and have contracted
+you as a consultant in epidemics analysis to inform the response in real time.
+
+<br>
+	
+While a new data update is pending, you have been given the following linelist
+and contact data, from the early stages of the outbreak:
+
+- [**PHM-EVD-linelist-2017-10-27.xlsx**](data/PHM-EVD-linelist-2017-10-27.xlsx):
+  a linelist containing case information up to the 27th October 2017
+
+- [**PHM-EVD-contacts-2017-10-27.xlsx**](data/PHM-EVD-contacts-2017-10-27.xlsx):
+  a list of contacts reported between cases up to the 27th October 2017, where
+  `from` indicates a potential source of infection, and `to` the recipient of
+  the contact.
+  
+
+
+
+  
+ plot(make_epicontacts(linelist, contacts), node_shape = "sex", shapes = c(male = "male", female = "female"))
