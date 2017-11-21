@@ -1,0 +1,63 @@
+---
+title: Reconstructing a simulated Ebola outbreak
+author: Thibaut Jombart, Finlay Campbell
+categories: ["case study"]
+tags: ["Rmarkdown", "case study", "simulation", "outbreaker2"]
+date: 2017-11-21T14:00:00-00:00
+image: img/highres/ebola.jpg
+slug: simulated-evd-reconstruction
+showonlyimage: true
+---
+
+	
+```{r options, include = FALSE}
+opts_chunk$set(collapse = TRUE)
+```
+
+
+
+This case study simulates the early assessment and reconstruction of an Ebola
+Virus Disease (EVD) outbreak. It covers various aspects of analysis of the early
+stage of an outbreak, and provides an introduction to transmission chain
+reconstruction using *outbreaker2*.
+
+	       	  
+<br>
+
+# Installing required packages
+
+The following packages, available on CRAN, are needed for this case study:
+
+- [`incidence`](http://www.repidemicsconsortium.org/incidence/) for epicurves
+- [`epicontacts`](http://www.repidemicsconsortium.org/epicontacts/) for contact data visualisation
+  
+To install these packages, use `install.packages`, e.g.:
+   
+```{r install, eval = FALSE}
+install.packages("incidence")
+install.packages("epicontacts")
+```
+
+We will also use several packages currently under development, hosted on *github*. These include:
+   
+- [`distcrete`](http://www.repidemicsconsortium.org/distcrete) to obtain discrete time delay distributions
+- [`epitrix`](http://www.repidemicsconsortium.org/epitrix) for some practical tricks
+- [`earlyR`](http://www.repidemicsconsortium.org/earlyR) to estimate $R_0$ 
+- [`projections`](http://www.repidemicsconsortium.org/projections) to derive short term incidence predictions
+- [`outbreaker2`](http://www.repidemicsconsortium.org/outbreaker2) to reconstruct the outbreak
+   
+   
+To install these, you will need a working version of `devtools`, and the
+toolchain for package building on your system. On windows, you will likely need
+to install [*Rtools*](https://cran.r-project.org/bin/windows/Rtools/).
+   
+```{r install2, eval = FALSE}
+devtools::install_github("reconhub/distcrete")
+devtools::install_github("reconhub/epitrix")
+devtools::install_github("reconhub/earlyR")
+devtools::install_github("reconhub/projections")
+devtools::install_github("reconhub/outbreaker2")
+```
+
+
+# 
