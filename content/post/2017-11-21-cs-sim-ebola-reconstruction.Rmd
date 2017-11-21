@@ -75,10 +75,10 @@ you as a consultant in epidemics analysis to inform the response in real time.
 While a new data update is pending, you have been given the following linelist
 and contact data, from the early stages of the outbreak:
 
-- [**PHM-EVD-linelist-2017-10-27.xlsx**](data/PHM-EVD-linelist-2017-10-27.xlsx):
+- [**PHM-EVD-linelist-2017-10-27.xlsx**](../../data/PHM-EVD-linelist-2017-10-27.xlsx):
   a linelist containing case information up to the 27th October 2017
 
-- [**PHM-EVD-contacts-2017-10-27.xlsx**](data/PHM-EVD-contacts-2017-10-27.xlsx):
+- [**PHM-EVD-contacts-2017-10-27.xlsx**](../../data/PHM-EVD-contacts-2017-10-27.xlsx):
   a list of contacts reported between cases up to the 27th October 2017, where
   `from` indicates a potential source of infection, and `to` the recipient of
   the contact.
