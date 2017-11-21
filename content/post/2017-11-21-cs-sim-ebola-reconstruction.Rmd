@@ -109,13 +109,166 @@ contacts
 ```
 
 
-## How fast is it growing?
+## A first look at contacts
+
+Contact tracing is at the centre of an Ebola outbreak response. Using the
+function `make_epicontacts` in the `epicontacts` package, create a new
+`epicontacts` object called `x`. The result should look like:
+	      
+```{r epicontacts, echo = -c(1,2)}
+library(epicontacts)
+x <- make_epicontacts(linelist,
+                      contacts, directed = TRUE)
+x
+```  
+
+You can easily plot these contacts, but with a little bit of tweaking (see
+`?vis_epicontacts`) you can customise shapes by gender:
+
+```{r epicontacts_plot}
+plot(x, node_shape = "sex", shapes = c(male = "male", female = "female"), selector = FALSE)
+
+```
+
+**What can you say about these contacts?**
+     
+
+     
+## Looking at incidence curves
 
 The first question PHM asks you is simply: *how bad is it?*. Given that this is
 a terrible disease, with a mortality rate nearing 70%, there is a lot of concern
-about this outbreak getting out of control.
+about this outbreak getting out of control. The first step of the analysis lies
+in drawing an *epicurve*, i.e. an plot of incidence over time.
 
+<br>
+
+Using the package `incidence`, compute daily incidence based on the dates of
+symptom onset. Store the result in an object called `i`; the result should look
+like:
+
+```{r incidence, echo = -c(1,2)}
+library(incidence)
+i <- incidence(linelist$onset)
+i
+plot(i)
+```
+
+If you pay close attention to the dates on the x-axis, you may notice that
+something is missing. Indeed, the graph stops right after the last case, while
+the data should be complete until the 27th October 2017. You can remedy this
+using the argument `last_date` in the `incidence` function:
       
-      
+
+```{r incidence_rectif}
+i <- incidence(linelist$onset, last_date = as.Date("2017-10-27"))
+i
+plot(i)
+```
+
+The simplest model of incidence is probably the log-linear model, i.e. a linear
+regression on log-transformed incidences. In the `incidence` package, the
+function `fit` will estimate the parameters of this model from an incidence
+object (here, `i`). Apply it to the data and store the result in a new object
+called `f`. You can print `f` to derive estimates of the growth rate $r$ and the
+doubling time, and add the corresponding model to the incidence plot:
+
+```{r fit}
+f <- fit(i)
+f
+plot(i, fit = f)
+```
+
+**How would you interpret this result? What criticism would you make on this
+  model?**
+
+As an aid for interpretation, you are reminded of previous observations of the
+serial interval distribution, estimated during the West African EVD outbreak
+(WHO Ebola Response Team (2014) NEJM 371:1481–1495) with a mean of 15.3 days and
+a standard deviation 9.3 days.
      
- plot(make_epicontacts(linelist, contacts), node_shape = "sex", shapes = c(male = "male", female = "female"))
+
+
+## Estimating $R$
+
+The transmissibility of the disease can be assessed through the estimation of
+the reproduction number $R$, defined as the number of expected secondary cases
+per infected case. In the early stages of an outbreak, and assuming no immunity
+in the population, this quantity is also the basic reproduction number $R_0$,
+i.e. $R$ in a fully susceptible population. 
+
+<br>
+
+The package `earlyR` implements a simple maximum-likelihood estimation of $R$,
+using dates of onset of symptoms and information on the serial interval
+distribution. It is a simpler but less flexible version of the model by Cori et
+al (2013, AJE 178: 1505–1512) implemented in
+[`EpiEstim`](https://cran.r-project.org/web/packages/EpiEstim/index.html). 
+
+<br>
+
+Briefly, `earlyR` uses a simple model describing incidence on a given day as a
+Poisson process determined by a global force of infection on that day:
+$$
+x_t \sim \mathcal{P} (\lambda_t)
+$$
+
+where $x_t$ is the incidence (based on symptom onset) on day $t$ and $\lambda_t$
+is the force of infection. Noting $R$ the reproduction number and $w()$ the
+discrete serial interval distribution, we have:
+
+$$
+\lambda_t = R * \sum_{s=1}^t x_s w(t - s)
+$$
+
+The likelihood (probability of observing the data given the model and
+parameters) is defined as a function of $R$:
+
+$$
+\mathcal{L}(x)  = p(x | R) = \prod_{t=1}^T F_{\mathcal{P}}(x_t, \lambda_t)
+$$
+
+where $F_{\mathcal{P}}$ is the Poisson probability mass function.
+
+<br>
+
+Using the estimates of the mean and standard deviation of the serial interval
+provided in the previous section, use the function `get_R` to estimate the
+reproduction number, specifying a maximum R of 10 (see ?`get_R`) and store the
+result in a new object `R`:
+
+```{r estimate-R, echo = FALSE}
+
+library(earlyR)
+mu <- 15.3 # mean in days days
+sigma <- 9.3 # standard deviation in days
+R <- get_R(i, si_mean = mu, si_sd = sigma, max_R = 10)
+
+```
+
+You can visualise the results as follows:
+
+```{r plot-r}
+R
+plot(R)
+plot(R, "lambdas")
+abline(v = linelist$onset, lty = 2)
+
+```
+
+The first figure shows the distribution of likely values of *R*, and the
+Maximum-Likelihood (ML) estimation. The second figure shows the global force of
+infection over time, with dashed bars indicating dates of onset of the cases.
+
+**Interpret these results: what do you make of the reproduction number? What does
+it reflect? Based on the last part of the epicurve, some colleagues suggest that
+incidence is going down and the outbreak may be under control. What is your
+opinion on this?**
+
+
+
+
+	    
+		
+
+
