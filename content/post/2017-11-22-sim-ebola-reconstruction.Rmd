@@ -10,8 +10,18 @@ showonlyimage: true
 ---
 
 	
-```{r options, include = FALSE}
+```{r options, include = FALSE, message = FALSE, warning = FALSE, error = FALSE}
 opts_chunk$set(collapse = TRUE)
+
+install_if_missing <- function(x) {
+    if (!require(x)) {
+        install.packages(x)
+        require(x)
+    }
+}
+
+deps <- c("xlsx", "incidence", "epicontacts")
+lapply(deps, install_if_missing)
 ```
 
 
