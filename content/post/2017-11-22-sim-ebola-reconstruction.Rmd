@@ -176,24 +176,28 @@ plot(si$d, type = "h", xlim = c(0,50), col = "navy", lwd = 2,
 
 ```{r outbreaker-onset-contacts, cache = TRUE}
 library(outbreaker2)
+
 ctd <- matrix(match(unlist(contacts), linelist$case_id), ncol = 2)
 data <- outbreaker_data(dates = linelist$onset, ctd = ctd, w_dens = si$d(1:100))
 config <- create_config(move_kappa = FALSE, move_pi = FALSE, find_import = FALSE)
 
 res_time_ctd <- outbreaker(data = data, config = config)
+
 ```
 
 
 See `?plot.outbreaker_chains` for details on available plots.
 
-```{r outbreaker-onset-contacts-plots}
-plot(res_time_ctd)
-plot(res_time_ctd,  type = "alpha", burnin = 1000)
-plot(res_time_ctd,  type = "t_inf", burnin = 1000)
-plot(res_time_ctd,  type = "network", burnin = 1000, min_support = .05)
+```{r time_ctd_plots}
+# plot(res_time_ctd)
+# plot(res_time_ctd,  type = "alpha", burnin = 1000)
+# plot(res_time_ctd,  type = "t_inf", burnin = 1000)
 
 ```
 
+```{r time_ctd_net}
+# plot(res_time_ctd,  type = "network", burnin = 1000, min_support = .05)
+```
 
 ```{r outbreaker-onset-contacts-summary}
 smry_time_ctd <- summary(res_time_ctd)
