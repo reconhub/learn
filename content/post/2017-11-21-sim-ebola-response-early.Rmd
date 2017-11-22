@@ -14,9 +14,9 @@ showonlyimage: true
 opts_chunk$set(collapse = TRUE)
 
 install_if_missing <- function(x) {
-    if (!require(x)) {
+    if (!require(x, character.only = TRUE)) {
         install.packages(x)
-        require(x)
+        require(x, character.only = TRUE)
     }
 }
 

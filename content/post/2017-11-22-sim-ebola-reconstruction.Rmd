@@ -14,9 +14,9 @@ showonlyimage: true
 opts_chunk$set(collapse = TRUE)
 
 install_if_missing <- function(x) {
-    if (!require(x)) {
+    if (!require(x, character.only = TRUE)) {
         install.packages(x)
-        require(x)
+        require(x, character.only = TRUE)
     }
 }
 
@@ -192,7 +192,7 @@ data <- outbreaker_data(dates = linelist$onset, ctd = ctd, w_dens = si$d(1:100))
 config <- create_config(move_kappa = FALSE, move_pi = FALSE, find_import = FALSE)
 
 res_time_ctd <- outbreaker(data = data, config = config)
-
+res_time_ctd
 ```
 
 
@@ -200,17 +200,21 @@ See `?plot.outbreaker_chains` for details on available plots.
 
 ```{r time_ctd_plots}
 # plot(res_time_ctd)
-# plot(res_time_ctd,  type = "alpha", burnin = 1000)
-# plot(res_time_ctd,  type = "t_inf", burnin = 1000)
+```
 
+```{r }
+# plot(res_time_ctd,  type = "alpha", burnin = 1000)
+```
+
+```{r }
+# plot(res_time_ctd,  type = "t_inf", burnin = 1000)
 ```
 
 ```{r time_ctd_net}
-# plot(res_time_ctd,  type = "network", burnin = 1000, min_support = .05)
+plot(res_time_ctd,  type = "network", burnin = 1000, min_support = .05)
 ```
 
 ```{r outbreaker-onset-contacts-summary}
 smry_time_ctd <- summary(res_time_ctd)
-summary(smry_time_ctd)
-
+smry_time_ctd
 ```
