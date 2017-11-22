@@ -1,0 +1,202 @@
+---
+title: "Ebola simulation: outbreak reconstruction"
+author: Thibaut Jombart, Finlay Campbell
+categories: ["practicals"]
+tags: ["genetics", "simulation", "response", "outbreaker2"]
+date: 2017-11-22T14:00:00-00:00
+image: img/highres/ebola-blue.jpg
+slug: simulated-evd-reconstruction
+showonlyimage: true
+---
+
+	
+```{r options, include = FALSE}
+opts_chunk$set(collapse = TRUE)
+```
+
+
+
+This practical is the second part of the response to a simulated Ebola Virus
+Disease (EVD) outbreak taking place in the city of Ankh, Republic of
+Morporkia. While the [**first part**](../simulated-evd-early)
+focussed on early assessments of transmissibility, this part provides an
+introduction to outbreak reconstruction using *outbreaker2*.
+
+	       	  
+<br>
+
+# Installing required packages
+
+The following packages, available on CRAN, are needed for this case study:
+
+- [`xlsx`](http://www.repidemicsconsortium.org/incidence/) to read `.xlsx` files
+- [`incidence`](http://www.repidemicsconsortium.org/incidence/) for epicurves
+- [`epicontacts`](http://www.repidemicsconsortium.org/epicontacts/) for contact data visualisation
+  
+To install these packages, use `install.packages`, e.g.:
+   
+```{r install, eval = FALSE}
+install.packages("xlsx")
+install.packages("incidence")
+install.packages("epicontacts")
+```
+
+We will also use several packages currently under development, hosted on *github*. These include:
+   
+- [`distcrete`](http://www.repidemicsconsortium.org/distcrete) to obtain discrete time delay distributions
+- [`epitrix`](http://www.repidemicsconsortium.org/epitrix) for some practical tricks
+- [`outbreaker2`](http://www.repidemicsconsortium.org/outbreaker2) to reconstruct the outbreak
+   
+   
+To install these, you will need a working version of `devtools`, and the
+toolchain for package building on your system. On windows, you will likely need
+to install [*Rtools*](https://cran.r-project.org/bin/windows/Rtools/).
+   
+```{r install2, eval = FALSE}
+devtools::install_github("reconhub/distcrete")
+devtools::install_github("reconhub/epitrix")
+devtools::install_github("reconhub/outbreaker2")
+```
+
+
+	
+# An update on the EVD outbreak in Ankh, Republic of Morporkia
+
+After some rather concerning [preliminary results](../simulated-evd-early) on
+the new EVD outbreak in the city of Ankh, Republic of Morporkia, Public Health
+Morporkia (PHM) has sent you updates of the linelists and contact data. This
+time, PHM has also obtained Whole Genome Sequences (WGS) of the Ebola virus
+isolated in patients.
+
+    
+## The new data
+	
+The data update includes new linelists and contact lists:
+
+- [**PHM-EVD-linelist-2017-11-25.xlsx**](../../data/PHM-EVD-linelist-2017-11-25.xlsx):
+  a linelist containing case information up to the 25th November 2017
+
+- [**PHM-EVD-contacts-2017-11-25.xlsx**](../../data/PHM-EVD-contacts-2017-11-25.xlsx):
+  a list of contacts reported between cases up to the 25th November, where
+  `from` indicates a potential source of infection, and `to` the recipient of
+  the contact.
+  
+
+To read into R, download these files and use the function `read.xlsx()` from the
+`xlsx` package to import the data. Each import will create a `data.frame`. Call
+the first one `linelist`, and the second one `contacts`. For instance, your first
+command line could look like:
+	
+```{r eval = FALSE}
+linelist <- xlsx::read.xlsx("PHM-EVD-linelist-2017-11-25.xlsx", sheetIndex = 1, stringsAsFactors = FALSE)
+```
+
+
+Once imported, the data should look like:
+          
+```{r read_files, echo = -c(1,2)}
+linelist <- xlsx::read.xlsx("../../static/data/PHM-EVD-linelist-2017-11-25.xlsx",
+                            sheetIndex = 1, stringsAsFactors = FALSE)
+contacts <- xlsx::read.xlsx("../../static/data/PHM-EVD-contacts-2017-11-25.xlsx",
+                            sheetIndex = 1, stringsAsFactors = FALSE)
+
+## linelist: one line per case
+head(linelist)
+
+
+## contacts: pairs of cases with reported contacts
+head(contacts)
+```
+
+
+## A first look at contacts
+
+Contact tracing is at the centre of an Ebola outbreak response. Using the
+function `make_epicontacts` in the `epicontacts` package, create a new
+`epicontacts` object called `x`. The result should look like:
+	      
+```{r epicontacts, echo = -c(1,2)}
+library(epicontacts)
+x <- make_epicontacts(linelist,
+                      contacts, directed = TRUE)
+x
+```  
+
+You can easily plot these contacts, but with a little bit of tweaking (see
+`?vis_epicontacts`) you can customise shapes by gender:
+
+```{r epicontacts_plot}
+plot(x, node_shape = "sex", shapes = c(male = "male", female = "female"), selector = FALSE)
+
+```
+
+**What can you say about these contacts?**
+     
+
+     
+## Looking at incidence curves
+
+The first question PHM asks you is simply: *how bad is it?*. Given that this is
+a terrible disease, with a mortality rate nearing 70%, there is a lot of concern
+about this outbreak getting out of control. The first step of the analysis lies
+in drawing an *epicurve*, i.e. an plot of incidence over time.
+
+<br>
+
+Using the package `incidence`, compute daily incidence based on the dates of
+symptom onset. Store the result in an object called `i`; the result should look
+like:
+
+```{r incidence, echo = -c(1,2)}
+library(incidence)
+i <- incidence(linelist$onset)
+i
+plot(i)
+```
+
+
+
+
+
+## Outbreak reconstruction using onset and contact data
+
+```{r si}
+library(epitrix)
+library(distcrete)
+
+mu <- 15.3
+sd <- 9.3
+si_params <- epitrix::gamma_mucv2shapescale(mu, sd / mu)
+si_params
+si <- distcrete("gamma", shape = si_params$shape, scale = si_params$scale, interval = 1L, w = 0)
+plot(si$d, type = "h", xlim = c(0,50), col = "navy", lwd = 2,
+     xlab = "Days after symptoms", ylab = "Probability",
+     main = "Serial interval distribution")
+```
+
+```{r outbreaker-onset-contacts, cache = TRUE}
+library(outbreaker2)
+ctd <- matrix(match(unlist(contacts), linelist$case_id), ncol = 2)
+data <- outbreaker_data(dates = linelist$onset, ctd = ctd, w_dens = si$d(1:100))
+config <- create_config(move_kappa = FALSE, move_pi = FALSE, find_import = FALSE)
+
+res_time_ctd <- outbreaker(data = data, config = config)
+```
+
+
+See `?plot.outbreaker_chains` for details on available plots.
+
+```{r outbreaker-onset-contacts-plots}
+plot(res_time_ctd)
+plot(res_time_ctd,  type = "alpha", burnin = 1000)
+plot(res_time_ctd,  type = "t_inf", burnin = 1000)
+plot(res_time_ctd,  type = "network", burnin = 1000, min_support = .05)
+
+```
+
+
+```{r outbreaker-onset-contacts-summary}
+smry_time_ctd <- summary(res_time_ctd)
+summary(smry_time_ctd)
+
+```
