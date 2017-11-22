@@ -4,7 +4,7 @@ author: Thibaut Jombart
 categories: ["practicals"]
 tags: ["genetics"]
 date: 2017-11-01T14:00:00-00:00
-image: img/highres/logs.jpg
+image: img/highres/trees.jpg
 showonlyimage: true
 bibliography: practical-phylogenetics.bib
 ---
