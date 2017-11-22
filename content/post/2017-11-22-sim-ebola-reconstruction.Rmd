@@ -121,48 +121,102 @@ head(contacts)
 
 ## A first look at contacts
 
-Contact tracing is at the centre of an Ebola outbreak response. Using the
-function `make_epicontacts` in the `epicontacts` package, create a new
-`epicontacts` object called `x`. The result should look like:
+After the initial stage of the outbreak, contact tracing has been maintained but
+started being sparser, and exposures haven't been reported for all
+cases. Despite these limitations, contacts are still a valuable source of
+information. Using the function `make_epicontacts` in the `epicontacts` package,
+create a new `epicontacts` object called `x`, specifying that contacts are
+directed. When plotting the data, use the arguments `node_shape` and `shapes` (
+see `?vis_epicontacts`) to distinguish males and females. For a list of
+available symbols and corresponding shape code, you can type
+`epicontacts::codeawesome`.
+
+The results should look like:
 	      
-```{r epicontacts, echo = -c(1,2)}
+```{r epicontacts, echo = FALSE}
 library(epicontacts)
 x <- make_epicontacts(linelist,
                       contacts, directed = TRUE)
 x
-```  
-
-You can easily plot these contacts, but with a little bit of tweaking (see
-`?vis_epicontacts`) you can customise shapes by gender:
-
-```{r epicontacts_plot}
 plot(x, node_shape = "sex", shapes = c(male = "male", female = "female"), selector = FALSE)
 
 ```
 
-**What can you say about these contacts?**
+**What can you say about these contacts? How would you interpret the different clusters?**
      
 
      
-## Looking at incidence curves
+## Updated incidence curves
 
-The first question PHM asks you is simply: *how bad is it?*. Given that this is
-a terrible disease, with a mortality rate nearing 70%, there is a lot of concern
-about this outbreak getting out of control. The first step of the analysis lies
-in drawing an *epicurve*, i.e. an plot of incidence over time.
+Using the same approach as in the [first part](../simulated-evd-early) of the
+practical, use `incidence` (from the `incidence` package) to compute and plot
+epicurves using dates of symptom onset. As the time series is now longer,
+compare daily incidence to weekly incidence. 
 
-<br>
+You should obtain something like:
 
-Using the package `incidence`, compute daily incidence based on the dates of
-symptom onset. Store the result in an object called `i`; the result should look
-like:
-
-```{r incidence, echo = -c(1,2)}
+```{r incidence, echo = FALSE, warning = FALSE, message = FALSE}
 library(incidence)
 i <- incidence(linelist$onset)
-i
+plot(i)
+i <- incidence(linelist$onset, interval = 7)
 plot(i)
 ```
+
+As there are no longer time intervals with 'zero' incidence on the weekly
+epicurve, which are problematic for log-linear regression, we can try fitting a
+model to these data; we do so here, with `i` being the weekly incidence:
+
+```{r fit}
+f <- fit(i)
+f
+plot(i, color = "#c65353", fit = f)
+```
+
+How would you interpret this result? What are the limitations of this analysis?
+
+
+
+## Estimating transmissibility
+
+Repeating the same analysis as in the [early stage](../simulated-evd-early) of
+the outbreak, we can use `get_R` from the `earlyR` package to estimate the
+reproduction number:
+
+```{r basic_R}
+library(earlyR)
+
+## parameters of the serial interval
+mu <- 15.3
+sd <- 9.3
+
+daily_i <- incidence(linelist$onset)
+simple_R <- get_R(daily_i, si_mean = mu, si_sd =  9.3)
+simple_R
+
+## R: likelihood function
+plot(simple_R)
+
+## force of infection
+plot(simple_R, "lambdas")
+abline(v = as.Date("2017-11-25"))
+```
+
+What do you make of these results? What is the main limitation of the estimation
+of the reproduction number ($R$) in this analysis? What assumption does it make
+about the outbreak?
+
+```{r epiestim}
+library(EpiEstim)
+library(ggplot2)
+
+adv_R <- EstimateR(as.vector(daily_i$counts), 1:50, 8:57, method = "ParametricSI", Mean.SI = mu, Std.SI = sd)
+
+names(adv_R$R) <- gsub("[(]R[)]", "", names(adv_R$R))
+
+
+```
+
 
 
 
@@ -173,6 +227,7 @@ plot(i)
 ```{r si}
 library(epitrix)
 library(distcrete)
+library(outbreaker2)
 
 mu <- 15.3
 sd <- 9.3
@@ -185,7 +240,6 @@ plot(si$d, type = "h", xlim = c(0,50), col = "navy", lwd = 2,
 ```
 
 ```{r outbreaker-onset-contacts, cache = TRUE}
-library(outbreaker2)
 
 ctd <- matrix(match(unlist(contacts), linelist$case_id), ncol = 2)
 data <- outbreaker_data(dates = linelist$onset, ctd = ctd, w_dens = si$d(1:100))
@@ -199,15 +253,9 @@ res_time_ctd
 See `?plot.outbreaker_chains` for details on available plots.
 
 ```{r time_ctd_plots}
-# plot(res_time_ctd)
-```
-
-```{r }
-# plot(res_time_ctd,  type = "alpha", burnin = 1000)
-```
-
-```{r }
-# plot(res_time_ctd,  type = "t_inf", burnin = 1000)
+plot(res_time_ctd)
+plot(res_time_ctd,  type = "alpha", burnin = 1000)
+plot(res_time_ctd,  type = "t_inf", burnin = 1000)
 ```
 
 ```{r time_ctd_net}
