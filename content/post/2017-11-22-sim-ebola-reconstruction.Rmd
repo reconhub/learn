@@ -275,27 +275,73 @@ plot(daily_i) +
 
 # Finding who infects whom
 
-## Outbreak reconstruction using onset and contact data
+To gain a better understanding of the transmission process, we can attempt to
+reconstruct plausible transmission trees using the dates of symptom onsets and
+limited contact data. This can be achieved using `outbreaker2`, which provides a
+modular platform for outbreak reconstruction. This package extends and replaces
+`outbreaker`, which in contrast was a static implementation of a specific
+transmission model [@Jombart2014-ab].
+
+
+## Building delay distributions
+
+`outbreaker2` can handle different types of dates. When dates of onset are
+provided, information on the generation time (delay between primary and
+secondary infections) and on the incubation period (delay between infection and
+symptom onset) can be included in the model. These distributions are typically
+modelled as Gamma distributions, which need to be discretised in order to
+account for the fact that time is reported as days.
+
+
+In the following, we show how the generation time distribution can be
+constructed from known parameters, which are here taken from the serial
+interval, with a mean of 15.3 and a standard deviation of 9.3. We use `epitrix`
+to convert these parameters into *shape* and *scale* for a Gamma distribution,
+and then use `distcrete` to generate the discretised distribution:
 
 ```{r si}
 library(epitrix)
 library(distcrete)
-library(outbreaker2)
 
 mu <- 15.3
 sd <- 9.3
-si_params <- epitrix::gamma_mucv2shapescale(mu, sd / mu)
-si_params
-si <- distcrete("gamma", shape = si_params$shape, scale = si_params$scale, interval = 1L, w = 0)
-plot(si$d, type = "h", xlim = c(0,50), col = "navy", lwd = 2,
+gt_params <- epitrix::gamma_mucv2shapescale(mu, sd / mu)
+gt_params
+gt <- distcrete("gamma", shape = gt_params$shape, scale = gt_params$scale, interval = 1L, w = 0)
+gt
+plot(gt$d, type = "h", xlim = c(0,50), col = "navy", lwd = 2,
      xlab = "Days after symptoms", ylab = "Probability",
      main = "Serial interval distribution")
+```
+
+Using the same process, create a distribution for the incubation period, which
+has been reported to have a mean of 9.1 with a standard deviation of 7.3. Call
+this object `incub`, and plot the distribution, which should look like this:
+
+```{r incub, echo = FALSE}
+mu <- 9.1
+sd <- 7.3
+incub_params <- epitrix::gamma_mucv2shapescale(mu, sd / mu)
+incub_params
+incub <- distcrete("gamma", shape = incub_params$shape, scale = incub_params$scale, interval = 1L, w = 0)
+incub
+plot(incub$d, type = "h", xlim = c(0,50), col = "salmon", lwd = 2,
+     xlab = "Days after infection", ylab = "Probability",
+     main = "Incubation period distribution")
+```
+
+
+
+## Outbreak reconstruction using onset and contact data
+
+```{r load-outbreaker}
+library(outbreaker2)
 ```
 
 ```{r outbreaker-onset-contacts, cache = TRUE}
 
 ctd <- matrix(match(unlist(contacts), linelist$case_id), ncol = 2)
-data <- outbreaker_data(dates = linelist$onset, ctd = ctd, w_dens = si$d(1:100))
+data <- outbreaker_data(dates = linelist$onset, ctd = ctd, w_dens = gt$d(1:100))
 config <- create_config(move_kappa = FALSE, move_pi = FALSE, find_import = FALSE)
 
 res_time_ctd <- outbreaker(data = data, config = config)
