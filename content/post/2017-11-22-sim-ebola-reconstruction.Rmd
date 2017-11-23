@@ -472,9 +472,9 @@ dim(ctd)
 All inputs to the `outbreaker` function are prepared using dedicated functions,
 which make a number of checks on provided inputs and define defaults:
 
-```{r data-outbreaker}
-## prepare data input
+```{r data-outbreaker-full}
 data <- outbreaker_data(dates = linelist$onset, # dates of onset
+                        dna = unname(dna), # dna sequences
                         ctd = ctd, # contact data
                         w_dens = gt$d(1:100), # generation time distribution
                         f_dens = incub$d(1:100) # incubation period distribution
@@ -484,30 +484,30 @@ data <- outbreaker_data(dates = linelist$onset, # dates of onset
 We are now ready to run the analysis. This may take a couple of minutes,
 depending on your computer:
 
-```{r outbreaker-onset-contacts, cache = TRUE}
+```{r outbreaker-full, cache = TRUE}
 set.seed(0)
-res_time_ctd <- outbreaker(data = data, config = config)
-res_time_ctd
+res_full <- outbreaker(data = data, config = config)
+res_full
 ```
 
 
 See `?plot.outbreaker_chains` for details on available plots. Graphics worth
 looking at include:
 
-```{r time_ctd_plots}
-plot(res_time_ctd) # log-posterior trace
-plot(res_time_ctd,  type = "alpha", burnin = 1000) # ancestries
-plot(res_time_ctd,  type = "t_inf", burnin = 1000) # infection dates
-plot(res_time_ctd,  type = "network", burnin = 1000, min_support = .05) # transmission trees
+```{r full_plots}
+plot(res_full) # log-posterior trace
+plot(res_full,  type = "alpha", burnin = 1000) # ancestries
+plot(res_full,  type = "t_inf", burnin = 1000) # infection dates
+plot(res_full,  type = "network", burnin = 1000, min_support = .05) # transmission trees
 ```
 
 **How would you interpret the results?** As further help, you can derive a
 consensus tree from the posterior samples of trees using `summary`. Look in
 particular at the *support* column, and compare the results to the contact data.
 
-```{r outbreaker-onset-contacts-summary}
-smry_time_ctd <- summary(res_time_ctd)
-smry_time_ctd$tree
+```{r outbreaker-full-summary}
+smry_full <- summary(res_full)
+smry_full$tree
 ```
 
 **What are the factors impacting this outbreak reconstruction? What other
