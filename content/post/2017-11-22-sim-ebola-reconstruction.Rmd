@@ -7,6 +7,7 @@ date: 2017-11-22T14:00:00-00:00
 image: img/highres/ebola-blue.jpg
 slug: simulated-evd-reconstruction
 showonlyimage: true
+bibliography: practical-evd.bib
 ---
 
 	
@@ -20,7 +21,7 @@ install_if_missing <- function(x) {
     }
 }
 
-deps <- c("xlsx", "incidence", "epicontacts")
+deps <- c("xlsx", "incidence", "epicontacts", "EpiEstim", "ggplot2")
 lapply(deps, install_if_missing)
 ```
 
@@ -28,34 +29,57 @@ lapply(deps, install_if_missing)
 
 This practical is the second part of the response to a simulated Ebola Virus
 Disease (EVD) outbreak taking place in the city of Ankh, Republic of
-Morporkia. While the [**first part**](../simulated-evd-early)
-focussed on early assessments of transmissibility, this part provides an
-introduction to outbreak reconstruction using *outbreaker2*.
+Morporkia. While the [**first part**](../simulated-evd-early) focussed on early
+assessments of transmissibility, this part explores more methodological options
+for estimating transmissibility, and provides an introduction to outbreak
+reconstruction using *outbreaker2*.
 
 	       	  
 <br>
 
-# Installing required packages
+# An update on the EVD outbreak in Ankh, Republic of Morporkia
 
-The following packages, available on CRAN, are needed for this case study:
+After some rather concerning [preliminary results](../simulated-evd-early) on
+the new EVD outbreak in the city of Ankh, Republic of Morporkia, Public Health
+Morporkia (PHM) has sent you updates of the linelists and contact data. This
+time, PHM has also obtained Whole Genome Sequences (WGS) of the Ebola virus
+isolated in patients. As before, you are asked to assess the situation and
+produce evidence-based recommendations for informing the response.
+
+    
+
+## Required packages
+
+The following packages, available on CRAN, are needed for this practical:
 
 - [`xlsx`](http://www.repidemicsconsortium.org/incidence/) to read `.xlsx` files
+- [`ggplot2`](http://ggplot2.org/) for graphics
 - [`incidence`](http://www.repidemicsconsortium.org/incidence/) for epicurves
-- [`epicontacts`](http://www.repidemicsconsortium.org/epicontacts/) for contact data visualisation
+- [`epicontacts`](http://www.repidemicsconsortium.org/epicontacts/) for contact
+  data visualisation
+- [`EpiEstim`](https://cran.r-project.org/web/packages/EpiEstim/index.html) for
+  time-varying reproduction number estimation
   
 To install these packages, use `install.packages`, e.g.:
    
 ```{r install, eval = FALSE}
 install.packages("xlsx")
+install.packages("ggplot2")
 install.packages("incidence")
 install.packages("epicontacts")
+install.packages("EpiEstim")
+
 ```
 
-We will also use several packages currently under development, hosted on *github*. These include:
+We will also use several packages currently under development, hosted on
+*github*. These include:
    
-- [`distcrete`](http://www.repidemicsconsortium.org/distcrete) to obtain discrete time delay distributions
-- [`epitrix`](http://www.repidemicsconsortium.org/epitrix) for some practical tricks
-- [`outbreaker2`](http://www.repidemicsconsortium.org/outbreaker2) to reconstruct the outbreak
+- [`distcrete`](http://www.repidemicsconsortium.org/distcrete) to obtain
+  discrete time delay distributions
+- [`epitrix`](http://www.repidemicsconsortium.org/epitrix) for some practical
+  tricks
+- [`outbreaker2`](http://www.repidemicsconsortium.org/outbreaker2) to
+  reconstruct the outbreak
    
    
 To install these, you will need a working version of `devtools`, and the
@@ -69,16 +93,6 @@ devtools::install_github("reconhub/outbreaker2")
 ```
 
 
-	
-# An update on the EVD outbreak in Ankh, Republic of Morporkia
-
-After some rather concerning [preliminary results](../simulated-evd-early) on
-the new EVD outbreak in the city of Ankh, Republic of Morporkia, Public Health
-Morporkia (PHM) has sent you updates of the linelists and contact data. This
-time, PHM has also obtained Whole Genome Sequences (WGS) of the Ebola virus
-isolated in patients.
-
-    
 ## The new data
 	
 The data update includes new linelists and contact lists:
@@ -98,7 +112,8 @@ the first one `linelist`, and the second one `contacts`. For instance, your firs
 command line could look like:
 	
 ```{r eval = FALSE}
-linelist <- xlsx::read.xlsx("PHM-EVD-linelist-2017-11-25.xlsx", sheetIndex = 1, stringsAsFactors = FALSE)
+linelist <- xlsx::read.xlsx("PHM-EVD-linelist-2017-11-25.xlsx",
+                            sheetIndex = 1, stringsAsFactors = FALSE)
 ```
 
 
@@ -119,15 +134,18 @@ head(contacts)
 ```
 
 
-## A first look at contacts
+
+# Analysis of epidemiological data
+
+## Visualising contact data
 
 After the initial stage of the outbreak, contact tracing has been maintained but
 started being sparser, and exposures haven't been reported for all
 cases. Despite these limitations, contacts are still a valuable source of
 information. Using the function `make_epicontacts` in the `epicontacts` package,
 create a new `epicontacts` object called `x`, specifying that contacts are
-directed. When plotting the data, use the arguments `node_shape` and `shapes` (
-see `?vis_epicontacts`) to distinguish males and females. For a list of
+directed. When plotting the data, use the arguments `node_shape` and `shapes`
+(see `?vis_epicontacts`) to distinguish males and females. For a list of
 available symbols and corresponding shape code, you can type
 `epicontacts::codeawesome`.
 
@@ -146,7 +164,7 @@ plot(x, node_shape = "sex", shapes = c(male = "male", female = "female"), select
      
 
      
-## Updated incidence curves
+## Building epicurves
 
 Using the same approach as in the [first part](../simulated-evd-early) of the
 practical, use `incidence` (from the `incidence` package) to compute and plot
@@ -206,21 +224,56 @@ What do you make of these results? What is the main limitation of the estimation
 of the reproduction number ($R$) in this analysis? What assumption does it make
 about the outbreak?
 
+
+
+## Estimating time-varying transmissibility
+
+When the assumption that $R$ is constant over time becomes untenable, an
+alternative is the estimationg of time-varying transmissibility using the
+instantaneous reproduction number $R_t$. This approach, introduced by Cori et
+al. [-@Cori2013-fc], is implemented in the package `EpiEstim` (function
+`EstimateR`). It esimates $R_t$ for a succession of sliding time windows, using
+the same Poisson likelihood described in the [**first
+part**](../simulated-evd-early). In the following, we use `EstimateR` to
+estimate transmissibility for 1-week sliding time windows:
+
 ```{r epiestim}
 library(EpiEstim)
 library(ggplot2)
 
-adv_R <- EstimateR(as.vector(daily_i$counts), 1:50, 8:57, method = "ParametricSI", Mean.SI = mu, Std.SI = sd)
-
-names(adv_R$R) <- gsub("[(]R[)]", "", names(adv_R$R))
-
+days <- seq_along(daily_i$dates)
+Rt <- EstimateR(as.vector(daily_i$counts), days, days + 7, method = "ParametricSI",
+                   Mean.SI = mu, Std.SI = sd)
+Rt <- Rt$R[days,]
+head(Rt, 10)
 
 ```
 
+`EpiEstim` is not yet integrated with other RECON packages, so adding the
+results to existing `incidence` plots takes some customisation using
+`ggplot2`. Uses the following commands to add estimates of $R_r$ to the daily
+incidence:
+
+```{r epiestimplot}
+
+names(Rt) <- gsub("[(]R[)]", "", names(Rt))
+Rt <- cbind.data.frame(as.data.frame(daily_i),
+                       Rt)
+plot(daily_i) +
+    geom_ribbon(data = Rt, fill = "#c65353", alpha = .3,
+                aes(ymin = Quantile.0.025, ymax = Quantile.0.975)) +
+    geom_line(data = Rt, aes(y = Median), col = "#c65353", alpha = .8) +
+    geom_hline(yintercept = 1, linetype = 2) +
+    labs(title = "Weekly Rt: median, and 95% CI")
+
+```
+
+**How would you interpret this result? What is the caveat of this representation?**
 
 
 
 
+# Finding who infects whom
 
 ## Outbreak reconstruction using onset and contact data
 
@@ -266,3 +319,6 @@ plot(res_time_ctd,  type = "network", burnin = 1000, min_support = .05)
 smry_time_ctd <- summary(res_time_ctd)
 smry_time_ctd
 ```
+
+
+# References
