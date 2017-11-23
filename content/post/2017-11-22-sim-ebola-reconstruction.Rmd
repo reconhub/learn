@@ -21,7 +21,7 @@ install_if_missing <- function(x) {
     }
 }
 
-deps <- c("xlsx", "incidence", "epicontacts", "EpiEstim", "ggplot2")
+deps <- c("xlsx", "incidence", "epicontacts", "EpiEstim", "ggplot2", "ape")
 lapply(deps, install_if_missing)
 ```
 
@@ -59,6 +59,8 @@ The following packages, available on CRAN, are needed for this practical:
   data visualisation
 - [`EpiEstim`](https://cran.r-project.org/web/packages/EpiEstim/index.html) for
   time-varying reproduction number estimation
+- [`ape`](http://ape-package.ird.fr/) for DNA sequence analysis
+  
   
 To install these packages, use `install.packages`, e.g.:
    
@@ -273,7 +275,7 @@ plot(daily_i) +
 
 
 
-# Finding who infects whom
+# Finding who infected whom
 
 To gain a better understanding of the transmission process, we can attempt to
 reconstruct plausible transmission trees using the dates of symptom onsets and
@@ -335,14 +337,114 @@ plot(incub$d, type = "h", xlim = c(0,50), col = "salmon", lwd = 2,
 
 
 
+## Looking at Whole Genome Sequences (WGS)
+
+WGS have been obtained for all cases in this outbreak. They are stored as a
+`fasta` [**PHM-EVD-WGS.fa**](../../static/data/PHM-EVD-WGS.fa). Download this
+file, save it in your working directory, and then import these data using the
+function `read.FASTA` from the `ape` package.
+
+```{r echo = -2, eval = -3}
+library(ape)
+dna <- read.FASTA("../../static/data/PHM-EVD-WGS.fa")
+dna <- read.FASTA("PHM-EVD-WGS.fa")
+dna
+identical(labels(dna), linelist$case_id) # check sequences match linelist data
+```
+
+As a first exploration of the data, we derive a Neighbour-Joining tree rooted at
+the first case of the outbreak:
+```{r nj}
+nj <- nj(dist.dna(dna, model = "N")) # NJ on nucleotide distances (model = "N")
+nj
+nj <- root(nj, 1)
+plot(nj)
+axisPhylo()
+```
+
+**How would you interpret this phylogenetic tree? Many methods of outbreak
+reconstruction infer transmission events from phylogenies. What results would
+you expect here?**
+
+
+
+## Using the original `outbreaker` model
+
+The original `outbreaker` model combined temporal information (here, dates of
+onset) with sequence data to infer who infected whom. Here, we use `outbreaker2`
+to apply this model to the data. 
+
+All inputs to the new `outbreaker` function are prepared using dedicated
+functions, which make a number of checks on provided inputs and define defaults:
+
+
+```{r data-basic-outbreaker}
+library(outbreaker2)
+
+data <- outbreaker_data(dates = linelist$onset, # dates of onset
+                        dna = unname(dna), # WGS; remove labels for compatibility
+                        w_dens = gt$d(1:100), # generation time distribution
+                        f_dens = incub$d(1:100) # incubation period distribution
+                        )
+```
+
+We also create a configuration, which determines different aspects of the
+analysis, including which parameters need to be estimated, initial values of
+parameters, the length of the MCMC, etc.:
+
+```{r config-outbreaker}
+config <- create_config(move_kappa = FALSE, # don't look for missing cases
+                        move_pi = FALSE, # don't estimate reporting
+                        init_pi = 1, # set reporting to 1
+                        find_import = FALSE, # don't look for additional imported cases
+                        init_tree = "star" # star-like tree as starting point
+                        )
+```
+
+We can now run the analysis. This should take a couple of minutes on modern
+laptops. Note the use of `set.seed(0)` to have identical results across
+different users and computers:
+
+```{r outbreaker-basic, cache = TRUE}
+set.seed(0)
+res_basic <- outbreaker(data = data, config = config)
+res_basic
+plot(res_basic)
+plot(res_basic, burn = 500)
+
+```
+
+The first two plots show the trace of the log-posterior densities (with, and
+without burnin). See `?plot.outbreaker_chains` for details on available
+plots. Graphics worth looking at include:
+
+```{r basic_plots}
+plot(res_basic,  type = "alpha", burnin = 500) # ancestries
+plot(res_basic,  type = "t_inf", burnin = 500) # infection dates
+plot(res_basic, "mu", burn = 500, type = "density") # mutation rate
+plot(res_basic,  type = "network", burnin = 500, min_support = .05) # transmission trees
+```
+
+As a further help for interpretation, you can derive a consensus tree from the
+posterior samples of trees using `summary`. Look in particular at the *support*
+column, and compare the results to the contact data.
+
+```{r outbreaker-basic-summary}
+smry_basic <- summary(res_basic)
+head(smry_basic$tree)
+tail(smry_basic$tree)
+hist(smry_basic$tree$support, col = "grey", border = "white",
+     main = "Consensus ancestry: support", xlim = c(0,1))
+```
+
+**How would you interpret the results?** 
+
+
+
 ## Outbreak reconstruction using onset dates and contact data
 
 We load the `outbreaker2` package, which we will use to infer likely
 transmission events from onset and contact data:
-
-```{r load-outbreaker}
-library(outbreaker2)
-```
 
 Contact data currently contains case labels. While `epicontacts` objects will
 soon be accepted as inputs in `outbreaker2`, for now we need to operate some
@@ -404,8 +506,7 @@ particular at the *support* column, and compare the results to the contact data.
 
 ```{r outbreaker-onset-contacts-summary}
 smry_time_ctd <- summary(res_time_ctd)
-head(smry_time_ctd)
-tail(smry_time_ctd)
+smry_time_ctd$tree
 ```
 
 **What are the factors impacting this outbreak reconstruction? What other
