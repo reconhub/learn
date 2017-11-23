@@ -437,14 +437,27 @@ hist(smry_basic$tree$support, col = "grey", border = "white",
      main = "Consensus ancestry: support", xlim = c(0,1))
 ```
 
-**How would you interpret the results?** 
+**How would you interpret the results? Is this what you would have expected? As a point of comparison, repeat the same analysis using temporal data only, and plot a graph of ancestries (`type = "alpha"`); you should obtain something along the lines of:**
+
+```{r outbreaker-time}
+set.seed(0)
+
+data <- outbreaker_data(dates = linelist$onset, # dates of onset
+                        w_dens = gt$d(1:100), # generation time distribution
+                        f_dens = incub$d(1:100) # incubation period distribution
+                        )
+res_time <- outbreaker(data = data, config = config)
+plot(res_time, type = "alpha", burn = 500)
+
+```
+
+**What is the usefulness of temporal and genetic data for outbreak
+reconstruction? What other data would you ideally include?**
 
 
 
-## Outbreak reconstruction using onset dates and contact data
 
-We load the `outbreaker2` package, which we will use to infer likely
-transmission events from onset and contact data:
+## Adding contact data to the reconstruction process
 
 Contact data currently contains case labels. While `epicontacts` objects will
 soon be accepted as inputs in `outbreaker2`, for now we need to operate some
@@ -465,18 +478,6 @@ data <- outbreaker_data(dates = linelist$onset, # dates of onset
                         ctd = ctd, # contact data
                         w_dens = gt$d(1:100), # generation time distribution
                         f_dens = incub$d(1:100) # incubation period distribution
-                        )
-```
-
-We also create a configuration, which determines different aspects of the
-analysis, including which parameters need to be estimated, initial values of
-parameters, the length of the MCMC, etc.:
-
-```{r config-outbreaker}
-config <- create_config(move_kappa = FALSE, # don't look for missing cases
-                        move_pi = FALSE, # don't estimate reporting
-                        init_pi = 1, # set reporting to 1
-                        find_import = FALSE # don't look for additional imported cases
                         )
 ```
 
