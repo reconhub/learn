@@ -437,7 +437,10 @@ hist(smry_basic$tree$support, col = "grey", border = "white",
      main = "Consensus ancestry: support", xlim = c(0,1))
 ```
 
-**How would you interpret the results? Is this what you would have expected? As a point of comparison, repeat the same analysis using temporal data only, and plot a graph of ancestries (`type = "alpha"`); you should obtain something along the lines of:**
+**How would you interpret the results? Is this what you would have expected? As
+a point of comparison, repeat the same analysis using temporal data only, and
+plot a graph of ancestries (`type = "alpha"`); you should obtain something along
+the lines of:**
 
 ```{r outbreaker-time}
 set.seed(0)
@@ -490,29 +493,72 @@ res_full <- outbreaker(data = data, config = config)
 res_full
 ```
 
+Produce graphics as in the previous model. Assess convergence, choose an
+appropriate burnin, visualise ancestries and the infection timelines:
 
-See `?plot.outbreaker_chains` for details on available plots. Graphics worth
-looking at include:
-
-```{r full_plots}
+```{r full_plots, echo = FALSE}
 plot(res_full) # log-posterior trace
-plot(res_full,  type = "alpha", burnin = 1000) # ancestries
-plot(res_full,  type = "t_inf", burnin = 1000) # infection dates
-plot(res_full,  type = "network", burnin = 1000, min_support = .05) # transmission trees
+plot(res_full, burnin = 200) # log-posterior trace
+plot(res_full,  type = "alpha", burnin = 200) # ancestries
+plot(res_full,  type = "t_inf", burnin = 200) # infection dates
+plot(res_full,  type = "network", burnin = 200, min_support = .05) # transmission trees
 ```
 
-**How would you interpret the results?** As further help, you can derive a
-consensus tree from the posterior samples of trees using `summary`. Look in
-particular at the *support* column, and compare the results to the contact data.
+**How would you interpret the results?** 
+
+<br>
+
+Derive a consensus tree using `summary`, and make a new `epicontacts` object,
+using the previous linelist, to visualise the consensus tree with
+meta-information:
 
 ```{r outbreaker-full-summary}
 smry_full <- summary(res_full)
 smry_full$tree
+
+smry_full$tree$support <- round(smry_full$tree$support, 2)
+
+linelist$id <- 1:nrow(linelist) # add case index to linelist
+cons_tree <- make_epicontacts(linelist, smry_full$tree[-1, ], id = "id",
+                              from = 1, to = 2, directed = TRUE)
+
 ```
 
-**What are the factors impacting this outbreak reconstruction? What other
-information would you include for inferring transmissions?**
+In the following, we add age class information to the linelist of `cons_tree`,
+and create color palettes which will be used to display information on the final
+graph:
 
+```{r consensus-tree-making}
+library(visNetwork)
+
+support_pal <- colorRampPalette(
+    c("#918D98", "#645877", "#423359", "#281449", "#1A0340")
+)
+
+age_pal <- colorRampPalette(
+    c("#3288BD", "#ABDDA4", "#FDAE61", "#D53E4F")
+)
+
+cons_tree$linelist$age_class <- cut(cons_tree$linelist$age,
+                                    breaks = c(0, 10, 20, 30, 40, 90),
+                                    labels = c("0-10", "11-20", "21-30", "31-40", "41+" ))
+
+```
+
+Looking carefully at the documentation of `vis_epicontacts`, try to reproduce
+the final consensus tree below:
+
+```{r consensus-plot, echo = FALSE}
+
+plot(cons_tree, edge_col = "support", edge_col_pal = support_pal,
+     edge_label = "support", node_shape = "sex",
+     shapes = c(male = "male", female = "female"), node_color = "age_class",
+     col_pal = age_pal)
+
+```
+
+**What are your conclusions? What are the main drivers of this outbreak? What
+recommendations would you make to further improve the response?**
 
 
 
