@@ -23,6 +23,9 @@ install_if_missing <- function(x) {
 
 deps <- c("xlsx", "incidence", "epicontacts", "EpiEstim", "ggplot2", "ape")
 lapply(deps, install_if_missing)
+
+CACHE <- TRUE
+
 ```
 
 
@@ -405,7 +408,7 @@ We can now run the analysis. This should take a couple of minutes on modern
 laptops. Note the use of `set.seed(0)` to have identical results across
 different users and computers:
 
-```{r outbreaker-basic, cache = TRUE}
+```{r outbreaker-basic, cache = CACHE}
 set.seed(0)
 res_basic <- outbreaker(data = data, config = config)
 res_basic
@@ -487,7 +490,7 @@ data <- outbreaker_data(dates = linelist$onset, # dates of onset
 We are now ready to run the analysis. This may take a couple of minutes,
 depending on your computer:
 
-```{r outbreaker-full, cache = TRUE}
+```{r outbreaker-full, cache = CACHE}
 set.seed(0)
 res_full <- outbreaker(data = data, config = config)
 res_full
@@ -514,7 +517,7 @@ meta-information:
 
 ```{r outbreaker-full-summary}
 smry_full <- summary(res_full)
-smry_full$tree
+head(smry_full$tree)
 
 smry_full$tree$support <- round(smry_full$tree$support, 2)
 
