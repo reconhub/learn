@@ -33,28 +33,40 @@ stage of an outbreak, including contact tracing data, epicurves, growth rate
 estimation from log-linear models, and more refined estimates of
 transmissibility. A follow-up practical will provide an introduction to
 transmission chain reconstruction using *outbreaker2*.
-	       	  
+	
+    
 <br>
 
-# Installing required packages
+	
+# A novel EVD outbreak in Ankh, Republic of Morporkia
+
+A new EVD outbreak has been notified in the small city of Ankh, located in the
+Northern, rural district of the Republic of Morporkia. Public Health Morporkia
+(PHM) is in charge of coordinating the outbreak response, and have contracted
+you as a consultant in epidemics analysis to inform the response in real time.
+
+
+
+## Required packages
 
 The following packages, available on CRAN, are needed for this case study:
 
 - [`xlsx`](http://www.repidemicsconsortium.org/incidence/) to read `.xlsx` files
 - [`incidence`](http://www.repidemicsconsortium.org/incidence/) for epicurves
 - [`epicontacts`](http://www.repidemicsconsortium.org/epicontacts/) for contact data visualisation
-  
+- [`distcrete`](http://www.repidemicsconsortium.org/distcrete) to obtain discrete time delay distributions
+
 To install these packages, use `install.packages`, e.g.:
    
 ```{r install, eval = FALSE}
 install.packages("xlsx")
 install.packages("incidence")
 install.packages("epicontacts")
+install.packages("distcrete")
 ```
 
 We will also use several packages currently under development, hosted on *github*. These include:
    
-- [`distcrete`](http://www.repidemicsconsortium.org/distcrete) to obtain discrete time delay distributions
 - [`epitrix`](http://www.repidemicsconsortium.org/epitrix) for some practical tricks
 - [`earlyR`](http://www.repidemicsconsortium.org/earlyR) to estimate $R_0$ 
 - [`projections`](http://www.repidemicsconsortium.org/projections) to derive short term incidence predictions
@@ -65,20 +77,11 @@ toolchain for package building on your system. On windows, you will likely need
 to install [*Rtools*](https://cran.r-project.org/bin/windows/Rtools/).
    
 ```{r install2, eval = FALSE}
-devtools::install_github("reconhub/distcrete")
 devtools::install_github("reconhub/epitrix")
 devtools::install_github("reconhub/earlyR")
 devtools::install_github("reconhub/projections")
 ```
 
-
-	
-# A novel EVD outbreak in Ankh, Republic of Morporkia
-
-A new EVD outbreak has been notified in the small city of Ankh, located in the
-Northern, rural district of the Republic of Morporkia. Public Health Morporkia
-(PHM) is in charge of coordinating the outbreak response, and have contracted
-you as a consultant in epidemics analysis to inform the response in real time.
 
     
 ## Early data
@@ -118,6 +121,9 @@ linelist
 contacts
 ```
 
+
+
+# Descriptive analyses
 
 ## A first look at contacts
 
@@ -176,6 +182,12 @@ i
 plot(i)
 ```
 
+
+
+# Simple statistical analyses
+
+## Log-linear model
+
 The simplest model of incidence is probably the log-linear model, i.e. a linear
 regression on log-transformed incidences. In the `incidence` package, the
 function `fit` will estimate the parameters of this model from an incidence
@@ -199,7 +211,7 @@ a standard deviation 9.3 days.
      
 
 
-## Estimating $R$
+## Estimation of transmissibility ($R$)
 
 The transmissibility of the disease can be assessed through the estimation of
 the reproduction number $R$, defined as the number of expected secondary cases

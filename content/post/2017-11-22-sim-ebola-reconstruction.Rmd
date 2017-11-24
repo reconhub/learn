@@ -62,8 +62,9 @@ The following packages, available on CRAN, are needed for this practical:
   data visualisation
 - [`EpiEstim`](https://cran.r-project.org/web/packages/EpiEstim/index.html) for
   time-varying reproduction number estimation
+- [`distcrete`](http://www.repidemicsconsortium.org/distcrete) to obtain
+  discrete time delay distributions
 - [`ape`](http://ape-package.ird.fr/) for DNA sequence analysis
-  
   
 To install these packages, use `install.packages`, e.g.:
    
@@ -73,14 +74,14 @@ install.packages("ggplot2")
 install.packages("incidence")
 install.packages("epicontacts")
 install.packages("EpiEstim")
+install.packages("distcrete")
+install.packages("ape")
 
 ```
 
 We will also use several packages currently under development, hosted on
 *github*. These include:
-   
-- [`distcrete`](http://www.repidemicsconsortium.org/distcrete) to obtain
-  discrete time delay distributions
+ 
 - [`epitrix`](http://www.repidemicsconsortium.org/epitrix) for some practical
   tricks
 - [`outbreaker2`](http://www.repidemicsconsortium.org/outbreaker2) to
@@ -92,7 +93,6 @@ toolchain for package building on your system. On windows, you will likely need
 to install [*Rtools*](https://cran.r-project.org/bin/windows/Rtools/).
    
 ```{r install2, eval = FALSE}
-devtools::install_github("reconhub/distcrete")
 devtools::install_github("reconhub/epitrix")
 devtools::install_github("reconhub/outbreaker2")
 ```
