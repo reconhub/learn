@@ -6417,14 +6417,11 @@ body, input, select, button {
     text-transform: uppercase; }
 
 .entry-header {
-    font-family: Sawasdee;
     color: #4d4d4d;
     font-size: 3em;
     font-weight: 700;
     text-align: center;
-    /* text-transform: uppercase; */
     margin-bottom: 1em;
-    text-shadow: 2px 2px 6px;
 }
 
 .entry-sidebar {

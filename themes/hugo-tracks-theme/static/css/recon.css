@@ -145,6 +145,18 @@ a:hover {
 }
 
 
+.entry-header {
+    font-family: Sawasdee;
+    color: #4d4d4d;
+    font-size: 3em;
+    font-weight: normal;
+    text-align: center;
+    margin-bottom: 1em;
+    text-shadow: 2px 2px 6px;
+}
+
+
+
 .entry-categories a:link,
 .entry-tags a:link {
     padding: 5px;
