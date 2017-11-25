@@ -6396,16 +6396,14 @@ body, input, select, button {
 .content {
     overflow: hidden;
     margin-bottom: 1.5em;
-    border-style: solid;
-    border-color: black;
-    
 }
+
 .content:hover .content-excerpt, .content:active .content-excerpt, .content:focus .content-excerpt {
 								       opacity: 1; }
 .content:hover .content-image, .content:active .content-image, .content:focus .content-image {
-								   transform: scale(1.05);
-								   -webkit-transform: scale(1.05);
-								   -moz-transform: scale(1.05) rotate(0.02deg); }
+								   transform: scale(1.1);
+								   -webkit-transform: scale(1.1);
+								   -moz-transform: scale(1.1) rotate(0.02deg); }
 
 .entry {
     background: #fff;

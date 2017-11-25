@@ -88,6 +88,8 @@
 
 /* Further CSS customisation for RECON style */
 
+/* fonts */
+
 @font-face {
     font-family: "Sawasdee"; 
     src: url("fonts/Sawasdee.ttf")
@@ -116,6 +118,9 @@
 }
 
 
+
+/* links */
+
 a:link {
     text-decoration: underline;
     color: #666699;
@@ -133,7 +138,7 @@ a:hover {
 
 .question {
     font-style: italic;
-    background: #e6ffee;
+    background: #c6c6ec;
     color: #1a1a1a;
     border-radius: 5px;    
     padding: 2px 5px 2px 5px;
@@ -161,15 +166,6 @@ a:hover {
 }
 
 
-.entry-sidebar .entry-sidebar-title {
-    font-family: Sawasdee;
-    font-size: 14px;
-    font-weight: bold;
-    text-transform: uppercase;
-    color: #29293d;
-    margin-top: 0.7em;
-    padding: 10px 0px 10px 0px;
-}
 
 
 .content-title a:link {
@@ -188,8 +184,44 @@ a:hover {
 }
 
 
+.title-info a:link,
+.title-info a:visited {
+    text-decoration: none;
+    color: white;
+    font-family: Sawasdee;
+    font-weight: bold;
+    text-transform: none;
+}
+
+
+
+/* side bars alongside practical pages */
+
+.entry-sidebar .entry-sidebar-title {
+    font-family: Sawasdee;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #29293d;
+    margin-top: 0.7em;
+    padding: 10px 0px 10px 0px;
+}
+
+
+
+
+/* header */
+.site-header {
+    position: relative;
+    z-index: 2;
+    /* padding: 1.5em 5.55% 2.25em; */
+    border-top: solid 0.75em #3d3d5c;
+    border-radius: 5px;
+}
+
 .categories-block a:link,
 .categories-block a:visited {
+    padding: 0px 2px 0px 2px;
     text-decoration: none;
     color: white;
 }
@@ -211,15 +243,26 @@ a:hover {
 }
 
 
+.site-header a, .site-footer a {
+    opacity: 1;
+}
 
 
-.title-info a:link,
-.title-info a:visited {
-    text-decoration: none;
-    color: white;
-    font-family: Sawasdee;
-    font-weight: bold;
-    text-transform: none;
+
+
+/* title */
+
+.title-logo {
+    padding: 40px 10px 10px 10px;
+}
+
+
+
+/* general config */
+
+body {
+    /* background: #d9d9d9; */
+    background: white;
 }
 
 
@@ -230,28 +273,16 @@ a:hover {
 
 
 
-
-body {
-    /* background: #d9d9d9; */
-    background: white;
+.content {
+    overflow: hidden;
+    margin-bottom: 1.5em;
+    border-style: solid;
+    border-color: black;
+    border-radius: 10px;
+    box-shadow: 5px 5px 20px #000000;
 }
 
 
-.site-header {
-    position: relative;
-    z-index: 2;
-    /* padding: 1.5em 5.55% 2.25em; */
-    border-top: solid 0.75em #3d3d5c;
+.content:hover {
+    box-shadow: 5px 5px 20px #80002a;
 }
-
-
-
-.site-header a, .site-footer a {
-    opacity: 1;
-}
-
-
-.title-logo {
-    padding: 40px 10px 10px 10px;
-}
-
