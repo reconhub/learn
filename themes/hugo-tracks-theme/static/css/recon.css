@@ -272,11 +272,12 @@ body {
 }
 
 
-
+/* content boxes (posts overview) */
 .content {
     overflow: hidden;
     margin-bottom: 1.5em;
     border-style: solid;
+    border-width: thin;
     border-color: black;
     border-radius: 10px;
     box-shadow: 5px 5px 20px #000000;
