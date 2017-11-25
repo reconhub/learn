@@ -133,30 +133,32 @@ a:hover {
 
 .question {
     font-style: italic;
-    background: #ffe6b3;
-    color: #332200;
+    background: #e6ffee;
+    color: #1a1a1a;
     border-radius: 5px;    
     padding: 2px 5px 2px 5px;
 }
 
 
-.entry-categories a:link, .entry-tags a:link {
-			      padding: 5px;
-			      background: #f2f2f2;
-			      border-radius: 10px;
-			      text-decoration: none;
-			      font-weight: normal;
-			  }
+.entry-categories a:link,
+.entry-tags a:link {
+    padding: 5px;
+    background: #f2f2f2;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: normal;
+}
 
 
-.entry-categories a:hover, .entry-tags a:hover {
-			       padding: 5px;
-			       background: #ffe6ee;
-			       color: #990033;
-			       border-radius: 10px;
-			       text-decoration: none;
-			       font-weight: normal;
-			   }
+.entry-categories a:hover,
+.entry-tags a:hover {
+    padding: 5px;
+    background: #ffe6ee;
+    color: #990033;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: normal;
+}
 
 
 .entry-sidebar .entry-sidebar-title {
@@ -186,38 +188,70 @@ a:hover {
 }
 
 
-.categories-block a:link, .categories-block a:visited {
-			      text-decoration: none;
-			      color: white;
-			  }
+.categories-block a:link,
+.categories-block a:visited {
+    text-decoration: none;
+    color: white;
+}
 
 
-.social-media-block a:link, .social-media-block a:visited  {
-				text-decoration: none;
-				color: white;
-			    }
+.social-media-block a:link,
+.social-media-block a:visited  {
+    text-decoration: none;
+    color: white;
+}
 
 
 .categories-block a:hover {
     padding: 0px 2px 0px 2px;
     background: #ffe6ee;
     color: #990033;
-    border-radius: 5px;    color: #990033;
+    border-radius: 5px;
+    color: #990033;
 }
 
 
 
 
-.title-info a:link, .title-info a:visited {
-			text-decoration: none;
-			color: white;
-			font-family: Sawasdee;
-			font-weight: bold;
-			text-transform: none;
-		    }
+.title-info a:link,
+.title-info a:visited {
+    text-decoration: none;
+    color: white;
+    font-family: Sawasdee;
+    font-weight: bold;
+    text-transform: none;
+}
 
 
-.category-header a:link, .category-header a:visited {
-			     color: white;
-			 }
+.category-header a:link,
+.category-header a:visited {
+    color: #333333;
+}
+
+
+
+
+body {
+    /* background: #d9d9d9; */
+    background: white;
+}
+
+
+.site-header {
+    position: relative;
+    z-index: 2;
+    /* padding: 1.5em 5.55% 2.25em; */
+    border-top: solid 0.75em #3d3d5c;
+}
+
+
+
+.site-header a, .site-footer a {
+    opacity: 1;
+}
+
+
+.title-logo {
+    padding: 40px 10px 10px 10px;
+}
 
