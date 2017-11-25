@@ -7,15 +7,15 @@
 
 /* default style */
 .hljs {
-  display: block;
-  overflow-x: auto;
-  background: #1d1f21;
-  color: #ffffff;
-  padding: 0.5em;
-  box-shadow: 5px 5px 10px #888888;
-  border-radius: 5px;
-  font-size: 14px;
-  font-family: Menlo, Monaco, Consolas, "Courier New", "Lucida console", "Courier New", monospace;
+    display: block;
+    overflow-x: auto;
+    background: #1d1f21;
+    color: #ffffff;
+    padding: 0.5em;
+    box-shadow: 5px 5px 10px #888888;
+    border-radius: 5px;
+    font-size: 14px;
+    font-family: Menlo, Monaco, Consolas, "Courier New", "Lucida console", "Courier New", monospace;
 }
 
 /* comments and quotes */
@@ -33,7 +33,7 @@
 .hljs-selector-class,
 .hljs-regexp,
 .hljs-deletion {
-  color: #cc6666;
+    color: #cc6666;
 }
 
 /* light blue */
@@ -59,14 +59,14 @@
 .hljs-symbol,
 .hljs-bullet,
 .hljs-addition {
-  /* color: #b5bd68; */
+    /* color: #b5bd68; */
     color: #d98c8c;
 }
 
 /* blue */
 .hljs-title,
 .hljs-section {
-  color: #81a2be;
+    color: #81a2be;
 }
 
 /* purple */
@@ -77,11 +77,11 @@
 }
 
 .hljs-emphasis {
-  font-style: italic;
+    font-style: italic;
 }
 
 .hljs-strong {
-  font-weight: bold;
+    font-weight: bold;
 }
 
 
@@ -91,27 +91,27 @@
 @font-face {
     font-family: "Sawasdee"; 
     src: url("fonts/Sawasdee.ttf")
-    /* src: url("fonts/Sawasdee.eot"); */
-    /* src: url("fonts/Sawasdee.eot?#iefix") format("embedded-opentype"), */
-    /* url("fonts/Sawasdee.ttf") format("truetype"); */
+	    /* src: url("fonts/Sawasdee.eot"); */
+	    /* src: url("fonts/Sawasdee.eot?#iefix") format("embedded-opentype"), */
+	    /* url("fonts/Sawasdee.ttf") format("truetype"); */
 }
 
 @font-face {
     font-family: "Sawasdee";
     src: url("fonts/Sawasdee-Bold.ttf")
-    font-weight: bold;
+	    font-weight: bold;
 }
 
 @font-face {
     font-family: "Sawasdee";
     src: url("fonts/Sawasdee-Oblique.ttf")
-    font-style: oblique;
+	    font-style: oblique;
 }
 
 @font-face {
     font-family: "Sawasdee";
     src: url("fonts/Sawasdee-BoldOblique.ttf")
-    font-weight: bold;
+	    font-weight: bold;
     font-style: oblique;
 }
 
@@ -141,22 +141,22 @@ a:hover {
 
 
 .entry-categories a:link, .entry-tags a:link {
-    padding: 5px;
-    background: #f2f2f2;
-    border-radius: 10px;
-    text-decoration: none;
-    font-weight: normal;
-}
+			      padding: 5px;
+			      background: #f2f2f2;
+			      border-radius: 10px;
+			      text-decoration: none;
+			      font-weight: normal;
+			  }
 
 
 .entry-categories a:hover, .entry-tags a:hover {
-    padding: 5px;
-    background: #ffe6ee;
-    color: #990033;
-    border-radius: 10px;
-    text-decoration: none;
-    font-weight: normal;
-}
+			       padding: 5px;
+			       background: #ffe6ee;
+			       color: #990033;
+			       border-radius: 10px;
+			       text-decoration: none;
+			       font-weight: normal;
+			   }
 
 
 .entry-sidebar .entry-sidebar-title {
@@ -187,28 +187,37 @@ a:hover {
 
 
 .categories-block a:link, .categories-block a:visited {
-    text-decoration: none;
-    color: white;
+			      text-decoration: none;
+			      color: white;
+			  }
+
+
+.social-media-block a:link, .social-media-block a:visited  {
+				text-decoration: none;
+				color: white;
+			    }
+
+
+.categories-block a:hover {
+    padding: 0px 2px 0px 2px;
+    background: #ffe6ee;
+    color: #990033;
+    border-radius: 5px;    color: #990033;
 }
 
 
-.social-media-block a:link, .social-media-block a:visited {
-    text-decoration: none;
-    color: white;
-}
 
 
 .title-info a:link, .title-info a:visited {
-	text-decoration: none;
-	color: white;
-	font-family: Sawasdee;
-	font-weight: bold;
-	text-transform: none;
-}
+			text-decoration: none;
+			color: white;
+			font-family: Sawasdee;
+			font-weight: bold;
+			text-transform: none;
+		    }
 
 
 .category-header a:link, .category-header a:visited {
-	color: white;
-}
-
+			     color: white;
+			 }
 
