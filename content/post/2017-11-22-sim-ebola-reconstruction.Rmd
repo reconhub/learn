@@ -2,7 +2,7 @@
 title: "Ebola simulation: outbreak reconstruction"
 author: Thibaut Jombart, Finlay Campbell
 categories: ["practicals"]
-tags: ["genetics", "simulation", "response", "outbreaker2"]
+tags: ["genetics", "simulation", "response", "outbreaker2", "epicurve"]
 date: 2017-11-22T14:00:00-00:00
 image: img/highres/ebola-blue.jpg
 slug: simulated-evd-reconstruction
@@ -443,7 +443,9 @@ hist(smry_basic$tree$support, col = "grey", border = "white",
 ```
 
 <font class="question">How would you interpret the results? Is this what you
-would have expected?</font> As a point of comparison, repeat the same analysis
+would have expected?</font> 
+
+As a point of comparison, repeat the same analysis
 using temporal data only, and plot a graph of ancestries (`type = "alpha"`); you
 should obtain something along the lines of:
 
@@ -461,7 +463,6 @@ plot(res_time, type = "alpha", burn = 500)
 
 <font class="question">What is the usefulness of temporal and genetic data for
 outbreak reconstruction? What other data would you ideally include?</font>
-
 
 
 

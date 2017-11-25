@@ -6337,7 +6337,7 @@ body, input, select, button {
 
 .content-title {
     color: #222;
-    text-transform: uppercase; }
+    }
 .content-title h2 {
     font-size: 1.85em;
     font-weight: 700; }
@@ -6417,7 +6417,9 @@ body, input, select, button {
     font-weight: 700;
     text-align: center;
     /* text-transform: uppercase; */
-    margin-bottom: 1em; }
+    margin-bottom: 1em;
+    text-shadow: 2px 2px 6px;
+}
 
 .entry-sidebar {
     color: #4d4d4d;
@@ -6497,7 +6499,7 @@ body, input, select, button {
 	text-transform: none;
 	margin-bottom: 0;
 	display: inline-block;
-	padding: 0 0.3em; }
+	padding: 0.3em 0.3em; }
 }
 
 

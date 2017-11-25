@@ -86,7 +86,35 @@
 
 
 
-/* Further CSS customisation */
+/* Further CSS customisation for RECON style */
+
+@font-face {
+    font-family: "Sawasdee"; 
+    src: url("fonts/Sawasdee.ttf")
+    /* src: url("fonts/Sawasdee.eot"); */
+    /* src: url("fonts/Sawasdee.eot?#iefix") format("embedded-opentype"), */
+    /* url("fonts/Sawasdee.ttf") format("truetype"); */
+}
+
+@font-face {
+    font-family: "Sawasdee";
+    src: url("fonts/Sawasdee-Bold.ttf")
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: "Sawasdee";
+    src: url("fonts/Sawasdee-Oblique.ttf")
+    font-style: oblique;
+}
+
+@font-face {
+    font-family: "Sawasdee";
+    src: url("fonts/Sawasdee-BoldOblique.ttf")
+    font-weight: bold;
+    font-style: oblique;
+}
+
 
 a:link {
     text-decoration: underline;
@@ -103,13 +131,22 @@ a:hover {
 }
 
 
+.question {
+    font-style: italic;
+    background: #ffe6b3;
+    color: #332200;
+    border-radius: 5px;    
+    padding: 2px 5px 2px 5px;
+}
+
+
 .entry-categories a:link, .entry-tags a:link {
     padding: 5px;
     background: #f2f2f2;
     border-radius: 10px;
     text-decoration: none;
     font-weight: normal;
-			  }
+}
 
 
 .entry-categories a:hover, .entry-tags a:hover {
@@ -122,20 +159,29 @@ a:hover {
 }
 
 
+.entry-sidebar .entry-sidebar-title {
+    font-family: Sawasdee;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #29293d;
+    margin-top: 0.7em;
+    padding: 10px 0px 10px 0px;
+}
 
-.question {
-    font-style: italic;
-    background: #ffe6b3;
-    color: #332200;
-    border-radius: 5px;    
-    padding: 2px 5px 2px 5px;
+
+.content-title a:link {
+    padding: 10px 20px 10px 20px;
+    text-decoration: none;
+    font-weight: normal;
+    text-shadow: 2px 2px 4px;
 }
 
 
 
-@font-face {
-    font-family: 'Sawasdee'; 
-    src: url('Sawasdee.eot');
-    src: url('Sawasdee.eot?#iefix') format('embedded-opentype'),
-    url('Sawasdee.ttf') format('truetype');
+.content-title a:hover {
+    padding: 10px 20px 10px 20px;
+    color: #990033;
+    text-decoration: none;
+    font-weight: normal;
 }
