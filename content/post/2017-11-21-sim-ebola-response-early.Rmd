@@ -2,7 +2,7 @@
 title: "Ebola simulation: early outbreak assessment"
 author: Thibaut Jombart, Finlay Campbell
 categories: ["practicals"]
-tags: ["simulation", "response", "Ebola"]
+tags: ["simulation", "response", "Ebola", "epicurve", "reproduction number"]
 date: 2017-11-21T14:00:00-00:00
 image: img/highres/ebola.jpg
 slug: simulated-evd-early
@@ -28,7 +28,7 @@ lapply(deps, install_if_missing)
 
 
 This practical simulates the early assessment and reconstruction of an Ebola
-Virus Disease (EVD) outbreak. It covers various aspects of analysis of the early
+Virus Disease (EVD) outbreak. It introduces various aspects of analysis of the early
 stage of an outbreak, including contact tracing data, epicurves, growth rate
 estimation from log-linear models, and more refined estimates of
 transmissibility. A follow-up practical will provide an introduction to
@@ -43,7 +43,7 @@ transmission chain reconstruction using *outbreaker2*.
 A new EVD outbreak has been notified in the small city of Ankh, located in the
 Northern, rural district of the Republic of Morporkia. Public Health Morporkia
 (PHM) is in charge of coordinating the outbreak response, and have contracted
-you as a consultant in epidemics analysis to inform the response in real time.
+you as a consultant in epidemics analysis to inform the response in real time. 
 
 
 
@@ -54,7 +54,7 @@ The following packages, available on CRAN, are needed for this case study:
 - [`xlsx`](http://www.repidemicsconsortium.org/incidence/) to read `.xlsx` files
 - [`incidence`](http://www.repidemicsconsortium.org/incidence/) for epicurves
 - [`epicontacts`](http://www.repidemicsconsortium.org/epicontacts/) for contact data visualisation
-- [`distcrete`](http://www.repidemicsconsortium.org/distcrete) to obtain discrete time delay distributions
+- [`distcrete`](http://www.repidemicsconsortium.org/distcrete) to obtain discretised delay distributions
 
 To install these packages, use `install.packages`, e.g.:
    
