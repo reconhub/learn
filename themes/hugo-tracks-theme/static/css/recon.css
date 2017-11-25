@@ -178,10 +178,37 @@ a:hover {
 }
 
 
-
 .content-title a:hover {
     padding: 10px 20px 10px 20px;
     color: #990033;
     text-decoration: none;
     font-weight: normal;
 }
+
+
+.categories-block a:link, .categories-block a:visited {
+    text-decoration: none;
+    color: white;
+}
+
+
+.social-media-block a:link, .social-media-block a:visited {
+    text-decoration: none;
+    color: white;
+}
+
+
+.title-info a:link, .title-info a:visited {
+	text-decoration: none;
+	color: white;
+	font-family: Sawasdee;
+	font-weight: bold;
+	text-transform: none;
+}
+
+
+.category-header a:link, .category-header a:visited {
+	color: white;
+}
+
+

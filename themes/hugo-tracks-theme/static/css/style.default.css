@@ -6508,7 +6508,7 @@ body, input, select, button {
     .top-navigation {
 	position: relative;
 	min-height: 3em;
-	background: #111;
+	background: #3d3d5c;
 	/* margin: -2.25em 0 1.5em 0; */
 	line-height: 0; }
     .categories-block {
