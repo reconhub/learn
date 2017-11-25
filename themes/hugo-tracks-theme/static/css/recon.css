@@ -1,15 +1,30 @@
-/* Tomorrow Night Theme */
+/* RECON theme for highlightjs */
+/* Adapted from Tomorrow theme: */
 /* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
 /* Original theme - https://github.com/chriskempson/tomorrow-theme */
 /* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
 
-/* Tomorrow Comment */
-.hljs-comment,
-.hljs-quote {
-  color: #969896;
+
+/* default style */
+.hljs {
+  display: block;
+  overflow-x: auto;
+  background: #1d1f21;
+  color: #ffffff;
+  padding: 0.5em;
+  box-shadow: 5px 5px 10px #888888;
+  border-radius: 5px;
+  font-size: 14px;
+  font-family: Menlo, Monaco, Consolas, "Courier New", "Lucida console", "Courier New", monospace;
 }
 
-/* Tomorrow Red */
+/* comments and quotes */
+.hljs-comment,
+.hljs-quote {
+    color: #b3b3cc;
+}
+
+/* red */
 .hljs-variable,
 .hljs-template-variable,
 .hljs-tag,
@@ -21,7 +36,7 @@
   color: #cc6666;
 }
 
-/* Tomorrow Orange - changed to light blue */
+/* light blue */
 .hljs-number,
 .hljs-built_in,
 .hljs-builtin-name,
@@ -34,12 +49,12 @@
     /* color: #de935f; */
 }
 
-/* Tomorrow Yellow */
+/* RECON Yellow */
 .hljs-attribute {
     color: #f0c674;
 }
 
-/* Tomorrow Green -> changed to pinkish */
+/* pinkish */
 .hljs-string,
 .hljs-symbol,
 .hljs-bullet,
@@ -48,25 +63,17 @@
     color: #d98c8c;
 }
 
-/* Tomorrow Blue */
+/* blue */
 .hljs-title,
 .hljs-section {
   color: #81a2be;
 }
 
-/* Tomorrow Purple */
+/* purple */
 .hljs-keyword,
 .hljs-selector-tag {
     color: #b294bb;
     font-weight: bold;
-}
-
-.hljs {
-  display: block;
-  overflow-x: auto;
-  background: #1d1f21;
-  color: #c5c8c6;
-  padding: 0.5em;
 }
 
 .hljs-emphasis {
@@ -75,4 +82,60 @@
 
 .hljs-strong {
   font-weight: bold;
+}
+
+
+
+/* Further CSS customisation */
+
+a:link {
+    text-decoration: underline;
+    color: #666699;
+}
+
+a:visited {
+    color: #666699;
+}
+
+a:hover {
+    font-weight: bold;
+    color: #862d59;
+}
+
+
+.entry-categories a:link, .entry-tags a:link {
+    padding: 5px;
+    background: #f2f2f2;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: normal;
+			  }
+
+
+.entry-categories a:hover, .entry-tags a:hover {
+    padding: 5px;
+    background: #ffe6ee;
+    color: #990033;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: normal;
+}
+
+
+
+.question {
+    font-style: italic;
+    background: #ffe6b3;
+    color: #332200;
+    border-radius: 5px;    
+    padding: 2px 5px 2px 5px;
+}
+
+
+
+@font-face {
+    font-family: 'Sawasdee'; 
+    src: url('Sawasdee.eot');
+    src: url('Sawasdee.eot?#iefix') format('embedded-opentype'),
+    url('Sawasdee.ttf') format('truetype');
 }

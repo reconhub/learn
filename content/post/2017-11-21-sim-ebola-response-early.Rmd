@@ -89,10 +89,10 @@ devtools::install_github("reconhub/projections")
 While a new data update is pending, you have been given the following linelist
 and contact data, from the early stages of the outbreak:
 
-- [**PHM-EVD-linelist-2017-10-27.xlsx**](../../data/PHM-EVD-linelist-2017-10-27.xlsx):
+- [PHM-EVD-linelist-2017-10-27.xlsx](../../data/PHM-EVD-linelist-2017-10-27.xlsx):
   a linelist containing case information up to the 27th October 2017
 
-- [**PHM-EVD-contacts-2017-10-27.xlsx**](../../data/PHM-EVD-contacts-2017-10-27.xlsx):
+- [PHM-EVD-contacts-2017-10-27.xlsx](../../data/PHM-EVD-contacts-2017-10-27.xlsx):
   a list of contacts reported between cases up to the 27th October 2017, where
   `from` indicates a potential source of infection, and `to` the recipient of
   the contact.
@@ -146,7 +146,7 @@ plot(x, node_shape = "sex", shapes = c(male = "male", female = "female"), select
 
 ```
 
-**What can you say about these contacts?**
+<font class="question">What can you say about these contacts?</font>
      
 
      
@@ -201,8 +201,8 @@ f
 plot(i, fit = f)
 ```
 
-**How would you interpret this result? What criticism would you make on this
-  model?**
+<font class="question">How would you interpret this result?What criticism would
+you make on this model?</font>
 
 As an aid for interpretation, you are reminded of previous observations of the
 serial interval distribution, estimated during the West African EVD outbreak
@@ -282,17 +282,17 @@ The first figure shows the distribution of likely values of *R*, and the
 Maximum-Likelihood (ML) estimation. The second figure shows the global force of
 infection over time, with dashed bars indicating dates of onset of the cases.
 
-**Interpret these results: what do you make of the reproduction number? What does
-it reflect? Based on the last part of the epicurve, some colleagues suggest that
-incidence is going down and the outbreak may be under control. What is your
-opinion on this?**
+<font class="question">Interpret these results: what do you make of the
+reproduction number?What does it reflect? Based on the last part of the epicurve,
+some colleagues suggest that incidence is going down and the outbreak may be
+under control. What is your opinion on this?</font>
 
 
 
 
 ## Follow-up...
 
-For a follow-up on this outbreak, have a look at the [**second
-part**](../simulated-evd-reconstruction) of this simulated response,
+For a follow-up on this outbreak, have a look at the [second
+part](../simulated-evd-reconstruction) of this simulated response,
 which includes a data update, genetic sequences, and the use of outbreak
 reconstruction tools.
