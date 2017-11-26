@@ -1,8 +1,8 @@
 ---
-title: "Ebola simulation: outbreak reconstruction"
+title: "Ebola simulation part 2: outbreak reconstruction"
 author: Thibaut Jombart, Finlay Campbell
 categories: ["practicals"]
-tags: ["genetics", "simulation", "response", "outbreaker2", "epicurve"]
+tags: ["genetics", "simulation", "response", "outbreaker2", "epicurve", "reproduction number"]
 date: 2017-11-22T14:00:00-00:00
 image: img/highres/ebola-blue.jpg
 slug: simulated-evd-reconstruction
@@ -566,6 +566,24 @@ plot(cons_tree, edge_col = "support", edge_col_pal = support_pal,
 <font class="question">What are your conclusions? What are the main drivers of
 this outbreak? What recommendations would you make to further improve the
 response?</font>
+
+
+
+
+# About this document
+
+## Contributors
+
+- Thibaut Jombart: initial version
+
+Contributions are welcome via [pull requests](https://github.com/reconhub/learn/pulls). The source file is hosted on [github](https://github.com/reconhub/learn/blob/master/content/post/2017-11-22-sim-ebola-reconstruction.Rmd).
+
+
+## Legal stuff
+
+**License**: [CC-BY](https://creativecommons.org/licenses/by/3.0/)
+**Copyright**: Thibaut Jombart, 2017 
+
 
 
 

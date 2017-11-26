@@ -1,5 +1,5 @@
 ---
-title: "Ebola simulation: early outbreak assessment"
+title: "Ebola simulation part 1: early outbreak assessment"
 author: Thibaut Jombart, Finlay Campbell
 categories: ["practicals"]
 tags: ["simulation", "response", "Ebola", "epicurve", "reproduction number"]
@@ -296,3 +296,20 @@ For a follow-up on this outbreak, have a look at the [second
 part](../simulated-evd-reconstruction) of this simulated response,
 which includes a data update, genetic sequences, and the use of outbreak
 reconstruction tools.
+
+
+
+
+# About this document
+
+## Contributors
+
+- Thibaut Jombart: initial version
+
+Contributions are welcome via [pull requests](https://github.com/reconhub/learn/pulls). The source file is hosted on [github](https://github.com/reconhub/learn/blob/master/content/post/2017-11-21-sim-ebola-response-early.Rmd).
+
+
+## Legal stuff
+
+**License**: [CC-BY](https://creativecommons.org/licenses/by/3.0/)
+**Copyright**: Thibaut Jombart, 2017 
