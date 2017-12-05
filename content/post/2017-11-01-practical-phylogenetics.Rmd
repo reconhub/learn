@@ -119,33 +119,14 @@ downloaded from Genbank
 Alignments have been realized beforehand using standard tools (Clustalw2 for
 basic alignment and Jalview for refining the results).  We selected 80 isolates
 genotyped for the hemagglutinin (HA) segment sampled in the US from 1993 to
-2008.  The dataset consists of two files: i) `usflu.fasta`, a file containing
-aligned DNA sequences and ii) `usflu.annot.csv`, a comma-separated file
-containing useful annotations of the sequences.  Both files are available online
-from the [*github page*](https://github.com/reconhub/phylo-practical).
+2008.  The dataset consists of two files: i)
+[`usflu.fasta`](../../data/usflu.fasta), a file containing aligned DNA sequences
+and ii) [`usflu.annot.csv`](../../data/usflu.annot.csv), a comma-separated file
+containing useful annotations of the sequences.
 
-We first download these files and store them in a `data` folder; note that `paste0`
-is only used here so that you can see the entire path name in the document:
-```{r download, cache = TRUE, eval = FALSE}
-if (!dir.exists("data")) dir.create("data")
-
-## get annotations
-annot.url <- paste0("https://raw.githubusercontent.com/reconhub/",
-                   "phylo-practical/master/data/usflu.annot.csv")
-
-download.file(annot.url, destfile = "data/usflu.annot.csv", method = "curl")
-
-## get DNA sequences
-dna.url <- paste0("https://raw.githubusercontent.com/reconhub/",
-                   "phylo-practical/master/data/usflu.fasta")
-
-download.file(dna.url, destfile = "data/usflu.fasta", method = "curl")
-
-```
-
-
-To read the DNA sequences into R, we use `fasta2DNAbin` from the
-*adegenet* package:
+First download these files (right-click $\rightarrow$ *Save Link As...*) and store
+them in a folder `data/` in your working directory.  To read the DNA sequences
+into R, we use `fasta2DNAbin` from the *adegenet* package:
 
 ```{r, eval = FALSE}
 dna <- fasta2DNAbin(file = "data/usflu.fasta")
@@ -153,7 +134,7 @@ dna
 class(dna)
 ```
 ```{r, echo = FALSE}
-dna <- fasta2DNAbin(file = "../../data/usflu.fasta")
+dna <- fasta2DNAbin(file = "../../static/data/usflu.fasta")
 dna
 class(dna)
 ```
@@ -173,7 +154,7 @@ annot <- read.csv("data/usflu.annot.csv",
                   header = TRUE, row.names = 1, stringsAsFactors = FALSE)
 ```
 ```{r, echo = FALSE}
-annot <- read.csv("../../data/usflu.annot.csv",
+annot <- read.csv("../../static/data/usflu.annot.csv",
                   header = TRUE, row.names = 1, stringsAsFactors = FALSE)
 ```
 ```{r}

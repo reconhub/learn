@@ -345,7 +345,7 @@ plot(incub$d, type = "h", xlim = c(0,50), col = "salmon", lwd = 2,
 ## Looking at Whole Genome Sequences (WGS)
 
 WGS have been obtained for all cases in this outbreak. They are stored as a
-`fasta` [PHM-EVD-WGS.fa](../../static/data/PHM-EVD-WGS.fa). Download this
+`fasta` [PHM-EVD-WGS.fa](../../data/PHM-EVD-WGS.fa). Download this
 file, save it in your working directory, and then import these data using the
 function `read.FASTA` from the `ape` package.
 
