@@ -1,0 +1,323 @@
+---
+title: 'Vector Borne diseases: building a simple model for Zika'
+author: "Zulma Cucunuba & Pierre Nouvellet"
+date: '2017-12-04T14:00:00-00:00'
+image: img/highres/siv-vbd.jpg
+tags: Rmarkdown
+categories: practicals
+---
+
+```{r options, include = FALSE, message = FALSE, warning = FALSE, error = FALSE}
+library(knitr)
+
+opts_chunk$set(collapse = TRUE)
+
+
+```
+
+
+This practical aims to illustrate the basics of **vector borne disease modelling**
+using R, with an emphasis on how the methods work. We will use a basic model for an arboviral infection as an example. In this practical we will begin by gaining some understanding of the components which contribute to R0 and how potential interventions influence transmission. Later in the practical you will construct a model of Zika transmission to look at the effects of seasonal variation, change on basica parameters and estimating R0.
+
+
+
+## Core Concepts 
+
+From the previous lecture, we will futher develop these concepts:
+
+- Herd effect 
+- Biology of the mosquito
+- Natural history of the infection in humans
+- Contact rate
+- Density dependence 
+- Immigration-death and age-structured models
+- Infection and morbidity control / elimination of infection
+- Control strategies (on vectors and on humans)
+
+## Required packages
+
+
+```{r eval=FALSE}
+#install.packages("deSolve", dep=TRUE)
+```
+
+Then load the packages using:
+
+```{r}
+library(deSolve)
+
+```
+
+## The basic Zika model
+
+- Sh : Susceptible Humans
+- Ih : Ingected/Infectious humans
+- Rh : humans recovered from infection (with lifelasting immunity)
+- Sv : Susceptible vectors
+- Ev : Exposed vectors
+- Iv : Infected vectors
+
+
+## The model (diagram)
+
+In this section, please make a diagram to connect the different compartments of the model
+
+
+
+# The parameters (part I)
+
+We will need several parameters to connect the different compartments of our model. 
+
+Please, look at the suplementary material of the paper http://science.sciencemag.org/content/early/2016/07/13/science.aag0219
+and look at the parameter table of this model. 
+
+Note that we are using all the parameters in the same time unit (days)
+
+## The parameters (part II)
+
+- Lv       <-         # life span of mosquitos (in days)
+- Lh       <-         # life span of humans (in days)
+- Iph      <-         # Infectious period in humans (in days)
+- IP       <-         # Infectious period in vectors (in days)
+- EIP      <-         # Extrinsic incubation period in adult mosquitos
+- muv      <-         # mortality of mosquitos
+- muh      <-         # mortality of humans
+- gamma    <-         # recovery rate in humans
+- delta    <-         # extrinsic incubation rate
+
+
+## The parameters (part III)
+
+- b        <-        # Bitting Rate
+- betah    <-        # Probability of transmission from vector to host
+- betav    <-        # Probability of transmission from host to vector
+
+
+- Nh       <-        # Number of humans (Population of Cali)
+- m        <-        # Vector to human ratio
+- Nv       <-        # Number of vectors
+
+
+## Estimating R0 (Reproductive number)
+
+We need a formula to estimate R0. Let's build it together!
+
+
+```{r, include = FALSE}
+# Rates and probabilities
+Lv       <- 10        # life span of mosquitos (in days)
+Lh       <- 50 * 365  # life span of humans (in days)
+Iph      <- 7         # Infectious period in humans (in days)
+IP       <- 6         # Infectious period in vectors (in days)
+EIP      <- 8.4       # Extrinsic incubation period in adult mosquitos
+
+muv      <- 1/Lv      # mortality of mosquitos
+muh      <- 1/Lh      # mortality of humans
+gamma    <- 1/Iph     # recovery rate in humans
+delta    <- 1/EIP     # extrinsic incubation rate
+
+
+# Population size
+Nh       <- 3 * 10^6  # Number of humans (Population of Cali)
+m        <- 2         # Vector to human ratio
+Nv       <- m * Nh    # Number of vectors
+
+betah    <- 0.7       # Probability of transmission from vector to host
+betav    <- 0.7       # Probability of transmission from host to vector
+R0       <- 3         # Reproductive number
+b        <- sqrt((R0 ^2 * muv * gamma) /(m * betah * betav * exp(-muv * delta))) # bitting rate
+
+TIME     <- 100       # Number of years to run the simulation 
+
+
+```
+
+
+## Finally, the model in R
+
+```{r}
+arbovmodel <- function (t, x, params) {
+  
+  Sh <- x[1]    #Susceptible humans
+  Ih <- x[2]    #Infected humans
+  Rh <- x[3]    #Recovered humans
+  Sv <- x[4]    #Susceptible vectors
+  Ev <- x[5]    #Susceptible vectors
+  Iv <- x[6]    #Infected vectors
+  
+  with(as.list(params), #local environment to evaluate derivatives
+       {
+         # Humans
+         dSh   <-  muh * Nh - (betah * b/Nh) * Sh * Iv - muh * Sh   
+         dIh   <-  (betah * b/Nh) * Sh * Iv  - (gamma + muh) * Ih
+         dRh   <-  gamma * Ih  - muh * Rh
+         
+         # Vectors
+         dSv  <-  muv * Nv - (betav * b/Nh) * Ih * Sv - muv * Sv 
+         dEv  <-   (betav * b/Nh) * Ih * Sv - (delta + muv)* Ev
+         dIv  <-   delta * Ev - muv * Iv
+         
+         dx   <- c(dSh, dIh, dRh, dSv, dEv, dIv)
+         list(dx)
+       }
+  )
+}
+```
+
+
+
+```{r, include = FALSE}
+# ----------- Solving the model
+times  <- seq(1,365 * TIME , by = 1)
+
+# Specifying parameters
+params <- c(
+  muv      <- muv,     # daily mortality of mosquitos
+  muh      <- muh,     # daily mortality of humans
+  gamma    <- gamma,  # daily recovery rate
+  delta    <- delta,  # 
+  b        <- b,       # bitting rate (bites per mosquito per day)
+  betah    <- betah,   # probability of transmission from vector to host
+  betav    <- betav,   # probability of transmission from host to vector
+  Nh       <- Nh,      # Number of humans
+  Nv       <- Nv
+  
+)
+
+
+# Initial consitions of the system
+xstart<- c(Sh = Nh , # Initial number of susceptible individuals at T0
+           Ih = 0,        # Initial number of infectious individuals at T0
+           Rh = 0,         # Initial number of Rh
+           Sv = Nv-1,         # Initial number of Iv
+           Ev = 0,         # Initial number of Ev
+           Iv = 1)         # Initial number of Sv
+
+# Solving the equations
+out <- as.data.frame(ode(y      = xstart,   # Initial conditions
+                         times  = times,    # Times
+                         fun    = arbovmodel,    # Model
+                         parms  = params)) # Parameters
+
+
+```
+
+
+
+
+
+## The results
+
+### General Behavior (Human Population)
+
+```{r p1, include=TRUE, echo=FALSE}
+# Check the general behavior of the model 
+out$timey <- out$time / 365
+par(mfrow = c(2,2))
+par(mar=c(5,4,4,1),xpd=FALSE)
+plot(out$timey, (out$Rh + out$Ih + out$Sh), main="total humans",col="gray",
+     ylab="Number of total humans",xlab="Time (years)", type="o", pch = 19, cex=1,
+     ylim = c(0, Nh))
+plot(out$timey, out$Sh, main="Sh",col="blue", pch = 12, cex =.3,
+     ylab="number",xlab="Time (years)")
+plot(out$timey, out$Ih, main="Ih",col="red", type="o", pch = 20, cex=.5,
+     ylab="number",xlab="Time (years)")
+plot(out$timey, out$Rh, main="Rh",col="darkgreen", type="o", pch = 19, cex=.5,
+     ylab="number",xlab="Time (years)")
+
+```
+
+
+### General Behavior (Vector Population)
+
+```{r p2, include=TRUE, echo=FALSE}
+# Check the general behavior of the model 
+
+par(mfrow = c(2,2))
+plot(out$timey, (out$Iv + out$Sv + out$Ev), main="total mosquitos",col="gray",
+     cex=.7,ylab="Number of total vectors",xlab="Time (years)", type="o", pch = 19)
+
+plot(out$timey, out$Sv,  main="Susceptible mosquitos", col="blue", type="o", pch = 19,
+     ylab="number",xlab="Time (years)")
+
+plot(out$timey, out$Ev,  main="Exposed mosquitos", col="pink", type="o", pch = 19,
+     ylab="number",xlab="Time (years)")
+
+plot(out$timey, out$Iv,  main="Infected mosquitos", col="red", type="o", pch = 19,
+     ylab="number",xlab="Time (years)")
+
+```
+
+
+
+
+
+### Proportion 
+
+```{r p3, include=TRUE, echo=FALSE}
+# Proportion of cases
+par(mfrow = c(2,2))
+par(mar=c(5,4,4,1),xpd=FALSE)
+
+plot(out$timey, out$Sh/(out$Rh + out$Ih + out$Sh), main="Susceptible Humans",
+     col="blue", xlab = "time (years)", 
+     pch = 12, cex =.3, ylab="proportion", ylim = c(0,1))
+
+plot(out$timey, out$Ih/(out$Rh + out$Ih + out$Sh), main="Infected humans",col="red", type="o", 
+     pch = 20, cex=.5, ylab="proportion", xlab = "time (years)")
+
+plot(out$timey, out$Rh/(out$Rh + out$Ih + out$Sh), main="Recovered humans",col="darkgreen", type="o", 
+     pch = 19, cex=.5, ylab="proportion", xlab = "time (years)",
+     ylim = c(0, 1))
+
+```
+
+
+### The Fist Epidemic
+
+```{r p4, include=TRUE, echo=FALSE}
+# Check the fists epidemic
+par(mfrow = c(1,2))
+out$timew <- out$time / 53
+
+plot(out$timew, out$Ih/(out$Rh + out$Ih + out$Sh), 
+     main="First Epidemic (Infected humans)",col="red", type="o", 
+     pch = 20, cex=.5, ylab="proportion", xlab = "time (weeks)",
+     ylim = c(0, .2), xlim = c(0,53))
+
+plot(out$timew, out$Rh/(out$Rh + out$Ih + out$Sh), 
+     main="First Epidemic (Recovered humans)",col="darkgreen", type="o", 
+     pch = 20, cex=.5, ylab="proportion", xlab = "time (weeks)",
+     ylim = c(0, 1), xlim = c(0,53))
+
+```
+
+
+### Discuss some aspects
+
+- Sensitivity of the model to change of the R0
+- Sensititity of the model to change of bitting rate
+- What are the reasons of the time lag between epidemics?
+- How we calculate the attack rate
+- What happen if we vaccinate 80% of the population?
+- What is the impact of a vector control programme?
+
+
+# About this document
+
+## Contributors
+
+- Zulma Cucunuba & Pierre Nouvellet: initial version
+
+Contributions are welcome via [pull requests](https://github.com/reconhub/learn/pulls). The source file if this document can be found [**here**](https://raw.githubusercontent.com/reconhub/learn/master/content/post/2017-12-04-practical-vbd.Rmd).
+
+
+
+## Legal stuff
+
+**License**: [CC-BY](https://creativecommons.org/licenses/by/3.0/)
+**Copyright**: Zulma Cucunuba & Pierre Nouvellet, 2017
+
+
+# References
+

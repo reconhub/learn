@@ -12,6 +12,7 @@ bibliography: practical-evd.bib
 
 	
 ```{r options, include = FALSE, message = FALSE, warning = FALSE, error = FALSE}
+library(knitr)
 opts_chunk$set(collapse = TRUE)
 
 install_if_missing <- function(x) {
