@@ -71,19 +71,19 @@ We will need several parameters to connect the different compartments of our mod
 Please, look at the suplementary material of the paper http://science.sciencemag.org/content/early/2016/07/13/science.aag0219
 and look at the parameter table of this model. 
 
-Note that we are using all the parameters in the same time unit (days)
+Lets' find the parameter values for the model. Note that we are using all the parameters in the same time unit (days)
 
 
 ```{r eval=FALSE}
-Lv       <-         # life span of mosquitos (in days)
-Lh       <-         # life span of humans (in days)
-Iph      <-         # Infectious period in humans (in days)
-IP       <-         # Infectious period in vectors (in days)
-EIP      <-         # Extrinsic incubation period in adult mosquitos
-muv      <-         # mortality of mosquitos
-muh      <-         # mortality of humans
-gamma    <-         # recovery rate in humans
-delta    <-         # extrinsic incubation rate
+Lv       <-        # life span of mosquitos (in days)
+Lh       <-        # life span of humans (in days)
+Iph      <-        # Infectious period in humans (in days)
+IP       <-        # Infectious period in vectors (in days)
+EIP      <-        # Extrinsic incubation period in adult mosquitos
+muv      <-        # mortality of mosquitos
+muh      <-        # mortality of humans
+gamma    <-        # recovery rate in humans
+delta    <-        # extrinsic incubation rate
 b        <-        # Bitting Rate
 betah    <-        # Probability of transmission from vector to host
 betav    <-        # Probability of transmission from host to vector
