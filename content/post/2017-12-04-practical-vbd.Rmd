@@ -2,7 +2,7 @@
 title: 'Vector Borne diseases: building a simple model for Zika'
 author: "Zulma Cucunuba & Pierre Nouvellet"
 date: '2017-12-04T14:00:00-00:00'
-image: img/highres/siv-vbd.jpg
+image: img/highres/mosquito.jpg
 tags: Rmarkdown
 categories: practicals
 ---
