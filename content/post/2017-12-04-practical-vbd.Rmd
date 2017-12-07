@@ -74,29 +74,27 @@ and look at the parameter table of this model.
 Note that we are using all the parameters in the same time unit (days)
 
 ## The parameters (part II)
-
-- Lv       <-         # life span of mosquitos (in days)
-- Lh       <-         # life span of humans (in days)
-- Iph      <-         # Infectious period in humans (in days)
-- IP       <-         # Infectious period in vectors (in days)
-- EIP      <-         # Extrinsic incubation period in adult mosquitos
-- muv      <-         # mortality of mosquitos
-- muh      <-         # mortality of humans
-- gamma    <-         # recovery rate in humans
-- delta    <-         # extrinsic incubation rate
-
+```{r eval=FALSE}
+Lv       <-         # life span of mosquitos (in days)
+Lh       <-         # life span of humans (in days)
+Iph      <-         # Infectious period in humans (in days)
+IP       <-         # Infectious period in vectors (in days)
+EIP      <-         # Extrinsic incubation period in adult mosquitos
+muv      <-         # mortality of mosquitos
+muh      <-         # mortality of humans
+gamma    <-         # recovery rate in humans
+delta    <-         # extrinsic incubation rate
+```
 
 ## The parameters (part III)
-
+```{r eval=FALSE}
 - b        <-        # Bitting Rate
 - betah    <-        # Probability of transmission from vector to host
 - betav    <-        # Probability of transmission from host to vector
-
-
 - Nh       <-        # Number of humans (Population of Cali)
 - m        <-        # Vector to human ratio
 - Nv       <-        # Number of vectors
-
+```
 
 ## Estimating R0 (Reproductive number)
 
