@@ -108,8 +108,8 @@ $$\ \frac{dRh}{dx}  = \gamma_h + I_h  - \mu_v I_v$$
 
 ###  Vectors      
 
-$$\ \frac{dSv}{dx}  = \mu_v N_v  - \beta_v b /N_hI_h S_v - \mu_v Sv$$
-$$\ \frac{dE_v}{dx}  = (\beta_v b /N_h) I_h S_v - (\delta + \mu_v) Sv$$
+$$\ \frac{dSv}{dx}  = \mu_v N_v  - \frac{\beta_v b} {N_hI_h} S_v - \mu_v Sv$$
+$$\ \frac{dE_v}{dx}  = \frac{\beta_v b} {N_h} I_h S_v - (\delta + \mu_v) Sv$$
 $$\ \frac{dI_v}{dx}  = \delta Ev - \mu_v I_v$$
 
 
