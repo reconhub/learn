@@ -105,6 +105,7 @@ We need a formula to estimate R0. Let's build it together!
 $$\ \frac{dSh}{dx}  = \mu_h N_h - \frac {\beta_h b}{N_h} S_h  I_v - \mu_h  S_h $$
 $$\ \frac{dIh}{dx}  = \frac {\beta_h b}{N_h}S_h I_v - (\gamma_h + \mu_h) I_h $$
 $$\ \frac{dRh}{dx}  = \gamma_h + I_h  - \mu_v I_v$$
+
 ###  Vectors      
 
 $$\ \frac{dSv}{dx}  = \mu_v N_v  - \beta_v b /N_hI_h S_v - \mu_v Sv$$
@@ -134,7 +135,7 @@ m        <- 2         # Vector to human ratio
 Nv       <- m * Nh    # Number of vectors
 
 betah    <- 0.7       # Probability of transmission from vector to host
-betav    libr<- 0.7       # Probability of transmission from host to vector
+betav    <- 0.7       # Probability of transmission from host to vector
 R0       <- 3         # Reproductive number
 b        <- sqrt((R0 ^2 * muv * gamma) /(m * betah * betav * exp(-muv * delta))) # bitting rate
 
@@ -302,7 +303,7 @@ ggplot(data = out, aes(y = Ih/(Sh+Ih+Rh), x = years)) +
 
 ggplot(data = out, aes(y = Rh/(Sh+Ih+Rh), x = years)) +
   geom_line(color='olivedrab', size=1) +
-  ggtitle ('Infected human population') +
+  ggtitle ('Recovered human population') +
    theme_bw() + ylab('proportion')
 
 ```
