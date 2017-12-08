@@ -16,7 +16,7 @@ opts_chunk$set(collapse = TRUE)
 ```
 
 
-This practical aims to illustrate the basics of **vector borne disease modelling**
+This practical aims to illustrate the basics of **vector borne disease (VBD) modelling**
 using R, with an emphasis on how the methods work. We will use a basic model for an arboviral infection as an example. In this practical we will begin by gaining some understanding of the components which contribute to R0 and how potential interventions influence transmission. Later in the practical you will construct a model of Zika transmission to look at the effects of several parameters.
 
 
@@ -309,7 +309,7 @@ ggplot(data = out, aes(y = Rh/(Sh+Ih+Rh), x = years)) +
 ```
 
 
-### The Fist Epidemic
+### The First Epidemic
 
 ```{r p4, include=TRUE, echo=FALSE}
 # Check the fists epidemic
