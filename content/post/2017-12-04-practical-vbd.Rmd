@@ -1,4 +1,4 @@
----
+getwd(---
 title: 'VBD: building a simple model for Zika'
 author: "Zulma Cucunuba & Pierre Nouvellet"
 date: '2017-12-04T14:00:00-00:00'
@@ -39,12 +39,15 @@ From the previous lecture, we will futher develop these concepts:
 
 ```{r eval=FALSE}
 #install.packages("deSolve", dep=TRUE)
+#install.packages("gridExtra", dep = TRUE)
 ```
 
 Then load the packages using:
 
 ```{r}
 library(deSolve)
+library(ggplot2)
+library(gridExtra)
 
 ```
 
@@ -87,7 +90,7 @@ delta    <-        # extrinsic incubation rate
 b        <-        # Bitting Rate
 betah    <-        # Probability of transmission from vector to host
 betav    <-        # Probability of transmission from host to vector
-Nh       <-        # Number of humans (Population of Cali)
+Nh       <-        # Number of humans (Population of Cali 2.4 million)
 m        <-        # Vector to human ratio
 Nv       <-        # Number of vectors
 ```
@@ -112,7 +115,7 @@ delta    <- 1/EIP     # extrinsic incubation rate
 
 
 # Population size
-Nh       <- 3 * 10^6  # Number of humans (Population of Cali)
+Nh       <- 2.4 * 10^6# Number of humans (Population of Cali, Colombia)
 m        <- 2         # Vector to human ratio
 Nv       <- m * Nh    # Number of vectors
 
@@ -194,6 +197,9 @@ out <- as.data.frame(ode(y      = xstart,   # Initial conditions
                          parms  = params)) # Parameters
 
 
+# Creating time options to display
+out$years <- out$time / 365
+out$weeks <- out$time / 53
 ```
 
 
@@ -206,19 +212,29 @@ out <- as.data.frame(ode(y      = xstart,   # Initial conditions
 
 ```{r p1, include=TRUE, echo=FALSE}
 # Check the general behavior of the model 
-out$timey <- out$time / 365
-par(mfrow = c(2,2))
-par(mar=c(5,4,4,1),xpd=FALSE)
-plot(out$timey, (out$Rh + out$Ih + out$Sh), main="total humans",col="gray",
-     ylab="Number of total humans",xlab="Time (years)", type="o", pch = 19, cex=1,
-     ylim = c(0, Nh))
-plot(out$timey, out$Sh, main="Sh",col="blue", pch = 12, cex =.3,
-     ylab="number",xlab="Time (years)")
-plot(out$timey, out$Ih, main="Ih",col="red", type="o", pch = 20, cex=.5,
-     ylab="number",xlab="Time (years)")
-plot(out$timey, out$Rh, main="Rh",col="darkgreen", type="o", pch = 19, cex=.5,
-     ylab="number",xlab="Time (years)")
 
+p1h <- ggplot(data = out, aes(y = (Rh + Ih + Sh)/10000, x = years)) +
+  geom_line(color='grey68', size=1) +
+  ggtitle ('Total human population') +
+  theme_bw() + ylab('number per 10,000')
+
+p2h <- ggplot(data = out, aes(y = Sh/10000, x = years)) +
+  geom_line(color='royalblue', size=1) +
+  ggtitle ('Susceptible human population') +
+  theme_bw() + ylab('number per 10,000')
+
+p3h <- ggplot(data = out, aes(y = Ih/10000, x = years)) +
+  geom_line(color='firebrick', size=1) +
+  ggtitle ('Infected human population') +
+ theme_bw() + ylab('number per 10,000')
+
+p4h <- ggplot(data = out, aes(y = Rh/10000, x = years)) +
+  geom_line(color='olivedrab', size=1) +
+  ggtitle ('Infected human population') +
+   theme_bw() + ylab('number per 10,000')
+
+
+grid.arrange(p1h, p2h, p3h, p4h, ncol=2)
 ```
 
 
@@ -227,18 +243,27 @@ plot(out$timey, out$Rh, main="Rh",col="darkgreen", type="o", pch = 19, cex=.5,
 ```{r p2, include=TRUE, echo=FALSE}
 # Check the general behavior of the model 
 
-par(mfrow = c(2,2))
-plot(out$timey, (out$Iv + out$Sv + out$Ev), main="total mosquitos",col="gray",
-     cex=.7,ylab="Number of total vectors",xlab="Time (years)", type="o", pch = 19)
+p1v <- ggplot(data = out, aes(y = (Sv + Ev + Iv), x = years)) +
+  geom_line(color='grey68', size=1) +
+  ggtitle ('Total mosquitio population') +
+  theme_bw() + ylab('number')
 
-plot(out$timey, out$Sv,  main="Susceptible mosquitos", col="blue", type="o", pch = 19,
-     ylab="number",xlab="Time (years)")
+p2v <- ggplot(data = out, aes(y = Sv, x = years)) +
+  geom_line(color='royalblue', size=1) +
+  ggtitle ('Susceptible mosquito population') +
+  theme_bw() + ylab('number')
 
-plot(out$timey, out$Ev,  main="Exposed mosquitos", col="pink", type="o", pch = 19,
-     ylab="number",xlab="Time (years)")
+p3v <- ggplot(data = out, aes(y = Ev, x = years)) +
+  geom_line(color='orchid', size=1) +
+  ggtitle ('Exposed mosquito population') +
+ theme_bw() + ylab('number')
 
-plot(out$timey, out$Iv,  main="Infected mosquitos", col="red", type="o", pch = 19,
-     ylab="number",xlab="Time (years)")
+p4v <- ggplot(data = out, aes(y = Iv, x = years)) +
+  geom_line(color='firebrick', size=1) +
+  ggtitle ('Infected mosquito population') +
+   theme_bw() + ylab('number')
+
+grid.arrange(p1v, p2v, p3v, p4v, ncol=2)
 
 ```
 
@@ -247,22 +272,24 @@ plot(out$timey, out$Iv,  main="Infected mosquitos", col="red", type="o", pch = 1
 
 
 ### Proportion 
+Let's take a more careful look at the propotions and discuss them
 
 ```{r p3, include=TRUE, echo=FALSE}
-# Proportion of cases
-par(mfrow = c(2,2))
-par(mar=c(5,4,4,1),xpd=FALSE)
 
-plot(out$timey, out$Sh/(out$Rh + out$Ih + out$Sh), main="Susceptible Humans",
-     col="blue", xlab = "time (years)", 
-     pch = 12, cex =.3, ylab="proportion", ylim = c(0,1))
+ggplot(data = out, aes(y = Sh/(Sh+Ih+Rh), x = years)) +
+  geom_line(color='royalblue', size=1) +
+  ggtitle ('Susceptible human population') +
+  theme_bw() + ylab('proportion')
 
-plot(out$timey, out$Ih/(out$Rh + out$Ih + out$Sh), main="Infected humans",col="red", type="o", 
-     pch = 20, cex=.5, ylab="proportion", xlab = "time (years)")
+ggplot(data = out, aes(y = Ih/(Sh+Ih+Rh), x = years)) +
+  geom_line(color='firebrick', size=1) +
+  ggtitle ('Infected human population') +
+ theme_bw() + ylab('proportion')
 
-plot(out$timey, out$Rh/(out$Rh + out$Ih + out$Sh), main="Recovered humans",col="darkgreen", type="o", 
-     pch = 19, cex=.5, ylab="proportion", xlab = "time (years)",
-     ylim = c(0, 1))
+ggplot(data = out, aes(y = Rh/(Sh+Ih+Rh), x = years)) +
+  geom_line(color='olivedrab', size=1) +
+  ggtitle ('Infected human population') +
+   theme_bw() + ylab('proportion')
 
 ```
 
@@ -271,23 +298,26 @@ plot(out$timey, out$Rh/(out$Rh + out$Ih + out$Sh), main="Recovered humans",col="
 
 ```{r p4, include=TRUE, echo=FALSE}
 # Check the fists epidemic
-par(mfrow = c(1,2))
-out$timew <- out$time / 53
 
-plot(out$timew, out$Ih/(out$Rh + out$Ih + out$Sh), 
-     main="First Epidemic (Infected humans)",col="red", type="o", 
-     pch = 20, cex=.5, ylab="proportion", xlab = "time (weeks)",
-     ylim = c(0, .2), xlim = c(0,53))
+dat <- out[out$weeks <54,]
 
-plot(out$timew, out$Rh/(out$Rh + out$Ih + out$Sh), 
-     main="First Epidemic (Recovered humans)",col="darkgreen", type="o", 
-     pch = 20, cex=.5, ylab="proportion", xlab = "time (weeks)",
-     ylim = c(0, 1), xlim = c(0,53))
+p1e <- ggplot(dat, aes(y=Ih/10000, x=weeks)) +
+  geom_line(color='firebrick', size=1) +
+  ggtitle ('Infected human population') +
+ theme_bw() + ylab('number per 10,000')
 
+
+p2e<- ggplot(dat, aes(y=Rh/10000, x=weeks)) +
+  geom_line(color='olivedrab', size=1) +
+  ggtitle ('Recovered human population') +
+ theme_bw() + ylab('number per 10,000')
+
+
+grid.arrange(p1e, p2e)
 ```
 
 
-### Discuss some aspects
+### Lets' discuss some aspects
 
 - Sensitivity of the model to change of the R0
 - Sensititity of the model to change of bitting rate
