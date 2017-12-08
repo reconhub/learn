@@ -4,7 +4,7 @@ author: "Zulma Cucunuba & Pierre Nouvellet"
 date: '2017-12-04T14:00:00-00:00'
 image: img/highres/mosquito.jpg
 tags: Rmarkdown
-categories: practicals
+categories: lectures
 ---
 
 ```{r options, include = FALSE, message = FALSE, warning = FALSE, error = FALSE}
@@ -99,6 +99,22 @@ Nv       <-        # Number of vectors
 
 We need a formula to estimate R0. Let's build it together!
 
+## The model (Equations)
+###  Humans
+
+$$\ \frac{dSh}{dx}  = \mu_h N_h - \frac {\beta_h b}{N_h} S_h  I_v - \mu_h  S_h $$
+$$\ \frac{dIh}{dx}  = \frac {\beta_h b}{N_h}S_h I_v - (\gamma_h + \mu_h) I_h $$
+$$\ \frac{dRh}{dx}  = \gamma_h + I_h  - \mu_v I_v$$
+###  Vectors      
+
+$$\ \frac{dSv}{dx}  = \mu_v N_v  - \beta_v b /N_hI_h S_v - \mu_v Sv$$
+$$\ \frac{dE_v}{dx}  = (\beta_v b /N_h) I_h S_v - (\delta + \mu_v) Sv$$
+$$\ \frac{dI_v}{dx}  = \delta Ev - \mu_v I_v$$
+
+         dIv  <-   deltaEv - muv Iv
+
+
+
 
 ```{r, include = FALSE}
 # Rates and probabilities
@@ -120,7 +136,7 @@ m        <- 2         # Vector to human ratio
 Nv       <- m * Nh    # Number of vectors
 
 betah    <- 0.7       # Probability of transmission from vector to host
-betav    <- 0.7       # Probability of transmission from host to vector
+betav    libr<- 0.7       # Probability of transmission from host to vector
 R0       <- 3         # Reproductive number
 b        <- sqrt((R0 ^2 * muv * gamma) /(m * betah * betav * exp(-muv * delta))) # bitting rate
 
