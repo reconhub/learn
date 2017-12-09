@@ -16,8 +16,10 @@ opts_chunk$set(collapse = TRUE)
 ```
 
 This short lecture gives a primer on some methodological aspects of outbreak
-analysis. This is by no means a comprehensive presentation of available
-statistical approaches for epidemics analysis.
+analysis. It includes content on the estimation of key delays (e.g. incubation
+period, serial interval) and the characterisation of the underlying
+distributions, the estimation of growth rates, doubling times, of the basic
+reproduction number and simple short-term forecasting.
 
 
 # Slides

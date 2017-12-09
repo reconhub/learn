@@ -1,6 +1,6 @@
 ---
 title: "A primer on statistical outbreak analysis"
-author: "Thibaut Jombart, Finlay Campbell"
+author: "Thibaut Jombart"
 date: "2017-12-09"
 output:
   ioslides_presentation:
@@ -30,8 +30,180 @@ knit_hooks$set(source = function(x, options){
 
 
 
-# Analysing incidence data
+# Introduction
 
+## Early outbreak context 
+
+<center>
+<img src="../../img/slides/who-shoc-room.jpg" width="50%">
+</center>
+
+> - within a few days / weeks of index case
+> - limited data available
+> - no or limited intervention
+> - no depletion of susceptibles
+> - <font color="#99004d">urgent assessment needed to inform response</font>
+
+
+
+## Data usually available
+
+>- dates of symptom <font color="#99004d">onset</font>
+
+>- contact data: <font color="#99004d">exposure</font> (*who infected you?*) and <font color="#99004d">contact tracing</font> (*who could you have infected?*)
+
+>- dates of <font color="#99004d">exposure / infection</font>
+
+>- dates of <font color="#99004d">outcome</font>: death / recovery
+
+>- <font color="#99004d">metadata on patients</font>: age, gender, location, occupation, etc.
+
+>- <font color="#99004d">data from past outbreaks</font>
+
+
+
+## Key questions
+
+Disease-dependent, but generally includes:
+
+>- How fast is it growing?
+
+>- What is the case fatality ratio?
+
+>- Who is affected?
+
+>- How many case should we expect in xxx days?
+
+>- ...
+
+
+
+# Estimating key delays
+
+## The incubation period
+
+**Definition:** time interval between the <font color="#99004d">date on
+infection</font> and the date of <font color="#99004d">symptom onset</font>
+
+<center>
+<img src="../../img/slides/incubation-period.jpg" width="50%">
+</center>
+
+
+
+## The serial interval
+
+**Definition:** time interval between <font color="#99004d">onset of
+symptoms</font> in primary and secondary cases.
+
+<center>
+<img src="../../img/slides/serial-interval.jpg" width="50%">
+</center>
+
+
+
+## The generation time
+
+**Definition:** time interval between <font color="#99004d">date of
+infections</font> in primary and secondary cases.
+
+<center>
+<img src="../../img/slides/generation-time.jpg" width="50%">
+</center>
+
+
+
+## Estimating the underlying distribution
+
+From empirical distribution (data) to estimated distribution.
+
+<center>
+<img src="../../img/slides/underlying-distribution.jpg" width="50%">
+</center>
+
+- choose type of distribution (e.g. normal, Poisson, Gamma)
+- find $\theta_x$ which maximise $p(x)$
+
+
+
+## Discretising continuous distributions
+
+Using continuous distributions to model discrete variables:
+
+<center>
+<img src="../../img/slides/discretisation.jpg" width="70%">
+</center>
+
+
+
+## Fitting discretised Gamma distributions for delays
+
+- <font color="#99004d">flexible</font> distribution (many shapes possibles)
+
+- 2 parameters: *shape*, *scale*
+
+- alternatively: *mean*, *coefficient of variation*
+
+- typical choice for <font color="#99004d">delay</font> distributions
+
+- need to be <font color="#99004d">discretised</font>
+
+
+
+
+# Estimating mortality
+
+## Case fatality ratio
+
+**Definition:** the <font color="#99004d">proportion</font> of cases who die of
+the infection.
+
+<br>
+
+<center>
+<img src="../../img/slides/cfr.jpg" width="60%">
+</center>
+
+
+
+## Associated uncertainty
+
+- CFR = mean number of death per case $\rightarrow$ confidence interval is Normally distributed
+
+- standard error: 
+$$
+s_{CFR} = \sqrt{\frac{CFR (1 - CFR)}{N}}
+$$
+with $N = D + R$ (nb of cases with known outcomes)
+
+- confidence interval with $\alpha$ threshold:
+$$
+CFR \pm s_{CFR} \times Q_{1-\alpha/2} 
+$$
+
+where $Q$ is a Normal quantile (e.g. $1.96$ for $\alpha=0.05$)
+
+
+
+## Common caveats
+
+- "*case fatality <font color="#99004d">rate</font>*": this is a proportion, not a rate
+
+- computation using wrong <font color="#99004d">denominator</font>, i.e. including unknown outcome:
+
+$$
+\frac{D}{D + R + U}
+$$
+
+(leads to underestimating the CFR)
+
+- not accounting for uncertainty, e.g. comparing CFR across groups without
+  statistical tests
+
+
+
+
+# Analysing incidence data
 
 ## What is incidence?
 
@@ -104,18 +276,15 @@ $$
 
 
 
-## The serial interval
+## The serial interval distribution
 
-**Definition:** time interval between <font color="#99004d">onset of
+**Definition (reminder):** time interval between <font color="#99004d">onset of
 symptoms</font> of a case and onset in the secondary cases they created.
-
-Characterised for a number of existing diseases.
 
 
 <center>
-<img src="../../img/slides/serial-interval.jpg" width="75%">
+<img src="../../img/slides/serial-interval-distribution.jpg" width="75%">
 </center>
-<br>
 
 
 
@@ -169,104 +338,3 @@ $\lambda_t = R_0 \times \sum_{s = 1}^{t-1} y_s w(t - s)$
 - assumes constant reporting
 - likelihood / Bayesian methods harder to communicate
 
-
-
-
-
-
-# Inferring who infected whom
-
-## General idea
-
-Original *outbreaker* model used serial interval and genetic data to reconstruct
-transmission events.
-
-<center> 
-<img src="../../img/slides/outbreaker-original-model.png" width="70%">
-</center> 
-<br>
-
-
-
-
-## *outbreaker2*: a modular platform for outbreak reconstruction
-
-<center>
-<img src="../../img/slides/outbreaker2-pot.jpg" width="90%">
-</center>
-<br>
-
-
-
-
-## Temporal likelihood
-
-**Relies on:** dates on <font color="#99004d">symptom onset</font> ($t_i$),
-<font color="#99004d">generation time</font> ($w()$), <font
-color="#99004d">incubation period</font> ($f()$), number of generations
-($\kappa_i$).
-
-<center>
-<img src="../../img/slides/serial-interval.jpg" width="50%">
-</center>
-
-$$
-p(t_i | T_i^{inf}) \times p(T_i^{inf} | T_{\alpha_i}^{inf}, \kappa_i)
-$$
-
-$$
- = f(t_i - T_i^{inf}) \times w^{(\kappa_i)}(T_i^{inf} - T_{\alpha_i}^{inf})
-$$
-
-
-
-
-## Reporting likelihood
-
-**Relies on:** 
-
-- $\kappa_i$: <font color="#99004d">number of generations</font> between case
-  $i$ and its more recent sampled "ancestor"
-
-- $\pi$ case <font color="#99004d">reporting</font> probability
-
-<br>
-
-**Geometric distribution:**
-
-$$
-p(\kappa_i | \pi) = (1 - \pi^{})^{\kappa_i - 1} \times \pi 
-$$
-
-
-
-
-## Genetic likelihood
-
-**Relies on:** 
-
-- $d()$: number of <font color="#99004d">mutations</font> between 2 sequences
-- $s_i$, $s_{\alpha_i}$: sequences of infectee their infector
-- $L$: genome length
-- $\mu$: <font color="#99004d">mutation rate</font> per generation of infection
-
-
-$$
-p(s_i | s_{\alpha_i} \mu) = \mu^{d(s_i, s_{\alpha_i})} \times 
-(1 - \mu)^{(\kappa_i L - d(s_i, s_{\alpha_i}))}
-$$
-
-
-
-## Contact likelihood
-
-**Relies on:** contact reporting probability ($\epsilon$) and probability of
-contact between non-transmission pairs ($\lambda$).
-
-<center>
-<img src="../../img/slides/contact-model.png" width="100%">
-</center>
-
-$\alpha_i = j$:  $p(c_{i,j} = 1 ) = \epsilon$ ; $p(c_{i,j} = 0) = 1 - \epsilon$
-
-$\alpha_i \neq j$: $p(c_{i,j} = 1) = \lambda \epsilon$ ; $p(c_{i,j} = 0) = (1 - \lambda) + \lambda (1 - \epsilon)$
