@@ -2,8 +2,8 @@
 title: A primer on statistical outbreak analysis
 author: "Thibaut Jombart"
 categories: ["lectures"]
-tags: ["epicurve", "response", "outbreaker2", "reproduction number"]
-date: 2017-11-26T14:00:00-00:00
+tags: ["epicurve", "delays", "reproduction number", "forecasting"]
+date: 2017-12-09T14:00:00-00:00
 image: img/highres/stats-notebook.jpg
 slug: "outbreakstatsprimer"
 showonlyimage: true
@@ -25,7 +25,7 @@ statistical approaches for epidemics analysis.
 **Click on the image below to access the slides:**
 
 <center>
-<a href="../../slides/outbreak_primer/outbreak_primer.html"><img src="../../img/highres/stats-notebook.jpg" width="50%" alt="click there for slides" align="middle"></a>
+<a href="../../slides/outbreak_stats_primer/outbreak_stats_primer.html"><img src="../../img/highres/stats-notebook.jpg" width="50%" alt="click there for slides" align="middle"></a>
 </center>
 
 
@@ -38,12 +38,10 @@ statistical approaches for epidemics analysis.
 
 - Thibaut Jombart: initial version
 
-- Finlay Campbell: figure on *outbreaker2*'s contact model
-
 
 Contributions are welcome via [pull
 requests](https://github.com/reconhub/learn/pulls). The source file can be found
-[here](https://github.com/reconhub/learn/blob/master/static/slides/outbreak_primer/outbreak_primer.Rmd).
+[here](https://github.com/reconhub/learn/blob/master/static/slides/outbreak_stats_primer/outbreak_stats_primer.Rmd).
 
 
 

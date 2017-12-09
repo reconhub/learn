@@ -1,7 +1,7 @@
 ---
 title: "A primer on statistical outbreak analysis"
 author: "Thibaut Jombart, Finlay Campbell"
-date: "2017-11-26"
+date: "2017-12-09"
 output:
   ioslides_presentation:
     incremental: false
