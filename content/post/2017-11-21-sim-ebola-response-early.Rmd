@@ -59,6 +59,7 @@ The following packages, available on CRAN, are needed for this case study:
 - [`distcrete`](http://www.repidemicsconsortium.org/distcrete) to obtain discretised delay distributions
 - [`epitrix`](http://www.repidemicsconsortium.org/epitrix) to fit discretised Gamma distributions
 - [`earlyR`](http://www.repidemicsconsortium.org/earlyR) to estimate $R_0$ 
+- [`projections`](http://www.repidemicsconsortium.org/projections) for short term forecasting 
 
 To install these packages, use `install.packages`, e.g.:
    
@@ -70,6 +71,7 @@ install.packages("epicontacts")
 install.packages("distcrete")
 install.packages("epitrix")
 install.packages("earlyR")
+install.packages("projections")
 ```
 
 
@@ -175,7 +177,7 @@ plot(i)
 
 
 
-# Simple statistical analyses
+# Statistical analyses
 
 ## Log-linear model
 
@@ -356,6 +358,46 @@ under control. What is your opinion on this?</font>
 
 
 
+## Short-term forecasting
+
+The function `project` from the package `projections` can be used to simulate
+plausible epidemic trajectories by simulating daily incidence using the same
+branching process as the one used to estimate $R_0$ in `earlyR`. All that is
+needed is one or several values of $R_0$ and a serial interval distribution,
+stored as a `distcrete` object.
+
+Here, we illustrate how we can simulate 5 random trajectories using a fixed
+value of $R_0 = $`r round(R$R_ml,2)`, the ML estimate of $R_0$:
+
+```{r project_expl}
+library(projections)
+project(i, R = R$R_ml, si = si, n_sim = 5, n_days = 10, R_fix_within = TRUE)
+```
+
+Using the same principle, generate 1,000 trajectories for the next 2 weeks, using
+a range of plausible values of $R_0$. Note that you can use `sample_R` to obtain
+these values from your `earlyR` object. Store your results in an object called
+`proj`. Plotting the results should give something akin to:
+
+```{r project, echo = -1}
+proj <- project(i, R = sample_R(R, 1000), si = si,
+                n_sim = 1000, n_days = 14,
+                R_fix_within = TRUE)
+plot(proj, c(.1,.9))
+```
+
+Interpret the following summary:
+```{r proj_summary}
+apply(proj, 1, summary)
+apply(proj, 1, function(x) mean(x>0))
+```
+
+<font class="question">According to these results, what are the chances that more cases will appear in the near future?</font><font class="question">Is this outbreak being brought under control?</font>
+<font class="question">Would you recommend scaling up / down the response?</font>
+
+
+
+
 
 ## Follow-up...
 
@@ -363,7 +405,6 @@ For a follow-up on this outbreak, have a look at the [second
 part](../simulated-evd-reconstruction) of this simulated response,
 which includes a data update, genetic sequences, and the use of outbreak
 reconstruction tools.
-
 
 
 
