@@ -170,23 +170,23 @@ the infection.
 
 
 
-## Associated uncertainty
+## Associated uncertainty {.small}
 
 - CFR = <font color="#99004d">mean</font> number of death per case $\rightarrow$
   confidence interval is <font color="#99004d">Normally distributed</font>
 
-- standard error: 
-$$
-s_{CFR} = \sqrt{\frac{CFR (1 - CFR)}{N}}
-$$
-with $N = D + R$ (number of cases with known outcomes)
+<center>
+<img src="../../img/slides/CI-CFR.jpg" width="60%">
+</center>
 
+- standard error: $s_{CFR} = \sqrt{\frac{CFR (1 - CFR)}{D + R}}$
 - <font color="#99004d">confidence interval</font> with $\alpha$ threshold:
 $$
 CI_{(1-\alpha)\%} = CFR \pm s_{CFR} \times Q_{1-\alpha/2} 
 $$
 
 where $Q$ is a Normal quantile (e.g. $1.96$ for $\alpha=0.05$)
+
 
 
 
