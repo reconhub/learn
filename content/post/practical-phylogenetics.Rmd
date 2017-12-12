@@ -3,7 +3,7 @@ title: Phylogenetic tree reconstruction
 author: Thibaut Jombart
 categories: ["practicals"]
 tags: ["genetics"]
-date: 2017-11-01T14:00:00-00:00
+date: 2017-11-01
 image: img/highres/trees.jpg
 showonlyimage: true
 bibliography: practical-phylogenetics.bib
