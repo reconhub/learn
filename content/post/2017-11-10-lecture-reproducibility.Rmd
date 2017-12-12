@@ -28,7 +28,7 @@ width="20px">.
 **Click on the image below to access the slides:**
 
 <center>
-<a href="../../slides/intro_reproducibility_Rmd/intro_reproducibility.html"><img src="../../img/highres/printing-press.jpg" width="50%" alt="click there for slides" align="middle"></a>
+<a href="../../slides/intro_reproducibility_Rmd/intro_reproducibility.html"><img class="gateway" src="../../img/highres/printing-press.jpg" width="50%" alt="click there for slides" align="middle"></a>
 </center>
 
 
