@@ -27,7 +27,7 @@ reproduction number and simple short-term forecasting.
 **Click on the image below to access the slides:**
 
 <center>
-<a href="../../slides/outbreak_stats_primer/outbreak_stats_primer.html"><img class="gateway" src="../../img/highres/stats-notebook.jpg" width="50%" alt="click there for slides" align="middle"></a>
+<a href="../../slides/outbreak-statistics/outbreak-statistics.html"><img class="gateway" src="../../img/highres/stats-notebook.jpg" width="50%" alt="click there for slides" align="middle"></a>
 </center>
 
 
@@ -43,7 +43,7 @@ reproduction number and simple short-term forecasting.
 
 Contributions are welcome via [pull
 requests](https://github.com/reconhub/learn/pulls). The source file can be found
-[here](https://github.com/reconhub/learn/blob/master/static/slides/outbreak_stats_primer/outbreak_stats_primer.Rmd).
+[here](https://github.com/reconhub/learn/blob/master/static/slides/outbreak-statistics/outbreak-statistics.Rmd).
 
 
 

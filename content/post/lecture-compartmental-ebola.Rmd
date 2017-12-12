@@ -26,7 +26,7 @@ The example of the dynamics of Ebola is used.
 **Click on the image below to access the slides:**
 
 <center>
-<a href="../../slides/compartmental-model-ebola/compartmental-model-ebola.pptx"><img class="gateway" src="../../img/highres/seismograph.jpg" width="50%" alt="click there for slides" align="middle"></a>
+<a href="../../slides/compartmental-ebola/compartmental-ebola.pptx"><img class="gateway" src="../../img/highres/seismograph.jpg" width="50%" alt="click there for slides" align="middle"></a>
 </center>
 
 
@@ -42,7 +42,7 @@ The example of the dynamics of Ebola is used.
 
 Contributions are welcome via [pull
 requests](https://github.com/reconhub/learn/pulls). The source file can be found
-[here](https://github.com/reconhub/learn/blob/master/static/slides/compartmental-model-ebola/compartmental-model-ebola.pptx).
+[here](https://github.com/reconhub/learn/blob/master/static/slides/compartmental-ebola/compartmental-ebola.pptx).
 
 
 
