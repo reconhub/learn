@@ -103,11 +103,19 @@ Make sure you use `reconhub/learn`, branch `master` as base fork:
 Practicals, tuorials, case studies are contributed as
 [Rmarkdown](http://rmarkdown.rstudio.com/) (`.Rmd`) documents. They are stored
 in `content/post`. The best way to create a new document is copy-paste an
-existing one and rename it. The name must:
+existing one and rename it. Naming conventions are as follows:
 
-- include the date in the format `yyyy-mm-dd` as prefix
-- be explicit
-- use `-` as separator
+- start with `practical` for practicals, `study` for case studies
+- use lower case, no special characters
+- be hypen-separated ("-")
+
+For instance, for a practical using a SEIR model for influenza data:
+
+- `practical-seir-influenza` is good
+- `SEIR-flu` is bad as lacking 'practical' (it could be a lecture), and has
+  capitalised letters
+- `practical-new` is bad, as it is non-informative
+
 
 
 #### Editing the YAML header
