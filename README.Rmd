@@ -118,9 +118,9 @@ The YAML header is the beginning of the `Rmd` document, within the `---`. For in
 title: Phylogenetic tree reconstruction
 author: Thibaut Jombart
 categories: ["practicals"]
-tags: ["Rmarkdown", "phylogenetics", "genetics"]
-date: 2017-11-01T14:00:00-00:00
-image: img/highres/logs.jpg
+tags: ["genetics"]
+date: 2017-11-01
+image: img/highres/trees.jpg
 showonlyimage: true
 bibliography: practical-phylogenetics.bib
 ---
@@ -154,7 +154,7 @@ material for slides is stored in `static/slides`. Currently, two files are neede
 
 1. a `.Rmd` post in `content/post` (see above) to introduce the lecture and link
 to the slides; for an example, look at
-`content/post/2017-11-10-lecture-reproducibility.Rmd`.
+`content/post/lecture-reproducibility.Rmd`.
 
 2. the slides themselves, stored in `static/slides`.
 
