@@ -1,7 +1,7 @@
 ---
-title: "A primer on outbreak reconstruction using *outbreaker2*"
+title: "Outbreak reconstruction using *outbreaker2*"
 author: "Thibaut Jombart, Finlay Campbell"
-date: "2017-12-09"
+date: "2017-12-12"
 output:
   ioslides_presentation:
     incremental: false
