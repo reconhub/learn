@@ -25,7 +25,7 @@ information and help implement control or raise situational awarness.
 **Click on the image below to access the slides:**
 
 <center>
-<a href="../../slides/modelling-public-health/modelling-public-health.pptx"><img src="../../img/highres/stats-notebook-blue.jpg" width="50%" alt="click there for slides" align="middle"></a>
+<a href="../../slides/modelling-public-health/modelling-public-health.pptx"><img class="gateway" src="../../img/highres/stats-notebook-blue.jpg" width="50%" alt="click there for slides" align="middle"></a>
 </center>
 
 

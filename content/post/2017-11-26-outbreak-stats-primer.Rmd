@@ -27,7 +27,7 @@ reproduction number and simple short-term forecasting.
 **Click on the image below to access the slides:**
 
 <center>
-<a href="../../slides/outbreak_stats_primer/outbreak_stats_primer.html"><img src="../../img/highres/stats-notebook.jpg" width="50%" alt="click there for slides" align="middle"></a>
+<a href="../../slides/outbreak_stats_primer/outbreak_stats_primer.html"><img class="gateway" src="../../img/highres/stats-notebook.jpg" width="50%" alt="click there for slides" align="middle"></a>
 </center>
 
 

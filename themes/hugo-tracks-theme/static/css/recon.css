@@ -301,3 +301,19 @@ body {
 }
 
 
+
+
+/* for pretty, framed, shadowed images serving as a gatway to something else */
+.gateway {
+    border-style: solid;
+    border-width: thin;
+    border-color: black;
+    border-radius: 10px;
+    box-shadow: 5px 5px 20px #000000;
+}
+
+
+
+.gateway:hover{
+    box-shadow: 5px 5px 20px #80002a;
+}
