@@ -3,8 +3,8 @@ title: 'VBD: building a simple model for Zika'
 author: "Zulma Cucunuba & Pierre Nouvellet"
 date: '2017-12-04T14:00:00-00:00'
 image: img/highres/mosquito.jpg
-tags: Rmarkdown
-categories: lectures
+tags: ["zika", "compartmental models"]
+categories: practicals
 ---
 
 ```{r options, include = FALSE, message = FALSE, warning = FALSE, error = FALSE}
@@ -18,6 +18,7 @@ opts_chunk$set(collapse = TRUE)
 
 This practical aims to illustrate the basics of **vector borne disease (VBD) modelling**
 using R, with an emphasis on how the methods work. We will use a basic model for an arboviral infection as an example. In this practical we will begin by gaining some understanding of the components which contribute to R0 and how potential interventions influence transmission. Later in the practical you will construct a model of Zika transmission to look at the effects of several parameters.
+
 
 
 
@@ -99,19 +100,25 @@ Nv       <-        # Number of vectors
 
 We need a formula to estimate R0. Let's build it together!
 
+
 ## The model (Equations)
 ###  Humans
 
-$$\ \frac{dSh}{dx}  = \mu_h N_h - \frac {\beta_h b}{N_h} S_h  I_v - \mu_h  S_h $$
-$$\ \frac{dIh}{dx}  = \frac {\beta_h b}{N_h}S_h I_v - (\gamma_h + \mu_h) I_h $$
-$$\ \frac{dRh}{dx}  = \gamma_h + I_h  - \mu_v I_v$$
+$$\ \frac{dSh}{dt}  = \mu_h N_h - \frac {\beta_h b}{N_h} S_h  I_v - \mu_h  S_h $$
+$$\ \frac{dIh}{dt}  = \frac {\beta_h b}{N_h}S_h I_v - (\gamma_h + \mu_h) I_h $$
+$$\ \frac{dRh}{dt}  = \gamma_h + I_h  - \mu_h I_h$$
 
 ###  Vectors      
 
-$$\ \frac{dSv}{dx}  = \mu_v N_v  - \frac{\beta_v b} {N_hI_h} S_v - \mu_v Sv$$
-$$\ \frac{dE_v}{dx}  = \frac{\beta_v b} {N_h} I_h S_v - (\delta + \mu_v) Sv$$
-$$\ \frac{dI_v}{dx}  = \delta Ev - \mu_v I_v$$
+$$\ \frac{dSv}{dt}  = \mu_v N_v  - \frac{\beta_v b} {N_h} I_h S_v - \mu_v Sv$$
+$$\ \frac{dE_v}{dt}  = \frac{\beta_v b} {N_h} I_h S_v - (\delta + \mu_v) Ev$$
+$$\ \frac{dI_v}{dt}  = \delta Ev - \mu_v I_v$$
 
+
+## Estimating R0 (Reproductive number)
+
+We need a formula to estimate R0: 
+$$ R_0^2 = \frac{mb^2 \beta_h \beta_v \delta}{\mu_v (\mu_v+\delta)(\mu_h+\gamma_h)} $$
 
 
 
@@ -137,7 +144,8 @@ Nv       <- m * Nh    # Number of vectors
 betah    <- 0.7       # Probability of transmission from vector to host
 betav    <- 0.7       # Probability of transmission from host to vector
 R0       <- 3         # Reproductive number
-b        <- sqrt((R0 ^2 * muv * gamma) /(m * betah * betav * exp(-muv * delta))) # bitting rate
+b        <- sqrt((R0 ^2 * muv*(muv+delta) * (muh+gamma)) /
+                   (m * betah * betav * delta)) # bitting rate
 
 TIME     <- 100       # Number of years to run the simulation 
 
@@ -214,7 +222,7 @@ out <- as.data.frame(ode(y      = xstart,   # Initial conditions
 
 # Creating time options to display
 out$years <- out$time / 365
-out$weeks <- out$time / 53
+out$weeks <- out$time / 7
 ```
 
 
@@ -291,20 +299,22 @@ Let's take a more careful look at the propotions and discuss them
 
 ```{r p3, include=TRUE, echo=FALSE}
 
-ggplot(data = out, aes(y = Sh/(Sh+Ih+Rh), x = years)) +
+p1 <- ggplot(data = out, aes(y = Sh/(Sh+Ih+Rh), x = years)) +
   geom_line(color='royalblue', size=1) +
   ggtitle ('Susceptible human population') +
   theme_bw() + ylab('proportion')
 
-ggplot(data = out, aes(y = Ih/(Sh+Ih+Rh), x = years)) +
+p2 <- ggplot(data = out, aes(y = Ih/(Sh+Ih+Rh), x = years)) +
   geom_line(color='firebrick', size=1) +
   ggtitle ('Infected human population') +
  theme_bw() + ylab('proportion')
 
-ggplot(data = out, aes(y = Rh/(Sh+Ih+Rh), x = years)) +
+p3 <- ggplot(data = out, aes(y = Rh/(Sh+Ih+Rh), x = years)) +
   geom_line(color='olivedrab', size=1) +
   ggtitle ('Recovered human population') +
    theme_bw() + ylab('proportion')
+
+grid.arrange(p1, p2, p3, ncol=2)
 
 ```
 
@@ -340,6 +350,21 @@ grid.arrange(p1e, p2e)
 - How we calculate the attack rate
 - What happen if we vaccinate 80% of the population?
 - What is the impact of a vector control programme?
+
+### Modelling control interventions
+
+Now, using this basic model we are going to model the impact of three different types of interventions, all of them related to vector control. 
+
+- 1. An intervention than reduces the life span of the mosquito
+- 2. An intervention that reduces the carrying capacity
+- 3. An intervention that reduces the probability of transmission
+
+For these three inteventions
+
+- a. Search in the literature which specific interventions can those be
+- b. Implement the interventions in the model
+- c. Compare the impact of these different interventions
+
 
 
 # About this document
