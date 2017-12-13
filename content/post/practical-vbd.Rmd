@@ -93,6 +93,11 @@ betav    <-        # Probability of transmission from host to vector
 Nh       <-        # Number of humans (Population of Cali 2.4 million)
 m        <-        # Vector to human ratio
 Nv       <-        # Number of vectors
+R0       <-        # Reproductive number
+b        <-        sqrt((R0 ^2 * muv*(muv+delta) * (muh+gamma)) /
+                   (m * betah * betav * delta)) # bitting rate
+
+TIME     <-        # Number of years to run the simulation for 
 ```
 
 
