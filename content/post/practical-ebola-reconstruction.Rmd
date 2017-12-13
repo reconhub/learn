@@ -3,9 +3,8 @@ title: "Ebola simulation part 2: outbreak reconstruction"
 author: Thibaut Jombart, Finlay Campbell
 categories: ["practicals"]
 tags: ["genetics", "simulation", "response", "outbreaker2", "epicurve", "reproduction number"]
-date: 2017-11-22
+date: 2017-12-13
 image: img/highres/ebola-blue.jpg
-slug: simulated-evd-reconstruction
 showonlyimage: true
 bibliography: practical-evd.bib
 ---
@@ -65,7 +64,11 @@ The following packages, available on CRAN, are needed for this practical:
   time-varying reproduction number estimation
 - [`distcrete`](http://www.repidemicsconsortium.org/distcrete) to obtain
   discrete time delay distributions
+- [`epitrix`](http://www.repidemicsconsortium.org/epitrix) for some practical
+  tricks for epidemics analysis
 - [`ape`](http://ape-package.ird.fr/) for DNA sequence analysis
+- [`outbreaker2`](http://www.repidemicsconsortium.org/outbreaker2) to
+  reconstruct the outbreak
   
 To install these packages, use `install.packages`, e.g.:
    
@@ -76,27 +79,12 @@ install.packages("incidence")
 install.packages("epicontacts")
 install.packages("EpiEstim")
 install.packages("distcrete")
+install.packages("epitrix")
 install.packages("ape")
-
+install.packages("outbreaker2")
 ```
 
-We will also use several packages currently under development, hosted on
-*github*. These include:
  
-- [`epitrix`](http://www.repidemicsconsortium.org/epitrix) for some practical
-  tricks
-- [`outbreaker2`](http://www.repidemicsconsortium.org/outbreaker2) to
-  reconstruct the outbreak
-   
-   
-To install these, you will need a working version of `devtools`, and the
-toolchain for package building on your system. On windows, you will likely need
-to install [*Rtools*](https://cran.r-project.org/bin/windows/Rtools/).
-   
-```{r install2, eval = FALSE}
-devtools::install_github("reconhub/epitrix")
-devtools::install_github("reconhub/outbreaker2")
-```
 
 
 ## The new data
@@ -216,7 +204,7 @@ mu <- 15.3
 sd <- 9.3
 
 daily_i <- incidence(linelist$onset)
-simple_R <- get_R(daily_i, si_mean = mu, si_sd =  9.3)
+simple_R <- get_R(daily_i, si_mean = mu, si_sd =  9.3, max_R = 5)
 simple_R
 
 ## R: likelihood function
@@ -291,58 +279,6 @@ modular platform for outbreak reconstruction. This package extends and replaces
 transmission model [@Jombart2014-ab].
 
 
-## Building delay distributions
-
-`outbreaker2` can handle different types of dates. When dates of onset are
-provided, information on the generation time (delay between primary and
-secondary infections) and on the incubation period (delay between infection and
-symptom onset) can be included in the model. These distributions are typically
-modelled as Gamma distributions, which need to be discretised in order to
-account for the fact that time is reported as days.
-
-
-In the following, we show how the generation time distribution can be
-constructed from known parameters, which are here taken from the serial
-interval, with a mean of 15.3 and a standard deviation of 9.3. We use `epitrix`
-to convert these parameters into *shape* and *scale* for a Gamma distribution,
-and then use `distcrete` to generate the discretised distribution:
-
-```{r si}
-library(epitrix)
-library(distcrete)
-
-mu <- 15.3
-sd <- 9.3
-gt_params <- epitrix::gamma_mucv2shapescale(mu, sd / mu)
-gt_params
-gt <- distcrete("gamma", shape = gt_params$shape, scale = gt_params$scale,
-                interval = 1L, w = 0)
-gt
-plot(gt$d, type = "h", xlim = c(0,50), col = "navy", lwd = 2,
-     xlab = "Days after symptoms", ylab = "Probability",
-     main = "Generation time distribution")
-```
-
-Using the same process, create a distribution for the incubation period, which
-has been reported to have a mean of 9.1 with a standard deviation of 7.3
-[@WHO_Ebola_Response_Team2014-mr]. Call this object `incub`, and plot the
-distribution, which should look like this:
-
-```{r incub, echo = FALSE}
-mu <- 9.1
-sd <- 7.3
-incub_params <- epitrix::gamma_mucv2shapescale(mu, sd / mu)
-incub_params
-incub <- distcrete("gamma", shape = incub_params$shape, scale = incub_params$scale,
-                   interval = 1L, w = 0)
-incub
-plot(incub$d, type = "h", xlim = c(0,50), col = "salmon", lwd = 2,
-     xlab = "Days after infection", ylab = "Probability",
-     main = "Incubation period distribution")
-```
-
-
-
 ## Looking at Whole Genome Sequences (WGS)
 
 WGS have been obtained for all cases in this outbreak. They are stored as a
@@ -360,17 +296,107 @@ identical(labels(dna), linelist$case_id) # check sequences match linelist data
 
 As a first exploration of the data, we derive a Neighbour-Joining tree rooted at
 the first case of the outbreak:
-```{r nj}
+```{r nj, fig.height = 8}
 nj <- nj(dist.dna(dna, model = "N")) # NJ on nucleotide distances (model = "N")
 nj
 nj <- root(nj, 1)
-plot(nj)
+plot(nj, main = "Neighbour Joining tree")
 axisPhylo()
 ```
 
 <font class="question">How would you interpret this phylogenetic tree? Many
 methods of outbreak reconstruction infer transmission events from
 phylogenies. What results would you expect here?</font>
+
+
+
+
+
+## Building delay distributions
+
+`outbreaker2` can handle different types of dates. When dates of onset are
+provided, information on the *generation time* (delay between primary and
+secondary infections) and on the *incubation period* (delay between infection and
+symptom onset) can be included in the model. These delays are typically
+modelled as Gamma distributions, which need to be discretised in order to
+account for the fact that time is reported as days.
+
+
+A possible approach here would be using estimates of the *mean* and *standard
+deviation* of the incubation period and the generation time published in the
+literature. From this, one would need to use `epitrix` to convert these
+parameters into *shape* and *scale* for a Gamma distribution, and then use
+`distcrete` to generate discretised distributions.
+
+
+Alternatively, these parameters can be estimated from a previous, reasonably
+similar outbreak. PHM asks you to use the dataset `ebola_sim_clean` from the
+`outbreaks` package to this end. Start by extracting data on the inbucation
+period (i.e. delay from infection to onset) and store the output in an object
+called `incub`; results should look like:
+
+```{r incubation, echo = -c(1,2)}
+library(outbreaks)
+
+incub <- with(ebola_sim_clean$linelist, date_of_onset - date_of_infection)
+incub <- as.integer(na.omit(incub))
+summary(incub)
+
+hist(incub, col = terrain.colors(10), border = "white",
+     main = "Incubation period",
+     xlab = "Days after exposure")
+
+```
+
+Then, use `epicontacts` to extract data on the generation time (i.e. delay between
+infections between infectors and infectees):
+
+```{r generation-time, echo = -c(1,2)}
+library(epicontacts)
+ebola_sim_contacts <- with(ebola_sim_clean, make_epicontacts(linelist, contacts, directed = TRUE))
+ebola_sim_contacts
+gen_time <- get_pairwise(ebola_sim_contacts, "date_of_infection")
+gen_time <- as.integer(na.omit(gen_time))
+summary(gen_time)
+
+hist(gen_time, col = terrain.colors(10), border = "white",
+     main = "Generation time",
+     xlab = "Days after exposure")
+
+```
+
+We can now build discretised Gamma distributions for both delays. We illustrate
+the procedure for the incubation period:
+
+```{r incub_dist}
+library(epitrix)
+library(distcrete)
+incub_fit <- fit_disc_gamma(incub)
+incub_params <- gamma_mucv2shapescale(incub_fit$mu, incub_fit$cv)
+incub_params
+incub_dist <- distcrete("gamma", shape = incub_params$shape, scale = incub_params$scale,
+                        interval = 1L, w = 0)
+incub_dist
+plot(0:50, incub_dist$d(0:50), type = "h", col = terrain.colors(51),
+     xlab = "Days after exposure", ylab = "Probability",
+     main = "Incubation period distribution", lend = 1, lwd = 8)
+```
+
+Using the same process, create a distribution for the generation time. Results should resemble:
+
+```{r gen_time_dist, echo = FALSE}
+gen_time_fit <- fit_disc_gamma(gen_time)
+gen_time_params <- gamma_mucv2shapescale(gen_time_fit$mu, gen_time_fit$cv)
+gen_time_params
+gen_time_dist <- distcrete("gamma", shape = gen_time_params$shape, scale = gen_time_params$scale,
+                        interval = 1L, w = 0)
+gen_time_dist
+plot(0:50, gen_time_dist$d(0:50), type = "h", col = terrain.colors(51),
+     xlab = "Days after infection", ylab = "Probability",
+     main = "Generation time distribution", lend = 1, lwd = 8)
+```
+
+
 
 
 
@@ -389,8 +415,8 @@ library(outbreaker2)
 
 data <- outbreaker_data(dates = linelist$onset, # dates of onset
                         dna = unname(dna), # WGS; remove labels for compatibility
-                        w_dens = gt$d(1:100), # generation time distribution
-                        f_dens = incub$d(1:100) # incubation period distribution
+                        w_dens = gen_time_dist$d(1:100), # generation time distribution
+                        f_dens = incub_dist$d(1:100) # incubation period distribution
                         )
 ```
 
@@ -454,8 +480,8 @@ should obtain something along the lines of:
 set.seed(0)
 
 data <- outbreaker_data(dates = linelist$onset, # dates of onset
-                        w_dens = gt$d(1:100), # generation time distribution
-                        f_dens = incub$d(1:100) # incubation period distribution
+                        w_dens = gen_time_dist$d(1:100), # generation time distribution
+                        f_dens = incub_dist$d(1:100) # incubation period distribution
                         )
 res_time <- outbreaker(data = data, config = config)
 plot(res_time, type = "alpha", burn = 500)
@@ -486,8 +512,8 @@ which make a number of checks on provided inputs and define defaults:
 data <- outbreaker_data(dates = linelist$onset, # dates of onset
                         dna = unname(dna), # dna sequences
                         ctd = ctd, # contact data
-                        w_dens = gt$d(1:100), # generation time distribution
-                        f_dens = incub$d(1:100) # incubation period distribution
+                        w_dens = gen_time_dist$d(1:100), # generation time distribution
+                        f_dens = incub_dist$d(1:100) # incubation period distribution
                         )
 ```
 
