@@ -16,8 +16,8 @@ opts_chunk$set(collapse = TRUE)
 ```
 
 
-This practical aims to illustrate the basics of **vector borne disease (VBD) modelling**
-using R, with an emphasis on how the methods work. We will use a basic model for an arboviral infection as an example. In this practical we will begin by gaining some understanding of the components which contribute to R0 and how potential interventions influence transmission. Later in the practical you will construct a model of Zika transmission to look at the effects of several parameters.
+
+This practical aims to illustrate the basics of **vector borne disease (VBD) modelling** using R, with an emphasis on how the methods work. We will use a basic model for an arboviral infection as an example. In this practical we will begin by gaining some understanding of the components which contribute to R0 and how potential interventions influence transmission. Later in the practical you will construct a model of Zika transmission to look at the effects of several parameters.
 
 
 
@@ -223,11 +223,15 @@ arbovmodel <- function (t, x, params) {
 
 ## Solve the system
 
-In this section, run the model and try to understand and complete the arguments of the *ode* function in the *dsolve* package, and comment that part of the code.
+In this section, complete and comment that code for:
+
+- The VALUES for the initial conditions of the system
+
+- The ARGUMENTS of the **ode** function in the **deSolve** package.
 
 
 ```{r, eval = FALSE}
-# ----------- Solving the model
+# Time 
 times  <- seq(1,365 * TIME , by = 1)
 
 # Specifying parameters
@@ -245,19 +249,19 @@ params <- c(
 )
 
 
-# Initial consitions of the system
-xstart<- c(Sh = Nh ,      # Initial number of Sh at T0
-           Ih = 0,        # Initial number of Ih at T0
-           Rh = 0,        # Initial number of Rh at T0
-           Sv = Nv-1,     # Initial number of Sv at T0
-           Ev = 0,        # Initial number of Ev at T0
-           Iv = 1)        # Initial number of Iv at TO
+# Initial conditions of the system
+xstart<- c(Sh = VALUE? ,       # meaning?? 
+           Ih = VALUE?,        # meaning?? 
+           Rh = VALUE?,        # meaning?? 
+           Sv = VALUE?,        # meaning?? 
+           Ev = VALUE?,        # meaning?? 
+           Iv = VALUE?)        # meaning?? 
 
 # Solving the equations
-out <- as.data.frame(ode(y      = argument?,   # meaning??  
-                         times  = argument?,   # meaning??    
-                         fun    = argument?,   # meaning??
-                         parms  = argument?))  # meaning??   
+out <- as.data.frame(ode(y      = ARGUMENT?,   # meaning??  
+                         times  = ARGUMENT?,   # meaning??     
+                         fun    = ARGUMENT?,   # meaning??  
+                         parms  = ARGUMENT?,   # meaning??   
 
 ```
 
