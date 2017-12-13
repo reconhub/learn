@@ -21,7 +21,6 @@ using R, with an emphasis on how the methods work. We will use a basic model for
 
 
 
-
 ## Core Concepts 
 
 From the previous lecture, we will futher develop these concepts:
@@ -96,17 +95,13 @@ m        <-        # Vector to human ratio
 Nv       <-        # Number of vectors
 ```
 
-## Estimating R0 (Reproductive number)
-
-We need a formula to estimate R0. Let's build it together!
-
 
 ## The model (Equations)
 ###  Humans
 
 $$\ \frac{dSh}{dt}  = \mu_h N_h - \frac {\beta_h b}{N_h} S_h  I_v - \mu_h  S_h $$
 $$\ \frac{dIh}{dt}  = \frac {\beta_h b}{N_h}S_h I_v - (\gamma_h + \mu_h) I_h $$
-$$\ \frac{dRh}{dt}  = \gamma_h + I_h  - \mu_h I_h$$
+$$\ \frac{dRh}{dt}  = \gamma_h + I_h  - \mu_v I_v$$
 
 ###  Vectors      
 
@@ -253,7 +248,7 @@ p3h <- ggplot(data = out, aes(y = Ih/10000, x = years)) +
 
 p4h <- ggplot(data = out, aes(y = Rh/10000, x = years)) +
   geom_line(color='olivedrab', size=1) +
-  ggtitle ('Infected human population') +
+  ggtitle ('Recovered human population') +
    theme_bw() + ylab('number per 10,000')
 
 
@@ -359,12 +354,7 @@ Now, using this basic model we are going to model the impact of three different 
 - 2. An intervention that reduces the carrying capacity
 - 3. An intervention that reduces the probability of transmission
 
-For these three inteventions
-
-- a. Search in the literature which specific interventions can those be
-- b. Implement the interventions in the model
-- c. Compare the impact of these different interventions
-
+For these three inteventions, try to find literature that explain which specific interventions can do that and in that way you will parameterise the model.
 
 
 # About this document
