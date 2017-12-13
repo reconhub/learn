@@ -2,9 +2,9 @@
 title: Basic Concepts on Vector Borne Disease Modelling
 author: Zulma Cucunuba & Pierre Nouvellet
 categories: ["lectures"]
-tags: ["vdb", "malaria","Chagas", "Zika"]
+tags: ["vdb", "malaria","chagas", "zika"]
 date: 2017-12-13
-image: img/highres/mosquitos3.png
+image: img/highres/mosquito2.jpg
 slug: "basicvbdmodelling"
 showonlyimage: true
 ---
@@ -25,7 +25,7 @@ This lecture is about Vector Borne Diseases (VBD) modelling. The aim is to gain 
 
 
 <center>
-<a href="../../slides/vbd_modelling/vbd_modelling.html"><img src="../../img/highres/mosquitos3.png" width="50%" alt="click there for slides" align="middle"></a>
+<a href="../../slides/basicvbd-modelling/basicvbd-modelling.html"><img class="gateway" src="../../img/highres/mosquito2.jpg" width="50%" alt="click there for slides" align="middle"></a>
 </center>
 
 

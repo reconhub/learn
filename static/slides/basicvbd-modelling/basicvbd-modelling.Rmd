@@ -229,3 +229,14 @@ $$\ p_a  =  1 -  \sum_{i=\tau - a +1}^{i = \tau} {\lambda_i} $$
 <br>
 
 *Ferguson et at. Science 2016*
+
+
+
+
+## 
+
+<br>
+
+<center>
+<img src="../../img/slides/the-end.jpg" width="100%">
+</center>
