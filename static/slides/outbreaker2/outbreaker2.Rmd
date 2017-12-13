@@ -41,10 +41,11 @@ knit_hooks$set(source = function(x, options){
 </center> 
 
 
-- <font color="#99004d">transmission tree</font>: directed acyclic graph representing transmission events
-of an outbreak
+> - <font color="#99004d">transmission tree</font>: directed acyclic graph
+representing transmission events of an outbreak
 
-- <font color="#99004d">transmission chain</font>: path from one case one descending case
+> - <font color="#99004d">transmission chain</font>: path from a case to a
+descending case
 
 
 
@@ -176,9 +177,6 @@ color="#99004d">incubation period</font> ($f()$), number of generations
 
 $$
 p(t_i | T_i^{inf}) \times p(T_i^{inf} | T_{\alpha_i}^{inf}, \kappa_i)
-$$
-
-$$
  = f(t_i - T_i^{inf}) \times w^{(\kappa_i)}(T_i^{inf} - T_{\alpha_i}^{inf})
 $$
 
@@ -187,14 +185,12 @@ $$
 
 ## Reporting likelihood
 
-**Relies on:** 
+<center>
+<img src="../../img/slides/reporting-likelihood.jpg" width="75%">
+</center>
 
 - $\kappa_i$: <font color="#99004d">number of generations</font> between case
-  $i$ and its more recent sampled "ancestor"
-
-- $\pi$ case <font color="#99004d">reporting</font> probability
-
-<br>
+  $i$ and its more recent sampled "ancestor"; $\pi$ case <font color="#99004d">reporting</font> probability
 
 **Geometric distribution:**
 
@@ -207,13 +203,11 @@ $$
 
 ## Genetic likelihood
 
-**Relies on:** 
+<center>
+<img src="../../img/slides/genetic-likelihood.jpg" width="50%">
+</center>
 
-- $d()$: number of <font color="#99004d">mutations</font> between 2 sequences
-- $s_i$, $s_{\alpha_i}$: sequences of infectee their infector
-- $L$: genome length
-- $\mu$: <font color="#99004d">mutation rate</font> per generation of infection
-
+- $d()$: number of <font color="#99004d">mutations</font> between 2 sequences; $s_i$, $s_{\alpha_i}$: sequences of infectee their infector; $L$: genome length; $\mu$: <font color="#99004d">mutation rate</font> per generation of infection
 
 $$
 p(s_i | s_{\alpha_i} \mu) = \mu^{d(s_i, s_{\alpha_i})} \times 
