@@ -1,13 +1,18 @@
 ---
-title: "Ebola simulation part 1: early outbreak assessment"
-author: Thibaut Jombart
-categories: ["practicals"]
-tags: ["simulation", "response", "Ebola", "epicurve", "reproduction number"]
-date: 2017-11-21T14:00:00-00:00
+title: 'Ebola simulation part 1: early outbreak assessment'
+author: "Thibaut Jombart"
+date: '2017-11-21T14:00:00-00:00'
+css: ../../themes/hugo-tracks-theme/static/css/recon.css
 image: img/highres/ebola.jpg
+showonlyimage: yes
 slug: simulated-evd-early
-showonlyimage: true
-css: "../../themes/hugo-tracks-theme/static/css/recon.css"
+tags:
+- simulation
+- response
+- Ebola
+- epicurve
+- reproduction number
+categories: practicals
 ---
 
 	
