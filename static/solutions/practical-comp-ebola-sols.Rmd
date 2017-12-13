@@ -570,7 +570,7 @@ As before, try to:
 -write dow the new equations of the system.
 
 
-<img src=""../img/solutions/ebola-model2.png" width="80%">
+<img src="../img/solutions/ebola-model2.png" width="80%">
 
 
 $$\ \frac{dS}{dt}  = - \beta \frac {S_t I_t}{N_t} $$
