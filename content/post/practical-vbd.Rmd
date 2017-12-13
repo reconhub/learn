@@ -61,7 +61,7 @@ library(gridExtra)
 - Iv : Infected vectors
 
 
-## The model (diagram)
+## The flow diagram (part I)
 
 In this section, please make a diagram to connect the different compartments of the model
 
@@ -115,6 +115,9 @@ $$\ \frac{dI_v}{dt}  = \delta Ev - \mu_v I_v$$
 We need a formula to estimate R0: 
 $$ R_0^2 = \frac{mb^2 \beta_h \beta_v \delta}{\mu_v (\mu_v+\delta)(\mu_h+\gamma_h)} $$
 
+## The flow diagram (part II)
+
+Now that you know the equations, complete the flow diagram with the parameters and the correct connection between the different compartments.
 
 
 ```{r, include = FALSE}
@@ -147,10 +150,42 @@ TIME     <- 100       # Number of years to run the simulation
 
 ```
 
-
 ## Finally, the model in R
 
-```{r}
+After having your flow diagram and equations, now please complete the model below witth the right parameters (PAR)
+
+```{r, eval = FALSE}
+arbovmodel <- function (t, x, params) {
+  
+  Sh <- x[1]    #Susceptible humans
+  Ih <- x[2]    #Infected humans
+  Rh <- x[3]    #Recovered humans
+  Sv <- x[4]    #Susceptible vectors
+  Ev <- x[5]    #Susceptible vectors
+  Iv <- x[6]    #Infected vectors
+  
+  with(as.list(params), #local environment to evaluate derivatives
+       {
+         # Humans
+         dSh   <-  PAR * Nh - (PAR * PAR/Nh) * Sh * Iv - PAR * Sh   
+         dIh   <-  (PAR * PAR/Nh) * Sh * Iv  - (PAR + PAR) * Ih
+         dRh   <-  PAR * Ih  - PAR * Rh
+         
+         # Vectors
+         dSv  <-  muv * Nv - (PAR* PAR/Nh) * Ih * Sv - PAR * Sv 
+         dEv  <-   (PAR * PAR/Nh) * Ih * Sv - (PAR + PAR)* Ev
+         dIv  <-   PAR * Ev - PAR * Iv
+         
+         dx   <- c(dSh, dIh, dRh, dSv, dEv, dIv)
+         list(dx)
+       }
+  )
+}
+```
+
+
+
+```{r, include =FALSE}
 arbovmodel <- function (t, x, params) {
   
   Sh <- x[1]    #Susceptible humans
@@ -181,38 +216,80 @@ arbovmodel <- function (t, x, params) {
 
 
 
-```{r, include = FALSE}
+## Solve the system
+
+In this section, run the model and try to understand and complete the arguments of the *ode* function in the *dsolve* package, and comment that part of the code.
+
+
+```{r, eval = FALSE}
 # ----------- Solving the model
 times  <- seq(1,365 * TIME , by = 1)
 
 # Specifying parameters
 params <- c(
-  muv      <- muv,     # daily mortality of mosquitos
-  muh      <- muh,     # daily mortality of humans
-  gamma    <- gamma,  # daily recovery rate
-  delta    <- delta,  # 
-  b        <- b,       # bitting rate (bites per mosquito per day)
-  betah    <- betah,   # probability of transmission from vector to host
-  betav    <- betav,   # probability of transmission from host to vector
-  Nh       <- Nh,      # Number of humans
+  muv      <- muv,     
+  muh      <- muh,     
+  gamma    <- gamma,   
+  delta    <- delta,   
+  b        <- b,       
+  betah    <- betah,   
+  betav    <- betav,   
+  Nh       <- Nh,      
   Nv       <- Nv
   
 )
 
 
 # Initial consitions of the system
-xstart<- c(Sh = Nh , # Initial number of susceptible individuals at T0
-           Ih = 0,        # Initial number of infectious individuals at T0
-           Rh = 0,         # Initial number of Rh
-           Sv = Nv-1,         # Initial number of Iv
-           Ev = 0,         # Initial number of Ev
-           Iv = 1)         # Initial number of Sv
+xstart<- c(Sh = Nh ,      # Initial number of Sh at T0
+           Ih = 0,        # Initial number of Ih at T0
+           Rh = 0,        # Initial number of Rh at T0
+           Sv = Nv-1,     # Initial number of Sv at T0
+           Ev = 0,        # Initial number of Ev at T0
+           Iv = 1)        # Initial number of Iv at TO
 
 # Solving the equations
-out <- as.data.frame(ode(y      = xstart,   # Initial conditions
-                         times  = times,    # Times
-                         fun    = arbovmodel,    # Model
-                         parms  = params)) # Parameters
+out <- as.data.frame(ode(y      = argument?,   # meaning??  
+                         times  = argument?,   # meaning??    
+                         fun    = argument?,   # meaning??
+                         parms  = argument?))  # meaning??   
+
+```
+
+
+
+```{r, include=FALSE}
+# ----------- Solving the model
+times  <- seq(1,365 * TIME , by = 1)
+
+# Specifying parameters
+params <- c(
+  muv      <- muv,     
+  muh      <- muh,     
+  gamma    <- gamma,   
+  delta    <- delta,   
+  b        <- b,       
+  betah    <- betah,   
+  betav    <- betav,   
+  Nh       <- Nh,      
+  Nv       <- Nv
+  
+)
+
+
+# Initial consitions of the system
+xstart<- c(Sh = Nh ,      # Initial number of Sh at T0
+           Ih = 0,        # Initial number of Ih at T0
+           Rh = 0,        # Initial number of Rh at T0
+           Sv = Nv-1,     # Initial number of Sv at T0
+           Ev = 0,        # Initial number of Ev at T0
+           Iv = 1)        # Initial number of Iv at TO
+
+# Solving the equations
+out <- as.data.frame(ode(y      = xstart,     # Initial conditions
+                         times  = times,      # Times
+                         fun    = arbovmodel, # Model
+                         parms  = params))    # Parameters
 
 
 # Creating time options to display
@@ -226,10 +303,28 @@ out$weeks <- out$time / 7
 
 ## The results
 
+In order to have more meaningful display of the results, convert time units *days* into *years* and into *weeks*
+
+
+```{r, eval=FALSE}
+# Creating time options to display
+out$years <- 
+out$weeks <- 
+  
+```
+
+
+```{r, include=FALSE}
+# Creating time options to display
+out$years <- out$time / 365
+out$weeks <- out$time / 7
+```
+
+
 ### General Behavior (Human Population)
 
-```{r p1, include=TRUE, echo=FALSE}
-# Check the general behavior of the model 
+```{r p1, include=TRUE}
+# Check the general behavior of the model for the whole 100 years
 
 p1h <- ggplot(data = out, aes(y = (Rh + Ih + Sh)/10000, x = years)) +
   geom_line(color='grey68', size=1) +
@@ -258,7 +353,7 @@ grid.arrange(p1h, p2h, p3h, p4h, ncol=2)
 
 ### General Behavior (Vector Population)
 
-```{r p2, include=TRUE, echo=FALSE}
+```{r p2, include=TRUE}
 # Check the general behavior of the model 
 
 p1v <- ggplot(data = out, aes(y = (Sv + Ev + Iv), x = years)) +
@@ -292,7 +387,7 @@ grid.arrange(p1v, p2v, p3v, p4v, ncol=2)
 ### Proportion 
 Let's take a more careful look at the propotions and discuss them
 
-```{r p3, include=TRUE, echo=FALSE}
+```{r p3, include=TRUE}
 
 p1 <- ggplot(data = out, aes(y = Sh/(Sh+Ih+Rh), x = years)) +
   geom_line(color='royalblue', size=1) +
@@ -316,10 +411,10 @@ grid.arrange(p1, p2, p3, ncol=2)
 
 ### The First Epidemic
 
-```{r p4, include=TRUE, echo=FALSE}
+```{r p4, include=TRUE}
 # Check the fists epidemic
 
-dat <- out[out$weeks <54,]
+dat <- out[out$weeks < 54,]
 
 p1e <- ggplot(dat, aes(y=Ih/10000, x=weeks)) +
   geom_line(color='firebrick', size=1) +
