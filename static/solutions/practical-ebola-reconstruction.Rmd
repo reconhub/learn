@@ -1,0 +1,613 @@
+---
+title: "Ebola simulation part 2: outbreak reconstruction"
+author: "Thibaut Jombart, Finlay Campbell"
+date: "2017-12-14"
+css: ../../themes/hugo-tracks-theme/static/css/recon.css
+---
+
+	
+```{r options, include = FALSE, message = FALSE, warning = FALSE, error = FALSE}
+library(knitr)
+opts_chunk$set(collapse = TRUE)
+
+install_if_missing <- function(x) {
+    if (!require(x, character.only = TRUE)) {
+        install.packages(x)
+        require(x, character.only = TRUE)
+    }
+}
+
+deps <- c("xlsx", "incidence", "epicontacts", "EpiEstim", "ggplot2", "ape")
+lapply(deps, install_if_missing)
+
+CACHE <- TRUE
+
+```
+
+
+
+This practical is the second part of the response to a simulated Ebola Virus
+Disease (EVD) outbreak taking place in the city of Ankh, Republic of
+Morporkia. While the [first part](../simulated-evd-early) focussed on early
+assessments of transmissibility, this part explores more methodological options
+for estimating transmissibility, and provides an introduction to outbreak
+reconstruction using *outbreaker2*.
+
+	       	  
+<br>
+
+# An update on the EVD outbreak in Ankh, Republic of Morporkia
+
+After some rather concerning [preliminary results](../simulated-evd-early) on
+the new EVD outbreak in the city of Ankh, Republic of Morporkia, Public Health
+Morporkia (PHM) has sent you updates of the linelists and contact data. This
+time, PHM has also obtained Whole Genome Sequences (WGS) of the Ebola virus
+isolated in patients. As before, you are asked to assess the situation and
+produce evidence-based recommendations for informing the response.
+
+    
+
+## Required packages
+
+The following packages, available on CRAN, are needed for this practical:
+
+- [`xlsx`](http://www.repidemicsconsortium.org/incidence/) to read `.xlsx` files
+- [`ggplot2`](http://ggplot2.org/) for graphics
+- [`incidence`](http://www.repidemicsconsortium.org/incidence/) for epicurves
+- [`epicontacts`](http://www.repidemicsconsortium.org/epicontacts/) for contact
+  data visualisation
+- [`EpiEstim`](https://cran.r-project.org/web/packages/EpiEstim/index.html) for
+  time-varying reproduction number estimation
+- [`distcrete`](http://www.repidemicsconsortium.org/distcrete) to obtain
+  discrete time delay distributions
+- [`epitrix`](http://www.repidemicsconsortium.org/epitrix) for some practical
+  tricks for epidemics analysis
+- [`ape`](http://ape-package.ird.fr/) for DNA sequence analysis
+- [`outbreaker2`](http://www.repidemicsconsortium.org/outbreaker2) to
+  reconstruct the outbreak
+  
+To install these packages, use `install.packages`, e.g.:
+   
+```{r install, eval = FALSE}
+install.packages("xlsx")
+install.packages("ggplot2")
+install.packages("incidence")
+install.packages("epicontacts")
+install.packages("EpiEstim")
+install.packages("distcrete")
+install.packages("epitrix")
+install.packages("ape")
+install.packages("outbreaker2")
+```
+
+
+
+
+## The new data
+	
+The data update includes new linelists and contact lists:
+
+- [PHM-EVD-linelist-2017-11-25.xlsx](../../data/PHM-EVD-linelist-2017-11-25.xlsx):
+  a linelist containing case information up to the 25th November 2017
+
+- [PHM-EVD-contacts-2017-11-25.xlsx](../../data/PHM-EVD-contacts-2017-11-25.xlsx):
+  a list of contacts reported between cases up to the 25th November, where
+  `from` indicates a potential source of infection, and `to` the recipient of
+  the contact.
+  
+
+To read into R, download these files and use the function `read.xlsx()` from the
+`xlsx` package to import the data. Each import will create a `data.frame`. Call
+the first one `linelist`, and the second one `contacts`. For instance, your first
+command line could look like:
+	
+```{r eval = FALSE}
+linelist <- xlsx::read.xlsx("PHM-EVD-linelist-2017-11-25.xlsx",
+                            sheetIndex = 1, stringsAsFactors = FALSE)
+```
+
+
+Once imported, the data should look like:
+          
+```{r read_files, echo = -c(1,2)}
+linelist <- xlsx::read.xlsx("../../static/data/PHM-EVD-linelist-2017-11-25.xlsx",
+                            sheetIndex = 1, stringsAsFactors = FALSE)
+contacts <- xlsx::read.xlsx("../../static/data/PHM-EVD-contacts-2017-11-25.xlsx",
+                            sheetIndex = 1, stringsAsFactors = FALSE)
+
+## linelist: one line per case
+head(linelist)
+
+
+## contacts: pairs of cases with reported contacts
+head(contacts)
+```
+
+
+
+# Analysis of epidemiological data
+
+## Visualising contact data
+
+After the initial stage of the outbreak, contact tracing has been maintained but
+started being sparser, and exposures haven't been reported for all
+cases. Despite these limitations, contacts are still a valuable source of
+information. Using the function `make_epicontacts` in the `epicontacts` package,
+create a new `epicontacts` object called `x`, specifying that contacts are
+directed. When plotting the data, use the arguments `node_shape` and `shapes`
+(see `?vis_epicontacts`) to distinguish males and females. For a list of
+available symbols and corresponding shape code, you can type
+`epicontacts::codeawesome`.
+
+The results should look like:
+	      
+```{r epicontacts}
+library(epicontacts)
+x <- make_epicontacts(linelist,
+                      contacts, directed = TRUE)
+x
+plot(x, node_shape = "sex", shapes = c(male = "male", female = "female"), selector = FALSE)
+
+```
+
+<font class="question">What can you say about these contacts? How would you
+interpret the different clusters?</font>
+     
+
+     
+## Building epicurves
+
+Using the same approach as in the [first part](../simulated-evd-early) of the
+practical, use `incidence` (from the `incidence` package) to compute and plot
+epicurves using dates of symptom onset. As the time series is now longer,
+compare daily incidence to weekly incidence. 
+
+You should obtain something like:
+
+```{r incidence, warning = FALSE, message = FALSE}
+library(incidence)
+i <- incidence(linelist$onset)
+plot(i)
+i <- incidence(linelist$onset, interval = 7)
+plot(i)
+```
+
+As there are no longer time intervals with 'zero' incidence on the weekly
+epicurve, which are problematic for log-linear regression, we can try fitting a
+model to these data; we do so here, with `i` being the weekly incidence:
+
+```{r fit}
+f <- fit(i)
+f
+plot(i, color = "#c65353", fit = f)
+```
+
+How would you interpret this result? What are the limitations of this analysis?
+
+
+
+## Estimating transmissibility
+
+Repeating the same analysis as in the [early stage](../simulated-evd-early) of
+the outbreak, we can use `get_R` from the `earlyR` package to estimate the
+reproduction number:
+
+```{r basic_R}
+library(earlyR)
+
+## parameters of the serial interval
+mu <- 15.3
+sd <- 9.3
+
+daily_i <- incidence(linelist$onset)
+simple_R <- get_R(daily_i, si_mean = mu, si_sd =  9.3, max_R = 5)
+simple_R
+
+## R: likelihood function
+plot(simple_R)
+
+## force of infection
+plot(simple_R, "lambdas")
+abline(v = as.Date("2017-11-25"))
+```
+
+What do you make of these results? What is the main limitation of the estimation
+of the reproduction number ($R$) in this analysis? What assumption does it make
+about the outbreak?
+
+
+
+## Estimating time-varying transmissibility
+
+When the assumption that $R$ is constant over time becomes untenable, an
+alternative is the estimationg of time-varying transmissibility using the
+instantaneous reproduction number $R_t$. This approach, introduced by Cori et
+al. [-@Cori2013-fc], is implemented in the package `EpiEstim` (function
+`EstimateR`). It esimates $R_t$ for a succession of sliding time windows, using
+the same Poisson likelihood described in the [first
+part](../simulated-evd-early). In the following, we use `EstimateR` to estimate
+transmissibility for 1-week sliding time windows:
+
+```{r epiestim}
+library(EpiEstim)
+library(ggplot2)
+
+days <- seq_along(daily_i$dates)
+Rt <- EstimateR(as.vector(daily_i$counts), days, days + 7, method = "ParametricSI",
+                   Mean.SI = mu, Std.SI = sd)
+Rt <- Rt$R[days,]
+head(Rt, 10)
+
+```
+
+`EpiEstim` is not yet integrated with other RECON packages, so adding the
+results to existing `incidence` plots takes some customisation using
+`ggplot2`. Uses the following commands to add estimates of $R_r$ to the daily
+incidence:
+
+```{r epiestimplot}
+
+names(Rt) <- gsub("[(]R[)]", "", names(Rt))
+Rt <- cbind.data.frame(as.data.frame(daily_i),
+                       Rt)
+plot(daily_i) +
+    geom_ribbon(data = Rt, fill = "#c65353", alpha = .3,
+                aes(ymin = Quantile.0.025, ymax = Quantile.0.975)) +
+    geom_line(data = Rt, aes(y = Median), col = "#c65353", alpha = .8) +
+    geom_hline(yintercept = 1, linetype = 2) +
+    labs(title = "Weekly Rt: median, and 95% CI")
+
+```
+
+<font class="question">How would you interpret this result? What is the caveat
+of this representation?</font>
+
+
+
+
+# Finding who infected whom
+
+To gain a better understanding of the transmission process, we can attempt to
+reconstruct plausible transmission trees using the dates of symptom onsets and
+limited contact data. This can be achieved using `outbreaker2`, which provides a
+modular platform for outbreak reconstruction. This package extends and replaces
+`outbreaker`, which in contrast was a static implementation of a specific
+transmission model [@Jombart2014-ab].
+
+
+## Looking at Whole Genome Sequences (WGS)
+
+WGS have been obtained for all cases in this outbreak. They are stored as a
+`fasta` [PHM-EVD-WGS.fa](../../data/PHM-EVD-WGS.fa). Download this
+file, save it in your working directory, and then import these data using the
+function `read.FASTA` from the `ape` package.
+
+```{r echo = -2, eval = -3}
+library(ape)
+dna <- read.FASTA("../../static/data/PHM-EVD-WGS.fa")
+dna <- read.FASTA("PHM-EVD-WGS.fa")
+dna
+identical(labels(dna), linelist$case_id) # check sequences match linelist data
+```
+
+As a first exploration of the data, we derive a Neighbour-Joining tree rooted at
+the first case of the outbreak:
+```{r nj, fig.height = 8}
+nj <- nj(dist.dna(dna, model = "N")) # NJ on nucleotide distances (model = "N")
+nj
+nj <- root(nj, 1)
+plot(nj, main = "Neighbour Joining tree")
+axisPhylo()
+```
+
+<font class="question">How would you interpret this phylogenetic tree? Many
+methods of outbreak reconstruction infer transmission events from
+phylogenies. What results would you expect here?</font>
+
+
+
+
+
+## Building delay distributions
+
+`outbreaker2` can handle different types of dates. When dates of onset are
+provided, information on the *generation time* (delay between primary and
+secondary infections) and on the *incubation period* (delay between infection and
+symptom onset) can be included in the model. These delays are typically
+modelled as Gamma distributions, which need to be discretised in order to
+account for the fact that time is reported as days.
+
+
+A possible approach here would be using estimates of the *mean* and *standard
+deviation* of the incubation period and the generation time published in the
+literature. From this, one would need to use `epitrix` to convert these
+parameters into *shape* and *scale* for a Gamma distribution, and then use
+`distcrete` to generate discretised distributions.
+
+
+Alternatively, these parameters can be estimated from a previous, reasonably
+similar outbreak. PHM asks you to use the dataset `ebola_sim_clean` from the
+`outbreaks` package to this end. Start by extracting data on the inbucation
+period (i.e. delay from infection to onset) and store the output in an object
+called `incub`; results should look like:
+
+```{r incubation}
+library(outbreaks)
+
+incub <- with(ebola_sim_clean$linelist, date_of_onset - date_of_infection)
+incub <- as.integer(na.omit(incub))
+summary(incub)
+
+hist(incub, col = terrain.colors(10), border = "white",
+     main = "Incubation period",
+     xlab = "Days after exposure")
+
+```
+
+Then, use `epicontacts` to extract data on the generation time (i.e. delay between
+infections between infectors and infectees):
+
+```{r generation-time}
+library(epicontacts)
+ebola_sim_contacts <- with(ebola_sim_clean, make_epicontacts(linelist, contacts, directed = TRUE))
+ebola_sim_contacts
+gen_time <- get_pairwise(ebola_sim_contacts, "date_of_infection")
+gen_time <- as.integer(na.omit(gen_time))
+summary(gen_time)
+
+hist(gen_time, col = terrain.colors(10), border = "white",
+     main = "Generation time",
+     xlab = "Days after exposure")
+
+```
+
+We can now build discretised Gamma distributions for both delays. We illustrate
+the procedure for the incubation period:
+
+```{r incub_dist}
+library(epitrix)
+library(distcrete)
+incub_fit <- fit_disc_gamma(incub)
+incub_params <- gamma_mucv2shapescale(incub_fit$mu, incub_fit$cv)
+incub_params
+incub_dist <- distcrete("gamma", shape = incub_params$shape, scale = incub_params$scale,
+                        interval = 1L, w = 0)
+incub_dist
+plot(0:50, incub_dist$d(0:50), type = "h", col = terrain.colors(51),
+     xlab = "Days after exposure", ylab = "Probability",
+     main = "Incubation period distribution", lend = 1, lwd = 8)
+```
+
+Using the same process, create a distribution for the generation time. Results should resemble:
+
+```{r gen_time_dist}
+gen_time_fit <- fit_disc_gamma(gen_time)
+gen_time_params <- gamma_mucv2shapescale(gen_time_fit$mu, gen_time_fit$cv)
+gen_time_params
+gen_time_dist <- distcrete("gamma", shape = gen_time_params$shape, scale = gen_time_params$scale,
+                        interval = 1L, w = 0)
+gen_time_dist
+plot(0:50, gen_time_dist$d(0:50), type = "h", col = terrain.colors(51),
+     xlab = "Days after infection", ylab = "Probability",
+     main = "Generation time distribution", lend = 1, lwd = 8)
+```
+
+
+
+
+
+## Using the original `outbreaker` model
+
+The original `outbreaker` model combined temporal information (here, dates of
+onset) with sequence data to infer who infected whom. Here, we use `outbreaker2`
+to apply this model to the data. 
+
+All inputs to the new `outbreaker` function are prepared using dedicated
+functions, which make a number of checks on provided inputs and define defaults:
+
+
+```{r data-basic-outbreaker}
+library(outbreaker2)
+
+data <- outbreaker_data(dates = linelist$onset, # dates of onset
+                        dna = unname(dna), # WGS; remove labels for compatibility
+                        w_dens = gen_time_dist$d(1:100), # generation time distribution
+                        f_dens = incub_dist$d(1:100) # incubation period distribution
+                        )
+```
+
+We also create a configuration, which determines different aspects of the
+analysis, including which parameters need to be estimated, initial values of
+parameters, the length of the MCMC, etc.:
+
+```{r config-outbreaker}
+config <- create_config(move_kappa = FALSE, # don't look for missing cases
+                        move_pi = FALSE, # don't estimate reporting
+                        init_pi = 1, # set reporting to 1
+                        find_import = FALSE, # don't look for additional imported cases
+                        init_tree = "star" # star-like tree as starting point
+                        )
+```
+
+We can now run the analysis. This should take a couple of minutes on modern
+laptops. Note the use of `set.seed(0)` to have identical results across
+different users and computers:
+
+```{r outbreaker-basic, cache = CACHE}
+set.seed(0)
+res_basic <- outbreaker(data = data, config = config)
+res_basic
+plot(res_basic)
+plot(res_basic, burn = 500)
+
+```
+
+The first two plots show the trace of the log-posterior densities (with, and
+without burnin). See `?plot.outbreaker_chains` for details on available
+plots. Graphics worth looking at include:
+
+```{r basic_plots}
+plot(res_basic,  type = "alpha", burnin = 500) # ancestries
+plot(res_basic,  type = "t_inf", burnin = 500) # infection dates
+plot(res_basic, "mu", burn = 500, type = "density") # mutation rate
+plot(res_basic,  type = "network", burnin = 500, min_support = .05) # transmission trees
+```
+
+As a further help for interpretation, you can derive a consensus tree from the
+posterior samples of trees using `summary`. Look in particular at the *support*
+column, and compare the results to the contact data.
+
+```{r outbreaker-basic-summary}
+smry_basic <- summary(res_basic)
+head(smry_basic$tree)
+tail(smry_basic$tree)
+hist(smry_basic$tree$support, col = "grey", border = "white",
+     main = "Consensus ancestry: support", xlim = c(0,1))
+```
+
+<font class="question">How would you interpret the results? Is this what you
+would have expected?</font> 
+
+As a point of comparison, repeat the same analysis
+using temporal data only, and plot a graph of ancestries (`type = "alpha"`); you
+should obtain something along the lines of:
+
+```{r outbreaker-time}
+set.seed(0)
+
+data <- outbreaker_data(dates = linelist$onset, # dates of onset
+                        w_dens = gen_time_dist$d(1:100), # generation time distribution
+                        f_dens = incub_dist$d(1:100) # incubation period distribution
+                        )
+res_time <- outbreaker(data = data, config = config)
+plot(res_time, type = "alpha", burn = 500)
+
+```
+
+<font class="question">What is the usefulness of temporal and genetic data for
+outbreak reconstruction? What other data would you ideally include?</font>
+
+
+
+## Adding contact data to the reconstruction process
+
+Contact data currently contains case labels. While `epicontacts` objects will
+soon be accepted as inputs in `outbreaker2`, for now we need to operate some
+minor transformations to define contacts using cases indices rather than labels:
+
+```{r transform-contacts}
+ctd <- matrix(match(unlist(x$contacts), linelist$case_id), ncol = 2)
+head(ctd)
+dim(ctd)
+```
+
+All inputs to the `outbreaker` function are prepared using dedicated functions,
+which make a number of checks on provided inputs and define defaults:
+
+```{r data-outbreaker-full}
+data <- outbreaker_data(dates = linelist$onset, # dates of onset
+                        dna = unname(dna), # dna sequences
+                        ctd = ctd, # contact data
+                        w_dens = gen_time_dist$d(1:100), # generation time distribution
+                        f_dens = incub_dist$d(1:100) # incubation period distribution
+                        )
+```
+
+We are now ready to run the analysis. This may take a couple of minutes,
+depending on your computer:
+
+```{r outbreaker-full, cache = CACHE}
+set.seed(0)
+res_full <- outbreaker(data = data, config = config)
+res_full
+```
+
+Produce graphics as in the previous model. Assess convergence, choose an
+appropriate burnin, visualise ancestries and the infection timelines:
+
+```{r full_plots}
+plot(res_full) # log-posterior trace
+plot(res_full, burnin = 200) # log-posterior trace
+plot(res_full,  type = "alpha", burnin = 200) # ancestries
+plot(res_full,  type = "t_inf", burnin = 200) # infection dates
+plot(res_full,  type = "network", burnin = 200, min_support = .05) # transmission trees
+```
+
+<font class="question">How would you interpret the results?</font>
+
+<br>
+
+Derive a consensus tree using `summary`, and make a new `epicontacts` object,
+using the previous linelist, to visualise the consensus tree with
+meta-information:
+
+```{r outbreaker-full-summary}
+smry_full <- summary(res_full)
+head(smry_full$tree)
+
+smry_full$tree$support <- round(smry_full$tree$support, 2)
+
+linelist$id <- 1:nrow(linelist) # add case index to linelist
+cons_tree <- make_epicontacts(linelist, smry_full$tree[-1, ], id = "id",
+                              from = 1, to = 2, directed = TRUE)
+
+```
+
+In the following, we add age class information to the linelist of `cons_tree`,
+and create color palettes which will be used to display information on the final
+graph:
+
+```{r consensus-tree-making}
+library(visNetwork)
+
+support_pal <- colorRampPalette(
+    c("#918D98", "#645877", "#423359", "#281449", "#1A0340")
+)
+
+age_pal <- colorRampPalette(
+    c("#3288BD", "#ABDDA4", "#FDAE61", "#D53E4F")
+)
+
+cons_tree$linelist$age_class <- cut(cons_tree$linelist$age,
+                                    breaks = c(0, 10, 20, 30, 40, 90),
+                                    labels = c("0-10", "11-20", "21-30", "31-40", "41+" ))
+
+```
+
+Looking carefully at the documentation of `vis_epicontacts`, try to reproduce
+the final consensus tree below:
+
+```{r consensus-plot}
+
+plot(cons_tree, edge_col = "support", edge_col_pal = support_pal,
+     edge_label = "support", node_shape = "sex",
+     shapes = c(male = "male", female = "female"), node_color = "age_class",
+     col_pal = age_pal)
+     
+```
+
+<font class="question">What are your conclusions? What are the main drivers of
+this outbreak? What recommendations would you make to further improve the
+response?</font>
+
+
+
+
+# About this document
+
+## Contributors
+
+- Thibaut Jombart: initial version
+
+Contributions are welcome via [pull requests](https://github.com/reconhub/learn/pulls). The source file is hosted on [github](https://github.com/reconhub/learn/blob/master/content/post/2017-11-22-sim-ebola-reconstruction.Rmd).
+
+
+## Legal stuff
+
+**License**: [CC-BY](https://creativecommons.org/licenses/by/3.0/)
+**Copyright**: Thibaut Jombart, 2017 
+
+
+
+
+# References
