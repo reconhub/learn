@@ -195,12 +195,14 @@ reproduction number:
 ```{r basic_R}
 library(earlyR)
 
-## parameters of the serial interval
-mu <- 15.3
-sd <- 9.3
+## parameters of the serial interval from practical part1, on the dataset
+## ebola_sim_clean (outbreaks package)
+
+mu <- 11.48 # mean serial interval
+sd <- 7.38 # standard deviation
 
 daily_i <- incidence(linelist$onset)
-simple_R <- get_R(daily_i, si_mean = mu, si_sd =  9.3, max_R = 5)
+simple_R <- get_R(daily_i, si_mean = mu, si_sd = sd, max_R = 5)
 simple_R
 
 ## R: likelihood function
@@ -299,6 +301,14 @@ nj <- root(nj, 1)
 plot(nj, main = "Neighbour Joining tree")
 axisPhylo()
 ```
+
+
+This phylogenetic tree shows the inferred evolution of the pathogen
+sequences. Branch length (x-axis) correspond to the number of mutations occuring
+between lineages (indicated by the axis at the bottom). The tree has been rooted
+to the index case, so that this sequence (top, left) is the "most ancient" part
+of the tree. Note that in such representations, distances on the y-axis are meaningless.
+
 
 <font class="question">How would you interpret this phylogenetic tree? Many
 methods of outbreak reconstruction infer transmission events from
