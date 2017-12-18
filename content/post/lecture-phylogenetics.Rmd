@@ -4,7 +4,7 @@ author: "Thibaut Jombart"
 categories: ["lectures"]
 tags: ["genetics"]
 date: 2017-12-15
-image: img/highres/trees.jpg
+image: img/highres/tree-radial.jpg
 showonlyimage: true
 ---
 
@@ -27,7 +27,7 @@ practices.
 **Click on the image below to access the slides:**
 
 <center>
-<a href="../../slides/lecture-phylogenetics/lecture-phylogenetics.pdf"><img class="gateway" src="../../img/highres/trees.jpg" width="50%" alt="click there for slides" align="middle"></a>
+<a href="../../slides/lecture-phylogenetics/lecture-phylogenetics.pdf"><img class="gateway" src="../../img/highres/tree-radial.jpg" width="50%" alt="click there for slides" align="middle"></a>
 </center>
 
 
