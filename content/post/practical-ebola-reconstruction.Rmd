@@ -3,7 +3,7 @@ title: "Ebola simulation part 2: outbreak reconstruction"
 author: Thibaut Jombart, Finlay Campbell
 categories: ["practicals"]
 tags: ["genetics", "simulation", "response", "outbreaker2", "epicurve", "reproduction number"]
-date: 2017-12-14
+date: 2018-01-24
 image: img/highres/ebola-blue.jpg
 showonlyimage: true
 bibliography: practical-evd.bib
@@ -21,7 +21,7 @@ install_if_missing <- function(x) {
     }
 }
 
-deps <- c("xlsx", "incidence", "epicontacts", "EpiEstim", "ggplot2", "ape")
+deps <- c("xlsx", "incidence", "epicontacts", "EpiEstim", "ggplot2", "ape", "outbreaker2", "epitrix")
 lapply(deps, install_if_missing)
 
 CACHE <- TRUE
@@ -375,18 +375,16 @@ hist(gen_time, col = terrain.colors(10), border = "white",
 
 ```
 
-We can now build discretised Gamma distributions for both delays. We illustrate
-the procedure for the incubation period:
+We can now fit a discretised Gamma distributions to both delays. The function
+`fit_dist_gamma` in the package `epitrix` makes this fairly simple. We
+illustrate the procedure for the incubation period:
 
 ```{r incub_dist}
 library(epitrix)
-library(distcrete)
 incub_fit <- fit_disc_gamma(incub)
-incub_params <- gamma_mucv2shapescale(incub_fit$mu, incub_fit$cv)
-incub_params
-incub_dist <- distcrete("gamma", shape = incub_params$shape, scale = incub_params$scale,
-                        interval = 1L, w = 0)
-incub_dist
+incub_fit
+incub_dist <- incub_fit$distribution
+
 plot(0:50, incub_dist$d(0:50), type = "h", col = terrain.colors(51),
      xlab = "Days after exposure", ylab = "Probability",
      main = "Incubation period distribution", lend = 1, lwd = 8)
@@ -396,11 +394,9 @@ Using the same process, create a distribution for the generation time. Results s
 
 ```{r gen_time_dist, echo = FALSE}
 gen_time_fit <- fit_disc_gamma(gen_time)
-gen_time_params <- gamma_mucv2shapescale(gen_time_fit$mu, gen_time_fit$cv)
-gen_time_params
-gen_time_dist <- distcrete("gamma", shape = gen_time_params$shape, scale = gen_time_params$scale,
-                        interval = 1L, w = 0)
-gen_time_dist
+gen_time_fit
+gen_time_dist <- gen_time_fit$distribution
+
 plot(0:50, gen_time_dist$d(0:50), type = "h", col = terrain.colors(51),
      xlab = "Days after infection", ylab = "Probability",
      main = "Generation time distribution", lend = 1, lwd = 8)
