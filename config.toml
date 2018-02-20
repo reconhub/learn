@@ -1,4 +1,4 @@
-baseurl = "https://reconlearn.netlify.com/"
+baseurl = "https://reconlearn-ld.netlify.com/"
 title = "RECON learn"
 theme = "hugo-tracks-theme"
 languageCode = "en-us"
