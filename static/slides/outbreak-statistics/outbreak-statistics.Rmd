@@ -1,7 +1,7 @@
 ---
 title: "A primer on statistical outbreak analysis"
 author: "Thibaut Jombart"
-date: "2018-02-26"
+date: "2018-02-25"
 output:
   ioslides_presentation:
     incremental: false
