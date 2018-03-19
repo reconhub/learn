@@ -1,0 +1,28 @@
+Package: learn
+Version: 0.0.0.9000
+Title: RECON LEARN content
+Description: Contains recon learn content
+Authors@R: person("Steph", "Locke", email = "steph@itsalocke.com", role = c("ctr"))
+License: CC-BY-4.0
+Encoding: UTF-8
+LazyData: true
+ByteCompile: true
+Imports: knitr,
+    deSolve,
+    epicontacts,
+    incidence,
+    earlyR,
+    EpiEstim,
+    ggplot2,
+    ape,
+    outbreaks,
+    epitrix,
+    outbreaker2,
+    visNetwork,
+    distcrete,
+    projections,
+    stats,
+    ade4,
+    adegenet,
+    phangorn,
+    gridExtra
