@@ -25,4 +25,6 @@ Imports: knitr,
     ade4,
     adegenet,
     phangorn,
-    gridExtra
+    gridExtra,
+    tidyverse,
+    devtools
