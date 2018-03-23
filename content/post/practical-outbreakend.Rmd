@@ -1,8 +1,8 @@
 ---
-title: "Is This Outbreak Over?"
+title: "Is this outbreak over?"
 author: Michael Höhle
 categories: ["practicals"]
-tags: ["epicurve", "reproduction number"]
+tags: ["epicurve", "outbreak", "outbreak end"]
 date: 2018-03-22
 # Image by doodleguy under a Creative Commons Zero 1.0 Public Domain License  license -- https://openclipart.org/detail/261545/the-end-is-near
 image: img/highres/theendisnear.png
@@ -81,7 +81,7 @@ We use the WHO MERS-CoV data available from [http://www.who.int/csr/don/21-july-
 ```{r DATAIO, warning=FALSE}
 linelist <- openxlsx::read.xlsx("../../static/data/MERS-CoV-cases-rok-21Jul15.xlsx",startRow=4)
 ```
-We skip the first 3 rows as the contain irrelevant header data. After loading the data sobe additional data munging is needed, which include converting the dates to the `Date` class and filling the missing values in the
+We skip the first 3 rows as they contain irrelevant header data. After loading the data, additional data munging is needed in order to convert the date-strings to the `Date` class and fill the missing values in the
 `Date.of.symptoms.onset` column as described in the paper.
 
 ```{r DATAMUNGING}
@@ -133,15 +133,15 @@ We shall distinguish our results between
 
 Focus of this blog entry is on the later part. Details on the first part is available in the R code from github.
 
-### Parameter Estimation of the Serial Interval Distribution
+### Parameter Estimation of the Offspring and Serial Interval Distributions
 
 The parameters to estimate are the following:
 
 * parameters of the parametric distributional family governing the serial interval distribution - in @nishiura_etal2016 this is assumed to be a gamma distribution with parameters $\theta_{\text{serial}} = (\alpha,\beta)'$ with expectation $\alpha/\beta$ and variance $\alpha/\beta^2$
 * parameters of the offspring distribution, which here is assumed to be negative binomial with mean $R_0$ and clumping parameter $k$
 
-The first step is accomplished in 
-@nishiura_etal2016 by solving for given mean and standard deviation for the serial interval distribution observed in secondary data - see the [technical appendix](https://wwwnc.cdc.gov/eid/article/22/1/15-1383-techapp1.pdf) of the paper for details. The solution for $\alpha$ and $\beta$ can then be found analytically from these values.
+The first set of parameters are estimated in 
+@nishiura_etal2016 by method-of-moment-matching the mean and standard deviation of the serial interval distribution with observed in secondary data - see the [technical appendix](https://wwwnc.cdc.gov/eid/article/22/1/15-1383-techapp1.pdf) of the paper for details. The solution for $\alpha$ and $\beta$ of the gamma distribution can then be found analytically from these values.
 ```{r}
 #Values for mean and std. deviation (=sqrt(Variance)) found in the paper
 E <- 12.6
@@ -150,7 +150,7 @@ SD <- 2.8
 (theta_serial <- c(alpha=E^2/SD^2,beta=E/SD^2))
 ```
 
-The second part is addressed in @nishiura_etal2015 by analysing final-size and generation data using a maximum likelihood approach. We will here only implement the methods using the data presented in Figure 1 and Table 1 of the paper. Unfortunately, one cluster size is not immediately reconstructable from the data in the paper, but guesstimating from the table on p.4 of the [ECDC Rapid Risk Assessment](http://ecdc.europa.eu/en/publications/Publications/RRA-Middle-East-respiratory-syndrome-coronavirus-Korea.pdf) it appears to be the outbreak in Jordan with a size of 19. The likelihood is then maximized for $\mathbf{\theta}=(\log(R_0),\log(k))'$ using the `optim` function. 
+The second part of the estimation task is addressed in @nishiura_etal2015 by analysing final-size and generation data using a maximum likelihood approach. We will here only implement the methods using the data presented in Figure 1 and Table 1 of the paper. Unfortunately, one cluster size is not immediately reconstructable from the data in the paper, but guesstimating from the table on p.4 of the [ECDC Rapid Risk Assessment](http://ecdc.europa.eu/en/publications/Publications/RRA-Middle-East-respiratory-syndrome-coronavirus-Korea.pdf) it appears to be the outbreak in Jordan with a size of 19. The likelihood is then maximized for $\mathbf{\theta}=(\log(R_0),\log(k))'$ using the `optim` function. 
 
 ```{r,echo=FALSE,results='hide'}
 ######################################################################
@@ -300,11 +300,13 @@ doffspring <- function(y, R_0, k, log=FALSE) {
 ##########################################################################
 ## Probability for one or more cases at time t (vectorized for easier use).
 ##
-## @param t
-## @param R_0         Estimated value of R_0
-## @param k           Estimated value of k
-## @param theta_serial
-## @param oMax        Maximum value of o to try in the summation (instead of infinity)
+## @param t             Vector of observed time points of symptom onsets
+## @param R_0           Estimated value of R_0
+## @param k             Estimated value of k
+## @param theta_serial  (alpha,beta) vector parametrising the serial interval
+##                      gamma distribution 
+## @param oMax          Maximum value of o to sum in the summation formula 
+##                      (instead of infinity)
 ##########################################################################
 p_oneormore <- Vectorize(function(t,R_0,k,theta_serial,oMax=1e4) {
   ##Init result variable 
@@ -314,15 +316,15 @@ p_oneormore <- Vectorize(function(t,R_0,k,theta_serial,oMax=1e4) {
   for (i in seq_len(nrow(linelist))) {
     serial_time <- as.numeric(t - linelist$Date.of.symptoms.onset[i])
     cdf <- pgamma(serial_time, theta_serial[1], theta_serial[2])
-    o <- 0L:yMax
+    o <- 0L:oMax
     osum <- sum( doffspring(y=o,R_0=R_0,k=k)*cdf^o)
-    res <- res * ysum
+    res <- res * osum
   }
   return(1-res)
 },vectorize.args=c("t","R_0","k"))
 ```
 
-The function allows us to re-calculate the results of @nishiura_etal2016:
+The function allows us to re-calculate the results of @nishiura_etal2016 for the MERS-CoV outbreak:
 
 ```{r,cache=TRUE}
 ##Results from the Nishiura et al. (2015) paper
@@ -334,7 +336,7 @@ k_hat   <- exp(theta_mle$par[2])
 ## Compute probility for one or more cases on a grid of dates
 df <- data_frame(t=seq(as.Date("2015-07-15"),as.Date("2015-08-05"),by="1 day"))
 df <- df %>% 
-  mutate(pi =  p_oneormore(t,R_0=R_0_hat, k=k_hat, theta_serial=theta_serial, yMax=250,verbose=FALSE))
+  mutate(pi =  p_oneormore(t,R_0=R_0_hat, k=k_hat, theta_serial=theta_serial, oMax=250))
 ## Look at the result
 head(df, n=3)
 ```
@@ -349,7 +351,7 @@ R0k_samples <- exp(rmvnorm(nSamples,mean=theta_mle$par,
                            sigma=solve(-theta_mle$hessian)))
 ##Do the replications while having a progress bar.
 sims <- pbapply(R0k_samples, 1, function(hat) {
-  p_oneormore(df$t,R_0=hat[1], k=hat[2], theta_serial=theta_serial, yMax=250,verbose=FALSE)
+  p_oneormore(df$t,R_0=hat[1], k=hat[2], theta_serial=theta_serial, oMax=250)
 })
 df2 <- cbind(df, quantile=t(apply(sims, 1, quantile, prob=c(0.025,0.975))))
 ```
