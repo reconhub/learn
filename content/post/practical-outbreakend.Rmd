@@ -131,7 +131,7 @@ We shall distinguish our results between
 1. estimating $R_0$ and $k$  of the offspring distribution and the parameters of the serial interval distribution from data  
 2. computating the probability $\pi_t$ given the parameters found in step 1.
 
-Focus of this blog entry is on the later part. Details on the first part is available in the R code from github.
+Focus of this blog entry is on the later part. Details on the first part is available in the R code from [github]().
 
 ### Parameter Estimation of the Offspring and Serial Interval Distributions
 
@@ -300,9 +300,9 @@ doffspring <- function(y, R_0, k, log=FALSE) {
 ##########################################################################
 ## Probability for one or more cases at time t (vectorized for easier use).
 ##
-## @param t             Vector of observed time points of symptom onsets
-## @param R_0           Estimated value of R_0
-## @param k             Estimated value of k
+## @param t             Vector of Time points to compute \pi_t for
+## @param R_0           Estimated value of the basic reproduction number R_0
+## @param k             Estimated value of the expected number of offspring k
 ## @param theta_serial  (alpha,beta) vector parametrising the serial interval
 ##                      gamma distribution 
 ## @param oMax          Maximum value of o to sum in the summation formula 
@@ -386,7 +386,7 @@ The [blog post](http://staff.math.su.se/hoehle/blog/2016/08/04/outbreakEnd.html)
 
 ## Contributors
 
-- Michael Höhle, Stockholm University: RECON modified version of the blog post [No Sleep During the Reproducibility Session](http://staff.math.su.se/hoehle/blog/2016/08/04/outbreakEnd.html)
+- [Michael Höhle](http://www.math.su.se/~hoehle), Stockholm University: RECON modified version of the blog post [No Sleep During the Reproducibility Session](http://staff.math.su.se/hoehle/blog/2016/08/04/outbreakEnd.html)
 
 Contributions are welcome via [pull requests](https://github.com/reconhub/learn/pulls). The source file is hosted on [github](https://github.com/reconhub/learn/blob/master/content/post/2018-03-22-practical-outbreakend.Rmd).
 
