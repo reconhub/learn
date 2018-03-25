@@ -12,6 +12,7 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 [params]
   # Use custom.css for your custom styling
   style = "default"
+  pages = true
   description = "RECON's teaching platform"
   copyright = "&copy;2017 Thibaut Jombart"
   sidebarAbout = [
