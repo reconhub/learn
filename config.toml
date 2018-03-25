@@ -3,7 +3,7 @@ title = "RECON learn"
 theme = "hugo-tracks-theme"
 languageCode = "en-us"
 # Enable comments by entering your Disqus shortname
-# disqusShortname = ""
+disqusShortname = "itsalocke"
 # Enable Google Analytics by entering your tracking code
 # googleAnalytics = ""
 # Ignore the following extensions
