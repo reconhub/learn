@@ -62,15 +62,15 @@ uglyurls = true
   
 [[menu.main]]
   name = "About"
-  url = "/about"
+  url = "/about.html"
   weight = 90
   
 [[menu.main]]
   name = "Contact"
-  url = "/contact"
+  url = "/contact.html"
   weight = 89
   
 [[menu.main]]
   name = "Sample"
-  url = "/sample"
+  url = "/sample.html"
   weight = 87
