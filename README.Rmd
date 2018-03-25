@@ -54,9 +54,6 @@ The general workflow would include the following steps:
 
 1. **Fork the project** from the github *RECON learn* project:
 
-<center>
-<img src="data/img/shot-fork.png" width="800px">
-</center>
 
 This will create a copy of the project in your own github account. You will need
 to clone this archive, and make the modifications there. You `git clone` would look like:
@@ -83,16 +80,8 @@ well (run `git status` to see which files haven't been added).
 
 5. Make a **pull request** against the main project (`master` branch), from the github *RECON learn* project:
 
-<center>
-<img src="data/img/shot-pr.png" width="800px">
-</center>
 
 Make sure you use `reconhub/learn`, branch `master` as base fork:
-
-<center>
-<img src="data/img/shot-pr-2.png" width="800px">
-</center>
-
 
 
 
