@@ -1,0 +1,2 @@
+/categories/ /categories.html 301
+/categories/* /categories/:splat.html 301
