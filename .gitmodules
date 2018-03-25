@@ -1,3 +1,6 @@
 [submodule "themes/hugo-tracks-theme"]
 	path = themes/hugo-tracks-theme
 	url = https://github.com/lockedata/hugo-tracks-theme
+[submodule "themes/hugo-casper-two"]
+	path = themes/hugo-casper-two
+	url = https://github.com/eueung/hugo-casper-two.git
