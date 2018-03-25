@@ -7,6 +7,7 @@ date: 2017-12-09
 image: img/highres/stats-notebook.jpg
 slug: "outbreakstatsprimer"
 showonlyimage: true
+licenses: CC-BY
 ---
 
 This short lecture gives a primer on some methodological aspects of

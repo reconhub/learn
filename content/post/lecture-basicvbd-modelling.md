@@ -7,6 +7,7 @@ date: 2017-12-13
 image: img/highres/mosquito2.jpg
 slug: "basicvbdmodelling"
 showonlyimage: true
+licenses: CC-BY
 ---
 
 This lecture is about Vector Borne Diseases (VBD) modelling. The aim is

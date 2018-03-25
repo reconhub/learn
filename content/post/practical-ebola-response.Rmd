@@ -7,6 +7,7 @@ date: 2017-12-09
 image: img/highres/ebola.jpg
 slug: simulated-evd-early
 showonlyimage: true
+licenses: CC-BY
 ---
 
 	

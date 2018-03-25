@@ -7,6 +7,7 @@ date: 2018-01-24
 image: img/highres/ebola-blue.jpg
 showonlyimage: true
 bibliography: practical-evd.bib
+licenses: CC-BY
 ---
 
 	

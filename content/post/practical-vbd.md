@@ -5,6 +5,7 @@ date: 2017-12-04
 image: img/highres/mosquito.jpg
 tags: ["zika", "compartmental models"]
 categories: practicals
+licenses: CC-BY
 ---
 
 This practical aims to illustrate the basics of **vector borne disease

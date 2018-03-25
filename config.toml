@@ -58,7 +58,10 @@ uglyurls = true
   url = "/tags.html"
   weight = 98
 
-
+[[menu.main]]
+  name = "Licenses"
+  url = "/licenses.html"
+  weight = 97
   
 [[menu.main]]
   name = "About"

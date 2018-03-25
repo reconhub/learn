@@ -7,6 +7,7 @@ date: 2017-12-13
 image: img/highres/investigation.jpg
 slug: "lectureoutbreaker2"
 showonlyimage: true
+licenses: CC-BY
 ---
 
 This short lecture gives a primer on some methodological aspects of

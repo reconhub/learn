@@ -2,3 +2,5 @@
 /categories/* /categories/:splat.html 301
 /tags/ /tags.html 301
 /tags/* /tags/:splat.html 301
+/licenses/ /licenses.html 301
+/licenses/* /licenses/:splat.html 301

@@ -7,6 +7,7 @@ date: 2017-11-01
 image: img/highres/trees.jpg
 showonlyimage: true
 bibliography: practical-phylogenetics.bib
+licenses: CC-BY
 ---
 
 This practical aims to illustrate the basics of **phylogenetic

@@ -5,6 +5,7 @@ date: 2017-12-04
 tags: ['Ebola','compartmental models']
 categories: practicals
 image: img/highres/ebola-green.jpg
+licenses: CC-BY
 ---
 
 This practical aims to illustrate the basics of **Ebola modelling**

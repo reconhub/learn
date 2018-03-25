@@ -7,6 +7,7 @@ date: 2017-12-11
 image: img/highres/stats-notebook-blue.jpg
 slug: "modellingforpublichealth"
 showonlyimage: true
+licenses: CC-BY
 ---
 
 This short lecture gives a primer on how modelling can help inform

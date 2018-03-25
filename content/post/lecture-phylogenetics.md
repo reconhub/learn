@@ -6,6 +6,7 @@ tags: ["genetics"]
 date: 2017-12-15
 image: img/highres/tree-radial.jpg
 showonlyimage: true
+licenses: CC-BY
 ---
 
 This lecture introduces general concepts pertaining to phylogenetic tree

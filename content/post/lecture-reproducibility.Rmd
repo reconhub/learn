@@ -7,6 +7,7 @@ date: 2017-11-10
 image: img/highres/printing-press.jpg
 slug: reproducibility
 showonlyimage: true
+licenses: CC-BY
 ---
 
 	

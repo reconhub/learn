@@ -7,6 +7,7 @@ date: 2017-12-11
 image: img/highres/seismograph.jpg
 slug: "compartmentalebola"
 showonlyimage: true
+licenses: CC-BY
 ---
 
 This short lecture gives a primer in building compartmental models. It
