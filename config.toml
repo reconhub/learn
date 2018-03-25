@@ -8,13 +8,18 @@ disqusShortname = "itsalocke"
 # Ignore the following extensions
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_cache$","^README"]
 paginate        = 6
-[permalinks]
-  post = "/post/:slug/"
+uglyurls = true
+[taxonomies]
+  tag = "tags"
+  category = "categories"
+  license = "licenses"
+
+
 [params]
   title = "RECON learn"
   # Use custom.css for your custom styling
   style = "default"
-  subtitle = "RECON's teaching platform"
+  subtitle = "A free and open collection of training resources for epidemics analysis and outbreak response."
   copyright = "©2017 Thibaut Jombart"
   description = "For more about the R Epidemics Consortium (RECON), visit our website: https://repidemicsconsortium.org"
   singleViewStyle = "casper"
@@ -24,7 +29,7 @@ paginate        = 6
   email         = "thibautjombart@gmail.com"
   twitterName    = "teebzr"
   
-  logo = "img/logo/learn.png"
+  logo = "img/logo/learnNotLightened.png"
   orgName = "RECON"
   orgWebsite = "https://repidemicsconsortium.org"
   orgDescription = "For more about the R Epidemics Consortium (RECON), visit our website: https://repidemicsconsortium.org"

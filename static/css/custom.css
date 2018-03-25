@@ -1,7 +1,24 @@
+/* RECON Blue */
 .site-header {
     background: #3d3d5c;
 }
 
+.site-footer {
+    background: #3d3d5c;
+}
+
+
+/* RECON Yellow */
+
+.nav-current a:visited {
+    color: #f0c674;
+}
+
+/* Header adjustments */
 .site-logo {
     max-height: 100px;
+}
+
+.site-header-content {
+    padding:4vw;
 }

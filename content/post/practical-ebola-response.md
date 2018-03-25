@@ -447,21 +447,20 @@ make sure you use daily intervals for the discretisation, and use
 `w = 0` to indicate dates should be floored to the day. Store the ouput
 in an object called `si`. Your results should look like:
 
-``` r
-si
-## A discrete distribution
-##   name: gamma
-##   parameters:
-##     shape: 2.41900859135364
-##     scale: 4.74728799288241
+    ## Warning: package 'distcrete' was built under R version 3.4.4
+    si
+    ## A discrete distribution
+    ##   name: gamma
+    ##   parameters:
+    ##     shape: 2.41900859135364
+    ##     scale: 4.74728799288241
 
-## look at the fit
-hist(old_si, xlab = "Days after symptom onset", ylab = "Frequency",
-     main = "Serial interval: fit to data", col = "grey", border = "white",
-     nclass = 30, ylim = c(0, 0.07), prob = TRUE)
-points(0:60, si$d(0:60), col = "#9933ff", pch = 20)
-points(0:60, si$d(0:60), col = "#9933ff", type = "l", lty = 2)
-```
+    ## look at the fit
+    hist(old_si, xlab = "Days after symptom onset", ylab = "Frequency",
+         main = "Serial interval: fit to data", col = "grey", border = "white",
+         nclass = 30, ylim = c(0, 0.07), prob = TRUE)
+    points(0:60, si$d(0:60), col = "#9933ff", pch = 20)
+    points(0:60, si$d(0:60), col = "#9933ff", type = "l", lty = 2)
 
 ![](practical-ebola-response_files/figure-markdown_github/si-1.png)
 
@@ -541,6 +540,7 @@ fixed value of $R\_0 = $1.81, the ML estimate of *R*<sub>0</sub>:
 
 ``` r
 library(projections)
+## Warning: package 'projections' was built under R version 3.4.4
 project(i, R = R$R_ml, si = si, n_sim = 5, n_days = 10, R_fix_within = TRUE)
 ## 
 ## /// Incidence projections //

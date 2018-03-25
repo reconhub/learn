@@ -788,7 +788,7 @@ fit
 ## unconstrained loglikelihood: -4736.539 
 ## Discrete gamma model
 ## Number of rate categories: 4 
-## Shape parameter: 0.2676998 
+## Shape parameter: 0.2676999 
 ## 
 ## Rate matrix:
 ##           a         c         g         t

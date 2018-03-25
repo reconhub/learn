@@ -43,11 +43,7 @@ Then load the packages using:
 library(deSolve)
 library(ggplot2)
 library(gridExtra)
-## 
-## Attaching package: 'gridExtra'
-## The following object is masked from 'package:dplyr':
-## 
-##     combine
+## Warning: package 'gridExtra' was built under R version 3.4.4
 ```
 
 The basic Zika model

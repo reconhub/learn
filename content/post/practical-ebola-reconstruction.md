@@ -235,6 +235,7 @@ the `earlyR` package to estimate the reproduction number:
 
 ``` r
 library(earlyR)
+## Warning: package 'earlyR' was built under R version 3.4.4
 
 ## parameters of the serial interval from practical part1, on the dataset
 ## ebola_sim_clean (outbreaks package)
@@ -472,17 +473,16 @@ extracting data on the inbucation period (i.e. delay from infection to
 onset) and store the output in an object called `incub`; results should
 look like:
 
-``` r
-incub <- with(ebola_sim_clean$linelist, date_of_onset - date_of_infection)
-incub <- as.integer(na.omit(incub))
-summary(incub)
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    1.00    4.00    8.00   10.08   14.00   62.00
+    ## Warning: package 'outbreaks' was built under R version 3.4.4
+    incub <- with(ebola_sim_clean$linelist, date_of_onset - date_of_infection)
+    incub <- as.integer(na.omit(incub))
+    summary(incub)
+    ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+    ##    1.00    4.00    8.00   10.08   14.00   62.00
 
-hist(incub, col = terrain.colors(10), border = "white",
-     main = "Incubation period",
-     xlab = "Days after exposure")
-```
+    hist(incub, col = terrain.colors(10), border = "white",
+         main = "Incubation period",
+         xlab = "Days after exposure")
 
 ![](practical-ebola-reconstruction_files/figure-markdown_github/incubation-1.png)
 
@@ -875,6 +875,7 @@ information on the final graph:
 
 ``` r
 library(visNetwork)
+## Warning: package 'visNetwork' was built under R version 3.4.4
 
 support_pal <- colorRampPalette(
     c("#918D98", "#645877", "#423359", "#281449", "#1A0340")

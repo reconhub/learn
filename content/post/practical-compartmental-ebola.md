@@ -37,6 +37,7 @@ Then load the packages using:
 
 ``` r
 library(deSolve)
+## Warning: package 'deSolve' was built under R version 3.4.4
 ```
 
 The basic Ebola model

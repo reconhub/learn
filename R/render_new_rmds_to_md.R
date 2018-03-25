@@ -13,5 +13,6 @@ for(b in to_build) {
   rmarkdown::render(
     rmd,
     rmarkdown::md_document(variant = "markdown_github",
-                           preserve_yaml = TRUE))
+                           preserve_yaml = TRUE),
+      )
 }
