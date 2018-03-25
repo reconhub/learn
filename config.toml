@@ -45,13 +45,19 @@ uglyurls = true
   
 [[menu.main]]
   name = "Practicals"
-  url = "/categories/practicals"
+  url = "/categories/practicals.html"
   weight = 99
   
 [[menu.main]]
   name = "Lectures"
-  url = "/categories/lectures"
+  url = "/categories/lectures.html"
   weight = 99
+  
+[[menu.main]]
+  name = "Topics"
+  url = "/tags.html"
+  weight = 98
+
 
   
 [[menu.main]]
