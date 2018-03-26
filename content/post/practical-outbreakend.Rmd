@@ -72,9 +72,9 @@ The following packages, available on CRAN, are needed for this practical:
 To install these packages, use `install.packages` and then load them using
 
 ```{r, warning=FALSE, message=FALSE}
-suppressPackageStartupMessages(library("tidyverse"))
-suppressPackageStartupMessages(library("openxlsx"))
-suppressPackageStartupMessages(library("pbapply"))
+library("tidyverse")
+library("openxlsx")
+library("pbapply")
 ```
 
 ## Data from the MERS-Cov Oubtreak in Korea, 2015
