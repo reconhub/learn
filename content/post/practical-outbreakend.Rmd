@@ -27,7 +27,7 @@ install_if_missing <- function(x) {
     }
 }
 
-deps <- c("readxl", "tidyverse","pbapply")
+deps <- c("readxl", "tidyverse", "pbapply")
 lapply(deps, install_if_missing)
 
 CACHE <- TRUE
@@ -82,7 +82,7 @@ library("pbapply")
 We use the WHO MERS-CoV data available from [http://www.who.int/csr/don/21-july-2015-mers-korea/en/](http://www.who.int/csr/don/21-july-2015-mers-korea/en/) to illustrate the statistical method. For convenience, these data were download and are distributed as part of the RECON learn github account.
 
 ```{r DATAIO, warning=FALSE}
-linelist <- openxlsx::read.xlsx("../../static/data/MERS-CoV-cases-rok-21Jul15.xlsx",startRow=4)
+linelist <- openxlsx::read.xlsx("../../static/data/MERS-CoV-cases-rok-21Jul15.xlsx", startRow=4)
 ```
 We skip the first 3 rows as they contain irrelevant header data. After loading the data, additional data munging is needed in order to convert the date-strings to the `Date` class and fill the missing values in the
 `Date.of.symptoms.onset` column as described in the paper.
@@ -91,7 +91,7 @@ We skip the first 3 rows as they contain irrelevant header data. After loading t
 ##Convert all columns containing the String "...Date..." to the Date class
 ##using the date/month/Year format (in which the data are available)
 linelist <- linelist %>%
-  mutate_if(grepl("Date",names(linelist)), as.Date, format="%d/%m/%Y")
+  mutate_if(grepl("Date", names(linelist)), as.Date, format="%d/%m/%Y")
 
 ## As written in the @nishiura_etal2016 paper, the missing onset times
 ## are handled as follows: Whenever the date of illness onset was missing,
@@ -150,12 +150,12 @@ The first set of parameters are estimated in
 E <- 12.6
 SD <- 2.8
 ##Convert to gamma distribution parameters
-(theta_serial <- c(alpha=E^2/SD^2,beta=E/SD^2))
+(theta_serial <- c(alpha=E^2/SD^2, beta=E/SD^2))
 ```
 
 The second part of the estimation task is addressed in @nishiura_etal2015 by analysing final-size and generation data using a maximum likelihood approach. We will here only implement the methods using the data presented in Figure 1 and Table 1 of the paper. Unfortunately, one cluster size is not immediately reconstructable from the data in the paper, but guesstimating from the table on p.4 of the [ECDC Rapid Risk Assessment](http://ecdc.europa.eu/en/publications/Publications/RRA-Middle-East-respiratory-syndrome-coronavirus-Korea.pdf) it appears to be the outbreak in Jordan with a size of 19. The likelihood is then maximized for $\mathbf{\theta}=(\log(R_0),\log(k))'$ using the `optim` function.
 
-```{r,echo=FALSE,results='hide'}
+```{r, echo=FALSE, results='hide'}
 ######################################################################
 ## Compute PMF for the final size of outbreak equal to y in a model
 ## with R_0  and clumping parameter k from Nishiura et al. (2012)
@@ -194,61 +194,61 @@ dfinalSize <- function(y, k, R_0, log=FALSE) {
 }
 
 ## Test
-dfinalSize_n2012(y=1,k=1/3, R_0=1.22)
-sum(dfinalSize_n2012(y=1:10000,k=1/3, R_0=1.22))
+dfinalSize_n2012(y=1, k=1/3, R_0=1.22)
+sum(dfinalSize_n2012(y=1:10000, k=1/3, R_0=1.22))
 
 ##Verify for setting of the Nishiura paper
-dfinalSize_n2012(y=1,k=0.14, R_0=0.75)
-sum(dfinalSize_n2012(y=1:10000,k=0.14, R_0=0.75))
+dfinalSize_n2012(y=1, k=0.14, R_0=0.75)
+sum(dfinalSize_n2012(y=1:10000, k=0.14, R_0=0.75))
 
-dfinalSize(y=1,k=0.14, R_0=0.75)
-sum(dfinalSize(y=1:10000,k=0.14, R_0=0.75))
+dfinalSize(y=1, k=0.14, R_0=0.75)
+sum(dfinalSize(y=1:10000, k=0.14, R_0=0.75))
 
 pnGenerations <- Vectorize(function(h, R_0, k) {
   res <- 0
   if (h==1) res <- exp(-k*log(1+R_0/k))
   if (h==2) res <- exp(-k*log(1+R_0/k-R_0/(k*(1+R_0/k)^k)))
-  if (h>=3) res <- exp(-k*log(1 + R_0/k*(1-pnGenerations(h=h-1, R_0=R_0,k=k))))
+  if (h>=3) res <- exp(-k*log(1 + R_0/k*(1-pnGenerations(h=h-1, R_0=R_0, k=k))))
   return(res)
 })
 
 ##PMF conditioned on at least one generation.
 dnGenerations <- function(h, R_0, k) {
-  pnGenerations(h, R_0=R_0,k=k) -  pnGenerations(h-1, R_0=R_0,k=k)
+  pnGenerations(h, R_0=R_0, k=k) -  pnGenerations(h-1, R_0=R_0, k=k)
 }
 
 ##Test the functions
-pnGenerations(1:100, R_0=1,k=0.14)
-dnGenerations(1:10, R_0=1,k=0.14)
+pnGenerations(1:100, R_0=1, k=0.14)
+dnGenerations(1:10,  R_0=1, k=0.14)
 
 ```
 
-```{r,echo=FALSE,results='hide'}
-outbreaks_notME <- read.table(file="../../static/data/nishiuara_etal2015-MERS-imports.txt",header=TRUE,stringsAsFactors = FALSE)
+```{r, echo=FALSE, results='hide'}
+outbreaks_notME <- read.table(file="../../static/data/nishiuara_etal2015-MERS-imports.txt", header=TRUE,stringsAsFactors = FALSE)
 head(outbreaks_notME)
 
 ## August: http://ecdc.europa.eu/en/publications/Publications/30-07-2015-RRA-MERS.pdf
 ## July report: http://ecdc.europa.eu/en/publications/Publications/RRA-Middle-East-respiratory-syndrome-coronavirus-Korea.pdf
 ## The missing number is probably Jordan with a cluster size of 19 (?)
-outbreaks <- rbind(outbreaks_notME, data.frame(Country="Middle East",Generation=c(rep(0,8),rep(1,5)),Total.number.of.cases=c(rep(1,8),rep(2,3),3,19)))
+outbreaks <- rbind(outbreaks_notME, data.frame(Country="Middle East", Generation=c(rep(0, 8), rep(1, 5)), Total.number.of.cases=c(rep(1, 8),rep(2, 3), 3, 19)))
 outbreaks <- outbreaks %>% mutate(isMiddleEastCountry=Country == "Middle East")
-with(outbreaks, table(Total.number.of.cases,isMiddleEastCountry))
+with(outbreaks, table(Total.number.of.cases, isMiddleEastCountry))
 with(outbreaks, table(Generation, isMiddleEastCountry))
 
 ##Compare with Fig. X of the Eurosurveillance article
 nrow(outbreaks)
 outbreaks <- within(outbreaks,
-                           Total.number.of.cases.trunc <- factor(ifelse(Total.number.of.cases<7,Total.number.of.cases,">=8"),levels=as.character(c(1:7,">=8"))))
+                           Total.number.of.cases.trunc <- factor(ifelse(Total.number.of.cases<7, Total.number.of.cases, ">=8"), levels=as.character(c(1:7, ">=8"))))
 (tab <- table(outbreaks$Total.number.of.cases.trunc))
 sum(tab)
 ```
 
-```{r,LIKFIT, echo=FALSE}
+```{r, LIKFIT, echo=FALSE}
 ##Likelihood for the final size of the importation events
 ll_1 <- function(theta, outbreaks) {
   R_0 <- exp(theta[1])
   k   <- exp(theta[2])
-  sum(dfinalSize(y=outbreaks$Total.number.of.cases,R_0=R_0, k=k,log=TRUE))
+  sum(dfinalSize(y=outbreaks$Total.number.of.cases, R_0=R_0, k=k, log=TRUE))
 }
 
 ll_2 <- function(theta, outbreaks) {
@@ -259,21 +259,21 @@ ll_2 <- function(theta, outbreaks) {
 }
 
 ll_combine <- function(theta, outbreaks) {
-    ll_1(theta,outbreaks) + ll_2(theta,outbreaks)
+    ll_1(theta, outbreaks) + ll_2(theta, outbreaks)
 }
 ```
 
-```{r TESTLIKELHOOD, echo=FALSE,results='hide'}
+```{r TESTLIKELHOOD, echo=FALSE, results='hide'}
 #Test likelihood functions
-ll_1(c(0.75,0.14), outbreaks=outbreaks)
-ll_2(c(0.75,0.14), outbreaks=outbreaks)
-ll_combine(c(0.8,0.14), outbreaks=outbreaks)
+ll_1(c(0.75, 0.14), outbreaks=outbreaks)
+ll_2(c(0.75, 0.14), outbreaks=outbreaks)
+ll_combine(c(0.8, 0.14), outbreaks=outbreaks)
 
 #Optim part 1
-theta_mle <- optim(c(log(1),log(1)),ll_1, outbreaks=outbreaks, control=list(fnscale=-1))
+theta_mle <- optim(c(log(1), log(1)), ll_1, outbreaks=outbreaks, control=list(fnscale=-1))
 exp(theta_mle$par)
 
-theta_mle <- optim(c(log(0.75),log(0.14)),ll_2, outbreaks=outbreaks, control=list(fnscale=-1))
+theta_mle <- optim(c(log(0.75), log(0.14)), ll_2, outbreaks=outbreaks, control=list(fnscale=-1))
 exp(theta_mle$par)
 ```
 <!-- In the above `dfinalSize` and `dnGenerations` are two manually written R-functions, which contain the likelihood of observing a particular final size and a particular number of generations, respectively. -->
@@ -281,7 +281,7 @@ exp(theta_mle$par)
 As usual in likelihood inference, a numeric approximation of the variance-covariance matrix of $\hat{\mathbf{\theta}}$ can be obtained from the Hessian matrix for the loglikelihood evaluated at the MLE. Altogether, we maximize the combined likelihood consisting of `r nrow(outbreaks)` as well as the corresponding number of generations by:
 
 ```{r}
-theta_mle <- optim(c(log(1),log(1)),ll_combine, outbreaks=outbreaks, control=list(fnscale=-1),hessian=TRUE)
+theta_mle <- optim(c(log(1), log(1)), ll_combine, outbreaks=outbreaks, control=list(fnscale=-1), hessian=TRUE)
 exp(theta_mle$par)
 ```
 Here, `ll_combine` denotes the log-likelihood function computed for the data contained in `outbreaks`. For the exact code of these functions please visit the [github source code]() of this practical.
@@ -311,7 +311,7 @@ doffspring <- function(y, R_0, k, log=FALSE) {
 ## @param oMax          Maximum value of o to sum in the summation formula
 ##                      (instead of infinity)
 ##########################################################################
-p_oneormore <- Vectorize(function(t,R_0,k,theta_serial,oMax=1e4) {
+p_oneormore <- Vectorize(function(t, R_0, k, theta_serial, oMax=1e4) {
   ##Init result variable
   res <- 1
 
@@ -320,7 +320,7 @@ p_oneormore <- Vectorize(function(t,R_0,k,theta_serial,oMax=1e4) {
     serial_time <- as.numeric(t - linelist$Date.of.symptoms.onset[i])
     cdf <- pgamma(serial_time, theta_serial[1], theta_serial[2])
     o <- 0L:oMax
-    osum <- sum( doffspring(y=o,R_0=R_0,k=k)*cdf^o)
+    osum <- sum( doffspring(y=o, R_0=R_0, k=k) * cdf^o)
     res <- res * osum
   }
   return(1-res)
@@ -329,7 +329,7 @@ p_oneormore <- Vectorize(function(t,R_0,k,theta_serial,oMax=1e4) {
 
 The function allows us to re-calculate the results of @nishiura_etal2016 for the MERS-CoV outbreak:
 
-```{r,cache=TRUE}
+```{r, cache=TRUE}
 ##Results from the Nishiura et al. (2015) paper
 ##R_0_hat <- 0.75 ; k_hat <- 0.14
 ##Use MLE found with the data we were able to extract.
@@ -337,37 +337,37 @@ R_0_hat <- exp(theta_mle$par[1])
 k_hat   <- exp(theta_mle$par[2])
 
 ## Compute probility for one or more cases on a grid of dates
-df <- data_frame(t=seq(as.Date("2015-07-15"),as.Date("2015-08-05"),by="1 day"))
+df <- data_frame(t=seq(as.Date("2015-07-15"), as.Date("2015-08-05"), by="1 day"))
 df <- df %>%
-  mutate(pi =  p_oneormore(t,R_0=R_0_hat, k=k_hat, theta_serial=theta_serial, oMax=250))
+  mutate(pi =  p_oneormore(t, R_0=R_0_hat, k=k_hat, theta_serial=theta_serial, oMax=250))
 ## Look at the result
 head(df, n=3)
 ```
 
 We can embed estimation uncertainty originating from the estimation of $R_0$ and $k$ by adding an additional bootstrap step with values of $(\log R_0, \log k)'$ sampled from the asymptotic normal distribution of the MLE. This distribution has expectation equal to the MLE and variance-covariance matrix equal to the observed Fisher information. Pointwise percentile-based 95% confidence intervals are then easily computed from the samples. The figure below shows this 95% CI (shaded area) together with the $\pi_t$ curve. The github code contains the details of generating the sample and drawing the curve using `ggplot`.
 
-```{r,echo=FALSE,cache=TRUE}
+```{r, echo=FALSE, cache=TRUE}
 ##
 library("mvtnorm")
 nSamples <- 100
-R0k_samples <- exp(rmvnorm(nSamples,mean=theta_mle$par,
+R0k_samples <- exp(rmvnorm(nSamples, mean=theta_mle$par,
                            sigma=solve(-theta_mle$hessian)))
 ##Do the replications while having a progress bar.
 sims <- pbapply(R0k_samples, 1, function(hat) {
-  p_oneormore(df$t,R_0=hat[1], k=hat[2], theta_serial=theta_serial, oMax=250)
+  p_oneormore(df$t, R_0=hat[1], k=hat[2], theta_serial=theta_serial, oMax=250)
 })
-df2 <- cbind(df, quantile=t(apply(sims, 1, quantile, prob=c(0.025,0.975))))
+df2 <- cbind(df, quantile=t(apply(sims, 1, quantile, prob=c(0.025, 0.975))))
 ```
 
 ```{r THRESHOLD, echo=FALSE}
 c_threshold <- 0.05
 ```
 
-```{r,echo=FALSE}
+```{r, echo=FALSE}
 #Make the plot
-ggplot(df2, aes(x=t,y=pi,group=1)) + geom_line() +
-  geom_ribbon(aes(ymax = `quantile.2.5%`,ymin=`quantile.97.5%`), fill = 1, alpha = 0.2) +
-  geom_hline(yintercept = c_threshold,lty=2,col="orange") +
+ggplot(df2, aes(x=t, y=pi, group=1)) + geom_line() +
+  geom_ribbon(aes(ymax = `quantile.2.5%`, ymin=`quantile.97.5%`), fill = 1, alpha = 0.2) +
+  geom_hline(yintercept = c_threshold, lty=2, col="orange") +
   xlab("Time (days)") + ylab("Probability of additional cases") +
   scale_y_continuous(labels=scales::percent)
 ```
