@@ -95,7 +95,7 @@ linelist <- linelist %>%
 
 ## As written in the @nishiura_etal2016 paper, the missing onset times
 ## are handled as follows: Whenever the date of illness onset was missing,
-## we substituted it with the date of laboratory confirmation.
+## we substitute it with the date of laboratory confirmation.
 linelist <- linelist %>%
   mutate(Date.of.symptoms.onset =
            if_else(is.na(Date.of.symptoms.onset),
