@@ -105,7 +105,7 @@ linelist <- linelist %>%
 
 At the end of the data munging the first three lines in the data look as follows:
 ```{r}
-linelist %>% head(n=3)
+head(linelist, n=3)
 ```
 
 ```{r, echo=FALSE}
@@ -115,10 +115,12 @@ n_date <- max(linelist$Date.of.symptoms.onset)
 
 # Analysis of the MERS-CoV data
 
-The above data is the WHO data set on the
+The above data is the WHO dataset on the
 [MERS-Cov outbreak in Korea](http://www.who.int/csr/don/21-july-2015-mers-korea/en/),
 which occurred during May-July 2015. It contains the information about `r nrow(linelist)` cases of the MERS-CoV outbreak in Korea, 2015.
-Using the RECON [`incidence`](http://www.repidemicsconsortium.org/incidence/) package its easy to plot the epicurve based on the date of symptoms onset in the linelist.
+Using the RECON
+[`incidence`](http://www.repidemicsconsortium.org/incidence/) package
+it is easy to plot the epicurve based on the date of symptoms onset in the linelist.
 
 ```{r}
 inc <- incidence::incidence(linelist$Date.of.symptoms.onset, interval = 1)
@@ -134,7 +136,7 @@ We shall distinguish our results between
 1. estimating $R_0$ and $k$  of the offspring distribution and the parameters of the serial interval distribution from data
 2. computating the probability $\pi_t$ given the parameters found in step 1.
 
-Focus of this blog entry is on the later part. Details on the first part is available in the R code from [github]().
+Focus of this tutorial is on the later part. Details on the first part is available in the R code from [github](https://raw.githubusercontent.com/hoehleatsu/learn/outbreakend/content/post/practical-outbreakend.Rmd).
 
 ### Parameter Estimation of the Offspring and Serial Interval Distributions
 
