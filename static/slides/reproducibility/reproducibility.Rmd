@@ -322,7 +322,7 @@ rmarkdown::render("foo.Rmd")
 > - use the package <font color="#99004d">`here`</font> for portable paths e.g.:<br>
 `my_file <- here("data/data.csv")`
 > - avoid special characters and spaces in all names e.g.:<br> `éèçêäÏ*%~!?&`
-> - assume case sensitivity: <br>`FoBar` $\neq$ `foobar` $\neq$ `FOOBAR`
+> - assume case sensitivity: <br>`FooBar` $\neq$ `foobar` $\neq$ `FOOBAR`
 
 
 
@@ -336,7 +336,7 @@ rmarkdown::render("foo.Rmd")
 
 > - name things explicitly
     
-> - settle for one \alert{naming convention}; \texttt{snake\_case} is currently recommended for <img src="../../img/slides/Rlogo.png" width="40px"> packages
+> - settle for one <font color="#99004d">naming convention</font>; `snake_case` is currently recommended for <img src="../../img/slides/Rlogo.png" width="40px"> packages
    
 > - document your code using <font color="#99004d">comments</font> (`##`)
     
