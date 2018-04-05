@@ -37,11 +37,31 @@ git clone https://github.com/reconhub/learn
 cd learn
 ```
 
-Once this is done, start R and type:
+Once this is done, you will need to make sure that all packages needed by all
+practicals and lectures on the website are installed on your computer. If this
+is not the case, you can install these dependencies using `checkpoint` by
+typing:
+
+
+```r
+if (!require("checkpoint")) {
+    install.packages("checkpoint")
+}
+
+install.packages(
+    checkpoint::scanForPackages(use.knitr = TRUE)$pkgs
+)
+```
+
+You should usually only need this once, as further dependencies can be installed
+at a later stage. Once this is done, you can preview the site by typing:
+
 
 ```r
 blogdown::serve_site()
 ```
+
+
 
 This will open up the website at `127.0.0.1:4321`. This website is updated in
 real time based on the content of `learn/`.
