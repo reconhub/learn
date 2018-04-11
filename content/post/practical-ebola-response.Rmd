@@ -3,7 +3,7 @@ title: "Ebola simulation part 1: early outbreak assessment"
 author: Thibaut Jombart, Finlay Campbell
 categories: ["practicals"]
 tags: ["simulation", "response", "Ebola", "epicurve", "reproduction number"]
-date: 2017-12-09
+date: 2018-04-09
 image: img/highres/ebola.jpg
 slug: simulated-evd-early
 showonlyimage: true
@@ -64,7 +64,7 @@ The following packages, available on CRAN, are needed for this case study:
 To install these packages, use `install.packages`, e.g.:
    
 ```{r install, eval = FALSE}
-install.packages("xlsx")
+install.packages("readxl")
 install.packages("outbreaks")
 install.packages("incidence")
 install.packages("epicontacts")
@@ -91,22 +91,28 @@ and contact data, from the early stages of the outbreak:
   the contact.
   
 
-To read into R, download these files and use the function `read.xlsx()` from the
-`xlsx` package to import the data. Each import will create a `data.frame`. Call
-the first one `linelist`, and the second one `contacts`. For instance, you first
-command line could look like:
+To read into R, download these files and use the function `read_xlsx()` from the
+`readxl` package to import the data. Each import will create a data table stored
+as a `tibble` object. Call the first one `linelist`, and the second one
+`contacts`. For instance, you first command line could look like:
 	
 ```{r eval = FALSE}
-linelist <- xlsx::read.xlsx("PHM-EVD-linelist-2017-10-27.xlsx", sheetIndex = 1)
+linelist <- readxl::read_xlsx("PHM-EVD-linelist-2017-10-27.xlsx")
+```
+
+Note that for further analyses, you will need to make sure all dates are stored
+as `Date` objects. This can be done using `as.Date`:
+
+```{r date-conversion, echo = -c(1, 2)}
+linelist <- readxl::read_xlsx("../../static/data/PHM-EVD-linelist-2017-10-27.xlsx")
+contacts <- readxl::read_xlsx("../../static/data/PHM-EVD-contacts-2017-10-27.xlsx")
+linelist$onset <- as.Date(linelist$onset)
 ```
 
 
 Once imported, the data should look like:
           
-```{r read_files, echo = -c(1,2)}
-linelist <- xlsx::read.xlsx("../../static/data/PHM-EVD-linelist-2017-10-27.xlsx", sheetIndex = 1)
-contacts <- xlsx::read.xlsx("../../static/data/PHM-EVD-contacts-2017-10-27.xlsx", sheetIndex = 1)
-
+```{r read_files}
 ## linelist: one line per case
 linelist
 
@@ -249,10 +255,10 @@ where $F_{\mathcal{P}}$ is the Poisson probability mass function.
 
 
 
-### Estimating the serial interval from older data
+### Looking into the past: estimating the serial interval from older data
 
-As current data are insufficient to estimate the serial interval distribution,
-some colleague recommends using data from a past outbreak stored in the
+As current data are insufficient to estimate the **serial interval** distribution,
+some colleague recommends using data from a **past outbreak** stored in the
 `outbreaks` package, as the dataset `ebola_sim_clean`. Load this dataset, and
 create a new `epicontacts` object as before, without plotting it (it is a much
 larger dataset). Store the new object as `old_evd`; the output should look like:
@@ -290,26 +296,18 @@ si_fit <- fit_disc_gamma(old_si)
 si_fit
 ```
 
-Now that you know how to parametrise a discretised Gamma distribution matching
-previous data on the serial interval, create this distribution using the
-function `distcrete` from the similarly named package. Specify make sure you use
-daily intervals for the discretisation, and use `w = 0` to indicate dates should
-be floored to the day. Store the ouput in an object called `si`. Your results
-should look like:
+`si_fit` contains various information about the fitted delays, including the
+estimated distribution in the `$distribution` slot. You can compare this
+distribution to the empirical data in the following plot:
 
-```{r si, echo = -c(1:3)}
-library(distcrete)
-si_params <- gamma_mucv2shapescale(si_fit$mu, si_fit$cv)
-si <- distcrete("gamma",
-                shape = si_params$shape,
-                scale = si_params$scale,
-                w = 0, interval = 1)
+```{r si}
+si <- si_fit$distribution
 si
 
-## look at the fit
+## compare fitted distribution to data
 hist(old_si, xlab = "Days after symptom onset", ylab = "Frequency",
-     main = "Serial interval: fit to data", col = "grey", border = "white",
-     nclass = 30, ylim = c(0, 0.07), prob = TRUE)
+     main = "Serial interval: fit to data", col = "salmon", border = "white",
+     nclass = 50, ylim = c(0, 0.07), prob = TRUE)
 points(0:60, si$d(0:60), col = "#9933ff", pch = 20)
 points(0:60, si$d(0:60), col = "#9933ff", type = "l", lty = 2)
 ```
@@ -321,19 +319,21 @@ from the West African EVD outbreak (WHO Ebola Response Team (2014) NEJM
   
 
 
-### Estimation of $R_0$
+### Back to the future: estimation of $R_0$ in the current outbreak
+
+Now that we have estimates of the serial interval based on a previous outbreak,
+we can use this information to estimate transmissibility of the disease (as
+measured by $R_0$) in the current outbreak.
 
 Using the estimates of the mean and standard deviation of the serial interval
 you just obtained, use the function `get_R` to estimate the reproduction number,
-specifying a maximum R of 10 (see ?`get_R`) and store the result in a new object
+specifying a maximum R of 10 (see `?get_R`) and store the result in a new object
 `R`:
 
 ```{r estimate-R, echo = FALSE}
 
 library(earlyR)
-mu <- si_fit$mu # mean in days days
-sigma <- si_fit$sd # standard deviation in days
-R <- get_R(i, si_mean = mu, si_sd = sigma, max_R = 10)
+R <- get_R(i, si = si_fit$distribution, max_R = 10)
 
 ```
 
@@ -367,7 +367,7 @@ needed is one or several values of $R_0$ and a serial interval distribution,
 stored as a `distcrete` object.
 
 Here, we illustrate how we can simulate 5 random trajectories using a fixed
-value of $R_0 = $`r round(R$R_ml,2)`, the ML estimate of $R_0$:
+value of $R_0$ = `r round(R$R_ml,2)`, the ML estimate of $R_0$:
 
 ```{r project_expl}
 library(projections)
@@ -402,7 +402,7 @@ apply(proj, 1, function(x) mean(x>0))
 ## Follow-up...
 
 For a follow-up on this outbreak, have a look at the [second
-part](../simulated-evd-reconstruction) of this simulated response,
+part](../practical-ebola-reconstruction) of this simulated response,
 which includes a data update, genetic sequences, and the use of outbreak
 reconstruction tools.
 
