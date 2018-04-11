@@ -21,7 +21,7 @@ install_if_missing <- function(x) {
     }
 }
 
-deps <- c("xlsx", "incidence", "epicontacts", "EpiEstim", "ggplot2", "ape", "outbreaker2", "epitrix")
+deps <- c("readxl", "incidence", "epicontacts", "EpiEstim", "ggplot2", "ape", "outbreaker2", "epitrix")
 lapply(deps, install_if_missing)
 
 CACHE <- TRUE
@@ -55,7 +55,7 @@ produce evidence-based recommendations for informing the response.
 
 The following packages, available on CRAN, are needed for this practical:
 
-- [`xlsx`](http://www.repidemicsconsortium.org/incidence/) to read `.xlsx` files
+- [`readxl`](https://cran.r-project.org/web/packages/readxl/index.html) to read `.xlsx` files
 - [`ggplot2`](http://ggplot2.org/) for graphics
 - [`incidence`](http://www.repidemicsconsortium.org/incidence/) for epicurves
 - [`epicontacts`](http://www.repidemicsconsortium.org/epicontacts/) for contact

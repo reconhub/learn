@@ -21,7 +21,7 @@ install_if_missing <- function(x) {
     }
 }
 
-deps <- c("xlsx", "incidence", "epicontacts")
+deps <- c("readxl", "incidence", "epicontacts")
 lapply(deps, install_if_missing)
 
 ```
@@ -52,7 +52,7 @@ you as a consultant in epidemics analysis to inform the response in real time.
 
 The following packages, available on CRAN, are needed for this case study:
 
-- [`xlsx`](https://cran.r-project.org/web/packages/xlsx/index.html) to read `.xlsx` files
+- [`readxl`](https://cran.r-project.org/web/packages/readxl/index.html) to read `.xlsx` files
 - [`outbreaks`](http://www.repidemicsconsortium.org/outbreaks/) for some other outbreak data
 - [`incidence`](http://www.repidemicsconsortium.org/incidence/) for epicurves
 - [`epicontacts`](http://www.repidemicsconsortium.org/epicontacts/) for contact data visualisation
