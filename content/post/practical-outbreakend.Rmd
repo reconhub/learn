@@ -2,7 +2,6 @@
 title: "Is this outbreak over?"
 author: "Michael Höhle"
 date: '2018-03-22'
-output: word_document
 editor_options:
   chunk_output_type: console
 image: img/highres/theendisnear.png
