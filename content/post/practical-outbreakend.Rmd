@@ -1,16 +1,12 @@
 ---
 title: "Is this outbreak over?"
 author: "Michael Höhle"
-date: '2018-03-22'
-editor_options:
-  chunk_output_type: console
+date: 2018-03-22
 image: img/highres/theendisnear.png
 categories: practicals
-showonlyimage: yes
-tags:
-- epicurve
-- outbreak
-- outbreak end
+showonlyimage: true
+slug: is-outbreak-over
+tags: ["epicurve", "outbreak", "outbreak end"]
 bibliography: practical-outbreakend.bib
 ---
 
