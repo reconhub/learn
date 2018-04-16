@@ -1,0 +1,413 @@
+---
+title: "Is this outbreak over?"
+author: "Michael Höhle"
+date: '2018-03-22'
+output: word_document
+editor_options:
+  chunk_output_type: console
+image: img/highres/theendisnear.png
+categories: practicals
+showonlyimage: yes
+tags:
+- epicurve
+- outbreak
+- outbreak end
+bibliography: practical-outbreakend.bib
+---
+
+
+```{r options, include = FALSE, message = FALSE, warning = FALSE, error = FALSE}
+library(knitr)
+opts_chunk$set(collapse = TRUE, fig.height=4, fig.width=8)
+
+install_if_missing <- function(x) {
+    if (!require(x, character.only = TRUE)) {
+        install.packages(x)
+        require(x, character.only = TRUE)
+    }
+}
+
+deps <- c("readxl", "tidyverse", "pbapply")
+lapply(deps, install_if_missing)
+
+CACHE <- TRUE
+
+```
+
+# Motivation
+
+At which time  point during an outbreak of a person-to-person transmitted disease can one declare the outbreak as having ended? Answering this question can be important in order to calm the population, re-attract tourists, stop export bans or reduce alertness status. The current WHO method for answering the above question is as follows: a period of two times the longest possible incubation time needs to pass without observing additional cases, before the outbreak can be declared as being over. However, as stated in their paper, @nishiura_etal2016 write that this criterion clearly lacks a statistical motivation. As an improvement Nishiura and co-workers formulate a statistical criterion for the decision making based on the serial interval distribution and the offspring distribution of the pathogen responsible for the outbreak.
+
+In what follows we shall quickly describe their method and apply it to their motivating example, which was the 2015 MERS-CoV outbreak in Korea.
+R code is provided implementing and illustrating the method. **Warning**: This practical assumes you have a certain knowledge of statistical modelling and statistical inference, i.e. knowledge about distributions, maximum likelihood inference and Monte Carlo simulation.
+
+# Statistical Method
+
+Describing the above problem in **mathematical notation**, let $Y_t$ be a count variable representing the number of symptom onset in cases we observe on a given day $t$ during the outbreak. The sequence of the $Y_t$ is also called the [**epidemic cuve**](http://www.cdc.gov/foodsafety/outbreaks/investigating-outbreaks/epi-curves.html) of the outbreak. Furthermore, let  $D=\{Y_i, i=1,\ldots,n\}$ be the currently available outbreak data containing the time of symptom onset in in each of the $n$ days the outbreak has lasted so far. For simplicity we assume that at the last observation at least some cases were observed, i.e. $Y_n>0$.  In what follows we will be interested in what happens with $Y_t$ for future time points, i.e. time points after the last currently observed onset time. In particular out interest is, whether we expect to observe either zero cases or more than zero cases for $Y_t$, $t=n+1,n+2,\ldots$.
+
+The important result of @nishiura_etal2016 is that the probability $\pi_t = P(Y_t > 0\>|\>D)$ for $t=n+1,n+2,\ldots$ can be computed as follows:
+$$
+\begin{align*}
+\pi_t = 1 - \prod_{i=1}^n \sum_{o=0}^{\infty} f_{\text{offspring}}(o; R_0, k) \cdot \left[ F_{\text{serial}}(t-t_i) \right]^{o},
+\end{align*}
+$$
+where $f_{\text{offspring}}$ denotes the probability mass function (PMF) for the number of secondary cases that one primary case induces. It is assumed that this distribution is negative binomial with expectation $R_0>0$ and clumping parameter $k>0$. In other words, $\operatorname{E}(O)=R_0$ and $\operatorname{Var}(O)=R_0 + R_0^2/k$.
+Furthermore, $F_{\text{serial}}$ denotes the CDF of the serial interval distribution of the disease of interest. The serial interval is the time period between the onset of symptoms in the primary and onset of symptoms in the secondary case, see @svensson2007 for details and definitions.
+
+Once $\pi_t$ is below some pre-defined threshold $c$, say $c=0.05$, one would declare the outbreak to be over, if no new cases have been observed by time $t$. In other words:
+$$
+T_{\text{end}} = \min_{t>n} \{ \pi_t < c \}.
+$$
+
+Note that the formulated approach is conservative, because every available case is treated as having the potential to generate new secondary cases according to the entire offspring distribution. In practice, however, observed cases towards the end will be secondary cases of some of the earlier cases. Hence, these primary cases will be attributed as having the ability to generate more secondary cases than they actually have in practice. Another important assumption of the method is that all cases are observed: no asymptomatic cases nor under-reporting is taken into account.
+
+## Required packages
+
+The following packages, available on CRAN, are needed for this practical:
+
+- [`tidyverse`](http://tidyverse.tidyverse.org) A set of packages (aka. the *hadleyverse*) to enhance the necessary data munging
+- [`openxlsx`](https://cran.r-project.org/web/packages/openxlsx/) to read `.xlsx` files without `rJava` dependence
+- [`pbapply`](https://cran.r-project.org/web/packages/pbapply/) Package to get a progress bar for lengthy computations done using `apply`, `sapply`, and  `lapply`.
+
+To install these packages, use `install.packages` and then load them using
+
+```{r, warning=FALSE, message=FALSE}
+library("tidyverse")
+library("openxlsx")
+library("pbapply")
+```
+
+## Data from the MERS-Cov Oubtreak in Korea, 2015
+
+We use the WHO MERS-CoV data available from [http://www.who.int/csr/don/21-july-2015-mers-korea/en/](http://www.who.int/csr/don/21-july-2015-mers-korea/en/) to illustrate the statistical method. For convenience, these data were download and are distributed as part of the RECON learn github account.
+
+```{r DATAIO, warning=FALSE}
+linelist <- openxlsx::read.xlsx("../../static/data/MERS-CoV-cases-rok-21Jul15.xlsx", startRow=4)
+```
+We skip the first 3 rows as they contain irrelevant header data. After loading the data, additional data munging is needed in order to convert the date-strings to the `Date` class and fill the missing values in the
+`Date.of.symptoms.onset` column as described in the paper.
+
+```{r DATAMUNGING}
+##Convert all columns containing the String "...Date..." to the Date class
+##using the date/month/Year format (in which the data are available)
+linelist <- linelist %>%
+  mutate_if(grepl("Date", names(linelist)), as.Date, format="%d/%m/%Y")
+
+## As written in the @nishiura_etal2016 paper, the missing onset times
+## are handled as follows: Whenever the date of illness onset was missing,
+## we substitute it with the date of laboratory confirmation.
+linelist <- linelist %>%
+  mutate(Date.of.symptoms.onset =
+           if_else(is.na(Date.of.symptoms.onset),
+                   Date.of.laboratory.confirmation,
+                   Date.of.symptoms.onset))
+```
+
+At the end of the data munging the first three lines in the data look as follows:
+```{r}
+head(linelist, n=3)
+```
+
+```{r, echo=FALSE}
+##Last (measured) time point of symptom onset.
+n_date <- max(linelist$Date.of.symptoms.onset)
+```
+
+# Analysis of the MERS-CoV data
+
+The above data is the WHO dataset on the
+[MERS-Cov outbreak in Korea](http://www.who.int/csr/don/21-july-2015-mers-korea/en/),
+which occurred during May-July 2015. It contains the information about `r nrow(linelist)` cases of the MERS-CoV outbreak in Korea, 2015.
+Using the RECON
+[`incidence`](http://www.repidemicsconsortium.org/incidence/) package
+it is easy to plot the epicurve based on the date of symptoms onset in the linelist.
+
+```{r}
+inc <- incidence::incidence(linelist$Date.of.symptoms.onset, interval = 1)
+plot(inc) + xlab("Calendar Time (day)") + ylab("Number of symptom onsets")
+```
+
+We are  now interested in answering the following question: Standing at `r n_date`, that is the day of the last reported new case with MERS symptoms, how many days without newly reported symptom onsets would we want to wait, before we would declare this outbreak as having **ended**?
+
+## Results
+
+We shall distinguish our results between
+
+1. estimating $R_0$ and $k$  of the offspring distribution and the parameters of the serial interval distribution from data
+2. computating the probability $\pi_t$ given the parameters found in step 1.
+
+Focus of this tutorial is on the later part. Details on the first part is available in the R code from [github](https://raw.githubusercontent.com/hoehleatsu/learn/outbreakend/content/post/practical-outbreakend.Rmd).
+
+### Parameter Estimation of the Offspring and Serial Interval Distributions
+
+The parameters to estimate are the following:
+
+* parameters of the parametric distributional family governing the serial interval distribution - in @nishiura_etal2016 this is assumed to be a gamma distribution with parameters $\theta_{\text{serial}} = (\alpha,\beta)'$ with expectation $\alpha/\beta$ and variance $\alpha/\beta^2$
+* parameters of the offspring distribution, which here is assumed to be negative binomial with mean $R_0$ and clumping parameter $k$
+
+The first set of parameters are estimated in
+@nishiura_etal2016 by method-of-moment-matching the mean and standard deviation of the serial interval distribution with observed in secondary data - see the [technical appendix](https://wwwnc.cdc.gov/eid/article/22/1/15-1383-techapp1.pdf) of the paper for details. The solution for $\alpha$ and $\beta$ of the gamma distribution can then be found analytically from these values.
+```{r}
+#Values for mean and std. deviation (=sqrt(Variance)) found in the paper
+E <- 12.6
+SD <- 2.8
+##Convert to gamma distribution parameters
+(theta_serial <- c(alpha=E^2/SD^2, beta=E/SD^2))
+```
+
+The second part of the estimation task is addressed in @nishiura_etal2015 by analysing final-size and generation data using a maximum likelihood approach. We will here only implement the methods using the data presented in Figure 1 and Table 1 of the paper. Unfortunately, one cluster size is not immediately reconstructable from the data in the paper, but guesstimating from the table on p.4 of the [ECDC Rapid Risk Assessment](http://ecdc.europa.eu/en/publications/Publications/RRA-Middle-East-respiratory-syndrome-coronavirus-Korea.pdf) it appears to be the outbreak in Jordan with a size of 19. The likelihood is then maximized for $\mathbf{\theta}=(\log(R_0),\log(k))'$ using the `optim` function.
+
+```{r, echo=FALSE, results='hide'}
+######################################################################
+## Compute PMF for the final size of outbreak equal to y in a model
+## with R_0  and clumping parameter k from Nishiura et al. (2012)
+##
+## Parameters:
+##  y   - vector of final sizes to evaluate the PMF for
+##  k   - numeric, the clumping parameter
+##  R_0 - Reproduction number
+##  log - Boolean, if TRUE log(PMF) is computed.
+##
+## Returns:
+##  A numeric vector containing \equn{f(y;k,R_j)}{f(y;k,R_j)} or
+##  the logarithm.
+######################################################################
+
+dfinalSize_n2012 <- Vectorize(function(y, k, R_0, log=FALSE) {
+  if (y==1) {
+    res <- -k*log(1+(R_0/k))
+  }
+  if (y>=2) {
+    j <- 0L:(y-2)
+    res <- sum(log( (j/k) + y)) - lfactorial(y) + (k*y)*log(k/(R_0+k)) + (y-1)*log(R_0*k/(R_0+k))
+  }
+  if (log) return(res) else return(exp(res))
+})
+
+######################################################################
+## Compute PMF for the final size of outbreak equal to y in a model
+## with R_0  and clumping parameter k, but now with the more efficient
+## formula from Blumenberg and Lloyd-Smith (2013).
+######################################################################
+
+dfinalSize <- function(y, k, R_0, log=FALSE) {
+  res <- lgamma(k*y+y-1) - lgamma(k*y) - lgamma(y+1) + (y-1) * log(R_0/k) - (k*y+y-1) * log(1+R_0/k)
+  if (log) return(res) else return(exp(res))
+}
+
+## Test
+dfinalSize_n2012(y=1, k=1/3, R_0=1.22)
+sum(dfinalSize_n2012(y=1:10000, k=1/3, R_0=1.22))
+
+##Verify for setting of the Nishiura paper
+dfinalSize_n2012(y=1, k=0.14, R_0=0.75)
+sum(dfinalSize_n2012(y=1:10000, k=0.14, R_0=0.75))
+
+dfinalSize(y=1, k=0.14, R_0=0.75)
+sum(dfinalSize(y=1:10000, k=0.14, R_0=0.75))
+
+pnGenerations <- Vectorize(function(h, R_0, k) {
+  res <- 0
+  if (h==1) res <- exp(-k*log(1+R_0/k))
+  if (h==2) res <- exp(-k*log(1+R_0/k-R_0/(k*(1+R_0/k)^k)))
+  if (h>=3) res <- exp(-k*log(1 + R_0/k*(1-pnGenerations(h=h-1, R_0=R_0, k=k))))
+  return(res)
+})
+
+##PMF conditioned on at least one generation.
+dnGenerations <- function(h, R_0, k) {
+  pnGenerations(h, R_0=R_0, k=k) -  pnGenerations(h-1, R_0=R_0, k=k)
+}
+
+##Test the functions
+pnGenerations(1:100, R_0=1, k=0.14)
+dnGenerations(1:10,  R_0=1, k=0.14)
+
+```
+
+```{r, echo=FALSE, results='hide'}
+outbreaks_notME <- read.table(file="../../static/data/nishiuara_etal2015-MERS-imports.txt", header=TRUE,stringsAsFactors = FALSE)
+head(outbreaks_notME)
+
+## August: http://ecdc.europa.eu/en/publications/Publications/30-07-2015-RRA-MERS.pdf
+## July report: http://ecdc.europa.eu/en/publications/Publications/RRA-Middle-East-respiratory-syndrome-coronavirus-Korea.pdf
+## The missing number is probably Jordan with a cluster size of 19 (?)
+outbreaks <- rbind(outbreaks_notME, data.frame(Country="Middle East", Generation=c(rep(0, 8), rep(1, 5)), Total.number.of.cases=c(rep(1, 8),rep(2, 3), 3, 19)))
+outbreaks <- outbreaks %>% mutate(isMiddleEastCountry=Country == "Middle East")
+with(outbreaks, table(Total.number.of.cases, isMiddleEastCountry))
+with(outbreaks, table(Generation, isMiddleEastCountry))
+
+##Compare with Fig. X of the Eurosurveillance article
+nrow(outbreaks)
+outbreaks <- within(outbreaks,
+                           Total.number.of.cases.trunc <- factor(ifelse(Total.number.of.cases<7, Total.number.of.cases, ">=8"), levels=as.character(c(1:7, ">=8"))))
+(tab <- table(outbreaks$Total.number.of.cases.trunc))
+sum(tab)
+```
+
+```{r, LIKFIT, echo=FALSE}
+##Likelihood for the final size of the importation events
+ll_1 <- function(theta, outbreaks) {
+  R_0 <- exp(theta[1])
+  k   <- exp(theta[2])
+  sum(dfinalSize(y=outbreaks$Total.number.of.cases, R_0=R_0, k=k, log=TRUE))
+}
+
+ll_2 <- function(theta, outbreaks) {
+  R_0 <- exp(theta[1])
+  k   <- exp(theta[2])
+  pmf <- dnGenerations(h=outbreaks$Generation, R_0=R_0, k=k)
+  sum(log(pmf[outbreaks$Generation>0]))
+}
+
+ll_combine <- function(theta, outbreaks) {
+    ll_1(theta, outbreaks) + ll_2(theta, outbreaks)
+}
+```
+
+```{r TESTLIKELHOOD, echo=FALSE, results='hide'}
+#Test likelihood functions
+ll_1(c(0.75, 0.14), outbreaks=outbreaks)
+ll_2(c(0.75, 0.14), outbreaks=outbreaks)
+ll_combine(c(0.8, 0.14), outbreaks=outbreaks)
+
+#Optim part 1
+theta_mle <- optim(c(log(1), log(1)), ll_1, outbreaks=outbreaks, control=list(fnscale=-1))
+exp(theta_mle$par)
+
+theta_mle <- optim(c(log(0.75), log(0.14)), ll_2, outbreaks=outbreaks, control=list(fnscale=-1))
+exp(theta_mle$par)
+```
+<!-- In the above `dfinalSize` and `dnGenerations` are two manually written R-functions, which contain the likelihood of observing a particular final size and a particular number of generations, respectively. -->
+
+As usual in likelihood inference, a numeric approximation of the variance-covariance matrix of $\hat{\mathbf{\theta}}$ can be obtained from the Hessian matrix for the loglikelihood evaluated at the MLE. Altogether, we maximize the combined likelihood consisting of `r nrow(outbreaks)` as well as the corresponding number of generations by:
+
+```{r}
+theta_mle <- optim(c(log(1), log(1)), ll_combine, outbreaks=outbreaks, control=list(fnscale=-1), hessian=TRUE)
+exp(theta_mle$par)
+```
+Here, `ll_combine` denotes the log-likelihood function computed for the data contained in `outbreaks`. For the exact code of these functions please visit the [github source code]() of this practical.
+
+These numbers deviate slightly from the values of $\hat{R}_0=0.75$ and $\hat{k}=0.14$ reported by @nishiura_etal2015. One explanation might be the unclear cluster size of the Jordan outbreak, here it would have been helpful to have had all data directly available in electronic form.
+
+## Determining the Outbreak End
+
+The $\pi_t$ equation of @nishiura_etal2016 stated above is implemented below as function `p_oneormore`. This function requires the use of the PMF of the offspring distribution (implemented as `doffspring`), which is the PMF of the negative binomial offspring distribution.
+
+```{r}
+###################################################################
+## Offspring distribution, this is just the negative binomial PMF.
+###################################################################
+doffspring <- function(y, R_0, k, log=FALSE) {
+  dnbinom(y, mu=R_0, size=k, log=log)
+}
+
+##########################################################################
+## Probability for one or more cases at time t (vectorized for easier use).
+##
+## @param t             Vector of Time points to compute \pi_t for
+## @param R_0           Estimated value of the basic reproduction number R_0
+## @param k             Estimated value of the expected number of offspring k
+## @param theta_serial  (alpha,beta) vector parametrising the serial interval
+##                      gamma distribution
+## @param oMax          Maximum value of o to sum in the summation formula
+##                      (instead of infinity)
+##########################################################################
+p_oneormore <- Vectorize(function(t, R_0, k, theta_serial, oMax=1e4) {
+  ##Init result variable
+  res <- 1
+
+  ##Loop over the linelist (this might take a while for long linelists)
+  for (i in seq_len(nrow(linelist))) {
+    serial_time <- as.numeric(t - linelist$Date.of.symptoms.onset[i])
+    cdf <- pgamma(serial_time, theta_serial[1], theta_serial[2])
+    o <- 0L:oMax
+    osum <- sum( doffspring(y=o, R_0=R_0, k=k) * cdf^o)
+    res <- res * osum
+  }
+  return(1-res)
+},vectorize.args=c("t","R_0","k"))
+```
+
+The function allows us to re-calculate the results of @nishiura_etal2016 for the MERS-CoV outbreak:
+
+```{r, cache=TRUE}
+##Results from the Nishiura et al. (2015) paper
+##R_0_hat <- 0.75 ; k_hat <- 0.14
+##Use MLE found with the data we were able to extract.
+R_0_hat <- exp(theta_mle$par[1])
+k_hat   <- exp(theta_mle$par[2])
+
+## Compute probility for one or more cases on a grid of dates
+df <- data_frame(t=seq(as.Date("2015-07-15"), as.Date("2015-08-05"), by="1 day"))
+df <- df %>%
+  mutate(pi =  p_oneormore(t, R_0=R_0_hat, k=k_hat, theta_serial=theta_serial, oMax=250))
+## Look at the result
+head(df, n=3)
+```
+
+We can embed estimation uncertainty originating from the estimation of $R_0$ and $k$ by adding an additional bootstrap step with values of $(\log R_0, \log k)'$ sampled from the asymptotic normal distribution of the MLE. This distribution has expectation equal to the MLE and variance-covariance matrix equal to the observed Fisher information. Pointwise percentile-based 95% confidence intervals are then easily computed from the samples. The figure below shows this 95% CI (shaded area) together with the $\pi_t$ curve. The github code contains the details of generating the sample and drawing the curve using `ggplot`.
+
+```{r, echo=FALSE, cache=TRUE}
+##
+library("mvtnorm")
+nSamples <- 100
+R0k_samples <- exp(rmvnorm(nSamples, mean=theta_mle$par,
+                           sigma=solve(-theta_mle$hessian)))
+##Do the replications while having a progress bar.
+sims <- pbapply(R0k_samples, 1, function(hat) {
+  p_oneormore(df$t, R_0=hat[1], k=hat[2], theta_serial=theta_serial, oMax=250)
+})
+df2 <- cbind(df, quantile=t(apply(sims, 1, quantile, prob=c(0.025, 0.975))))
+```
+
+```{r THRESHOLD, echo=FALSE}
+c_threshold <- 0.05
+```
+
+```{r, echo=FALSE}
+#Make the plot
+ggplot(df2, aes(x=t, y=pi, group=1)) + geom_line() +
+  geom_ribbon(aes(ymax = `quantile.2.5%`, ymin=`quantile.97.5%`), fill = 1, alpha = 0.2) +
+  geom_hline(yintercept = c_threshold, lty=2, col="orange") +
+  xlab("Time (days)") + ylab("Probability of additional cases") +
+  scale_y_continuous(labels=scales::percent)
+```
+
+Altogether, the date where we would declare the outbreak
+to be over, given a threshold of $c=`r c_threshold`$, is found as:
+```{r}
+(tEnd <- df2 %>% filter(`quantile.97.5%` < c_threshold) %>% slice(1L))
+```
+In other words, given the assumptions of the model and the chosen threshold, we would declare the outbreak to be over, if no new cases are observed by `r tEnd$t`.
+The adequate choice of $c$ as cut-off in the procedure depends on what is at stake. Hence, choosing $c=`r c_threshold`$ without additional thought is more than arbitrary, but a more careful discussion is beyond the scope of this small practical tutorial.
+
+# Discussion
+
+The present practical introduced the statistical modelling based approach by @nishiura_etal2016 for declaring the end of a person-to-person transmitted disease outbreak such as MERS-Cov, Ebola, etc. If the considered outbreak has a different mode of transmission, e.g. foodborne or originates from a point-source, then different formulas apply, see e.g. @brookmeyer_you2006.
+The [blog post](http://staff.math.su.se/hoehle/blog/2016/08/04/outbreakEnd.html), on which this practical is based, contains an additional hierarchical modelling approach with simulation based inference. Altoghether, we hope that the avaibility of the method in R might be helpful in future outbreak analyses.
+
+# About this document
+
+## Contributors
+
+- [Michael Höhle](http://www.math.su.se/~hoehle), Stockholm University: RECON modified version of the blog post [No Sleep During the Reproducibility Session](http://staff.math.su.se/hoehle/blog/2016/08/04/outbreakEnd.html)
+
+Contributions are welcome via [pull requests](https://github.com/reconhub/learn/pulls). The source file is hosted on [github](https://github.com/reconhub/learn/blob/master/content/post/2018-03-22-practical-outbreakend.Rmd).
+
+
+## Legal stuff
+
+**License**: This work is licensed under a <a rel="license"
+href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons
+Attribution-ShareAlike 4.0 International License</a>.
+The markdown+Rknitr source code of this blog is available under a [GNU
+General Public License (GPL
+v3)](https://www.gnu.org/licenses/gpl-3.0.html) license from github.
+
+**Copyright**: Michael Höhle, 2018
+
+
+
+
+# References
