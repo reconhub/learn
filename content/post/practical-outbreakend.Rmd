@@ -5,7 +5,6 @@ date: 2018-03-22
 image: img/highres/theendisnear.png
 categories: practicals
 showonlyimage: true
-slug: is-outbreak-over
 tags: ["epicurve", "outbreak", "outbreak end"]
 bibliography: practical-outbreakend.bib
 ---
