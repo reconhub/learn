@@ -3,7 +3,7 @@
     <nav class="site-nav">
       <div class="site-nav-left">{{ if .Site.Params.logo }}
         <a class="site-nav-logo" href="#"><img src="{{ .Site.Params.logo  | absURL}}" alt="{{ .Site.Params.Title }}" /></a>{{end}}
-
+		
         <ul class="nav" role="menu">
         {{ $currentNode := . }}
         {{with .Site.Menus.main}}
@@ -12,7 +12,9 @@
               <a href="{{.URL}}">{{.Name}}</a>
             </li>
         {{end}}{{end}}
-      </ul></div>
+      </ul>
+	 
+	 </div>
 
       <div class="site-nav-right">
         <div class="social-links">
