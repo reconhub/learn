@@ -3,7 +3,7 @@
     <nav class="site-nav">
       <div class="site-nav-left">{{ if .Site.Params.logo }}
         <a class="site-nav-logo" href="#"><img src="{{ .Site.Params.logo  | absURL}}" alt="{{ .Site.Params.Title }}" /></a>{{end}}
-		
+
         <ul class="nav" role="menu">
         {{ $currentNode := . }}
         {{with .Site.Menus.main}}
@@ -12,9 +12,7 @@
               <a href="{{.URL}}">{{.Pre}} {{.Name}}</a>
             </li>
         {{end}}{{end}}
-      </ul>
-	 
-	 </div>
+      </ul></div>
 
       <div class="site-nav-right">
         <div class="social-links">
@@ -38,13 +36,10 @@
     </nav>  
 
     <div class="site-header-content">
-        <h1 class="site-title">{{.Title | title}}</h1>
-
-        <h2 class="site-description">&#x2F;&nbsp;
-          {{ $data := .Data }}
-          {{ range $key, $value := .Data.Terms.Alphabetical }}
-          <a href="{{ $.Site.BaseURL }}/{{ $data.Plural }}/{{ $value.Name | urlize }}"> {{ $value.Name }} </a> ({{ $value.Count }})&nbsp;&#x2F;&nbsp;
-          {{ end }}
+        <h1 class="site-title">{{.Title}}</h1>{{$.Scratch.Set "total" (len .Data.Pages)}}
+        <h2 class="site-description">
+                {{if ge ($.Scratch.Get "total") 2 }}A collection of {{$.Scratch.Get "total"}} posts
+                {{else}}{{$.Scratch.Get "total"}} post{{end}}
         </h2>
     </div>
   </div>
