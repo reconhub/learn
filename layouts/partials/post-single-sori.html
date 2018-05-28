@@ -3,10 +3,13 @@
             <h1 class="post-full-title">{{.Title}}</h1>
             <section class="post-full-meta">
                 <time class="post-full-meta-date" datetime="{{.Date.Format "2006-01-02"}}">{{ .Date.Format "2 January 2006" | safeHTML }}</time>
-                {{if .Params.categories }}
-                <span class="date-divider">/</span> {{ range  $category := .Params.categories }}<a href="{{$.Site.BaseURL}}categories/{{ $category| urlize }}/">#{{$category}}</a>&nbsp;{{end}}{{ end }}
+                <span class="date-divider">/</span>
+                {{with   .Params.categories }}
+    <a href="{{ "/categories/" | relLangURL }}{{ . | urlize }}.html">{{ . }}</a> &nbsp;
+  {{ end }}
+            
                 {{if .Params.tags }}
-                <span class="date-divider">/</span> {{ range  $tag := .Params.tags }}<a href="{{$.Site.BaseURL}}tags/{{ $tag | urlize }}/">#{{$tag}}</a>&nbsp;{{end}}{{ end }}
+                <span class="date-divider">/</span> {{ range  $tag := .Params.tags }}<a href="{{$.Site.BaseURL}}tags/{{ $tag | urlize }}.html">#{{$tag}}</a>&nbsp;{{end}}{{ end }}
             </section>
         </header>
         
