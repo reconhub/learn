@@ -29,7 +29,7 @@ uglyurls = true
   email         = "thibautjombart@gmail.com"
   twitterName    = "teebzr"
   
-  logo = "img/logo/learnNotLightened.png"
+  logo = "img/logo/learnBlueAndWhite.png"
   orgName = "RECON"
   orgWebsite = "https://repidemicsconsortium.org"
   orgDescription = "For more about the R Epidemics Consortium (RECON), visit our website: https://repidemicsconsortium.org"
