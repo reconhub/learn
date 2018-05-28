@@ -1,20 +1,24 @@
-<header class="site-header outer">
+<header class="site-header outer " {{if .Site.Params.cover}} style="background-image: url({{.Site.Params.cover | absURL}})" {{end}} >
   <div class="inner">
+    <div class="site-header-content">
+      <h1 class="site-title">{{ if .Site.Params.logo }}
+        <img class="site-logo" src="{{ .Site.Params.logo  | absURL}}" alt="{{ .Site.Params.title }}" />
+      {{else}} {{ .Site.Params.title }} {{end}} </h1>
+        <h2 class="site-description">{{ .Site.Params.subtitle }} </h2>
+    </div>
+
     <nav class="site-nav">
-      <div class="site-nav-left">{{ if .Site.Params.logo }}
-        <a class="site-nav-logo" href="#"><img src="{{ .Site.Params.logo  | absURL}}" alt="{{ .Site.Params.Title }}" /></a>{{end}}
-		
-        <ul class="nav" role="menu">
+      <div class="site-nav-left">
+		<ul class="nav fa-ul" role="menu">
         {{ $currentNode := . }}
         {{with .Site.Menus.main}}
         {{ range sort . "Weight" "desc"}}
             <li class="{{if or ($currentNode.IsMenuCurrent "main" .) ($currentNode.HasMenuCurrent "main" .)}}nav-current{{end}}" role="menuitem">
-              <a href="{{.URL}}">{{.Pre}} {{.Name}}</a>
+				<a href="{{.URL}}">{{.Pre}} {{.Name}}</a>
             </li>
-        {{end}}{{end}}
-      </ul>
-	 
-	 </div>
+        {{end}}
+		{{end}}
+      </ul></div>
 
       <div class="site-nav-right">
         <div class="social-links">
@@ -37,15 +41,5 @@
 
     </nav>  
 
-    <div class="site-header-content">
-        <h1 class="site-title">{{.Title | title}}</h1>
-
-        <h2 class="site-description">&#x2F;&nbsp;
-          {{ $data := .Data }}
-          {{ range $key, $value := .Data.Terms.Alphabetical }}
-          <a href="{{ $.Site.BaseURL }}/{{ $data.Plural }}/{{ $value.Name | urlize }}"> {{ $value.Name }} </a> ({{ $value.Count }})&nbsp;&#x2F;&nbsp;
-          {{ end }}
-        </h2>
-    </div>
   </div>
 </header>

@@ -47,21 +47,25 @@ uglyurls = true
   name = "Practicals"
   url = "/categories/practicals.html"
   weight = 99
+  pre = "<i class='far fa-align-justify'></i>"
   
 [[menu.main]]
   name = "Lectures"
   url = "/categories/lectures.html"
   weight = 99
+  pre = "<i class='far fa-align-justify'></i>"
   
 [[menu.main]]
   name = "Topics"
   url = "/tags.html"
   weight = 98
+  pre = "<i class='far fa-align-justify'></i>"
 
 [[menu.main]]
   name = "Licenses"
   url = "/licenses.html"
   weight = 97
+  pre = "<i class='far fa-align-justify'></i>"
   
 [[menu.main]]
   name = "About"
@@ -77,3 +81,5 @@ uglyurls = true
   name = "Sample"
   url = "/sample.html"
   weight = 87
+  
+  
