@@ -23,6 +23,24 @@
     padding: 6vw 4vw;
 }
 
+/* Adjustments to post layouts */
+.inner {
+    max-width: 1440px;
+}
+
+.post-full-content:after, .post-full-content:before {
+    content: none;
+    width: 0px;
+}
+
+.post-full-content {
+    padding: 0;
+}
+
+.kg-card-markdown {
+    max-width: 1440px;
+}
+
 .floating-header{
 	background:rgba(49,49,70,.95);
 }
