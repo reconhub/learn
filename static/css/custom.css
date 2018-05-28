@@ -40,3 +40,19 @@
 .kg-card-markdown {
     max-width: 1440px;
 }
+
+.floating-header{
+	background:rgba(49,49,70,.95);
+}
+
+.floating-header-title {
+    color: #fffa;
+	font-weight: 400;
+}
+
+.floating-header-share-label {
+    color: #fffa;
+}
+.floating-header-divider {
+    color: #fffa;
+}
