@@ -46,16 +46,38 @@
 }
 
 .floating-header-title {
-    color: #fffa;
+    color: #fff;
+	opacity: .8;
 	font-weight: 400;
 }
 
 .floating-header-share-label {
-    color: #fffa;
+    color: #fff;
+	opacity: .8
 }
 .floating-header-divider {
-    color: #fffa;
+    color: #fff;
+	opacity: .8;
 }
+
+/* Navigation menu */
+.nav {
+	margin-left: 20px;
+}
+
+.nav li,
+.nav li a {
+    display: inline;
+    margin-right: 20px;
+}
+
+.nav li a {
+    padding: 10px 0.1px;
+    color: #fff;
+    opacity: .8;
+}
+
+
 
 /* font work */
 @import url('https://fonts.googleapis.com/css?family=Raleway');
