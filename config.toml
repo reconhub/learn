@@ -13,6 +13,8 @@ uglyurls = true
   tag = "tags"
   category = "categories"
   license = "licenses"
+  author = "authors"
+  topic = "topics"
 
 
 [params]
@@ -57,7 +59,13 @@ uglyurls = true
   
 [[menu.main]]
   name = "Topics"
-  url = "/tags.html"
+  url = "/topics.html"
+  weight = 98
+  pre = "<i class='far fa-align-justify'></i>"
+
+[[menu.main]]
+  name = "Authors"
+  url = "/authors.html"
   weight = 98
   pre = "<i class='far fa-align-justify'></i>"
 

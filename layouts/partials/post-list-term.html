@@ -1,5 +1,5 @@
-{{ $pages := ((where .Site.Pages "Type" "post") | shuffle) }}
-{{ range first 3 $pages}} 
+{{ $paginator := .Paginate (where .Data.Pages.ByDate.Reverse "Type" "post") }}
+{{ range $paginator.Pages }}
 
 <article class="post-card post"> 
     {{if .Params.image}}
@@ -15,10 +15,11 @@
     <div class="post-card-content">
       <a class="post-card-content-link" href="{{ .Permalink }}">
           <header class="post-card-header">
+			
+              <h2 class="post-card-title">{{.Title}}</h2>
               {{if .Params.tags }}<span class="post-card-tags">{{ range $index, $tag := .Params.tags }}
               #{{$tag}} {{end}} </span>
               {{ end }}
-              <h2 class="post-card-title">{{.Title}}</h2>
           </header>
           <section class="post-card-excerpt">
               {{ if .Description }} 
