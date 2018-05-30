@@ -29,6 +29,7 @@ preserveTaxonomyNames = true
   
   email         = "thibautjombart@gmail.com"
   twitterName    = "teebzr"
+  githubName = "reconhub/learn"
   
   logo = "img/logo/learnBlueAndWhite.png"
   orgName = "RECON"
