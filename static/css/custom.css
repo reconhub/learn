@@ -121,3 +121,14 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
 body, input, select, button, p {
     font-family: "raleway", sans-serif;
 }
+
+/* featured post removal */
+
+@media (min-width:795px) {
+    .home-template .post-feed .post-card:nth-child(6n+1):not(.no-image) {
+        -ms-flex: 50%;
+        flex: 50%;
+        -ms-flex-direction: column;
+        flex-direction: column;
+    }
+}
