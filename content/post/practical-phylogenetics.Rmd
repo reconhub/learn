@@ -1,6 +1,7 @@
 ---
 title: Phylogenetic tree reconstruction
 author: Thibaut Jombart
+authors: ["Thibaut Jombart"]
 categories: ["practicals"]
 topics: ["genetics"]
 date: 2017-11-01

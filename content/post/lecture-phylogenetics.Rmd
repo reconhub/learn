@@ -1,6 +1,7 @@
 ---
 title: Introduction to phylogenetics
 author: "Thibaut Jombart"
+authors: ["Thibaut Jombart"]
 categories: ["lectures"]
 topics: ["genetics"]
 date: 2017-12-15

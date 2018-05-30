@@ -1,6 +1,7 @@
 ---
 title: 'VBD: building a simple model for Zika'
 author: "Zulma Cucunuba & Pierre Nouvellet"
+authors: ["Zulma Cucunuba","Pierre Nouvellet"]
 date: 2017-12-04
 image: img/highres/mosquito.jpg
 topics: ["zika", "compartmental models"]

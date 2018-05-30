@@ -1,6 +1,7 @@
 ---
 title: "Ebola simulation part 2: outbreak reconstruction"
 author: Thibaut Jombart, Finlay Campbell
+authors: ["Thibaut Jombart","Finlay Campbell"]
 categories: ["practicals"]
 topics: ["genetics", "simulation", "response", "outbreaker2", "epicurve", "reproduction number"]
 date: 2018-01-24

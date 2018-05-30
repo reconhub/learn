@@ -1,6 +1,7 @@
 ---
 title: 'Ebola: building few models for Ebola'
 author: "Pierre Nouvellet & Zulma Cucunuba"
+authors: ["Zulma Cucunuba","Pierre Nouvellet"]
 date: 2017-12-04
 topics: ['Ebola','compartmental models']
 categories: practicals

@@ -1,6 +1,7 @@
 ---
 title: Reproducibility using R
 author: Thibaut Jombart
+authors: ["Thibaut Jombart"]
 categories: ["lectures"]
 topics: ["Rmarkdown"]
 date: 2017-11-10

@@ -1,6 +1,7 @@
 ---
 title: Modelling infectious diseases for public health
 author: "Pierre Nouvellet"
+authors: ["Pierre Nouvellet"]
 categories: ["lectures"]
 topics: ["modelling", "public health","forecasting"]
 date: 2017-12-11
