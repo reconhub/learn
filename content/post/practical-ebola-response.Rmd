@@ -2,7 +2,7 @@
 title: "Ebola simulation part 1: early outbreak assessment"
 author: Thibaut Jombart, Finlay Campbell
 categories: ["practicals"]
-tags: ["simulation", "response", "Ebola", "epicurve", "reproduction number"]
+topics: ["simulation", "response", "Ebola", "epicurve", "reproduction number"]
 date: 2017-12-09
 image: img/highres/ebola.jpg
 slug: simulated-evd-early

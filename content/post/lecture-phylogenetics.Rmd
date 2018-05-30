@@ -2,7 +2,7 @@
 title: Introduction to phylogenetics
 author: "Thibaut Jombart"
 categories: ["lectures"]
-tags: ["genetics"]
+topics: ["genetics"]
 date: 2017-12-15
 image: img/highres/tree-radial.jpg
 showonlyimage: true

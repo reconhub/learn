@@ -10,7 +10,6 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_cache$","^README"]
 paginate        = 6
 uglyurls = true
 [taxonomies]
-  tag = "tags"
   category = "categories"
   license = "licenses"
   author = "authors"

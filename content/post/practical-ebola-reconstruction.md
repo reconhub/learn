@@ -2,7 +2,7 @@
 title: "Ebola simulation part 2: outbreak reconstruction"
 author: Thibaut Jombart, Finlay Campbell
 categories: ["practicals"]
-tags: ["genetics", "simulation", "response", "outbreaker2", "epicurve", "reproduction number"]
+topics: ["genetics", "simulation", "response", "outbreaker2", "epicurve", "reproduction number"]
 date: 2018-01-24
 image: img/highres/ebola-blue.jpg
 showonlyimage: true
