@@ -78,6 +78,7 @@ The YAML header is the beginning of the `Rmd` document, within the
 ---
 title: Phylogenetic tree reconstruction
 author: Thibaut Jombart
+authors: ["Jombart, Thibaut"]
 categories: ["practicals"]
 topics: ["genetics"]
 date: 2017-11-01
