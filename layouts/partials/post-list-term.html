@@ -1,5 +1,5 @@
-{{ $pages := ((where .Site.Pages "Type" "post") | shuffle) }}
-{{ range first 3 $pages}} 
+{{ $paginator := .Paginate (where .Data.Pages.ByDate.Reverse "Type" "post") }}
+{{ range $paginator.Pages }}
 
 <article class="post-card post"> 
     {{if .Params.image}}
@@ -15,10 +15,11 @@
     <div class="post-card-content">
       <a class="post-card-content-link" href="{{ .Permalink }}">
           <header class="post-card-header">
-              {{if .Params.tags }}<span class="post-card-tags">{{ range $index, $tag := .Params.tags }}
-              #{{$tag}} {{end}} </span>
-              {{ end }}
+			
               <h2 class="post-card-title">{{.Title}}</h2>
+              {{if .Params.topics }}<span class="post-card-tags">{{ range $index, $tag := .Params.topics }}
+                  #{{$tag}} {{end}} </span>
+                  {{ end }}
           </header>
           <section class="post-card-excerpt">
               {{ if .Description }} 
@@ -31,8 +32,9 @@
 
       <footer class="post-card-meta">
           <img class="author-profile-image" src="{{ (.Params.authorAvatar | default .Site.Params.authorAvatar) | absURL}}" alt="Author" />
-          <span class="post-card-author"><a href="/">{{.Params.author | default .Site.Params.author}}</a></span>
-		  
+          <span class="post-card-author">
+              {{ range .Params.authors }}<a href="/authors/{{ . | urlize }}.html">{{ . }}</a><br>{{ end }}
+            </span>
 			  <span class="post-card-tags">{{if .Params.categories }}
               {{ .Params.categories }} 
               {{ end }}

@@ -1,8 +1,9 @@
 ---
 title: Reproducibility using R
 author: Thibaut Jombart
+authors: ["Thibaut Jombart"]
 categories: ["lectures"]
-tags: ["Rmarkdown"]
+topics: ["Rmarkdown"]
 date: 2017-11-10
 image: img/highres/printing-press.jpg
 slug: reproducibility

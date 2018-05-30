@@ -1,8 +1,9 @@
 ---
 title: Outbreak investigation using outbreaker2
 author: "Thibaut Jombart"
+authors: ["Thibaut Jombart"]
 categories: ["lectures"]
-tags: ["reconstruction", "outbreaker2"]
+topics: ["reconstruction", "outbreaker2"]
 date: 2017-12-13
 image: img/highres/investigation.jpg
 slug: "lectureoutbreaker2"
