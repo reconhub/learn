@@ -1,7 +1,7 @@
 ---
 title: "A primer on statistical outbreak analysis"
 author: "Thibaut Jombart"
-date: "2017-12-09"
+date: "2018-02-25"
 output:
   ioslides_presentation:
     incremental: false
@@ -98,7 +98,7 @@ infection</font> and the date of <font color="#99004d">symptom onset</font>
 symptoms</font> in primary and secondary cases.
 
 <center>
-<img src="../../img/slides/serial-interval.jpg" width="50%">
+<img src="../../img/slides/serial-interval.jpg" width="70%">
 </center>
 
 
@@ -109,7 +109,7 @@ symptoms</font> in primary and secondary cases.
 infections</font> in primary and secondary cases.
 
 <center>
-<img src="../../img/slides/generation-time.jpg" width="50%">
+<img src="../../img/slides/generation-time.jpg" width="70%">
 </center>
 
 
@@ -304,7 +304,7 @@ $$
 
 ## Individual infectiousness over time
 
-**Serial interal:** time interval between <font color="#99004d">onset of
+**Serial interval:** time interval between <font color="#99004d">onset of
 symptoms</font> of primary and secondary cases.
 
 <center>
@@ -342,6 +342,22 @@ p(y_t | R_0, y_1, ..., y_{t-1}) = e^{-\lambda_t} \frac{\lambda_t^{y_t}}{(!y_t)}
 $$
 with (slight rewriting):
 $\lambda_t = R_0 \times \sum_{s = 1}^{t-1} y_s w(t - s)$
+
+
+
+
+
+## Short-term forecasting {.small}
+
+<center>
+<img src="../../img/slides/simple-forecasting.jpg" width="70%">
+</center>
+<br>
+
+- draw $R_0$ from estimated distribution
+- simulate $y_{t+1} \sim \mathcal{P}(\lambda_{t+1} | R_0, y_1, ..., y_t)$ for increasing $t$
+- repeat many times with different values of $R_0$
+
 
 
 

@@ -11,8 +11,8 @@ This github project hosts the sources of the
 [https://reconlearn.netlify.com/](https://reconlearn.netlify.com/).
 
 
-This *RECON learn* website uses [Rmarkdown](http://rmarkdown.rstudio.com/) (`.Rmd`) documents to build markdown content that [Hugo](https://gohugo.io) then turns into a nifty website.
 
+This *RECON learn* website uses [Rmarkdown](http://rmarkdown.rstudio.com/) (`.Rmd`) documents to build markdown content that [Hugo](https://gohugo.io) then turns into a nifty website.
 
 ## General workflow
 

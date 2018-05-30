@@ -10,6 +10,7 @@ This *RECON learn* website uses
 markdown content that [Hugo](https://gohugo.io) then turns into a nifty
 website.
 
+
 General workflow
 ----------------
 

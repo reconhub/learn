@@ -213,7 +213,7 @@ pairs of sequences.
 Now that genetic distances between isolates have been computed, we need to
 visualize this information.  There are *n(n-1)/2* distances for *n* sequences;
 here, *n=80* so that the genetic relationships between the sampled isolates are
-described by *80 \times 79 / 2 = 3160* pairwise distances.  Most of the time,
+described by $80 \times 79 / 2 = 3160$ pairwise distances.  Most of the time,
 summarising such information is not entirely trivial.  The simplest approach is
 plotting directly the matrix of pairwise distances:
 

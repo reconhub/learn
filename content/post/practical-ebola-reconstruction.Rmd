@@ -23,7 +23,7 @@ install_if_missing <- function(x) {
     }
 }
 
-deps <- c("xlsx", "incidence", "epicontacts", "EpiEstim", "ggplot2", "ape", "outbreaker2", "epitrix")
+deps <- c("readxl", "incidence", "epicontacts", "EpiEstim", "ggplot2", "ape", "outbreaker2", "epitrix")
 lapply(deps, install_if_missing)
 
 CACHE <- TRUE
@@ -57,7 +57,7 @@ produce evidence-based recommendations for informing the response.
 
 The following packages, available on CRAN, are needed for this practical:
 
-- [`xlsx`](http://www.repidemicsconsortium.org/incidence/) to read `.xlsx` files
+- [`readxl`](https://cran.r-project.org/web/packages/readxl/index.html) to read `.xlsx` files
 - [`ggplot2`](http://ggplot2.org/) for graphics
 - [`incidence`](http://www.repidemicsconsortium.org/incidence/) for epicurves
 - [`epicontacts`](http://www.repidemicsconsortium.org/epicontacts/) for contact
@@ -75,7 +75,7 @@ The following packages, available on CRAN, are needed for this practical:
 To install these packages, use `install.packages`, e.g.:
    
 ```{r install, eval = FALSE}
-install.packages("xlsx")
+install.packages("readxl")
 install.packages("ggplot2")
 install.packages("incidence")
 install.packages("epicontacts")
@@ -102,31 +102,34 @@ The data update includes new linelists and contact lists:
   the contact.
   
 
-To read into R, download these files and use the function `read.xlsx()` from the
-`xlsx` package to import the data. Each import will create a `data.frame`. Call
-the first one `linelist`, and the second one `contacts`. For instance, your first
-command line could look like:
+To read into R, download these files and use the function `read_xlsx()` from the
+`readxl` package to import the data. Each import will create a data table stored
+as a `tibble` object. Call the first one `linelist`, and the second one
+`contacts`. For instance, your first command line could look like:
+	
 	
 ```{r eval = FALSE}
-linelist <- xlsx::read.xlsx("PHM-EVD-linelist-2017-11-25.xlsx",
-                            sheetIndex = 1, stringsAsFactors = FALSE)
+linelist <- readxl::read_xlsx("PHM-EVD-linelist-2017-11-25.xlsx")
+```
+
+Note that for further analyses, you will need to make sure all dates are stored
+as `Date` objects. This can be done using `as.Date`:
+
+```{r date-conversion, echo = -c(1, 2)}
+linelist <- readxl::read_xlsx("../../static/data/PHM-EVD-linelist-2017-11-25.xlsx")
+contacts <- readxl::read_xlsx("../../static/data/PHM-EVD-contacts-2017-11-25.xlsx")
+linelist$onset <- as.Date(linelist$onset)
 ```
 
 
 Once imported, the data should look like:
           
-```{r read_files, echo = -c(1,2)}
-linelist <- xlsx::read.xlsx("../../static/data/PHM-EVD-linelist-2017-11-25.xlsx",
-                            sheetIndex = 1, stringsAsFactors = FALSE)
-contacts <- xlsx::read.xlsx("../../static/data/PHM-EVD-contacts-2017-11-25.xlsx",
-                            sheetIndex = 1, stringsAsFactors = FALSE)
-
+```{r read_files}
 ## linelist: one line per case
-head(linelist)
-
+linelist
 
 ## contacts: pairs of cases with reported contacts
-head(contacts)
+contacts
 ```
 
 

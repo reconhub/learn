@@ -1,0 +1,32 @@
+######################################################################
+## Data correspond to table 1 of Nishiura et al (2015), Assessing the
+## risk of observing multiple generations of Middle East respiratory
+## syndrome (MERS) cases given an imported case.
+## Euro Surveill. 2015;20(27):pii=21181. Available online:
+## http://www.eurosurveillance.org/ViewArticle.aspx?ArticleId=21181
+######################################################################
+
+Country Generation "Total number of cases"
+Algeria 0 1
+Algeria 0 1
+Austria 0 1
+China 0 1
+France 1 2
+Germany 0 1
+Germany 0 1
+Germany 0 1
+Germany 0 1
+Greece 0 1
+Italy 0 1
+Malaysia 0 1
+"The Netherlands" 0 1
+"The Netherlands" 0 1
+Philippines 0 1
+Philippines 0 1
+"South Korea" 3 181
+Thailand 0 1
+Tunisia 1 2
+Tunisia 0 1
+"United Kingdom" 1 4
+"United States" 0 1
+"United States" 0 1
