@@ -1,56 +1,93 @@
-baseurl = "https://reconlearn.netlify.com/"
-title = "RECON learn"
-theme = "hugo-tracks-theme"
+baseurl = "https://reconlearn-ld.netlify.com/"
+theme = "hugo-casper-two"
 languageCode = "en-us"
 # Enable comments by entering your Disqus shortname
-# disqusShortname = ""
+disqusShortname = "itsalocke"
 # Enable Google Analytics by entering your tracking code
 # googleAnalytics = ""
 # Ignore the following extensions
-ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
+ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_cache$","^README"]
+paginate        = 6
+uglyurls = true
+preserveTaxonomyNames = true
+[taxonomies]
+  category = "categories"
+  license = "licenses"
+  author = "authors"
+  topic = "topics"
 
 [params]
+  title = "RECON learn"
   # Use custom.css for your custom styling
   style = "default"
-  description = "RECON's teaching platform"
-  copyright = "&copy;2017 Thibaut Jombart"
-  sidebarAbout = [
-    "For more about the R Epidemics Consortium (RECON), visit our website: https://repidemicsconsortium.org"
-  ]
-
-  # Contact page
-     # Since this template is static, the contact form uses www.formspree.io as a
-     # proxy. The form makes a POST request to their servers to send the actual
-     # email. Visitors can send up to a 1000 emails each month for free.
-     #
-     # What you need to do for the setup?
-     #
-     # - set your email address under 'email' below
-     # - upload the generated site to your server
-     # - send a dummy email yourself to confirm your account
-     # - click the confirm link in the email from www.formspree.io
-     # - you're done. Happy mailing!
-  email = "thibautjombart@gmail.com"
-
-  # Nav links in the side bar
-  [[params.navlinks]]
-  name = "Home"
-  url = ""
-
-  [[params.navlinks]]
-  name = "About"
-  url = "about/"
-
-  # [[params.navlinks]]
-  # name = "Get in touch"
-  # url = "contact/"
-
-  [params.social]
-  # facebook      = "full page or profile url in facebook"
-  # googleplus    = "full profile url in googleplus"
+  subtitle = "A free and open collection of training resources for epidemics analysis and outbreak response."
+  copyright = "©2017 Thibaut Jombart"
+  description = "For more about the R Epidemics Consortium (RECON), visit our website: https://repidemicsconsortium.org"
+  singleViewStyle = "casper"
+  pageNotFoundTitle = "404 - Page not found"
+  customCSS = ["css/custom.css"]
+  
   email         = "thibautjombart@gmail.com"
-  twitter       = "https://twitter.com/teebzr"
-  # linkedin      = "full profile url in linkedin"
-  # stackoverflow = "full profile url in stackoverflow"
-  # instagram     = "full profile url in instagram"
-  github        = "https://github.com/reconhub/learn"
+  twitterName    = "teebzr"
+  githubName = "reconhub/learn"
+  
+  logo = "img/logo/learnBlueAndWhite.png"
+  orgName = "RECON"
+  orgWebsite = "https://repidemicsconsortium.org"
+  orgDescription = "For more about the R Epidemics Consortium (RECON), visit our website: https://repidemicsconsortium.org"
+  authorAvatar = "img/user.png"
+
+  showSupport = true
+
+
+[[menu.main]]
+  name = "Home"
+  url = "/"
+  weight = 200
+  
+[[menu.main]]
+  name = "Practicals"
+  url = "/categories/practicals.html"
+  weight = 99
+  pre = "<i class='far fa-align-justify'></i>"
+  
+[[menu.main]]
+  name = "Lectures"
+  url = "/categories/lectures.html"
+  weight = 99
+  pre = "<i class='far fa-align-justify'></i>"
+  
+[[menu.main]]
+  name = "Topics"
+  url = "/topics.html"
+  weight = 98
+  pre = "<i class='far fa-align-justify'></i>"
+
+[[menu.main]]
+  name = "Authors"
+  url = "/authors.html"
+  weight = 98
+  pre = "<i class='far fa-align-justify'></i>"
+
+[[menu.main]]
+  name = "Licenses"
+  url = "/licenses.html"
+  weight = 97
+  pre = "<i class='far fa-align-justify'></i>"
+  
+[[menu.main]]
+  name = "About"
+  url = "/about.html"
+  weight = 90
+  
+[[menu.main]]
+  name = "Contact"
+  url = "/contact.html"
+  weight = 89
+  
+[[menu.main]]
+  name = "Sample"
+  url = "/sample.html"
+  weight = 87
+  
+  

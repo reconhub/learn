@@ -1,12 +1,14 @@
 ---
 title: Basic Concepts on Vector Borne Disease Modelling
 author: Zulma Cucunuba & Pierre Nouvellet
+authors: ["Zulma Cucunuba","Pierre Nouvellet"]
 categories: ["lectures"]
-tags: ["vdb", "malaria","chagas", "zika"]
+topics: ["vdb", "malaria","chagas", "zika"]
 date: 2017-12-13
 image: img/highres/mosquito2.jpg
 slug: "basicvbdmodelling"
 showonlyimage: true
+licenses: CC-BY
 ---
 
 

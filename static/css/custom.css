@@ -1,0 +1,134 @@
+/* RECON Blue */
+.site-header {
+    background: #3d3d5c;
+}
+
+.site-footer {
+    background: #3d3d5c;
+}
+
+
+/* RECON Yellow */
+
+.nav-current a:visited {
+    color: #f0c674;
+}
+
+/* Header adjustments */
+.site-logo {
+    max-height: 100px;
+}
+
+.site-header-content {
+    padding: 6vw 4vw;
+}
+
+/* Adjustments to post layouts */
+.inner {
+    max-width: 1440px;
+}
+
+.post-full-content:after, .post-full-content:before {
+    content: none;
+    width: 0px;
+}
+
+.post-full-content {
+    padding: 0;
+}
+
+.kg-card-markdown {
+    max-width: 1440px;
+}
+
+.floating-header{
+	background:rgba(49,49,70,.95);
+}
+
+.floating-header-title {
+    color: #fff;
+	opacity: .8;
+	font-weight: 400;
+}
+
+.floating-header-share-label {
+    color: #fff;
+	opacity: .8
+}
+.floating-header-divider {
+    color: #fff;
+	opacity: .8;
+}
+
+/* Navigation menu */
+.nav {
+	margin-left: 20px;
+}
+
+.nav li,
+.nav li a {
+    display: inline;
+    margin-right: 20px;
+}
+
+.nav li a {
+    padding: 10px 0.1px;
+    color: #fff;
+    opacity: .8;
+}
+
+
+
+/* font work */
+@import url('https://fonts.googleapis.com/css?family=Raleway');
+
+@font-face {
+    font-family: "Sawasdee"; 
+    src: url("fonts/Sawasdee.ttf")
+	    /* src: url("fonts/Sawasdee.eot"); */
+	    /* src: url("fonts/Sawasdee.eot?#iefix") format("embedded-opentype"), */
+	    /* url("fonts/Sawasdee.ttf") format("truetype"); */
+}
+
+@font-face {
+    font-family: "Sawasdee";
+    src: url("fonts/Sawasdee-Bold.ttf");
+	font-weight: bold;
+}
+
+@font-face {
+    font-family: "Sawasdee";
+    src: url("fonts/Sawasdee-Oblique.ttf");
+	font-style: oblique;
+}
+
+@font-face {
+    font-family: "Sawasdee";
+    src: url("fonts/Sawasdee-BoldOblique.ttf");
+	font-weight: bold;
+    font-style: oblique;
+}
+
+
+.post-full-content h1,  .post-full-content h2,  .post-full-content h3, .post-full-content h4,  .post-full-content h5,  .post-full-content h6 {
+    font-family: Sawasdee,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Open Sans,Helvetica Neue,sans-serif; 
+}
+
+h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
+    font-family: Sawasdee,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Open Sans,Helvetica Neue,sans-serif; 
+}
+
+body, input, select, button, p {
+    font-family: "raleway", sans-serif;
+}
+
+/* featured post removal */
+
+@media (min-width:795px) {
+    .home-template .post-feed .post-card:nth-child(6n+1):not(.no-image) {
+        -ms-flex: 50%;
+        flex: 50%;
+        -ms-flex-direction: column;
+        flex-direction: column;
+    }
+}

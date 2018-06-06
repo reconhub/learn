@@ -1,0 +1,44 @@
+---
+title: Introduction to phylogenetics
+author: "Thibaut Jombart"
+authors: ["Thibaut Jombart"]
+categories: ["lectures"]
+topics: ["genetics"]
+date: 2017-12-15
+image: img/highres/tree-radial.jpg
+showonlyimage: true
+licenses: CC-BY
+---
+
+This lecture introduces general concepts pertaining to phylogenetic tree
+reconstruction, as well as the main approaches used for building trees,
+including distance-based, maximum parsimony, and maximum likelihood
+methods. It also discusses phylogenetic uncertainty, bootstrap, and some
+caveats and bad practices.
+
+Slides
+======
+
+**Click on the image below to access the slides:**
+
+<center>
+<a href="../../slides/lecture-phylogenetics/lecture-phylogenetics.pdf"><img class="gateway" src="../../img/highres/tree-radial.jpg" width="50%" alt="click there for slides" align="middle"></a>
+</center>
+About this document
+===================
+
+Contributors
+------------
+
+-   Thibaut Jombart: initial version
+
+Contributions are welcome via [pull
+requests](https://github.com/reconhub/learn/pulls). The source files of
+this lecture can be found
+[here](https://github.com/thibautjombart/lecture-phylogenetics/).
+
+Legal stuff
+-----------
+
+**License**: [CC-BY](https://creativecommons.org/licenses/by/3.0/)
+**Copyright**: Thibaut Jombart, 2017

@@ -1,12 +1,14 @@
 ---
 title: Compartmental model, example for Ebola
 author: "Pierre Nouvellet"
+authors: ["Pierre Nouvellet"]
 categories: ["lectures"]
-tags: ["modelling", "ebola","compartmental models"]
+topics: ["modelling", "ebola","compartmental models"]
 date: 2017-12-11
 image: img/highres/seismograph.jpg
 slug: "compartmentalebola"
 showonlyimage: true
+licenses: CC-BY
 ---
 
 	
