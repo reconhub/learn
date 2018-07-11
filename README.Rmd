@@ -12,7 +12,7 @@ This github project hosts the sources of the
 
 
 
-This *RECON learn* website uses [Rmarkdown](http://rmarkdown.rstudio.com/) (`.Rmd`) documents to build markdown content that [Hugo](https://gohugo.io) then turns into a nifty website.
+This *RECON learn* website uses [Rmarkdown](http://rmarkdown.rstudio.com/) (`.Rmd`) documents to build markdown (`.md`) content that [Hugo](https://gohugo.io) then turns into a nifty website (`.html`).
 
 ## General workflow
 
@@ -91,6 +91,13 @@ licenses: CC-BY
 Fields are mostly self-explanatory, and can be adapted to your needs. The date
 should respect the format provided.
 
+### Referencing packages
+You can load packages or use functions via the typical methods `library(tidyverse)`, `require(magrittr)`, `dplyr::mutate()` and folks can run the `R/get_and_update_dependencies.R` file to get all packages mentioned in the `content/posts` directory.
+
+This means you do not need to have mandatory install statements - you can make these `eval=FALSE`.
+
+NB. The `automagic` package used to get dependencies currently does not like `library("tidyverse")` so remove those speechmarks!
+
 ### Storing images
 The **image** will be the image associated with the document on the website. We
 try using natural, high-resolution, evocative images having a link, if only
@@ -106,7 +113,8 @@ it should contain references cited in the document as a `bibtex` file
 (`.bib`). Do not forget to add and push this file as well, as it will be
 required for your post to be successfully integrated.
 
-
+### Be nice
+As many files could be generated in one go, please don't use any `rm(list=ls())` types of activities. Make your code play nicely with others -- use specific and useful names, don't mess around with the global environment, and don't force any package unloads.
 
 
 ## Contributing slides
@@ -141,13 +149,14 @@ title : About RECON learn
 ```
 
 ### Maintaining package dependencies
-This repository also has a DESCRIPTION which lists any packages required to build all of the `.Rmd` files in `content/post/`. Keep it up to date with `R/get_and_update_dependencies.R`. You will need `tidyverse` and `devtools` installed for the script to run.
+This repository has a DESCRIPTION which lists any packages required to manage the codebase. 
 
-### Getting the dependencies
-If you need to install the dependencies locally, you can use `devtools::install()` in the console to fetch all the dependencies.
+To identify and install all the packages needed to build all of the `.Rmd` files in `content/post/`, you need to run `R/get_and_update_dependencies.R`. This will also help find packages on GitHub.
+
 
 ### Editing existing content
 If you need to change an existing piece of content:
+
 1. Delete its corresponding `.md` file
 2. Make the changes to the `.Rmd` file
 3. Run `R/render_new_rmds_to_md.R`
