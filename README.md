@@ -1,103 +1,86 @@
-This *RECON learn* website uses [blogdown](https://bookdown.org/yihui/blogdown/), which generates static content for a website through the compilation of a series of [Rmarkdown](http://rmarkdown.rstudio.com/) (`.Rmd`) documents.
+Welcome to the *RECON learn* project
+====================================
 
-Running the website locally
----------------------------
+This github project hosts the sources of the
+[RECON](http://www.repidemicsconsortium.org/) learn platform, live at:
+<https://reconlearn.netlify.com/>.
 
-You will need to install `blogdown` and its dependencies (especially Hugo):
+This *RECON learn* website uses
+[Rmarkdown](http://rmarkdown.rstudio.com/) (`.Rmd`) documents to build
+markdown content that [Hugo](https://gohugo.io) then turns into a nifty
+website.
 
-``` r
-install.packages("blogdown") # install blogdown
-blogdown::install_hugo() # install hugo
-```
 
-See detailed [installation guidelines](https://bookdown.org/yihui/blogdown/installation.html) for more information.
-
-<br>
-
-You will also need to `git clone` this project, which using `git` command lines would look like:
-
-``` bash
-git clone https://github.com/reconhub/learn
-cd learn
-```
-
-Once this is done, you will need to make sure that all packages needed by all practicals and lectures on the website are installed on your computer. If this is not the case, you can install these dependencies using `checkpoint` by typing:
-
-``` r
-if (!require("checkpoint")) {
-    install.packages("checkpoint")
-}
-
-install.packages(
-    checkpoint::scanForPackages(use.knitr = TRUE)$pkgs
-)
-```
-
-You should usually only need this once, as further dependencies can be installed at a later stage. Once this is done, you can preview the site by typing:
-
-``` r
-blogdown::serve_site()
-```
-
-This will open up the website at `127.0.0.1:4321`. This website is updated in real time based on the content of `learn/`.
-
-Contributing to *RECON learn*
------------------------------
-
-### General workflow
+General workflow
+----------------
 
 The general workflow would include the following steps:
 
-1.  **Fork the project** from the github *RECON learn* project:
+1. **Fork the project** from the github *RECON learn* project:
 
-<center>
-<img src="data/img/shot-fork.png" width="800px">
-</center>
-This will create a copy of the project in your own github account. You will need to clone this archive, and make the modifications there. You `git clone` would look like:
+This will create a copy of the project in your own github account. You
+will need to clone this archive, and make the modifications there. You
+`git clone` would look like:
 
-``` bash
+This will create a copy of the project in your own github account. You will need
+to clone this archive, and make the modifications there. You `git clone` would look like:
+
+
+```bash
 git clone https://github.com/johnsnow/learn
 ```
 
-If your github user name is `johnsnow`.
+If your github user name is `johnsnow`.  
 
-1.  **Add new content**, typically in the form of a new `.Rmd` file and associated media (most often images). Regular posts such as practicals, tutorials, and case studies are stored in `content/post/`. Other content which is not rendered as typical html reports such as lecture slides can be stored in `static`.
+1.  **Add new content**, typically in the form of a new `.Rmd` file and
+    associated media (most often images). Regular posts such as
+    practicals, tutorials, and case studies are stored in
+    `content/post/`. Other content which is not rendered as typical html
+    reports such as lecture slides can be stored in `static`.
 
-2.  **Test new content** and revise until satisfying by visualising the local website using `blogdown::serve_site()`, where the current working directory is set to the project folder (`learn/` by default).
+2.  **Generate content** by using the `R/render_new_rmds_to_md.R`
+    script, to build the `.md` files and associated graphics.
 
-3.  `git commit` and `git push` all changes; don't forget to add new images as well (run `git status` to see which files haven't been added).
+3.  `git commit` and `git push` all changes; don’t forget to add new
+    images as well (run `git status` to see which files haven’t been
+    added).
 
-4.  Make a **pull request** against the main project (`master` branch), from the github *RECON learn* project:
+4.  Make a **pull request** against the main project (`master` branch),
+    from the github *RECON learn* project:
 
-<center>
-<img src="data/img/shot-pr.png" width="800px">
-</center>
 Make sure you use `reconhub/learn`, branch `master` as base fork:
 
-<center>
-<img src="data/img/shot-pr-2.png" width="800px">
-</center>
-### Contributing practicals and case studies
+Contributing content
+--------------------
 
-#### Create a new file
+Practicals, tuorials, case studies are contributed as
+[Rmarkdown](http://rmarkdown.rstudio.com/) (`.Rmd`) documents and
+generated markdown ready for conversion as `.md` documents. They are
+stored in `content/post`. The best way to create a new document is
+copy-paste an existing one and rename it.
 
-Practicals, tuorials, case studies are contributed as [Rmarkdown](http://rmarkdown.rstudio.com/) (`.Rmd`) documents. They are stored in `content/post`. The best way to create a new document is copy-paste an existing one and rename it. Naming conventions are as follows:
+### Conventions
+
+Naming conventions are as follows:
 
 -   start with `practical` for practicals, `study` for case studies
 -   use lower case, no special characters
--   be hypen-separated ("-")
+-   be hypen-separated (“-”)
 
 For instance, for a practical using a SEIR model for influenza data:
 
 -   `practical-seir-influenza` is good
--   `SEIR-flu` is bad as lacking 'practical' (it could be a lecture), and has capitalised letters
+-   `SEIR-flu` is bad as lacking ‘practical’ (it could be a lecture),
+    and has capitalised letters
 -   `practical-new` is bad, as it is non-informative
+
 
 ### Editing the YAML header
 
-The YAML header is the beginning of the `Rmd` document, within the `---`. For instance:
+The YAML header is the beginning of the `Rmd` document, within the
+`---`. For instance:
 
-``` r
+```r
 ---
 title: Phylogenetic tree reconstruction
 author: Thibaut Jombart
@@ -112,37 +95,69 @@ licenses: CC-BY
 ---
 ```
 
-Fields are mostly self-explanatory, and can be adapted to your needs. The date should respect the format provided.
+Fields are mostly self-explanatory, and can be adapted to your needs.
+The date should respect the format provided.
 
 ### Storing images
+The **image** will be the image associated with the document on the website. We
+try using natural, high-resolution, evocative images having a link, if only
+figurative, with the topic covered. These images are stored in
+`static/img/highres/`. Do not forget to add and push this file as well, as it
+will be required for your post to be successfully integrated. The path to the
+file provided in the header assumes `static/` as root folder (see example
+above), so that the right path will look like: `img/highres/your-image.jpg`.
 
-The **image** will be the image associated with the document on the website. We try using natural, high-resolution, evocative images having a link, if only figurative, with the topic covered. These images are stored in `static/img/highres/`. Do not forget to add and push this file as well, as it will be required for your post to be successfully integrated. The path to the file provided in the header assumes `static/` as root folder (see example above), so that the right path will look like: `img/highres/your-image.jpg`.
+The **image** will be the image associated with the document on the
+website. We try using natural, high-resolution, evocative images having
+a link, if only figurative, with the topic covered. These images are
+stored in `static/img/highres/`. Do not forget to add and push this file
+as well, as it will be required for your post to be successfully
+integrated. The path to the file provided in the header assumes
+`static/` as root folder (see example above), so that the right path
+will look like: `img/highres/your-image.jpg`.
 
 ### Bibliographies
+The **`bibliography`** is optional. If provided,
+it should contain references cited in the document as a `bibtex` file
+(`.bib`). Do not forget to add and push this file as well, as it will be
+required for your post to be successfully integrated.
 
-The **`bibliography`** is optional. If provided, it should contain references cited in the document as a `bibtex` file (`.bib`). Do not forget to add and push this file as well, as it will be required for your post to be successfully integrated.
+The **`bibliography`** is optional. If provided, it should contain
+references cited in the document as a `bibtex` file (`.bib`). Do not
+forget to add and push this file as well, as it will be required for
+your post to be successfully integrated.
 
-Contributing slides
--------------------
 
-Material for slides is stored in `static/slides`. Currently, two files are needed for a lecture:
+Material for slides is stored in `static/slides`. Currently, two files
+are needed for a lecture:
 
-1.  a `.Rmd` post in `content/post` (see above) to introduce the lecture and link to the slides; for an example, look at `content/post/lecture-reproducibility.Rmd`.
+1.  a `.Rmd` post in `content/post` (see above) to introduce the lecture
+    and link to the slides; for an example, look at
+    `content/post/lecture-reproducibility.Rmd`.
 
-2.  the slides themselves, stored in `static/slides`.
+2. the slides themselves, stored in `static/slides`.
 
-For the slides, we recommended using `.Rmd` there again, and rendering them before committing them. If your slides use images, store them in `static/img/slides`. You will be able to refer to them using `../../img/slides/your-image.jpg`. For an example of `rmarkdown+ioslides` slides, look at `static/slides/intro_reproducibility_Rmd/intro_reproducibility.Rmd`.
+For the slides, we recommended using `.Rmd` there again, and rendering
+them before committing them. If your slides use images, store them in
+`static/img/slides`. You will be able to refer to them using
+`../../img/slides/your-image.jpg`. For an example of
+`rmarkdown+ioslides` slides, look at
+`static/slides/intro_reproducibility_Rmd/intro_reproducibility.Rmd`.
 
-Other topics
-------------
 
+
+## Other topics 
 ### Contributing top-level pages
 
-To contribute a page that sits outside of the posts category you can make an `.md` file (or a `.Rmd` file so long as you render to `.md` too). This will then be processed by Hugo along with the other files to build the website.
+To contribute a page that sits outside of the posts category you can
+make an `.md` file (or a `.Rmd` file so long as you render to `.md`
+too). This will then be processed by Hugo along with the other files to
+build the website.
 
 These files should have at minimum:
 
-``` r
+
+```r
 ---
 date : 2017-11-01
 title : About RECON learn
@@ -151,12 +166,23 @@ title : About RECON learn
 
 ### Maintaining package dependencies
 
-This repository also has a DESCRIPTION which lists any packages required to build all of the `.Rmd` files in `content/post/`. Keep it up to date with `R/get_and_update_dependencies.R`. You will need `tidyverse` and `devtools` installed for the script to run.
+This repository also has a DESCRIPTION which lists any packages required
+to build all of the `.Rmd` files in `content/post/`. Keep it up to date
+with `R/get_and_update_dependencies.R`. You will need `tidyverse` and
+`devtools` installed for the script to run.
 
 ### Getting the dependencies
 
-If you need to install the dependencies locally, you can use `devtools::install()` in the console to fetch all the dependencies.
+If you need to install the dependencies locally, you can use
+`devtools::install()` in the console to fetch all the dependencies.
 
 ### Editing existing content
+If you need to change an existing piece of content:
+1. Delete its corresponding `.md` file
+2. Make the changes to the `.Rmd` file
+3. Run `R/render_new_rmds_to_md.R`
+4. Commit and push to the repository
 
-If you need to change an existing piece of content: 1. Delete its corresponding `.md` file 2. Make the changes to the `.Rmd` file 3. Run `R/render_new_rmds_to_md.R` 4. Commit and push to the repository
+If you need to change an existing piece of content: 1. Delete its
+corresponding `.md` file 2. Make the changes to the `.Rmd` file 3. Run
+`R/render_new_rmds_to_md.R` 4. Commit and push to the repository
