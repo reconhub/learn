@@ -16,17 +16,21 @@ General workflow
 
 The general workflow would include the following steps:
 
-1.  **Fork the project** from the github *RECON learn* project:
+1. **Fork the project** from the github *RECON learn* project:
 
 This will create a copy of the project in your own github account. You
 will need to clone this archive, and make the modifications there. You
 `git clone` would look like:
 
-``` bash
+This will create a copy of the project in your own github account. You will need
+to clone this archive, and make the modifications there. You `git clone` would look like:
+
+
+```bash
 git clone https://github.com/johnsnow/learn
 ```
 
-If your github user name is `johnsnow`.
+If your github user name is `johnsnow`.  
 
 1.  **Add new content**, typically in the form of a new `.Rmd` file and
     associated media (most often images). Regular posts such as
@@ -70,12 +74,13 @@ For instance, for a practical using a SEIR model for influenza data:
     and has capitalised letters
 -   `practical-new` is bad, as it is non-informative
 
+
 ### Editing the YAML header
 
 The YAML header is the beginning of the `Rmd` document, within the
 `---`. For instance:
 
-``` r
+```r
 ---
 title: Phylogenetic tree reconstruction
 author: Thibaut Jombart
@@ -94,6 +99,13 @@ Fields are mostly self-explanatory, and can be adapted to your needs.
 The date should respect the format provided.
 
 ### Storing images
+The **image** will be the image associated with the document on the website. We
+try using natural, high-resolution, evocative images having a link, if only
+figurative, with the topic covered. These images are stored in
+`static/img/highres/`. Do not forget to add and push this file as well, as it
+will be required for your post to be successfully integrated. The path to the
+file provided in the header assumes `static/` as root folder (see example
+above), so that the right path will look like: `img/highres/your-image.jpg`.
 
 The **image** will be the image associated with the document on the
 website. We try using natural, high-resolution, evocative images having
@@ -105,14 +117,16 @@ integrated. The path to the file provided in the header assumes
 will look like: `img/highres/your-image.jpg`.
 
 ### Bibliographies
+The **`bibliography`** is optional. If provided,
+it should contain references cited in the document as a `bibtex` file
+(`.bib`). Do not forget to add and push this file as well, as it will be
+required for your post to be successfully integrated.
 
 The **`bibliography`** is optional. If provided, it should contain
 references cited in the document as a `bibtex` file (`.bib`). Do not
 forget to add and push this file as well, as it will be required for
 your post to be successfully integrated.
 
-Contributing slides
--------------------
 
 Material for slides is stored in `static/slides`. Currently, two files
 are needed for a lecture:
@@ -121,7 +135,7 @@ are needed for a lecture:
     and link to the slides; for an example, look at
     `content/post/lecture-reproducibility.Rmd`.
 
-2.  the slides themselves, stored in `static/slides`.
+2. the slides themselves, stored in `static/slides`.
 
 For the slides, we recommended using `.Rmd` there again, and rendering
 them before committing them. If your slides use images, store them in
@@ -130,9 +144,9 @@ them before committing them. If your slides use images, store them in
 `rmarkdown+ioslides` slides, look at
 `static/slides/intro_reproducibility_Rmd/intro_reproducibility.Rmd`.
 
-Other topics
-------------
 
+
+## Other topics 
 ### Contributing top-level pages
 
 To contribute a page that sits outside of the posts category you can
@@ -142,7 +156,8 @@ build the website.
 
 These files should have at minimum:
 
-``` r
+
+```r
 ---
 date : 2017-11-01
 title : About RECON learn
@@ -162,6 +177,11 @@ If you need to install the dependencies locally, you can use
 `devtools::install()` in the console to fetch all the dependencies.
 
 ### Editing existing content
+If you need to change an existing piece of content:
+1. Delete its corresponding `.md` file
+2. Make the changes to the `.Rmd` file
+3. Run `R/render_new_rmds_to_md.R`
+4. Commit and push to the repository
 
 If you need to change an existing piece of content: 1. Delete its
 corresponding `.md` file 2. Make the changes to the `.Rmd` file 3. Run
