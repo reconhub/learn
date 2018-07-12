@@ -9,9 +9,14 @@ library(tidyverse)
   str_replace_all("^library\\(|\\)","") ->
   package_deps
 
-package_deps %>% 
-  setdiff(installed.packages()[,"Package"]) %>% 
-  install.packages()
+package_deps <- gsub("\"", "", package_deps)
+
+package_deps <- package_deps %>%
+  setdiff(installed.packages()[,"Package"])
+
+if (length(package_deps) > 0L) {
+  install.packages(package_deps)
+}
 
 package_deps %>% 
   map(devtools::use_package)
