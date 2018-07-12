@@ -10,6 +10,9 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_cache$","^README"]
 paginate        = 6
 uglyurls = true
 preserveTaxonomyNames = true
+pygmentsStyle = "monokai"
+pygmentsCodeFences = true
+
 [taxonomies]
   category = "categories"
   license = "licenses"
