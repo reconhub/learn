@@ -20,15 +20,15 @@ git clone https://github.com/johnsnow/learn
 
 If your github user name is `johnsnow`.
 
-1.  **Add new content**, typically in the form of a new `.Rmd` file and associated media (most often images). Regular posts such as practicals, tutorials, and case studies are stored in `content/post/`. Other content which is not rendered as typical html reports such as lecture slides can be stored in `static`.
+1.  Open the project in Rstudio and run `devtools::install()`
 
-2.  **Generate content** by using the `R/render_new_rmds_to_md.R` script, to build the `.md` files and associated graphics.
+2.  **Add new content**, typically in the form of a new `.Rmd` file and associated media (most often images). Regular posts such as practicals, tutorials, and case studies are stored in `content/post/`. Other content which is not rendered as typical html reports such as lecture slides can be stored in `static`.
 
-3.  `git commit` and `git push` all changes; don't forget to add new images as well (run `git status` to see which files haven't been added).
+3.  **Generate content** by running `learn::render_new_rmds_to_md()` to build the `.md` files and associated graphics.
 
-4.  Make a **pull request** against the main project (`master` branch), from the github *RECON learn* project:
+4.  `git commit` and `git push` all changes; don't forget to add new images as well (run `git status` to see which files haven't been added).
 
-Make sure you use `reconhub/learn`, branch `master` as base fork:
+5.  Make a **pull request** against the main project (`master` branch), from the github *RECON learn* project. Make sure you use `reconhub/learn`, branch `master` as base fork.
 
 Contributing content
 --------------------
@@ -65,6 +65,8 @@ image: img/highres/trees.jpg
 showonlyimage: true
 bibliography: practical-phylogenetics.bib
 licenses: CC-BY
+always_allow_html: yes
+preserve_yaml: true
 ---
 ```
 
@@ -72,11 +74,11 @@ Fields are mostly self-explanatory, and can be adapted to your needs. The date s
 
 ### Referencing packages
 
-You can load packages or use functions via the typical methods `library(tidyverse)`, `require(magrittr)`, `dplyr::mutate()` and folks can run the `R/get_and_update_dependencies.R` file to get all packages mentioned in the `content/posts` directory.
+You can load packages or use functions via the typical methods `library(tidyverse)`, `require(magrittr)`, `dplyr::mutate()` and folks can run `learn::get_and_update_dependencies()` file to get all packages mentioned in the `content/posts` directory.
 
 This means you do not need to have mandatory install statements - you can make these `eval=FALSE`.
 
-NB. The `automagic` package used to get dependencies currently does not like `library("tidyverse")` so remove those speechmarks!
+NB. The `automagic` package used to get dependencies currently does not like `library("tidyverse")` so remove those speechmarks when writing your post!
 
 ### Storing images
 
@@ -121,7 +123,7 @@ title : About RECON learn
 
 This repository has a DESCRIPTION which lists any packages required to manage the codebase.
 
-To identify and install all the packages needed to build all of the `.Rmd` files in `content/post/`, you need to run `R/get_and_update_dependencies.R`. This will also help find packages on GitHub.
+To identify and install all the packages needed to build all of the `.Rmd` files in `content/post/`, you need to run `learn::get_and_update_dependencies()`. This will also help find packages on GitHub.
 
 ### Editing existing content
 
@@ -129,5 +131,5 @@ If you need to change an existing piece of content:
 
 1.  Delete its corresponding `.md` file
 2.  Make the changes to the `.Rmd` file
-3.  Run `R/render_new_rmds_to_md.R`
+3.  Run `learn::render_new_rmds_to_md()`
 4.  Commit and push to the repository

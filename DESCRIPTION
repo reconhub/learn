@@ -9,4 +9,6 @@ LazyData: true
 ByteCompile: true
 Imports: knitr,
     rmarkdown,
-    automagic
+    automagic,
+    htmltools,
+    htmlwidgets
