@@ -3,7 +3,7 @@ title: Reproducibility using R
 author: Thibaut Jombart
 authors: ["Thibaut Jombart"]
 categories: ["lectures"]
-topics: ["Rmarkdown"]
+topics: ["R Markdown"]
 date: 2017-11-10
 image: img/highres/printing-press.jpg
 slug: reproducibility
@@ -57,7 +57,7 @@ install.packages('knitr', repos = c('https://xran.yihui.name', 'https://cran.rst
 `rmarkdown`
 -----------
 
-`rmarkdown` extends the capabilities of `knitr` with a more diverse set
+`rmarkdown`  extends the capabilities of `knitr` with a more diverse set
 of outputs generated from `Rmd` files, including pdf documents, article
 templates, pdf or html slides, or even web applications.
 

@@ -1,2 +1,14 @@
+^appveyor\.yml$
+^codecov\.yml$
+^\.travis\.yml$
+^LICENSE\.md$
+^README\.Rmd$
+^_redirects$
+^config\.toml$
+^content$
+^index\.Rmd$
+^layouts$
+^netlify\.toml$
+^static$
 ^.*\.Rproj$
 ^\.Rproj\.user$
