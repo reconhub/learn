@@ -60,7 +60,7 @@ learn::create_post(title = "How to create a new post for the site",
                    author = "Locke Data")
 ```
 
-See `?create_post` to see further parameters.
+See `?create_post` to see further parameters. `create_post` creates and opens the Rmd file, creates a default .bib and a blank place-holder image that you can replace with your own header image.
 
 ### Conventions
 
@@ -117,6 +117,15 @@ The **image** will be the image associated with the document on the website. We 
 The **`bibliography`** is optional. If provided, it should contain references cited in the document as a `bibtex` file (`.bib`). Do not forget to add and push this file as well, as it will be required for your post to be successfully integrated.
 
 `create_post` create a .bib by default. If you don't need it, delete it and delete the corresponding YAML field.
+
+### HTML widgets (plotly, leaflet...)
+
+If your post features an interactive plot or map, please use the `save_and_use_widget` function.
+
+```{r map}
+map <- leaflet::leaflet()
+save_and_use_widget(map, "map.html")
+```
 
 ### Be nice
 
