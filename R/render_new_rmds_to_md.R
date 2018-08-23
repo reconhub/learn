@@ -11,7 +11,7 @@
 #' @return Used for pure side effect
 #' @export
 render_new_rmds_to_md <- function(dir = "content/post", 
-                                  build = "old and new") {
+                                  build = "new") {
   match.arg(build, c("all", "old and new", "old", "new"))
   content = dir
   
