@@ -122,6 +122,10 @@ body, input, select, button, p {
     font-family: "raleway", sans-serif;
 }
 
+.post-full-content {
+    font-family: "raleway", sans-serif;
+}
+
 /* featured post removal */
 
 @media (min-width:795px) {
