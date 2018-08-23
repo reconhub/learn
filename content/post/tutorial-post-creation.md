@@ -111,7 +111,10 @@ showonlyimage: true
 bibliography: practical-phylogenetics.bib
 licenses: CC-BY
 always_allow_html: yes
-preserve_yaml: true
+output: 
+  md_document:
+    variant: markdown_github
+    preserve_yaml: true
 ---
 ```
 
