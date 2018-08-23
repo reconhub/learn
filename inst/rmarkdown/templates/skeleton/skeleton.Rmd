@@ -9,6 +9,7 @@ image: img/highres/placeholder.jpg
 showonlyimage: true
 bibliography: practical-evd.bib
 licenses: CC-BY
+always_allow_html: yes
 output: 
   md_document:
     variant: markdown_github

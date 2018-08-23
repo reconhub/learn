@@ -8,6 +8,7 @@ date: 2018-08-23
 image: img/highres/post-creation.jpg
 showonlyimage: yes
 licenses: CC-BY
+always_allow_html: yes
 output: 
   md_document:
     variant: markdown_github
