@@ -8,7 +8,10 @@ date: 2018-08-23
 image: img/highres/post-creation.jpg
 showonlyimage: yes
 licenses: CC-BY
-
+output: 
+  md_document:
+    variant: markdown_github
+    preserve_yaml: true
 ---
 
 In this article we explain how to contribute new posts and slidedecks
@@ -41,8 +44,9 @@ If your GitHub user name is `johnsnow`.
     following section for posts](#post-creation) or in the [section
     about slidedecks](#slidedeck-creation).
 
-3.  **Generate content** by running `learn::render_new_rmds_to_md()` to
-    build the `.md` files and associated graphics.
+3.  **Generate content** by knitting your new Rmd via RStudio’s knit
+    button or by running `learn::render_new_rmds_to_md()` to build the
+    `.md` files and associated graphics.
 
 4.  `git commit` and `git push` all changes; don’t forget to add new
     images as well (run `git status` to see which files haven’t been
@@ -157,7 +161,7 @@ If your post features an interactive plot or map, please use the
 
 ``` r
 map <- leaflet::leaflet()
-save_and_use_widget(map, "map.html")
+learn::save_and_use_widget(map, "map.html")
 ```
 
 <!--html_preserve-->
