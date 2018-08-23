@@ -1,12 +1,17 @@
 ---
 title: "Is this outbreak over?"
-author: "Michael HÃ¶hle"
+author: "Michael Höhle"
 date: 2018-03-22
 image: img/highres/theendisnear.png
 categories: practicals
 showonlyimage: true
 tags: ["epicurve", "outbreak", "outbreak end"]
 bibliography: practical-outbreakend.bib
+always_allow_html: yes
+output: 
+  md_document:
+    variant: markdown_github
+    preserve_yaml: true
 ---
 
 Motivation
@@ -350,12 +355,12 @@ given a threshold of *c* = 0.05, is found as:
 ``` r
 (tEnd <- df2 %>% filter(`quantile.97.5%` < c_threshold) %>% slice(1L))
 ##            t         pi quantile.2.5% quantile.97.5%
-## 1 2015-07-22 0.01793098    0.01267363     0.02632568
+## 1 2015-07-21 0.03452785    0.02581767     0.04570503
 ```
 
 In other words, given the assumptions of the model and the chosen
 threshold, we would declare the outbreak to be over, if no new cases are
-observed by 2015-07-22. The adequate choice of *c* as cut-off in the
+observed by 2015-07-21. The adequate choice of *c* as cut-off in the
 procedure depends on what is at stake. Hence, choosing *c* = 0.05
 without additional thought is more than arbitrary, but a more careful
 discussion is beyond the scope of this small practical tutorial.
@@ -381,7 +386,7 @@ About this document
 Contributors
 ------------
 
--   [Michael HÃ¶hle](http://www.math.su.se/~hoehle), Stockholm
+-   [Michael Höhle](http://www.math.su.se/~hoehle), Stockholm
     University: RECON modified version of the blog post [No Sleep During
     the Reproducibility
     Session](http://staff.math.su.se/hoehle/blog/2016/08/04/outbreakEnd.html)
@@ -401,7 +406,7 @@ markdown+Rknitr source code of this blog is available under a [GNU
 General Public License (GPL
 v3)](https://www.gnu.org/licenses/gpl-3.0.html) license from github.
 
-**Copyright**: Michael HÃ¶hle, 2018
+**Copyright**: Michael Höhle, 2018
 
 References
 ==========
