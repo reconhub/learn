@@ -17,7 +17,7 @@ library(knitr)
 opts_chunk$set(collapse = TRUE)
 
 
-CACHE <- FALSE
+CACHE <- TRUE
 
 ```
 
@@ -256,8 +256,8 @@ Rt <- cbind.data.frame(as.data.frame(daily_i),
                        Rt)
 plot(daily_i) +
     geom_ribbon(data = Rt, fill = "#c65353", alpha = .3,
-                aes(ymin = Quantile.0.025, ymax = Quantile.0.975)) +
-    geom_line(data = Rt, aes(y = Median), col = "#c65353", alpha = .8) +
+                aes(x = dates, ymin = Quantile.0.025, ymax = Quantile.0.975)) +
+    geom_line(data = Rt, aes(x = dates, y = Median), col = "#c65353", alpha = .8) +
     geom_hline(yintercept = 1, linetype = 2) +
     labs(title = "Weekly Rt: median, and 95% CI")
 
