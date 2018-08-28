@@ -2,7 +2,7 @@ baseurl = "https://reconlearn.org/"
 theme = "hugo-casper-two"
 languageCode = "en-us"
 # Enable comments by entering your Disqus shortname
-disqusShortname = "itsalocke"
+disqusShortname = "reconlearn"
 # Enable Google Analytics by entering your tracking code
 # googleAnalytics = ""
 # Ignore the following extensions
