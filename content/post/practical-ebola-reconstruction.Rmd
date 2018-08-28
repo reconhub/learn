@@ -16,15 +16,6 @@ licenses: CC-BY
 library(knitr)
 opts_chunk$set(collapse = TRUE)
 
-install_if_missing <- function(x) {
-    if (!require(x, character.only = TRUE)) {
-        install.packages(x)
-        require(x, character.only = TRUE)
-    }
-}
-
-deps <- c("readxl", "incidence", "epicontacts", "EpiEstim", "ggplot2", "ape", "outbreaker2", "epitrix")
-lapply(deps, install_if_missing)
 
 CACHE <- TRUE
 

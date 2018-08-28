@@ -1,0 +1,46 @@
+---
+title: "Ebola simulation part 2: outbreak reconstruction"
+author: Thibaut Jombart, Finlay Campbell
+authors: ["Thibaut Jombart","Finlay Campbell"]
+categories: ["practicals"]
+topics: ["topics1", "topics2"]
+date: 2018-01-24
+image: img/highres/placeholder.jpg
+showonlyimage: true
+bibliography: practical-evd.bib
+licenses: CC-BY
+always_allow_html: yes
+output: 
+  md_document:
+    variant: markdown_github
+    preserve_yaml: true
+---
+
+	
+```{r options, include = FALSE, message = FALSE, warning = FALSE, error = FALSE}
+library(knitr)
+opts_chunk$set(collapse = TRUE)
+
+
+CACHE <- TRUE
+
+```
+
+
+
+YOUR CONTENT GOES HERE! Happy writing :-)
+
+# About this document
+
+
+## Contributors
+
+- Zulma Cucunuba & Pierre Nouvellet: initial version
+
+Contributions are welcome via [pull requests](https://github.com/reconhub/learn/pulls).
+
+
+## Legal stuff
+
+**License**: [CC-BY](https://creativecommons.org/licenses/by/3.0/)
+**Copyright**: Zulma Cucunuba & Pierre Nouvellet, 2017 

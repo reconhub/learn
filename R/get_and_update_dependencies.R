@@ -1,23 +1,13 @@
-library(tidyverse)
-
-"content/post/" %>% 
-  list.files("*.Rmd", full.names = TRUE) %>% 
-  map_chr(read_file) %>% 
-  str_extract_all("library(.*)") %>% 
-  simplify() %>% 
-  unique() %>% 
-  str_replace_all("^library\\(|\\)","") ->
-  package_deps
-
-package_deps <- gsub("\"", "", package_deps)
-
-package_deps <- package_deps %>%
-  setdiff(installed.packages()[,"Package"])
-
-if (length(package_deps) > 0L) {
-  install.packages(package_deps)
+#' Determine all dependencies in blog posts and install them
+#' 
+#' Using the automagic package, detect requirements in Rmd files
+#' and install them all. Will help you if packages appear to be on GitHub.
+#'
+#' @param dir Directory to search for packages in. Defaults to the blog post location of Hugo.
+#'
+#' @return Used for pure side effect
+#' @export
+get_and_update_dependencies <- function(dir = "content/post/") {
+  automagic::make_deps_file(dir)
+  automagic::automagic(dir)
 }
-
-package_deps %>% 
-  map(devtools::use_package)
-

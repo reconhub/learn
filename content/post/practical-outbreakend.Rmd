@@ -7,6 +7,11 @@ categories: practicals
 showonlyimage: true
 tags: ["epicurve", "outbreak", "outbreak end"]
 bibliography: practical-outbreakend.bib
+always_allow_html: yes
+output: 
+  md_document:
+    variant: markdown_github
+    preserve_yaml: true
 ---
 
 
@@ -14,15 +19,7 @@ bibliography: practical-outbreakend.bib
 library(knitr)
 opts_chunk$set(collapse = TRUE, fig.height=4, fig.width=8)
 
-install_if_missing <- function(x) {
-    if (!require(x, character.only = TRUE)) {
-        install.packages(x)
-        require(x, character.only = TRUE)
-    }
-}
 
-deps <- c("readxl", "tidyverse", "pbapply")
-lapply(deps, install_if_missing)
 
 CACHE <- TRUE
 
@@ -66,9 +63,9 @@ The following packages, available on CRAN, are needed for this practical:
 To install these packages, use `install.packages` and then load them using
 
 ```{r, warning=FALSE, message=FALSE}
-library("tidyverse")
-library("openxlsx")
-library("pbapply")
+library(tidyverse)
+library(openxlsx)
+library(pbapply)
 ```
 
 ## Data from the MERS-Cov Oubtreak in Korea, 2015
@@ -344,7 +341,7 @@ We can embed estimation uncertainty originating from the estimation of $R_0$ and
 
 ```{r, echo=FALSE, cache=TRUE}
 ##
-library("mvtnorm")
+library(mvtnorm)
 nSamples <- 100
 R0k_samples <- exp(rmvnorm(nSamples, mean=theta_mle$par,
                            sigma=solve(-theta_mle$hessian)))
