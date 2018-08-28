@@ -87,10 +87,5 @@ pygmentsCodeFences = true
   name = "Contact"
   url = "/contact.html"
   weight = 89
-  
-[[menu.main]]
-  name = "Sample"
-  url = "/sample.html"
-  weight = 87
-  
+
   
