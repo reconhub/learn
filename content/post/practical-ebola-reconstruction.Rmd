@@ -17,7 +17,7 @@ library(knitr)
 opts_chunk$set(collapse = TRUE)
 
 
-CACHE <- TRUE
+CACHE <- FALSE
 
 ```
 
@@ -141,12 +141,13 @@ available symbols and corresponding shape code, you can type
 
 The results should look like:
 	      
-```{r epicontacts, echo = FALSE}
+```{r ebola_recons_epicontacts_1, echo = FALSE, eval = -5}
 library(epicontacts)
-x <- make_epicontacts(linelist,
-                      contacts, directed = TRUE)
+x <- make_epicontacts(linelist, contacts, directed = TRUE)
 x
-plot(x, node_shape = "sex", shapes = c(male = "male", female = "female"), selector = FALSE)
+p <- plot(x, node_shape = "sex", shapes = c(male = "male", female = "female"), selector = FALSE)
+p
+save_and_use_widget(p, "ebola_recons_epicontacts_1.html")
 
 ```
 
@@ -452,11 +453,13 @@ The first two plots show the trace of the log-posterior densities (with, and
 without burnin). See `?plot.outbreaker_chains` for details on available
 plots. Graphics worth looking at include:
 
-```{r basic_plots}
+```{r ebola_outbreaker_1, echo = 1:5, eval = -5}
 plot(res_basic,  type = "alpha", burnin = 500) # ancestries
 plot(res_basic,  type = "t_inf", burnin = 500) # infection dates
 plot(res_basic, "mu", burn = 500, type = "density") # mutation rate
-plot(res_basic,  type = "network", burnin = 500, min_support = .05) # transmission trees
+p <- plot(res_basic,  type = "network", burnin = 500, min_support = .05) # transmission trees
+p
+save_and_use_widget(p, "ebola_outbreaker_1.html")
 ```
 
 As a further help for interpretation, you can derive a consensus tree from the
@@ -531,12 +534,14 @@ res_full
 Produce graphics as in the previous model. Assess convergence, choose an
 appropriate burnin, visualise ancestries and the infection timelines:
 
-```{r full_plots, echo = FALSE}
+```{r ebola_outbreaker_2, echo = FALSE, eval = -6}
 plot(res_full) # log-posterior trace
 plot(res_full, burnin = 200) # log-posterior trace
 plot(res_full,  type = "alpha", burnin = 200) # ancestries
 plot(res_full,  type = "t_inf", burnin = 200) # infection dates
-plot(res_full,  type = "network", burnin = 200, min_support = .05) # transmission trees
+p <- plot(res_full,  type = "network", burnin = 200, min_support = .05) # transmission trees
+p
+save_and_use_widget(p, "ebola_outbreaker_2.html")
 ```
 
 <font class="question">How would you interpret the results?</font>
@@ -583,13 +588,15 @@ cons_tree$linelist$age_class <- cut(cons_tree$linelist$age,
 Looking carefully at the documentation of `vis_epicontacts`, try to reproduce
 the final consensus tree below:
 
-```{r consensus-plot, echo = FALSE}
+```{r ebola_outbreaker_3, echo = FALSE, eval = -2}
 
-plot(cons_tree, edge_col = "support", edge_col_pal = support_pal,
-     edge_label = "support", node_shape = "sex",
-     shapes = c(male = "male", female = "female"), node_color = "age_class",
-     col_pal = age_pal)
-     
+p <- plot(cons_tree, edge_col = "support", edge_col_pal = support_pal,
+          edge_label = "support", node_shape = "sex",
+          shapes = c(male = "male", female = "female"), node_color = "age_class",
+          col_pal = age_pal)
+p
+save_and_use_widget(p, "ebola_outbreaker_2.html")
+   
 ```
 
 <font class="question">What are your conclusions? What are the main drivers of

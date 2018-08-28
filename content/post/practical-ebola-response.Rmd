@@ -133,8 +133,9 @@ x
 You can easily plot these contacts, but with a little bit of tweaking (see
 `?vis_epicontacts`) you can customise shapes by gender:
 
-```{r epicontacts_plot}
+```{r epicontacts_plot, echo = 1, eval = -2}
 p <- plot(x, node_shape = "sex", shapes = c(male = "male", female = "female"), selector = FALSE)
+p
 save_and_use_widget(p, "epicontacts_plot.html")
 ```
 
