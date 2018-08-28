@@ -1,4 +1,4 @@
-baseurl = "http://www.reconlearn.org/"
+baseurl = "https://reconlearn.org/"
 theme = "hugo-casper-two"
 languageCode = "en-us"
 # Enable comments by entering your Disqus shortname
