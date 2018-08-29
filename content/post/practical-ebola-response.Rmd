@@ -133,7 +133,7 @@ x
 You can easily plot these contacts, but with a little bit of tweaking (see
 `?vis_epicontacts`) you can customise shapes by gender:
 
-```{r epicontacts_plot, echo = 1, eval = -2}
+```{r epicontacts_plot, echo = 1:2, eval = -2}
 p <- plot(x, node_shape = "sex", shapes = c(male = "male", female = "female"), selector = FALSE)
 p
 save_and_use_widget(p, "epicontacts_plot.html")
@@ -156,7 +156,7 @@ Using the package `incidence`, compute daily incidence based on the dates of
 symptom onset. Store the result in an object called `i`; the result should look
 like:
 
-```{r incidence, echo = -c(1,2)}
+```{r incidence, echo = -c(1,2), out.width = "80%", fig.width = 10}
 library(incidence)
 i <- incidence(linelist$onset)
 i
@@ -169,7 +169,7 @@ the data should be complete until the 27th October 2017. You can remedy this
 using the argument `last_date` in the `incidence` function:
       
 
-```{r incidence_rectif}
+```{r incidence_rectif, out.width = "80%", fig.width = 10}
 i <- incidence(linelist$onset, last_date = as.Date("2017-10-27"))
 i
 plot(i)
@@ -188,7 +188,7 @@ object (here, `i`). Apply it to the data and store the result in a new object
 called `f`. You can print `f` to derive estimates of the growth rate $r$ and the
 doubling time, and add the corresponding model to the incidence plot:
 
-```{r fit}
+```{r fit, out.width = "80%", fig.width = 10}
 f <- fit(i)
 f
 plot(i, fit = f)
@@ -373,11 +373,13 @@ a range of plausible values of $R_0$. Note that you can use `sample_R` to obtain
 these values from your `earlyR` object. Store your results in an object called
 `proj`. Plotting the results should give something akin to:
 
-```{r project, echo = -1}
+```{r project, echo = -3, out.width = "80%", fig.width = 10}
+library(magrittr)
+library(ggplot2)
 proj <- project(i, R = sample_R(R, 1000), si = si,
                 n_sim = 1000, n_days = 14,
                 R_fix_within = TRUE)
-plot(proj, c(.1,.9))
+plot(i) %>% add_projections(proj, c(.1,.9)) + scale_x_date()
 ```
 
 Interpret the following summary:
