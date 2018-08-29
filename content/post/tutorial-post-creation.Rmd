@@ -38,7 +38,10 @@ The general workflow would include the following steps:
 This will create a copy of the project in your own GitHub account. You will need to clone this archive, and make the modifications there. You `git clone` would look like:
 
 ``` bash
-git clone https://github.com/johnsnow/learn
+git clone https://johnsnow@github.com/johnsnow/learn
+cd learn
+git submodule init
+git submodule update
 ```
 
 If your GitHub user name is `johnsnow`.
@@ -51,7 +54,8 @@ If your GitHub user name is `johnsnow`.
 
 4.  `git commit` and `git push` all changes; don't forget to add new images as well (run `git status` to see which files haven't been added).
 
-5.  Make a **pull request** against the main project (`master` branch), from the GitHub *RECON learn* project. Make sure you use `reconhub/learn`, branch `master` as base fork.
+5.  Make a **pull request** against the main project (`master` branch), from the GitHub *RECON learn* project. Make sure you use `reconhub/learn`, branch `master` as base fork. Every pull request will trigger a new deploy of the website, so that new versions can be visualised online (see section *Visualising the changes* below)
+
 
 ## Creating posts <a name="post-creation"></a>
 
@@ -148,12 +152,22 @@ Material for slides is stored in `static/slides`. Currently, two files are neede
 
 For the slides, we recommended using `.Rmd` there again, and rendering them before committing them. If your slides use images, store them in `static/img/slides`. You will be able to refer to them using `../../img/slides/your-image.jpg`. For an example of `rmarkdown+ioslides` slides, look at [`static/slides/intro_reproducibility_Rmd/intro_reproducibility.Rmd`](https://github.com/reconhub/learn/blob/master/static/slides/reproducibility/reproducibility.Rmd).
 
+
+## Visualising the changes
+
+Once a pull request (PR) has been made against [https://github.com/reconhub/learn/](https://github.com/reconhub/learn/), a new version of the website matching the PR will be deployed online at a new URL with the form `https://deploy-preview-xyz--reconlearn-test.netlify.com/` where `xyz` is the number of the pull request. For instance, PR 26 will be deployed at: https://deploy-preview-26--reconlearn-test.netlify.com/ .
+
+
+
+
 # About this document
 
 
 ## Contributors
 
 - Locke Data: initial version
+
+- Thibaut Jombart: precisions on cloning and PR deploys
 
 Contributions are welcome via [pull requests](https://github.com/reconhub/learn/pulls).
 
