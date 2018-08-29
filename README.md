@@ -1,7 +1,20 @@
 Welcome to the *RECON learn* project
 ====================================
 
-This GitHub project hosts the sources of the [RECON](http://www.repidemicsconsortium.org/) learn platform, live at: <https://reconlearn.netlify.com/>.
+This GitHub project hosts the sources of the [RECON](http://www.repidemicsconsortium.org/) learn platform, live at: <https://reconlearn.org/>.
+
+
+## Running a local copy of the website
+
+To run a local copy of this website, you will need a working version of [Hugo](https://gohugo.io/) installed; `git clone` this repos, then its submodules (used to pull the Hugo theme), and then run hugo on the website:
+
+```
+git clone https://github.com/reconhub/learn recon-learn
+cd recon-learn
+git submodule init
+git submodule update
+hugo serve -D
+```
 
 
 ## How to contribute content?
