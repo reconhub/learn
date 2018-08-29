@@ -2,7 +2,7 @@
 title: "Is this outbreak over?"
 author: "Michael Höhle"
 date: 2018-03-22
-image: img/highres/theendisnear.png
+image: img/highres/end-of-the-road.jpg
 categories: practicals
 showonlyimage: true
 tags: ["epicurve", "outbreak", "outbreak end"]
