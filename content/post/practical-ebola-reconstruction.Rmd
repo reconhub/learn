@@ -26,7 +26,7 @@ CACHE <- TRUE
 
 This practical is the second part of the response to a simulated Ebola Virus
 Disease (EVD) outbreak taking place in the city of Ankh, Republic of
-Morporkia. While the [first part](../simulated-evd-early) focussed on early
+Morporkia. While the [first part](./simulated-evd-early.html) focussed on early
 assessments of transmissibility, this part explores more methodological options
 for estimating transmissibility, and provides an introduction to outbreak
 reconstruction using *outbreaker2*.
@@ -535,7 +535,7 @@ res_full
 Produce graphics as in the previous model. Assess convergence, choose an
 appropriate burnin, visualise ancestries and the infection timelines:
 
-```{r ebola_outbreaker_2, echo = FALSE, eval = -6}
+```{r ebola_outbreaker_2, echo = FALSE, eval = -7}
 plot(res_full) # log-posterior trace
 plot(res_full, burnin = 200) # log-posterior trace
 plot(res_full,  type = "alpha", burnin = 200) # ancestries
@@ -590,7 +590,6 @@ Looking carefully at the documentation of `vis_epicontacts`, try to reproduce
 the final consensus tree below:
 
 ```{r ebola_outbreaker_3, echo = FALSE, eval = -2}
-
 p <- plot(cons_tree, edge_col = "support", edge_col_pal = support_pal,
           edge_label = "support", node_shape = "sex",
           shapes = c(male = "male", female = "female"), node_color = "age_class",
