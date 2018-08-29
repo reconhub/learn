@@ -31,7 +31,7 @@ The following packages, available on CRAN, are needed for this case study:
 -   [`epicontacts`](http://www.repidemicsconsortium.org/epicontacts/) for contact data visualisation
 -   [`distcrete`](http://www.repidemicsconsortium.org/distcrete) to obtain discretised delay distributions
 -   [`epitrix`](http://www.repidemicsconsortium.org/epitrix) to fit discretised Gamma distributions
--   [`earlyR`](http://www.repidemicsconsortium.org/earlyR) to estimate *R*<sub>0</sub>
+-   [`earlyR`](http://www.repidemicsconsortium.org/earlyR) to estimate \(R_0\)
 -   [`projections`](http://www.repidemicsconsortium.org/projections) for short term forecasting
 
 To install these packages, use `install.packages`, e.g.:
@@ -163,7 +163,7 @@ You can easily plot these contacts, but with a little bit of tweaking (see `?vis
 
 ``` r
 p <- plot(x, node_shape = "sex", shapes = c(male = "male", female = "female"), selector = FALSE)
-save_and_use_widget(p, "epicontacts_plot.html")
+## p
 ```
 
 <!--html_preserve-->
@@ -195,7 +195,7 @@ i
 plot(i)
 ```
 
-![](practical-ebola-response_files/figure-markdown_github/incidence-1.png)
+<img src="practical-ebola-response_files/figure-markdown_github/incidence-1.png" width="80%" />
 
 If you pay close attention to the dates on the x-axis, you may notice that something is missing. Indeed, the graph stops right after the last case, while the data should be complete until the 27th October 2017. You can remedy this using the argument `last_date` in the `incidence` function:
 
@@ -214,7 +214,7 @@ i
 plot(i)
 ```
 
-![](practical-ebola-response_files/figure-markdown_github/incidence_rectif-1.png)
+<img src="practical-ebola-response_files/figure-markdown_github/incidence_rectif-1.png" width="80%" />
 
 Statistical analyses
 ====================
@@ -222,7 +222,7 @@ Statistical analyses
 Log-linear model
 ----------------
 
-The simplest model of incidence is probably the log-linear model, i.e. a linear regression on log-transformed incidences. In the `incidence` package, the function `fit` will estimate the parameters of this model from an incidence object (here, `i`). Apply it to the data and store the result in a new object called `f`. You can print `f` to derive estimates of the growth rate *r* and the doubling time, and add the corresponding model to the incidence plot:
+The simplest model of incidence is probably the log-linear model, i.e. a linear regression on log-transformed incidences. In the `incidence` package, the function `fit` will estimate the parameters of this model from an incidence object (here, `i`). Apply it to the data and store the result in a new object called `f`. You can print `f` to derive estimates of the growth rate \(r\) and the doubling time, and add the corresponding model to the incidence plot:
 
 ``` r
 f <- fit(i)
@@ -230,7 +230,7 @@ f <- fit(i)
 f
 ## <incidence_fit object>
 ## 
-## $lm: regression of log-incidence over time
+## $model: regression of log-incidence over time
 ## 
 ## $info: list containing the following items:
 ##   $r (daily growth rate):
@@ -251,43 +251,44 @@ f
 plot(i, fit = f)
 ```
 
-![](practical-ebola-response_files/figure-markdown_github/fit-1.png)
+<img src="practical-ebola-response_files/figure-markdown_github/fit-1.png" width="80%" />
 
 <font class="question">How would you interpret this result?What criticism would you make on this model?</font>
 
 <!-- As an aid for interpretation, you are reminded of previous observations of the -->
 <!-- serial interval distribution, estimated during the West African EVD outbreak -->
-<!-- (WHO Ebola Response Team (2014) NEJM 371:1481â€“1495) with a mean of 15.3 days and -->
+<!-- (WHO Ebola Response Team (2014) NEJM 371:1481–1495) with a mean of 15.3 days and -->
 <!-- a standard deviation 9.3 days. -->
-Estimation of transmissibility (*R*)
-------------------------------------
+Estimation of transmissibility (\(R\))
+--------------------------------------
 
 ### Branching process model
 
-The transmissibility of the disease can be assessed through the estimation of the reproduction number *R*, defined as the number of expected secondary cases per infected case. In the early stages of an outbreak, and assuming no immunity in the population, this quantity is also the basic reproduction number *R*<sub>0</sub>, i.e. *R* in a fully susceptible population.
+The transmissibility of the disease can be assessed through the estimation of the reproduction number \(R\), defined as the number of expected secondary cases per infected case. In the early stages of an outbreak, and assuming no immunity in the population, this quantity is also the basic reproduction number \(R_0\), i.e. \(R\) in a fully susceptible population.
 
 <br>
 
-The package `earlyR` implements a simple maximum-likelihood estimation of *R*, using dates of onset of symptoms and information on the serial interval distribution. It is a simpler but less flexible version of the model by Cori et al (2013, AJE 178: 1505â€“1512) implemented in [`EpiEstim`](https://cran.r-project.org/web/packages/EpiEstim/index.html).
+The package `earlyR` implements a simple maximum-likelihood estimation of \(R\), using dates of onset of symptoms and information on the serial interval distribution. It is a simpler but less flexible version of the model by Cori et al (2013, AJE 178: 1505–1512) implemented in [`EpiEstim`](https://cran.r-project.org/web/packages/EpiEstim/index.html).
 
 <br>
 
-Briefly, `earlyR` uses a simple model describing incidence on a given day as a Poisson process determined by a global force of infection on that day:
-*x*<sub>*t*</sub> ∼ 𝒫(*λ*<sub>*t*</sub>)
+Briefly, `earlyR` uses a simple model describing incidence on a given day as a Poisson process determined by a global force of infection on that day: \[
+x_t \sim \mathcal{P} (\lambda_t)
+\]
 
-where *x*<sub>*t*</sub> is the incidence (based on symptom onset) on day *t* and *λ*<sub>*t*</sub> is the force of infection. Noting *R* the reproduction number and *w*() the discrete serial interval distribution, we have:
+where \(x_t\) is the incidence (based on symptom onset) on day \(t\) and \(\lambda_t\) is the force of infection. Noting \(R\) the reproduction number and \(w()\) the discrete serial interval distribution, we have:
 
-$$
-\\lambda\_t = R \* \\sum\_{s=1}^t x\_s w(t - s)
-$$
+\[
+\lambda_t = R * \sum_{s=1}^t x_s w(t - s)
+\]
 
-The likelihood (probability of observing the data given the model and parameters) is defined as a function of *R*:
+The likelihood (probability of observing the data given the model and parameters) is defined as a function of \(R\):
 
-$$
-\\mathcal{L}(x)  = p(x | R) = \\prod\_{t=1}^T F\_{\\mathcal{P}}(x\_t, \\lambda\_t)
-$$
+\[
+\mathcal{L}(x)  = p(x | R) = \prod_{t=1}^T F_{\mathcal{P}}(x_t, \lambda_t)
+\]
 
-where *F*<sub>𝒫</sub> is the Poisson probability mass function.
+where \(F_{\mathcal{P}}\) is the Poisson probability mass function.
 
 ### Looking into the past: estimating the serial interval from older data
 
@@ -303,21 +304,21 @@ old_evd
 ## 
 ##   // linelist
 ## 
-## # A tibble: 5,829 x 9
-##    id    generation date_of_infecti~ date_of_onset date_of_hospita~
-##  * <chr>      <int> <date>           <date>        <date>          
-##  1 d1fa~          0 NA               2014-04-07    2014-04-17      
-##  2 5337~          1 2014-04-09       2014-04-15    2014-04-20      
-##  3 f5c3~          1 2014-04-18       2014-04-21    2014-04-25      
-##  4 6c28~          2 NA               2014-04-27    2014-04-27      
-##  5 0f58~          2 2014-04-22       2014-04-26    2014-04-29      
-##  6 4973~          0 2014-03-19       2014-04-25    2014-05-02      
-##  7 f914~          3 NA               2014-05-03    2014-05-04      
-##  8 881b~          3 2014-04-26       2014-05-01    2014-05-05      
-##  9 e66f~          2 NA               2014-04-21    2014-05-06      
-## 10 20b6~          3 NA               2014-05-05    2014-05-06      
-## # ... with 5,819 more rows, and 4 more variables: date_of_outcome <date>,
-## #   outcome <fct>, gender <fct>, hospital <fct>
+## # A tibble: 5,829 x 11
+##    id     generation date_of_infection date_of_onset date_of_hospitalisat…
+##  * <chr>       <int> <date>            <date>        <date>               
+##  1 d1fafd          0 NA                2014-04-07    2014-04-17           
+##  2 53371b          1 2014-04-09        2014-04-15    2014-04-20           
+##  3 f5c3d8          1 2014-04-18        2014-04-21    2014-04-25           
+##  4 6c286a          2 NA                2014-04-27    2014-04-27           
+##  5 0f58c4          2 2014-04-22        2014-04-26    2014-04-29           
+##  6 49731d          0 2014-03-19        2014-04-25    2014-05-02           
+##  7 f9149b          3 NA                2014-05-03    2014-05-04           
+##  8 881bd4          3 2014-04-26        2014-05-01    2014-05-05           
+##  9 e66fa4          2 NA                2014-04-21    2014-05-06           
+## 10 20b688          3 NA                2014-05-05    2014-05-06           
+## # ... with 5,819 more rows, and 6 more variables: date_of_outcome <date>,
+## #   outcome <fct>, gender <fct>, hospital <fct>, lon <dbl>, lat <dbl>
 ## 
 ##   // contacts
 ## 
@@ -404,11 +405,11 @@ points(0:60, si$d(0:60), col = "#9933ff", type = "l", lty = 2)
 
 ![](practical-ebola-response_files/figure-markdown_github/si-1.png)
 
-<font class="question">Would you trust this estimation of the generation time?</font> <font class="question">How would you compare it to actual estimates from the West African EVD outbreak (WHO Ebola Response Team (2014) NEJM 371:1481â€“1495) with a mean of 15.3 days and a standard deviation 9.3 days?</font>
+<font class="question">Would you trust this estimation of the generation time?</font> <font class="question">How would you compare it to actual estimates from the West African EVD outbreak (WHO Ebola Response Team (2014) NEJM 371:1481–1495) with a mean of 15.3 days and a standard deviation 9.3 days?</font>
 
-### Back to the future: estimation of *R*<sub>0</sub> in the current outbreak
+### Back to the future: estimation of \(R_0\) in the current outbreak
 
-Now that we have estimates of the serial interval based on a previous outbreak, we can use this information to estimate transmissibility of the disease (as measured by *R*<sub>0</sub>) in the current outbreak.
+Now that we have estimates of the serial interval based on a previous outbreak, we can use this information to estimate transmissibility of the disease (as measured by \(R_0\)) in the current outbreak.
 
 Using the estimates of the mean and standard deviation of the serial interval you just obtained, use the function `get_R` to estimate the reproduction number, specifying a maximum R of 10 (see `?get_R`) and store the result in a new object `R`:
 
@@ -457,9 +458,9 @@ The first figure shows the distribution of likely values of *R*, and the Maximum
 Short-term forecasting
 ----------------------
 
-The function `project` from the package `projections` can be used to simulate plausible epidemic trajectories by simulating daily incidence using the same branching process as the one used to estimate *R*<sub>0</sub> in `earlyR`. All that is needed is one or several values of *R*<sub>0</sub> and a serial interval distribution, stored as a `distcrete` object.
+The function `project` from the package `projections` can be used to simulate plausible epidemic trajectories by simulating daily incidence using the same branching process as the one used to estimate \(R_0\) in `earlyR`. All that is needed is one or several values of \(R_0\) and a serial interval distribution, stored as a `distcrete` object.
 
-Here, we illustrate how we can simulate 5 random trajectories using a fixed value of *R*<sub>0</sub> = 1.81, the ML estimate of *R*<sub>0</sub>:
+Here, we illustrate how we can simulate 5 random trajectories using a fixed value of \(R_0\) = 1.81, the ML estimate of \(R_0\):
 
 ``` r
 library(projections)
@@ -472,10 +473,10 @@ project(i, R = R$R_ml, si = si, n_sim = 5, n_days = 10, R_fix_within = TRUE)
 ## 
 ##  // first rows/columns:
 ##            [,1] [,2] [,3] [,4] [,5]
-## 2017-10-28    0    0    2    1    2
-## 2017-10-29    1    2    2    3    0
-## 2017-10-30    1    2    2    4    2
-## 2017-10-31    1    0    2    0    3
+## 2017-10-28    2    1    2    3    1
+## 2017-10-29    2    0    2    1    0
+## 2017-10-30    2    0    1    2    2
+## 2017-10-31    6    1    1    2    4
 ##  .
 ##  .
 ##  .
@@ -485,13 +486,17 @@ project(i, R = R$R_ml, si = si, n_sim = 5, n_days = 10, R_fix_within = TRUE)
 ##  [6] "2017-11-02" "2017-11-03" "2017-11-04" "2017-11-05" "2017-11-06"
 ```
 
-Using the same principle, generate 1,000 trajectories for the next 2 weeks, using a range of plausible values of *R*<sub>0</sub>. Note that you can use `sample_R` to obtain these values from your `earlyR` object. Store your results in an object called `proj`. Plotting the results should give something akin to:
+Using the same principle, generate 1,000 trajectories for the next 2 weeks, using a range of plausible values of \(R_0\). Note that you can use `sample_R` to obtain these values from your `earlyR` object. Store your results in an object called `proj`. Plotting the results should give something akin to:
 
 ``` r
-plot(proj, c(.1,.9))
+library(magrittr)
+library(ggplot2)
+plot(i) %>% add_projections(proj, c(.1,.9)) + scale_x_date()
+## Scale for 'x' is already present. Adding another scale for 'x', which
+## will replace the existing scale.
 ```
 
-![](practical-ebola-response_files/figure-markdown_github/project-1.png)
+<img src="practical-ebola-response_files/figure-markdown_github/project-1.png" width="80%" />
 
 Interpret the following summary:
 
@@ -499,32 +504,32 @@ Interpret the following summary:
 apply(proj, 1, summary)
 ##         2017-10-28 2017-10-29 2017-10-30 2017-10-31 2017-11-01 2017-11-02
 ## Min.         0.000      0.000      0.000      0.000      0.000      0.000
-## 1st Qu.      0.000      0.000      0.000      1.000      0.000      1.000
+## 1st Qu.      0.000      0.000      0.000      0.000      1.000      1.000
 ## Median       1.000      1.000      1.000      1.000      1.000      1.000
-## Mean         1.403      1.374      1.404      1.515      1.579      1.744
-## 3rd Qu.      2.000      2.000      2.000      2.000      2.000      2.000
-## Max.         7.000     10.000      8.000      8.000      8.000     10.000
+## Mean         1.378      1.402      1.437      1.516      1.676      1.757
+## 3rd Qu.      2.000      2.000      2.000      2.000      2.000      3.000
+## Max.         7.000      7.000      7.000      8.000      8.000      8.000
 ##         2017-11-03 2017-11-04 2017-11-05 2017-11-06 2017-11-07 2017-11-08
-## Min.         0.000       0.00      0.000      0.000      0.000      0.000
-## 1st Qu.      1.000       1.00      1.000      1.000      1.000      1.000
-## Median       1.000       2.00      2.000      2.000      2.000      2.000
-## Mean         1.838       2.01      2.107      2.442      2.621      2.801
-## 3rd Qu.      3.000       3.00      3.000      4.000      4.000      4.000
-## Max.        12.000      12.00     15.000     15.000     20.000     24.000
+## Min.         0.000       0.00      0.000      0.000       0.00      0.000
+## 1st Qu.      1.000       1.00      1.000      1.000       1.00      1.000
+## Median       1.000       2.00      2.000      2.000       2.00      2.000
+## Mean         1.882       1.95      2.186      2.385       2.62      2.915
+## 3rd Qu.      3.000       3.00      3.000      3.000       4.00      4.000
+## Max.         9.000      11.00     15.000     14.000      15.00     19.000
 ##         2017-11-09 2017-11-10
-## Min.         0.000      0.000
-## 1st Qu.      1.000      1.000
-## Median       2.000      2.000
-## Mean         3.072      3.437
-## 3rd Qu.      4.000      5.000
-## Max.        22.000     33.000
+## Min.          0.00      0.000
+## 1st Qu.       1.00      1.000
+## Median        2.00      2.000
+## Mean          3.02      3.335
+## 3rd Qu.       4.00      5.000
+## Max.         20.00     21.000
 apply(proj, 1, function(x) mean(x>0))
 ## 2017-10-28 2017-10-29 2017-10-30 2017-10-31 2017-11-01 2017-11-02 
-##      0.718      0.716      0.718      0.752      0.736      0.770 
+##      0.732      0.748      0.743      0.744      0.787      0.788 
 ## 2017-11-03 2017-11-04 2017-11-05 2017-11-06 2017-11-07 2017-11-08 
-##      0.780      0.779      0.792      0.814      0.819      0.820 
+##      0.801      0.781      0.826      0.838      0.840      0.857 
 ## 2017-11-09 2017-11-10 
-##      0.835      0.840
+##      0.854      0.866
 ```
 
 <font class="question">According to these results, what are the chances that more cases will appear in the near future?</font><font class="question">Is this outbreak being brought under control?</font> <font class="question">Would you recommend scaling up / down the response?</font>
@@ -532,7 +537,7 @@ apply(proj, 1, function(x) mean(x>0))
 Follow-up...
 ------------
 
-For a follow-up on this outbreak, have a look at the [second part](../practical-ebola-reconstruction) of this simulated response, which includes a data update, genetic sequences, and the use of outbreak reconstruction tools.
+For a follow-up on this outbreak, have a look at the [second part](./practical-ebola-reconstruction.html) of this simulated response, which includes a data update, genetic sequences, and the use of outbreak reconstruction tools.
 
 About this document
 ===================
