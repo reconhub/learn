@@ -398,7 +398,7 @@ apply(proj, 1, function(x) mean(x>0))
 ## Follow-up...
 
 For a follow-up on this outbreak, have a look at the [second
-part](../practical-ebola-reconstruction) of this simulated response,
+part](./practical-ebola-reconstruction.html) of this simulated response,
 which includes a data update, genetic sequences, and the use of outbreak
 reconstruction tools.
 

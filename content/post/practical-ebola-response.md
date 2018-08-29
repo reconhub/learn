@@ -473,10 +473,10 @@ project(i, R = R$R_ml, si = si, n_sim = 5, n_days = 10, R_fix_within = TRUE)
 ## 
 ##  // first rows/columns:
 ##            [,1] [,2] [,3] [,4] [,5]
-## 2017-10-28    1    1    2    0    0
-## 2017-10-29    1    1    0    2    3
-## 2017-10-30    1    0    1    3    0
-## 2017-10-31    0    0    1    1    2
+## 2017-10-28    2    1    2    3    1
+## 2017-10-29    2    0    2    1    0
+## 2017-10-30    2    0    1    2    2
+## 2017-10-31    6    1    1    2    4
 ##  .
 ##  .
 ##  .
@@ -506,30 +506,30 @@ apply(proj, 1, summary)
 ## Min.         0.000      0.000      0.000      0.000      0.000      0.000
 ## 1st Qu.      0.000      0.000      0.000      0.000      1.000      1.000
 ## Median       1.000      1.000      1.000      1.000      1.000      1.000
-## Mean         1.378      1.377      1.433      1.516      1.671      1.657
-## 3rd Qu.      2.000      2.000      2.000      2.000      2.000      2.000
-## Max.         8.000      8.000      7.000      8.000      8.000     10.000
+## Mean         1.378      1.402      1.437      1.516      1.676      1.757
+## 3rd Qu.      2.000      2.000      2.000      2.000      2.000      3.000
+## Max.         7.000      7.000      7.000      8.000      8.000      8.000
 ##         2017-11-03 2017-11-04 2017-11-05 2017-11-06 2017-11-07 2017-11-08
-## Min.         0.000      0.000       0.00      0.000      0.000      0.000
-## 1st Qu.      1.000      1.000       1.00      1.000      1.000      1.000
-## Median       1.000      2.000       2.00      2.000      2.000      2.000
-## Mean         1.824      2.027       2.21      2.263      2.638      2.847
-## 3rd Qu.      3.000      3.000       3.00      3.000      4.000      4.000
-## Max.        10.000     22.000      14.00     17.000     27.000     26.000
+## Min.         0.000       0.00      0.000      0.000       0.00      0.000
+## 1st Qu.      1.000       1.00      1.000      1.000       1.00      1.000
+## Median       1.000       2.00      2.000      2.000       2.00      2.000
+## Mean         1.882       1.95      2.186      2.385       2.62      2.915
+## 3rd Qu.      3.000       3.00      3.000      3.000       4.00      4.000
+## Max.         9.000      11.00     15.000     14.000      15.00     19.000
 ##         2017-11-09 2017-11-10
-## Min.         0.000      0.000
-## 1st Qu.      1.000      1.000
-## Median       2.000      2.000
-## Mean         3.025      3.239
-## 3rd Qu.      4.000      4.000
-## Max.        22.000     32.000
+## Min.          0.00      0.000
+## 1st Qu.       1.00      1.000
+## Median        2.00      2.000
+## Mean          3.02      3.335
+## 3rd Qu.       4.00      5.000
+## Max.         20.00     21.000
 apply(proj, 1, function(x) mean(x>0))
 ## 2017-10-28 2017-10-29 2017-10-30 2017-10-31 2017-11-01 2017-11-02 
-##      0.749      0.727      0.725      0.728      0.770      0.759 
+##      0.732      0.748      0.743      0.744      0.787      0.788 
 ## 2017-11-03 2017-11-04 2017-11-05 2017-11-06 2017-11-07 2017-11-08 
-##      0.770      0.784      0.799      0.799      0.845      0.824 
+##      0.801      0.781      0.826      0.838      0.840      0.857 
 ## 2017-11-09 2017-11-10 
-##      0.845      0.846
+##      0.854      0.866
 ```
 
 <font class="question">According to these results, what are the chances that more cases will appear in the near future?</font><font class="question">Is this outbreak being brought under control?</font> <font class="question">Would you recommend scaling up / down the response?</font>
@@ -537,7 +537,7 @@ apply(proj, 1, function(x) mean(x>0))
 Follow-up...
 ------------
 
-For a follow-up on this outbreak, have a look at the [second part](../practical-ebola-reconstruction) of this simulated response, which includes a data update, genetic sequences, and the use of outbreak reconstruction tools.
+For a follow-up on this outbreak, have a look at the [second part](./practical-ebola-reconstruction.html) of this simulated response, which includes a data update, genetic sequences, and the use of outbreak reconstruction tools.
 
 About this document
 ===================
