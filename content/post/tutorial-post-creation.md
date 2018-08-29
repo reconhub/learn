@@ -30,9 +30,6 @@ This will create a copy of the project in your own GitHub account. You will need
 
 ``` bash
 git clone https://johnsnow@github.com/johnsnow/learn
-cd learn
-git submodule init
-git submodule update
 ```
 
 If your GitHub user name is `johnsnow`.
