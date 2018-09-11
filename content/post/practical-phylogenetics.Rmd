@@ -85,13 +85,13 @@ phylogenetics, and *phangorn* [@Schliep2011-hf] implements parsimony and
 likelihood-based methods.  Make sure that the dependencies are installed as well
 when installing the packages:
 
-```{r eval=FALSE}
+```{r practical-phylogenetics-1, eval=FALSE}
 install.packages("adegenet", dep=TRUE)
 install.packages("phangorn", dep=TRUE)
 ```
 
 Then load the packages using:
-```{r}
+```{r practical-phylogenetics-2}
 library(stats)
 library(ade4)
 library(ape)
@@ -121,12 +121,12 @@ First download these files (right-click $\rightarrow$ *Save Link As...*) and sto
 them in a folder `data/` in your working directory.  To read the DNA sequences
 into R, we use `fasta2DNAbin` from the *adegenet* package:
 
-```{r, eval = FALSE}
+```{r practical-phylogenetics-3, eval = FALSE}
 dna <- fasta2DNAbin(file = "data/usflu.fasta")
 dna
 class(dna)
 ```
-```{r, echo = FALSE}
+```{r practical-phylogenetics-4, echo = FALSE}
 dna <- fasta2DNAbin(file = "../../static/data/usflu.fasta")
 dna
 class(dna)
@@ -142,15 +142,15 @@ reduction can be achieved using the bit-level coding of polymorphic sites
 implemented in *adegenet* [@Jombart2011-fb].
 
 The annotation file is read in R using the standard procedure:
-```{r, eval = FALSE}
+```{r practical-phylogenetics-5, eval = FALSE}
 annot <- read.csv("data/usflu.annot.csv",
                   header = TRUE, row.names = 1, stringsAsFactors = FALSE)
 ```
-```{r, echo = FALSE}
+```{r practical-phylogenetics-6, echo = FALSE}
 annot <- read.csv("../../static/data/usflu.annot.csv",
                   header = TRUE, row.names = 1, stringsAsFactors = FALSE)
 ```
-```{r}
+```{r practical-phylogenetics-7}
 head(annot)
 dim(annot)
 ```
@@ -161,7 +161,7 @@ other possibly useful information.  Before going further, we check that isolates
 are identical in both files (accession numbers are used as labels for the
 sequences):
 
-```{r}
+```{r practical-phylogenetics-8}
 dim(dna)
 dim(annot)
 all(annot$accession == rownames(dna))
@@ -191,7 +191,7 @@ details).  Here, we use Tamura and Nei 1993's model [@Tamura1993-ob] which allow
 for different rates of transitions and transversions, heterogeneous base
 frequencies, and between-site variation of the substitution rate.
 
-```{r}
+```{r practical-phylogenetics-9}
 D <- dist.dna(dna, model = "TN93")
 class(D)
 length(D)
@@ -207,7 +207,7 @@ described by $80 \times 79 / 2 = 3160$ pairwise distances.  Most of the time,
 summarising such information is not entirely trivial.  The simplest approach is
 plotting directly the matrix of pairwise distances:
 
-```{r, fig.width = 7, fig.height = 7}
+```{r practical-phylogenetics-10, fig.width = 7, fig.height = 7}
 temp <- as.data.frame(as.matrix(D))
 table.paint(temp, cleg = 0, clabel.row = .5, clabel.col = .5)
 ```
@@ -216,11 +216,11 @@ table.paint(temp, cleg = 0, clabel.row = .5, clabel.col = .5)
 Darker shades of grey represent greater distances.  Note that to use `image` to
 produce similar plots, data need to be transformed first; for instance:
 
-```{r}
+```{r practical-phylogenetics-11}
 temp <- t(as.matrix(D))
 temp <- temp[,ncol(temp):1]
 ```
-```{r, fig.width = 7, fig.height = 7}
+```{r practical-phylogenetics-12, fig.width = 7, fig.height = 7}
 par(mar = c(1,5,5,1))
 image(x = 1:80, y = 1:80, temp, col = rev(heat.colors(100)),
       xaxt = "n", yaxt = "n", xlab="",ylab="")
@@ -258,7 +258,7 @@ available in R, including:
 
 Here, we go for the standard:
 
-```{r fig.width = 8}
+```{r practical-phylogenetics-13, fig.width = 8}
 tre <- nj(D)
 class(tre)
 tre <- ladderize(tre)
@@ -282,7 +282,7 @@ The plotting method offers many possibilities for plotting trees; see
 instance, we may simply represent years using different colors (red = ancient;
 blue = recent):
 
-```{r fig.width=8}
+```{r practical-phylogenetics-14, fig.width=8}
 plot(tre, show.tip = FALSE)
 title("Unrooted NJ tree")
 myPal <- colorRampPalette(c("red","yellow","green","blue"))
@@ -300,7 +300,7 @@ the colors) unless the phylogeny is actually rooted, i.e. some external taxa has
 been used to define what is the most 'ancient' split in the tree. The present
 tree is not rooted, and should be better represented as such:
 
-```{r}
+```{r practical-phylogenetics-15}
 plot(tre, type = "unrooted", show.tip = FALSE)
 title("Unrooted NJ tree")
 tiplabels(tre$tip.label, bg = num2col(annot$year, col.pal = myPal),
@@ -310,7 +310,7 @@ tiplabels(tre$tip.label, bg = num2col(annot$year, col.pal = myPal),
 In the present case, a sensible rooting would be any of the most ancient
 isolates (from 1993). We can take the first one:
 
-```{r}
+```{r practical-phylogenetics-16}
 head(annot)
 tre2 <- root(tre, out = 1)
 tre2 <- ladderize(tre2)
@@ -318,7 +318,7 @@ tre2 <- ladderize(tre2)
 
 and plot the result:
 
-```{r}
+```{r practical-phylogenetics-17}
 plot(tre2, show.tip = FALSE, edge.width = 2)
 title("Rooted NJ tree")
 tiplabels(tre$tip.label,
@@ -398,7 +398,7 @@ easily investigated using simple biplots and correlation indices. The function
 that more distances are available in the *adephylo* package (see `distTips`
 function).
 
-```{r}
+```{r practical-phylogenetics-18}
 x <- as.vector(D)
 y <- as.vector(as.dist(cophenetic(tre2)))
 plot(x, y, xlab = "original pairwise distances", ylab = "pairwise distances on the tree",
@@ -411,7 +411,7 @@ As it turns out, our Neighbor-Joining tree (`tre2`) is a very good
 representation of the chosen genetic distances.  Things would have been
 different had we chosen, for instance, UPGMA:
 
-```{r}
+```{r practical-phylogenetics-19}
 tre3 <- as.phylo(hclust(D,method = "average"))
 y <- as.vector(as.dist(cophenetic(tre3)))
 plot(x, y, xlab = "original pairwise distances", ylab = "pairwise distances on the tree",
@@ -423,7 +423,7 @@ cor(x,y)^2
 In this case, UPGMA is a poor choice. Why is this?  A first explanation is that
 UPGMA forces ultrametry (all the tips are equidistant to the root):
 
-```{r}
+```{r practical-phylogenetics-20}
 plot(tre3, cex = .5)
 title("UPGMA tree")
 ```
@@ -449,7 +449,7 @@ experiences different selective pressures from other segments of the influenza
 genome.  We nonetheless illustrate the procedure, implemented by
 `boot.phylo`:
 
-```{r results = 'hide'}
+```{r practical-phylogenetics-21, results = 'hide'}
 myBoots <- boot.phylo(tre2, dna, function(e)
                       root(nj(dist.dna(e, model = "TN93")),1))
 myBoots
@@ -459,7 +459,7 @@ The output gives the number of times each node was identified in bootstrapped
 analyses (the order is the same as in the original object).  It is easily
 represented using `nodelabels`:
 
-```{r}
+```{r practical-phylogenetics-22}
 plot(tre2, show.tip = FALSE, edge.width = 2)
 title("NJ tree + bootstrap values")
 tiplabels(frame = "none", pch = 20,
@@ -478,7 +478,7 @@ in *ape*, but one simple workaround consists in setting the corresponding edges
 to a length of zero (here, with bootstrap <70%), and then collapsing the small
 branches:
 
-```{r}
+```{r practical-phylogenetics-23}
 temp <- tre2
 N <- length(tre2$tip.label)
 toCollapse <- match(which(myBoots<70)+N, temp$edge[,2])
@@ -489,7 +489,7 @@ tre3 <- di2multi(temp, tol = 0.00001)
 The new tree might be slightly less informative, but more robust than the
 previous one:
 
-```{r }
+```{r practical-phylogenetics-24 }
 plot(tre3, show.tip = FALSE, edge.width = 2)
 title("NJ tree after collapsing weak nodes")
 tiplabels(tre3$tip.label, bg = transp(num2col(annot$year, col.pal = myPal), .7),
@@ -531,7 +531,7 @@ Parsimony-based phylogenetic reconstruction is implemented in the package
 the original DNA sequences in *phangorn*'s own format, `phyDat`.  We convert the
 data and generate a tree to initialize the method:
 
-```{r}
+```{r practical-phylogenetics-25}
 dna2 <- as.phyDat(dna)
 class(dna2)
 dna2
@@ -539,11 +539,11 @@ tre.ini <- nj(dist.dna(dna,model = "raw"))
 tre.ini
 ```
 The parsimony of a given tree is given by:
-```{r}
+```{r practical-phylogenetics-26}
 parsimony(tre.ini, dna2)
 ```
 Then, optimization of the parsimony is achieved by:
-```{r}
+```{r practical-phylogenetics-27}
 tre.pars <- optim.parsimony(tre.ini, dna2)
 tre.pars
 ```
@@ -551,7 +551,7 @@ tre.pars
 Here, the final result is very close to the original tree.  The obtained tree is
 unrooted and does not have branch lengths, but it can be plotted as previously:
 
-```{r}
+```{r practical-phylogenetics-28}
 plot(tre.pars, type = "unr", show.tip = FALSE, edge.width = 2)
 title("Maximum-parsimony tree")
 tiplabels(tre.pars$tip.label, bg = transp(num2col(annot$year, col.pal = myPal),.7),
@@ -602,7 +602,7 @@ Likelihood-based phylogenetic reconstruction is implemented in the package
 *phangorn*'s format.  We choose a Neighbor-Joining tree of Tamura and Nei's 1993
 distance to get an initial tree.
 
-```{r}
+```{r practical-phylogenetics-29}
 class(dna2)
 dna2
 tre.ini <- nj(dist.dna(dna,model = "TN93"))
@@ -619,7 +619,7 @@ initial tree is computed using `pml`:
 opts_chunk$set(eval = TRUE)
 ```
 
-```{r}
+```{r practical-phylogenetics-30}
 fit.ini <- pml(tre.ini, dna2, k = 4)
 fit.ini
 ```
@@ -631,11 +631,11 @@ all possible subtitutions (`optQ = TRUE`), and use a gamma distribution
 to model variation in the substitution rates across sites (`optGamma =
 TRUE`):
 
-```{r echo = TRUE, results = 'hide'}
+```{r practical-phylogenetics-31, echo = TRUE, results = 'hide'}
 fit <- optim.pml(fit.ini, optNni = TRUE, optBf = TRUE,
                  optQ = TRUE, optGamma = TRUE)
 ```
-```{r}
+```{r practical-phylogenetics-32}
 fit
 class(fit)
 names(fit)
@@ -652,7 +652,7 @@ compared formally.  For instance, here, we can verify that the optimized tree is
 indeed better than the original one using standard likelihood ratio tests and
 AIC:
 
-```{r}
+```{r practical-phylogenetics-33}
 anova(fit.ini, fit)
 AIC(fit.ini)
 AIC(fit)
@@ -665,7 +665,7 @@ than the initial one.
 
 We can extract and plot the tree as we did before with other methods:
 
-```{r}
+```{r practical-phylogenetics-34}
 tre4 <- root(fit$tree,1)
 tre4 <- ladderize(tre4)
 plot(tre4, show.tip = FALSE, edge.width = 2)

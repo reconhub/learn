@@ -89,7 +89,7 @@ To read into R, download these files and use the function `read_xlsx()` from the
 as a `tibble` object. Call the first one `linelist`, and the second one
 `contacts`. For instance, you first command line could look like:
 	
-```{r eval = FALSE}
+```{r practical-ebola-response-1, eval = FALSE}
 linelist <- readxl::read_xlsx("PHM-EVD-linelist-2017-10-27.xlsx")
 ```
 

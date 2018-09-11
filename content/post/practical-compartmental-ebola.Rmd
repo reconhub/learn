@@ -38,14 +38,14 @@ From the previous lecture, we will further develop these concepts:
 ## Required packages
 
 
-```{r eval = FALSE}
+```{r practical-compartmental-ebola-1, eval = FALSE}
 install.packages("deSolve", dep=TRUE)
 install.packages("gridExtra", dep = TRUE)
 ```
 
 Then load the packages using:
 
-```{r}
+```{r practical-compartmental-ebola-2}
 library(deSolve)
 
 ```
@@ -68,7 +68,7 @@ On a line of code, anything after a '#' is interpreted as a comment.
 At the moment the code below is not well commented on, try to comment the code appropriately.
 
 
-```{r,include=TRUE}
+```{r practical-compartmental-ebola-3,include=TRUE}
 rm(list=ls())
 
 Dyn.Ebola.Basic <- function (t, state, parameters) {
@@ -107,7 +107,7 @@ Then write the down the equation that characterize this particular model:
 
 ### The parameters
 
-```{r, include = TRUE}
+```{r practical-compartmental-ebola-4, include = TRUE}
 # ??
 T.lat	<- 10    	            #	??
 gamma <- 1/T.lat            #	??
@@ -146,7 +146,7 @@ In this simple model, we have $$R_0 = \frac{\beta}{\gamma} $$. So given the valu
  
  The code below does that. Try to understand what is being done and comment the code appropriately.
 
-```{r}
+```{r practical-compartmental-ebola-5}
 
 params <- c(gamma=gamma, sigma=sigma,
             p.cfr=p.cfr, beta=R0/T.outcome )   # ??
@@ -175,7 +175,7 @@ Fill the axis and legend for the plots and comment the code.
 Interpret the results? 
 <!-- Concept of exponential growth. -->
 
-```{r}
+```{r practical-compartmental-ebola-6}
 
 # ??
 plot(out$time, out$E, col='blue',type='l',ylim = c(0,max(out$E)),
@@ -211,7 +211,7 @@ Compare to the code above, what is changed in the code below?
 Try to understand what is being done and comment the code appropriately.
 
 
-```{r}
+```{r practical-compartmental-ebola-7}
 # Simulation 2
 
 params2 <- c(gamma=gamma, sigma=sigma,
@@ -240,7 +240,7 @@ What is being done in the code above?
 Some results for the new output can be seen below.
 Try to comment the code and fill in relevant information in the graphs.
 
-```{r}
+```{r practical-compartmental-ebola-8}
 # ??
 plot(out2$time, out2$E, col='blue',type='l',ylim = c(0,max(out$E)),
      xlab ='??', ylab = '??')
@@ -267,7 +267,7 @@ legend('topleft',c('?','??'),pch=1,col=c('blue','red'))
 Can we plot both trajectory? Pre- and post-intervention? see below.
 Try to comment the code and fill in relevant information in the graphs.
 
-```{r}
+```{r practical-compartmental-ebola-9}
 
 ## check full dynamics
 # Checking the simulations
@@ -306,7 +306,7 @@ First, we write a new model that will be able to account for changes in transmis
 
 Try to understand what is being done and comment the code appropriately.
 
-```{r}
+```{r practical-compartmental-ebola-10}
 
 Dyn.Ebola.Basic2 <- function (t, state, parameters) {
   
@@ -343,7 +343,7 @@ Then we set initial conditions and time varying parameters.
 
 Try to understand what is being done and comment the code appropriately.
 
-```{r}
+```{r practical-compartmental-ebola-11}
 
 times  = seq(0, 2 * t.intervention, by=1)          # ??
 # ??
@@ -369,7 +369,7 @@ First dowload the dataset: [compartmental-ebola-pratical.csv](../../data/compart
 
 Try to comment the code and fill in relevant information in the graphs.
 
-```{r}
+```{r practical-compartmental-ebola-12}
 # Checking the simulations
 plot(out$time, out$E, col='blue',type='l',ylim = c(0,max(out$E)),
      xlab ='??', ylab = '??')
@@ -387,7 +387,7 @@ Weekly.death <- diff(out$Dead[f])   # ??
 ```
 
 	
-```{r eval = FALSE}
+```{r practical-compartmental-ebola-13, eval = FALSE}
 dat <- read.csv('onset_data.csv')
 ```
 
@@ -442,7 +442,7 @@ Interpret and comment the code below and add information on the plot.
 
 In particular, what lighter color on the heat-graph represents? You can view the matrix L by typing 'View(L)' in the console.
 
-```{r}
+```{r practical-compartmental-ebola-14}
 E_ini <- seq(25,35,length=10)      # ??
 R2 <- seq(.7,.9,length=10)         # ??
 L <- matrix(NA,length(E_ini),length(R2))   # ??
@@ -485,7 +485,7 @@ Fill in the missing bits to be able to run the code below.
 
 Try to understand and comment the code below:
 
-```{r}
+```{r practical-compartmental-ebola-15}
 # final 
 xstart <- c(S = N-E_ini[i],E = 10,  
             I = 0, R = 0,
@@ -531,7 +531,7 @@ See the code below can you interpret it?
 
 First we write a new model:
 
-```{r}
+```{r practical-compartmental-ebola-16}
 
 Dyn.Ebola.Basic3 <- function (t, state, parameters) {
    
@@ -575,7 +575,7 @@ As before, try to:
 
 This should be very familiar, but comment on the code to make sure you understand everything.
 
-```{r}
+```{r practical-compartmental-ebola-17}
 #==================  Parameters 
 
 T.lat	<- 10    	            #	??
@@ -606,7 +606,7 @@ Again make sure you understand everything and comment the code.
 
 What is being change post-intervention?
 
-```{r}
+```{r practical-compartmental-ebola-18}
 #================== Simulation 1
 
 params <- c(gamma=gamma, delay_hosp = T.hosp.1, delay_onset_outcome = T.outcome,
@@ -679,7 +679,7 @@ As before, fitting the model manually is not ideal.
 Try to run the code below.
 Again, fill in the missing bits and interpret the code:
 
-```{r}
+```{r practical-compartmental-ebola-19}
 ###########################################################
 #### get likelihood  ######################################
 ###########################################################
@@ -717,7 +717,7 @@ We obtain best fit measure for the new time to hospitalisation.
 
 Now fill in the code below to be able to run it and observe your new fit.
 
-```{r}
+```{r practical-compartmental-ebola-20}
 
 # final 
 xstart <- c(S = N-E_ini[i],E = 10,  

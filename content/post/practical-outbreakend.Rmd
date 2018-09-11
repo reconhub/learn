@@ -62,7 +62,7 @@ The following packages, available on CRAN, are needed for this practical:
 
 To install these packages, use `install.packages` and then load them using
 
-```{r, warning=FALSE, message=FALSE}
+```{r practical-outbreakend-1, warning=FALSE, message=FALSE}
 library(tidyverse)
 library(openxlsx)
 library(pbapply)
@@ -95,11 +95,11 @@ linelist <- linelist %>%
 ```
 
 At the end of the data munging the first three lines in the data look as follows:
-```{r}
+```{r practical-outbreakend-2}
 head(linelist, n=3)
 ```
 
-```{r, echo=FALSE}
+```{r practical-outbreakend-3, echo=FALSE}
 ##Last (measured) time point of symptom onset.
 n_date <- max(linelist$Date.of.symptoms.onset)
 ```
@@ -113,7 +113,7 @@ Using the RECON
 [`incidence`](http://www.repidemicsconsortium.org/incidence/) package
 it is easy to plot the epicurve based on the date of symptoms onset in the linelist.
 
-```{r}
+```{r practical-outbreakend-4}
 inc <- incidence::incidence(linelist$Date.of.symptoms.onset, interval = 1)
 plot(inc) + xlab("Calendar Time (day)") + ylab("Number of symptom onsets")
 ```
@@ -138,7 +138,7 @@ The parameters to estimate are the following:
 
 The first set of parameters are estimated in
 @nishiura_etal2016 by method-of-moment-matching the mean and standard deviation of the serial interval distribution with observed in secondary data - see the [technical appendix](https://wwwnc.cdc.gov/eid/article/22/1/15-1383-techapp1.pdf) of the paper for details. The solution for $\alpha$ and $\beta$ of the gamma distribution can then be found analytically from these values.
-```{r}
+```{r practical-outbreakend-5}
 #Values for mean and std. deviation (=sqrt(Variance)) found in the paper
 E <- 12.6
 SD <- 2.8
@@ -148,7 +148,7 @@ SD <- 2.8
 
 The second part of the estimation task is addressed in @nishiura_etal2015 by analysing final-size and generation data using a maximum likelihood approach. We will here only implement the methods using the data presented in Figure 1 and Table 1 of the paper. Unfortunately, one cluster size is not immediately reconstructable from the data in the paper, but guesstimating from the table on p.4 of the [ECDC Rapid Risk Assessment](http://ecdc.europa.eu/en/publications/Publications/RRA-Middle-East-respiratory-syndrome-coronavirus-Korea.pdf) it appears to be the outbreak in Jordan with a size of 19. The likelihood is then maximized for $\mathbf{\theta}=(\log(R_0),\log(k))'$ using the `optim` function.
 
-```{r, echo=FALSE, results='hide'}
+```{r practical-outbreakend-6, echo=FALSE, results='hide'}
 ######################################################################
 ## Compute PMF for the final size of outbreak equal to y in a model
 ## with R_0  and clumping parameter k from Nishiura et al. (2012)
@@ -216,7 +216,7 @@ dnGenerations(1:10,  R_0=1, k=0.14)
 
 ```
 
-```{r, echo=FALSE, results='hide'}
+```{r practical-outbreakend-7, echo=FALSE, results='hide'}
 outbreaks_notME <- read.table(file="../../static/data/nishiuara_etal2015-MERS-imports.txt", header=TRUE,stringsAsFactors = FALSE)
 head(outbreaks_notME)
 
@@ -236,7 +236,7 @@ outbreaks <- within(outbreaks,
 sum(tab)
 ```
 
-```{r, LIKFIT, echo=FALSE}
+```{r practical-outbreakend-8, LIKFIT, echo=FALSE}
 ##Likelihood for the final size of the importation events
 ll_1 <- function(theta, outbreaks) {
   R_0 <- exp(theta[1])
@@ -273,7 +273,7 @@ exp(theta_mle$par)
 
 As usual in likelihood inference, a numeric approximation of the variance-covariance matrix of $\hat{\mathbf{\theta}}$ can be obtained from the Hessian matrix for the loglikelihood evaluated at the MLE. Altogether, we maximize the combined likelihood consisting of `r nrow(outbreaks)` as well as the corresponding number of generations by:
 
-```{r}
+```{r practical-outbreakend-9}
 theta_mle <- optim(c(log(1), log(1)), ll_combine, outbreaks=outbreaks, control=list(fnscale=-1), hessian=TRUE)
 exp(theta_mle$par)
 ```
@@ -285,7 +285,7 @@ These numbers deviate slightly from the values of $\hat{R}_0=0.75$ and $\hat{k}=
 
 The $\pi_t$ equation of @nishiura_etal2016 stated above is implemented below as function `p_oneormore`. This function requires the use of the PMF of the offspring distribution (implemented as `doffspring`), which is the PMF of the negative binomial offspring distribution.
 
-```{r}
+```{r practical-outbreakend-10}
 ###################################################################
 ## Offspring distribution, this is just the negative binomial PMF.
 ###################################################################
@@ -322,7 +322,7 @@ p_oneormore <- Vectorize(function(t, R_0, k, theta_serial, oMax=1e4) {
 
 The function allows us to re-calculate the results of @nishiura_etal2016 for the MERS-CoV outbreak:
 
-```{r, cache=TRUE}
+```{r practical-outbreakend-11, cache=TRUE}
 ##Results from the Nishiura et al. (2015) paper
 ##R_0_hat <- 0.75 ; k_hat <- 0.14
 ##Use MLE found with the data we were able to extract.
@@ -339,7 +339,7 @@ head(df, n=3)
 
 We can embed estimation uncertainty originating from the estimation of $R_0$ and $k$ by adding an additional bootstrap step with values of $(\log R_0, \log k)'$ sampled from the asymptotic normal distribution of the MLE. This distribution has expectation equal to the MLE and variance-covariance matrix equal to the observed Fisher information. Pointwise percentile-based 95% confidence intervals are then easily computed from the samples. The figure below shows this 95% CI (shaded area) together with the $\pi_t$ curve. The github code contains the details of generating the sample and drawing the curve using `ggplot`.
 
-```{r, echo=FALSE, cache=TRUE}
+```{r practical-outbreakend-12, echo=FALSE, cache=TRUE}
 ##
 library(mvtnorm)
 nSamples <- 100
@@ -356,7 +356,7 @@ df2 <- cbind(df, quantile=t(apply(sims, 1, quantile, prob=c(0.025, 0.975))))
 c_threshold <- 0.05
 ```
 
-```{r, echo=FALSE}
+```{r practical-outbreakend-13, echo=FALSE}
 #Make the plot
 ggplot(df2, aes(x=t, y=pi, group=1)) + geom_line() +
   geom_ribbon(aes(ymax = `quantile.2.5%`, ymin=`quantile.97.5%`), fill = 1, alpha = 0.2) +
@@ -367,7 +367,7 @@ ggplot(df2, aes(x=t, y=pi, group=1)) + geom_line() +
 
 Altogether, the date where we would declare the outbreak
 to be over, given a threshold of $c=`r c_threshold`$, is found as:
-```{r}
+```{r practical-outbreakend-14}
 (tEnd <- df2 %>% filter(`quantile.97.5%` < c_threshold) %>% slice(1L))
 ```
 In other words, given the assumptions of the model and the chosen threshold, we would declare the outbreak to be over, if no new cases are observed by `r tEnd$t`.

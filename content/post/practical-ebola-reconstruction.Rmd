@@ -100,7 +100,7 @@ as a `tibble` object. Call the first one `linelist`, and the second one
 `contacts`. For instance, your first command line could look like:
 	
 	
-```{r eval = FALSE}
+```{r practical-ebola-reconstruction-1, eval = FALSE}
 linelist <- readxl::read_xlsx("PHM-EVD-linelist-2017-11-25.xlsx")
 ```
 
@@ -287,7 +287,7 @@ WGS have been obtained for all cases in this outbreak. They are stored as a
 file, save it in your working directory, and then import these data using the
 function `read.FASTA` from the `ape` package.
 
-```{r echo = -2, eval = -3}
+```{r practical-ebola-reconstruction-2, echo = -2, eval = -3}
 library(ape)
 dna <- read.FASTA("../../static/data/PHM-EVD-WGS.fa")
 dna <- read.FASTA("PHM-EVD-WGS.fa")
