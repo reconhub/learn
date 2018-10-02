@@ -197,12 +197,6 @@ plot(i, fit = f)
 <font class="question">How would you interpret this result?What criticism would
 you make on this model?</font>
 
-<!-- As an aid for interpretation, you are reminded of previous observations of the -->
-<!-- serial interval distribution, estimated during the West African EVD outbreak -->
-<!-- (WHO Ebola Response Team (2014) NEJM 371:1481–1495) with a mean of 15.3 days and -->
-<!-- a standard deviation 9.3 days. -->
-     
-
 
 ## Estimation of transmissibility ($R$)
 
@@ -226,6 +220,7 @@ al (2013, AJE 178: 1505–1512) implemented in
 
 Briefly, `earlyR` uses a simple model describing incidence on a given day as a
 Poisson process determined by a global force of infection on that day:
+
 $$
 x_t \sim \mathcal{P} (\lambda_t)
 $$
