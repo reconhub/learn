@@ -1,23 +1,27 @@
 ---
-title: Reproducibility using R
 author: Thibaut Jombart
-authors: ["Thibaut Jombart"]
-categories: ["lectures"]
-topics: ["R Markdown"]
-date: 2017-11-10
-image: img/highres/printing-press.jpg
+authors:
+- Thibaut Jombart
+categories:
+- lectures
+css: 'css/custom.css'
+date: '2017-11-10'
+image: 'img/highres/printing-press.jpg'
+licenses: 'CC-BY'
+showonlyimage: True
 slug: reproducibility
-showonlyimage: true
-licenses: CC-BY
+title: Reproducibility using R
+topics:
+- rmarkdown
+- data science
+- reproducibility
 ---
 
 Beyond the availability of data and methods, reproducible science
 requires the traceability of analyses. Whether it is for yourself or for
 collaborators, as series of tools and good practices can facilitate your
 work flow, simplify analyses, and prevent the loss of data and results.
-This lecture provides an introduction to reproducibility using
-<img src="../../img/slides/Rlogo.png"
-width="20px">.
+This lecture provides an introduction to reproducibility using **R**.
 
 Slides
 ======
@@ -34,22 +38,21 @@ Related packages
 -------
 
 `knitr` provides excellent resources for literate programming mixing
-<img src="../../img/slides/Rlogo.png" width="20px"> with
-[*LaTeX*](https://en.wikipedia.org/wiki/LaTeX) or
+**R** with [*LaTeX*](https://en.wikipedia.org/wiki/LaTeX) or
 [*markdown*](https://en.wikipedia.org/wiki/Markdown).
 
 It is extensively documented at: <https://yihui.name/knitr/>
 
 To install the current stable, CRAN version of the package, type:
 
-``` r
+``` {.r}
 install.packages("knitr")
 ```
 
 To benefit from the latest features and bug fixes, install the
 development version of the package using:
 
-``` r
+``` {.r}
 update.packages(ask = FALSE, repos = 'https://cran.rstudio.org')
 install.packages('knitr', repos = c('https://xran.yihui.name', 'https://cran.rstudio.org'))
 ```
@@ -57,7 +60,7 @@ install.packages('knitr', repos = c('https://xran.yihui.name', 'https://cran.rst
 `rmarkdown`
 -----------
 
-`rmarkdown`  extends the capabilities of `knitr` with a more diverse set
+`rmarkdown` extends the capabilities of `knitr` with a more diverse set
 of outputs generated from `Rmd` files, including pdf documents, article
 templates, pdf or html slides, or even web applications.
 
@@ -66,13 +69,13 @@ More information on `rmarkdown` is available from:
 
 To install this package, type:
 
-``` r
+``` {.r}
 install.packages("rmarkdown")
 ```
 
 For the devel version, type (uses `devtools`):
 
-``` r
+``` {.r}
 devtools::install_github("rstudio/rmarkdown")
 ```
 
@@ -89,7 +92,7 @@ For more information on this package, go to:
 
 To install this package, type:
 
-``` r
+``` {.r}
 install.packages("lintr")
 ```
 

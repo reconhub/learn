@@ -1,4 +1,17 @@
-/* RECON Blue */
+
+/* for pretty, framed, shadowed images serving as a gatway to something else */
+.gateway {
+    border-style: solid;
+    border-width: thin;
+    border-color: black;
+    border-radius: 10px;
+    box-shadow: 5px 5px 20px #000000;
+}
+
+.gateway:hover{
+    box-shadow: 5px 5px 20px #80002a;
+}
+
 .site-header {
     background: #3d3d5c;
 }
@@ -6,9 +19,6 @@
 .site-footer {
     background: #3d3d5c;
 }
-
-
-/* RECON Yellow */
 
 .nav-current a:visited {
     color: #f0c674;
@@ -136,3 +146,4 @@ body, input, select, button, p {
         flex-direction: column;
     }
 }
+

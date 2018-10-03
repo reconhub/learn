@@ -3,11 +3,12 @@ title: Reproducibility using R
 author: Thibaut Jombart
 authors: ["Thibaut Jombart"]
 categories: ["lectures"]
-topics: ["R Markdown"]
+topics: ["rmarkdown", "data science", "reproducibility"]
 date: 2017-11-10
 image: img/highres/printing-press.jpg
 slug: reproducibility
 showonlyimage: true
+css: css/custom.css
 licenses: CC-BY
 ---
 
@@ -21,8 +22,7 @@ Beyond the availability of data and methods, reproducible science requires the
 traceability of analyses. Whether it is for yourself or for collaborators, as
 series of tools and good practices can facilitate your work flow, simplify
 analyses, and prevent the loss of data and results. This lecture provides an
-introduction to reproducibility using <img src="../../img/slides/Rlogo.png"
-width="20px">.
+introduction to reproducibility using **R**.
 
 
 # Slides
@@ -39,8 +39,7 @@ width="20px">.
 
 ## `knitr`
 
-`knitr` provides excellent resources for literate programming mixing
-<img src="../../img/slides/Rlogo.png" width="20px"> with
+`knitr` provides excellent resources for literate programming mixing **R** with
 [*LaTeX*](https://en.wikipedia.org/wiki/LaTeX) or
 [*markdown*](https://en.wikipedia.org/wiki/Markdown).
 

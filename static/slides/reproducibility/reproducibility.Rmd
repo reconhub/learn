@@ -3,8 +3,7 @@ title: "Reproducible science <br>using ![Rlogo](../../img/slides/Rlogo-small.png
 author: Thibaut Jombart
 date: "2017-11-10"
 output:
-  ioslides_presentation:
-    incremental: false
+  ioslides_presentation
 ---
 
 
@@ -134,37 +133,17 @@ the computer to do</font>.* </center> (Donald E. Knuth, Literate Programming,
 
 ## Literate programming in <img src="../../img/slides/Rlogo.png" width="50px">
 
-> - **Sweave** (`.Rnw`): LaTeX + <img src="../../img/slides/Rlogo.png" width="40px">
-<br><br>Example:<br>
-`knitr::knit2pdf("foo.Rnw")` $\rightarrow$ `foo.pdf`<br>
+Current workflows use the following equation: 
 
-<br>
+**markdown** (`.md`)   +   <img src="../../img/slides/Rlogo.png" width="40px"> = 
+<font color="#99004d"> **Rmarkdown** </font> (`.Rmd`)
 
-> - **Rmarkdown** (`.Rmd`): markdown + <img src="../../img/slides/Rlogo.png" width="40px">
 <br><br>Example:<br>
 `knitr::knit2html("foo.Rmd")`  $\rightarrow$  `foo.html`<br>
 `rmarkdown::render("foo.Rmd")`  $\rightarrow$  `foo.pdf`<br>
 `rmarkdown::render("foo.Rmd")`  $\rightarrow$  `foo.doc`<br>
 `...`
 
-
-
-
-## **Sweave**: <img src="../../img/slides/Rlogo.png" width="50px"> chunks in LaTeX {.smaller}
-
-<pre><code>
-&lt;&lt;chunk-title , ...&gt;&gt;=
-a <- rnorm(1000)
-hist(a, col = terrain.colors(15), border = "white", main = "Normal distribution")
-@
-</code></pre>
-
-results in:
-```{r sweave2, out.width = "80%", fig.width = 12, echo = c(2,3)}
-set.seed(1)
-a <- rnorm(1000)
-hist(a, col = terrain.colors(15), border = "white", main = "Normal distribution")
-```
 
 
 
@@ -234,13 +213,14 @@ output: html_document
 ---
 
 This is some nice R code:
+</pre></code>
+
 ```{r rnorm-example, verbatim = TRUE, eval = FALSE, echo = 2:4}
 set.seed(1)
 x <- rnorm(100)
 x[1:6]
 hist(x, col = "grey", border = "white")
 ```
-</pre></code>
 
 
 
@@ -375,10 +355,12 @@ Because you never know what can happen..
 <img src="../../img/slides/lost.jpg" width="40%">
 </center>
 
+<br>
+
 > - **never rely on a single computer** to store your work
 > - <font color="#99004d">backups</font> are good, <font color="#99004d">syncing</font> with a server is better (e.g. Dropbox)
 > - use <font color="#99004d">version numbers</font> to track progress
-> - use <font color="#99004d">version control systems</font> if needed (e.g. GIT), especially for serious
+> - use <font color="#99004d">version control systems</font> (e.g. GIT) for serious
     coding projects
 
 
