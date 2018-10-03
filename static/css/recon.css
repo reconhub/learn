@@ -304,7 +304,7 @@ body {
 
 
 /* for pretty, framed, shadowed images serving as a gatway to something else */
-.gateway {
+.gateway img{
     border-style: solid;
     border-width: thin;
     border-color: black;
