@@ -5,7 +5,7 @@ authors: ["Zhian N. Kamvar", "Janetta Skarp", "Alexander Spina", "Patrick Keatin
 categories: ["practicals"]
 tags: ["epicurve", "single variable analysis", "2x2 tables"]
 date: 2018-10-04
-image: img/highres/van-der-helst-banquet.jpg
+image: img/highres/banquet-cc0.jpeg
 slug: copenhagen-introduction
 showonlyimage: true
 licenses: CC-BY
@@ -199,7 +199,7 @@ and other things you have running in the current session. (see figure 1
 below)
 
 ![Browsing your dataset in R
-Studio](../../img/highres/copenhagen-screenshot1.png)
+Studio](../../img/screenshots/copenhagen-screenshot1.png)
 
 Most of the variables are coded as numeric variables. Here is the key to
 what the values in each varaiable means:
@@ -361,7 +361,7 @@ You can save your code in R scripts. (see figure 2 below) You can write
 comments in your code using “`#`”
 
 ![Creating a new R-script in R
-studio](../../img/highres/copenhagen-screenshot2.png)
+studio](../../img/screenshots/copenhagen-screenshot2.png)
 
 ### History
 
