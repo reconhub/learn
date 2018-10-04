@@ -202,7 +202,7 @@ and other things you have running in the current session. (see figure 1
 below)
 
 ![Browsing your dataset in R
-Studio](../../static/img/highres/screenshot1.png)
+Studio](../../img/highres/copenhagen-screenshot1.png)
 
 Most of the variables are coded as numeric variables. Here is the key to
 what the values in each varaiable means:
@@ -364,7 +364,7 @@ You can save your code in R scripts. (see figure 2 below) You can write
 comments in your code using “`#`”
 
 ![Creating a new R-script in R
-studio](../../static/img/highres/screenshot2.png)
+studio](../../img/highres/copenhagen-screenshot2.png)
 
 ### History
 

@@ -150,7 +150,7 @@ View(cph)
 Alternatively, you can also view your dataset by clicking on *cph* in the top right "global environment" panel of your *R Studio* browser.  
 Your global environment is where you can see all the datasets, functions and other things you have running in the current session. (see figure 1 below)
 
-![Browsing your dataset in R Studio](../../static/img/highres/screenshot1.png)
+![Browsing your dataset in R Studio](../../img/highres/copenhagen-screenshot1.png)
 
 Most of the variables are coded as numeric variables. Here is the key to what
 the values in each varaiable means:
@@ -185,7 +185,7 @@ the values in each varaiable means:
 You can save your code in R scripts. (see figure 2 below)
 You can write comments in your code using "`# `"
 
-![Creating a new R-script in R studio](../../static/img/highres/screenshot2.png)
+![Creating a new R-script in R studio](../../img/highres/copenhagen-screenshot2.png)
 
 ### History
 
