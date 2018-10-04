@@ -5,7 +5,7 @@ date: 2018-03-22
 image: img/highres/end-of-the-road.jpg
 categories: practicals
 showonlyimage: true
-tags: ["epicurve", "outbreak", "outbreak end"]
+topics: ["epicurve", "outbreak", "outbreak end"]
 bibliography: practical-outbreakend.bib
 always_allow_html: yes
 output: 
