@@ -18,26 +18,19 @@ knitr::opts_knit$set(root.dir = here::here())
 
 # The Alert
 
-On November 14th 2006 the director of a high school in Greater Copenhagen, Denmark, contacted the regional public health authorities to inform them about an outbreak of diarrhoea and vomiting among participants from a school dinner party held on the 11th of November 2006. Almost all students and teachers of the school (750 people) attended the party.  
-The first people fell ill the same night and by the November 14th the school had received reports of diarrhoeal illness from around 200 - 300 students and teachers, many of whom also reported vomiting.  
+On November 14th 2006 the director of a high school in Greater Copenhagen, Denmark, contacted the regional public health authorities to inform them about an outbreak of diarrhoea and vomiting among participants from a school dinner party held on the 11th of November 2006. Almost all students and teachers of the school (750 people) attended the party.  The first people fell ill the same night and by the November 14th the school had received reports of diarrhoeal illness from around 200 - 300 students and teachers, many of whom also reported vomiting.  
 
-The epidemiologists in the outbreak team decided to perform a retrospective cohort study in order to identify the food item that was the vehicle of the outbreak. The cohort was defined as students and teachers who had attended the party at the high school on 11th of November 2006.  
-A questionnaire was designed to conduct a survey on food consumption and on presentation of the illness. Information about the survey and a link to the questionnaire was circulated to students and teachers via the school's intranet with the request that everyone who attended the school party on 11th of November 2006 should fill in the questionnaire.  
-Practically all students and teachers check the intranet on a daily basis, because it is the school's main communication channel for information about courses, homework assignments, cancellation of lessons etc. The information about the investigation was therefore also displayed on the screen in the main hall of the school. The school's intranet was also accessible for ill students or teachers from home so that everyone in the cohort could potentially participate and the response rate could be maximised.  
-Symptomatic party attendees were asked to submit stool samples via their general practitioners to the local clinical microbiology laboratory where they were cultured for standard enteric bacteria. The working hypothesis at the point was that the outbreak had a viral or toxic aetiology. Norovirus is generally acknowledged as the most frequent cause of foodborne outbreaks in industrialised countries, so this would be a prime suspect.  
-In the study, the following case definition was used: a case is a person from the cohort, who presented with diarrhoea or vomiting within 48 hours of the meal. So anyone who presented with diarrhoea or vomiting from 6pm on November 11th to 5:59pm on November 13th was included as a case. Anyone with symptoms outside this time window is defined as a control as this person probably didn't become sick at the party.
+The epidemiologists in the outbreak team decided to perform a retrospective cohort study in order to identify the food item that was the vehicle of the outbreak. The cohort was defined as students and teachers who had attended the party at the high school on 11th of November 2006.  A questionnaire was designed to conduct a survey on food consumption and on presentation of the illness. Information about the survey and a link to the questionnaire was circulated to students and teachers via the school's intranet with the request that everyone who attended the school party on 11th of November 2006 should fill in the questionnaire.  Practically all students and teachers check the intranet on a daily basis, because it is the school's main communication channel for information about courses, homework assignments, cancellation of lessons etc. The information about the investigation was therefore also displayed on the screen in the main hall of the school. The school's intranet was also accessible for ill students or teachers from home so that everyone in the cohort could potentially participate and the response rate could be maximised.  Symptomatic party attendees were asked to submit stool samples via their general practitioners to the local clinical microbiology laboratory where they were cultured for standard enteric bacteria. The working hypothesis at the point was that the outbreak had a viral or toxic aetiology. Norovirus is generally acknowledged as the most frequent cause of foodborne outbreaks in industrialised countries, so this would be a prime suspect.  In the study, the following case definition was used: a case is a person from the cohort, who presented with diarrhoea or vomiting within 48 hours of the meal. So anyone who presented with diarrhoea or vomiting from 6pm on November 11th to 5:59pm on November 13th was included as a case. Anyone with symptoms outside this time window is defined as a control as this person probably didn't become sick at the party.
 
 # An introduction to the *R* companion
 
 ## Your *R* Workflow
 
-We will be using RStudio projects to separate our sessions into distinct workflows.
-For each session, you will open R by double-clicking on the `.Rproj` file, or opening RStudio and selecting the session from the upper-right-hand dropdown menu.
+We will be using RStudio projects to separate our sessions into distinct workflows.  For each session, you will open R by double-clicking on the `.Rproj` file, or opening RStudio and selecting the session from the upper-right-hand dropdown menu.
 
 > You can set a folder to be your working directory (using the setwd command), but we will not be using this because it makes transferring between computers difficult (see <https://www.tidyverse.org/articles/2017/12/workflow-vs-script/> for details). Instead, we will be using the RStudio project files and the 'here' package to keep track of files.
 
-This tutorial is designed to be followed along in the context of an R project
-folder structure:
+This tutorial is designed to be followed along in the context of an R project folder structure:
 
 ```
 copenhagen/
@@ -119,8 +112,7 @@ The `sva()` function allows calculation of attack rates of multiple variables at
 
 ### Reading in datasets
 
-Open the dataset **copenhagen_raw.csv** using the `read.csv()` command.  
-It is also possible to import datasets from other formats, such as Excel; see appendix for example.
+Open the dataset **copenhagen_raw.csv** using the `read.csv()` command.  It is also possible to import datasets from other formats, such as Excel; see appendix for example.
 Datasets in *R* are stored and can be referred to using the name it is saved as (in our case "cph").
 
 ```{r, eval = FALSE}
@@ -147,8 +139,7 @@ cph <- read.csv(here::here("static", "data", "copenhagen_raw.csv"), stringsAsFac
 View(cph)
 ```
 
-Alternatively, you can also view your dataset by clicking on *cph* in the top right "global environment" panel of your *R Studio* browser.  
-Your global environment is where you can see all the datasets, functions and other things you have running in the current session. (see figure 1 below)
+Alternatively, you can also view your dataset by clicking on *cph* in the top right "global environment" panel of your *R Studio* browser.  Your global environment is where you can see all the datasets, functions and other things you have running in the current session. (see figure 1 below)
 
 ![Browsing your dataset in R Studio](../../img/highres/copenhagen-screenshot1.png)
 
@@ -182,8 +173,7 @@ the values in each varaiable means:
 
 ### Saving your code in R Scripts
 
-You can save your code in R scripts. (see figure 2 below)
-You can write comments in your code using "`# `"
+You can save your code in R scripts. (see figure 2 below) You can write comments in your code using "`# `"
 
 ![Creating a new R-script in R studio](../../img/highres/copenhagen-screenshot2.png)
 
@@ -210,8 +200,7 @@ skimr::skim(cph)
 Hmisc::describe(cph)
 ```
 
-> **n.b.** we are using the convention package::function() to make it clear when we are using a function that comes from an external package.
-
+> **n.b.** we are using the convention package::function() to make it clear when we are using a function that comes from an external package.  
 # Data cleaning and recoding in *R*  
 
 ## Check the dataset "Copenhagen.csv"
@@ -242,11 +231,17 @@ table(cph$age)
 summary(cph$age)
 ```
 
-Often, plotting the data can be much more informative. For example, instead of using table, we can plot a boxplot of age to see if we have any outliers:
+Often, plotting the data can be much more informative. For example, instead of using table, we can plot a histogram of age to see if we have any outliers:
 
-```{r boxplot_of_age}
+```{r density_of_age}
 
-boxplot(cph$age)
+hist(cph$age,
+     main = "Distribution of Age", 
+     xlab = "Age",
+     ylab = "Count",
+     col = "palegreen")
+
+rug(cph$age)
 
 ```
 
@@ -355,8 +350,8 @@ table(cph$case)
 ```{r check_cases_again}
 # check if people were assigned properly according to symptoms
 
-table(cph$case, cph$vomiting)
-table(cph$case, cph$diarrhoea)
+table(case = cph$case, vomiting = cph$vomiting)
+table(case = cph$case, diarrhoea = cph$diarrhoea)
 
 ```
 

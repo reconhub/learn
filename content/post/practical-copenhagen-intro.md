@@ -19,42 +19,40 @@ Copenhagen, Denmark, contacted the regional public health authorities to
 inform them about an outbreak of diarrhoea and vomiting among
 participants from a school dinner party held on the 11th of November
 2006. Almost all students and teachers of the school (750 people)
-attended the party.  
-The first people fell ill the same night and by the November 14th the
-school had received reports of diarrhoeal illness from around 200 - 300
-students and teachers, many of whom also reported vomiting.
+attended the party. The first people fell ill the same night and by the
+November 14th the school had received reports of diarrhoeal illness from
+around 200 - 300 students and teachers, many of whom also reported
+vomiting.
 
 The epidemiologists in the outbreak team decided to perform a
 retrospective cohort study in order to identify the food item that was
 the vehicle of the outbreak. The cohort was defined as students and
 teachers who had attended the party at the high school on 11th of
-November 2006.  
-A questionnaire was designed to conduct a survey on food consumption and
-on presentation of the illness. Information about the survey and a link
-to the questionnaire was circulated to students and teachers via the
-school’s intranet with the request that everyone who attended the school
-party on 11th of November 2006 should fill in the questionnaire.  
-Practically all students and teachers check the intranet on a daily
-basis, because it is the school’s main communication channel for
-information about courses, homework assignments, cancellation of lessons
-etc. The information about the investigation was therefore also
+November 2006. A questionnaire was designed to conduct a survey on food
+consumption and on presentation of the illness. Information about the
+survey and a link to the questionnaire was circulated to students and
+teachers via the school’s intranet with the request that everyone who
+attended the school party on 11th of November 2006 should fill in the
+questionnaire. Practically all students and teachers check the intranet
+on a daily basis, because it is the school’s main communication channel
+for information about courses, homework assignments, cancellation of
+lessons etc. The information about the investigation was therefore also
 displayed on the screen in the main hall of the school. The school’s
 intranet was also accessible for ill students or teachers from home so
 that everyone in the cohort could potentially participate and the
-response rate could be maximised.  
-Symptomatic party attendees were asked to submit stool samples via their
-general practitioners to the local clinical microbiology laboratory
-where they were cultured for standard enteric bacteria. The working
-hypothesis at the point was that the outbreak had a viral or toxic
-aetiology. Norovirus is generally acknowledged as the most frequent
-cause of foodborne outbreaks in industrialised countries, so this would
-be a prime suspect.  
-In the study, the following case definition was used: a case is a person
-from the cohort, who presented with diarrhoea or vomiting within 48
-hours of the meal. So anyone who presented with diarrhoea or vomiting
-from 6pm on November 11th to 5:59pm on November 13th was included as a
-case. Anyone with symptoms outside this time window is defined as a
-control as this person probably didn’t become sick at the party.
+response rate could be maximised. Symptomatic party attendees were asked
+to submit stool samples via their general practitioners to the local
+clinical microbiology laboratory where they were cultured for standard
+enteric bacteria. The working hypothesis at the point was that the
+outbreak had a viral or toxic aetiology. Norovirus is generally
+acknowledged as the most frequent cause of foodborne outbreaks in
+industrialised countries, so this would be a prime suspect. In the
+study, the following case definition was used: a case is a person from
+the cohort, who presented with diarrhoea or vomiting within 48 hours of
+the meal. So anyone who presented with diarrhoea or vomiting from 6pm on
+November 11th to 5:59pm on November 13th was included as a case. Anyone
+with symptoms outside this time window is defined as a control as this
+person probably didn’t become sick at the party.
 
 An introduction to the *R* companion
 ====================================
@@ -168,8 +166,7 @@ Data management and *R* scripts
 
 ### Reading in datasets
 
-Open the dataset **copenhagen\_raw.csv** using the `read.csv()`
-command.  
+Open the dataset **copenhagen\_raw.csv** using the `read.csv()` command.
 It is also possible to import datasets from other formats, such as
 Excel; see appendix for example. Datasets in *R* are stored and can be
 referred to using the name it is saved as (in our case “cph”).
@@ -196,7 +193,7 @@ View(cph)
 ```
 
 Alternatively, you can also view your dataset by clicking on *cph* in
-the top right “global environment” panel of your *R Studio* browser.  
+the top right “global environment” panel of your *R Studio* browser.
 Your global environment is where you can see all the datasets, functions
 and other things you have running in the current session. (see figure 1
 below)
@@ -396,10 +393,8 @@ Hmisc::describe(cph)
 
 > **n.b.** we are using the convention package::function() to make it
 > clear when we are using a function that comes from an external
-> package.
-
-Data cleaning and recoding in *R*
-=================================
+> package.  
+> \# Data cleaning and recoding in *R*
 
 Check the dataset “Copenhagen.csv”
 ----------------------------------
@@ -454,14 +449,20 @@ summary(cph$age)
     ##    8.00   16.00   17.00   18.68   18.00  180.00
 
 Often, plotting the data can be much more informative. For example,
-instead of using table, we can plot a boxplot of age to see if we have
+instead of using table, we can plot a histogram of age to see if we have
 any outliers:
 
 ``` r
-boxplot(cph$age)
+hist(cph$age,
+     main = "Distribution of Age", 
+     xlab = "Age",
+     ylab = "Count",
+     col = "palegreen")
+
+rug(cph$age)
 ```
 
-![](practical-copenhagen-intro_files/figure-markdown_github/boxplot_of_age-1.png)
+![](practical-copenhagen-intro_files/figure-markdown_github/density_of_age-1.png)
 
 > Question: Is there anything weird about these data?
 
@@ -605,22 +606,22 @@ table(cph$case)
 ``` r
 # check if people were assigned properly according to symptoms
 
-table(cph$case, cph$vomiting)
+table(case = cph$case, vomiting = cph$vomiting)
 ```
 
-    ##    
-    ##       0   1
-    ##   0  42   0
-    ##   1 107  66
+    ##     vomiting
+    ## case   0   1
+    ##    0  42   0
+    ##    1 107  66
 
 ``` r
-table(cph$case, cph$diarrhoea)
+table(case = cph$case, diarrhoea = cph$diarrhoea)
 ```
 
-    ##    
-    ##       0   1
-    ##   0  40   0
-    ##   1   6 206
+    ##     diarrhoea
+    ## case   0   1
+    ##    0  40   0
+    ##    1   6 206
 
 Drop cases that do not meet the case definition
 
