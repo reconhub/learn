@@ -1,0 +1,285 @@
+---
+title: "An outbreak of gastroenteritis in Stegen, Germany, June 1998 (part 1)"
+author: "Zhian N. Kamvar, Janetta Skarp, Alexander Spina, and Patrick Keating"
+authors: ["Zhian N. Kamvar", "Janetta Skarp", "Alexander Spina", "Patrick Keating"]
+categories: ["practicals"]
+tags: ["level: beginner", "epicurve", "single variable analysis", "2x2 tables", "reproducible research", "gastroenteritis"]
+date: 2018-10-04
+slug: stegen-introduction
+licenses: CC-BY
+---
+
+Introduction
+============
+
+On 26 June 1998, the St Sebastian High School in Stegen (school A),
+Germany, celebrated a graduation party, where 250 to 350 participants
+were expected. Attendants included graduates from that school, their
+families and friends, teachers, 12th grade students and some graduates
+from a nearby school (school B).
+
+A self-service party buffet was supplied by a commercial caterer in
+Freiburg. Food was prepared the day of the party and transported in a
+refrigerated van to the school.
+
+Festivities started with a dinner buffet open from 8.30 pm onwards and
+were followed by a dessert buffet offered from 10 pm. The party and the
+buffet extended late during the night and alcoholic beverages were quite
+popular. All agreed it was a party to be remembered.
+
+The alert
+---------
+
+On 2nd July 1998, the Freiburg local health office reported to the
+Robert Koch Institute (RKI) in Berlin the occurrence of many cases of
+gastroenteritis following the graduation party described above. More
+than 100 cases were suspected among participants and some of them were
+admitted to nearby hospitals. Sick people suffered from fever, nausea,
+diarrhoea and vomiting lasting for several days. Most believed that the
+tiramisu consumed at dinner was responsible for their illness.
+*Salmonella enteritidis* was isolated from 19 stool samples.
+
+The Freiburg health office sent a team to investigate the kitchen of the
+caterer. Food preparation procedures were reviewed. Food samples, except
+tiramisu (none was left over), were sent to the laboratory of Freiburg
+University. Microbiological analyses were performed on samples of the
+following: brown chocolate mousse, caramel cream, remoulade sauce,
+yoghurt dill sauce, and 10 raw eggs.
+
+The Freiburg health office requested help from the RKI in the
+investigation to assess the magnitude of the outbreak and identify
+potential vehicle(s) and risk factors for transmission in order to
+better control the outbreak
+
+The study
+---------
+
+Cases were defined as any person who had attended the party at St
+Sebastian High School who suffered from diarrhoea (min. 3 loose stool
+for 24 hours) between 27 June and 29 June 1998; or who suffered from at
+least three of the following symptoms: vomiting, fever over 38.5° C,
+nausea, abdominal pain, headache.
+
+Students from both schools attending the party were asked through phone
+interviews to provide names of persons who attended the party.
+
+Overall, 291 responded to enquiries and 103 cases were identified.
+
+An introduction to the *R* companion
+------------------------------------
+
+This text was adapted from the introduction used at the 2016 TSA module.
+
+R packages are bundles of functions which extend the capability of R.
+Thousands of add-on packages are available in the main online repository
+(known as CRAN) and many more packages in development can be found on
+GitHub. They may be installed and updated over the Internet.
+
+We will mainly use packages which come ready installed with R (base
+code), but where it makes things easier we will use add-on packages. In
+addition, we have included a few extra functions to simplify the code
+required. All the R packages you need for the exercises can be installed
+over the Internet.
+
+> If you get stuck with any of the tasks in this practical, additional
+> information for each task can be found in the **Help** section
+
+Setting up
+----------
+
+### a) Load the required packages and functions for this practical
+
+> **n.b.** you should only need to do this once.
+
+The required packages are:
+
+-   epiR
+-   Hmisc
+-   epitools
+-   here
+
+The two required functions are **big\_table** and **attack\_rate** and
+can be found below.
+
+``` r
+# Function to make tables with counts, proportions and cumulative sum
+big_table <- function(data, useNA = "no") {
+  count <- table(data, useNA = useNA)
+  prop <- round(prop.table(count)*100, digits = 2)
+  cumulative <- cumsum(prop)
+  rbind(count,
+        prop,
+        cumulative) 
+}
+
+ # Function to provide counts, denominator and proportions (equivalent of attack rate)
+attack_rate <- function(table) {
+  prop <- round(prop.table(table, 1), digits = 2)
+  denominator <- rowSums(table) 
+  output <- cbind(Ill = table[, 2], N = denominator, Proportions = prop[, 2])
+  return(output)
+}
+```
+
+The **big\_table** function uses data directly and allows combining of
+counts, proportions and cumulative sums, thus reducing the number of
+lines of code required for descriptive analyses. The **attack\_rate**
+function makes tables that combine counts, proportions and row sums.
+
+The dataset
+===========
+
+In this practical, we will be using the **tirav12.csv** file located in
+the data folder.
+
+### b) Read in the dataset for this practical
+
+Recoding missing data
+=====================
+
+### c) Browse your dataset
+
+What variables does your dataset contain?
+
+### d) Recode data
+
+Identify variables with missing values (variables that have a records
+with a value of 9). Recode these to NA.
+
+### e) Save your new dataset
+
+As a csv file named **stegen\_clean**.
+
+Help
+====
+
+<details>
+<summary> <b> a) Install and load the required packages and functions
+for this practical </b> </summary>
+
+Below you can find the commands for installing and loading the required
+packages.
+
+``` r
+# Installing required packages for the practical
+required_packages <- c("epiR", "Hmisc", "epitools", "here", "incidence") 
+install.packages(required_packages)
+```
+
+``` r
+# Loading required packages for the practical
+library("epiR")
+library("Hmisc")
+library("epitools")
+library("here")
+library("incidence")
+```
+
+</details>
+<details>
+<summary> <b> b) Read in the dataset for this practical </b> </summary>
+
+``` r
+stegen_data <- read.csv(here::here("data", "stegen_raw.csv"), stringsAsFactors = FALSE)
+```
+
+</details>
+<details>
+<summary> <b> c) Browse your dataset </b> </summary> *RStudio* has the
+nice feature that everything is in one browser window, so you can browse
+your dataset and your code without having to switch between browser
+windows.
+
+``` r
+# to browse your data, use the View command
+View(stegen_data)
+```
+
+Alternatively, you can also view your dataset by clicking on
+**stegen\_data** in the top right “global environment” panel of your
+*RStudio* browser. Your global environment is where you can see all the
+datasets, functions and other things you have loaded in the current
+session.
+
+</details>
+<details>
+<summary> <b> d) Recode data </b> </summary> Use the “describe” command
+to assess your data and identify variables with missing values. The
+describe command showed that the variables salmon, pork and horseradish
+have a few records with a value of 9. These need to be recoded to NA.
+
+-   Using the square brackets “\[…\]” after a variable allows you to
+    subset for certain observations. To recode values of 9 to NA for the
+    pork variable, select observations where pork
+    **(stegen\_data$pork)** is equal to 9 **\[stegen\_data$pork == 9\]**
+    and set these observations equal to NA
+
+-   Always use the double equals “==” within square brackets; this a
+    logical (Boolean) operator
+
+-   Use “! =” when you want to write “not equal to”
+
+``` r
+# The first line below is read as follows:  assign a value of NA to stegen_data$pork WHERE stegen_data$pork is equal to 9
+stegen_data$pork[stegen_data$pork == 9] <- NA
+
+stegen_data$salmon[stegen_data$salmon == 9] <- NA
+
+stegen_data$horseradish[stegen_data$horseradish == 9] <- NA
+```
+
+</details>
+<details>
+<summary> <b> e) Save your new dataset </b> </summary>
+
+``` r
+write.csv(stegen_data, file = here::here("data", "stegen_clean.csv"))
+```
+
+</details>
+Copyright and license
+---------------------
+
+**Source:** This case study was first designed by Alain Moren and Gilles
+Desve, EPIET. It is based on an investigation conducted by Anja Hauri,
+RKI, Berlin, 1998.
+
+**Authors:** Alain Moren and Gilles Desve
+
+**Reviewers:** Marta Valenciano, Alain Moren
+
+**Adaptations for previous modules:** Alicia Barrasa, Ioannis
+Karagiannis
+
+**You are free:**
+
+-   to Share - to copy, distribute and transmit the work
+-   to Remix - to adapt the work Under the following conditions:
+-   Attribution - You must attribute the work in the manner specified by
+    the author or licensor (but not in any way that suggests that they
+    endorse you or your use of the work). The best way to do this is to
+    keep as it is the list of contributors: sources, authors and
+    reviewers.
+-   Share Alike - If you alter, transform, or build upon this work, you
+    may distribute the resulting work only under the same or similar
+    license to this one. Your changes must be documented. Under that
+    condition, you are allowed to add your name to the list of
+    contributors.
+-   You cannot sell this work alone but you can use it as part of a
+    teaching. With the understanding that:
+-   Waiver - Any of the above conditions can be waived if you get
+    permission from the copyright holder.
+-   Public Domain - Where the work or any of its elements is in the
+    public domain under applicable law, that status is in no way
+    affected by the license.
+-   Other Rights - In no way are any of the following rights affected by
+    the license:
+-   Your fair dealing or fair use rights, or other applicable copyright
+    exceptions and limitations;
+-   The author’s moral rights;
+-   Rights other persons may have either in the work itself or in how
+    the work is used, such as publicity or privacy rights.
+-   Notice - For any reuse or distribution, you must make clear to
+    others the license terms of this work by keeping together this work
+    and the current license. This licence is based on
+    <a href="http://creativecommons.org/licenses/by-sa/3.0/" class="uri">http://creativecommons.org/licenses/by-sa/3.0/</a>
