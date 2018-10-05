@@ -327,17 +327,20 @@ cph$dayonset <- as.Date(refdate + cph$start)
 
 ### Construct epicurve by day
 
-It is possible to create an epicurve manually using base-R code (see
-appendix), however for simplicity, there is a user written function
-(Daniel Gardener, PHE). The epicurve function allows creation of easily
-formatted epicurves. To find out more about the function, first load it
-as above and then click on function in the Global Environment tab on the
-right of the R Studio window. This function uses the ggplot package (use
-??ggplot2 to find out more about this function) and so is quite easily
-manipulated and saved after being created.
+<!--
+It is possible to create an epicurve manually using base-R code (see appendix), however for simplicity, there is a user written function (Daniel Gardener, PHE). 
+The epicurve function allows creation of easily formatted epicurves. To find out more about the function, first load it as above and then click on function in the Global Environment tab on the right of the R Studio window.
+-->
+Epicurves are often a great way of visualizing the dynamics of an
+epidemic, but can be easily mis-constructed if done by hand. To make
+things easier, the package *incidence* will automatically bin incidence
+by day (or any other time interval) and generate a curve. This function
+uses the *ggplot2* package (use `?ggplot` to find out more about this
+function) and so is quite easily manipulated and saved after being
+created.
 
 ``` r
-cph_incidence <- incidence(cph$dayonset, interval = 1)
+cph_incidence <- incidence::incidence(cph$dayonset, interval = 1)
 plot(cph_incidence)
 ```
 
@@ -355,25 +358,9 @@ didn’t reveal anything unusual. Students seem a bit more affected by the
 outbreak than teachers and the attack rate is higher for older students
 in higher classes. This, however, is a purely descriptive result.
 
-When constructing an epicurve, we need to decide on the resolution,
-i.e. the time interval for a single bar. A rule of thumb is to use one
-third or one fourth of the average incubation period as an interval. For
-our investigation this means we should use approximately a 6h interval.
-
-This seems a good choice indeed as we saw that the daily interval was
-too coarse to really see the signal we’re after. The epicurve and the
-summary of the incubation period show that there seemed to be a rapid
-onset of symptoms following exposure. This is in line with our previous
-suspicion that a virus or a toxin might be the causative agent in the
-outbreak.
-
-The unimodal shape with the sharp peak suggests a point source, while
-the tail on the right hand side could be explained by secondary cases or
-background noise. Also people that only consumed a little contaminated
-food and therefore only a low infectious dose could have a longer
-incubation period and could explain the late cases. The above results
-are in line with norovirus as the prime suspect, but the symptoms are
-not a textbook fit. There are too few people that experienced vomiting!
+The above results are in line with norovirus as the prime suspect, but
+the symptoms are not a textbook fit. There are too few people that
+experienced vomiting!
 
 Part 3
 ======
