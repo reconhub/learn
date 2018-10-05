@@ -76,18 +76,55 @@ p <- ggplot2::ggplot(pkg_data, ggplot2::aes(x=Month, y=New_Pkg)) +
 p
 ```
 
-## 
+## R is versatile 
 
-## R is a language for data analysis
+<center>
+<img src="../../img/slides/r-food-chain.jpg" width="75%">
+</center>
 
-Sensible tests are built in
 
-```{r ttest}
-t.test(extra ~ group, data = sleep)
-```
+## R has many large and vibrant user communities
 
-## R is 
+<center>
+<img src="../../img/slides/r-communities.jpg" width="100%">
+</center>
 
+## Network Analysis
+
+<center>
+<img src="../../img/slides/r-gephi-graph.PNG" width="50%">
+</center>
+source: https://www.r-bloggers.com/social-network-analysis-using-r-and-gephis/
+
+---------------
+
+<center>
+<img src="../../img/slides/accidental-art.jpg" width="75%">
+</center>
+
+
+---------------
+
+<center>
+<img src="../../img/slides/swiss-map.png" width="70%">
+</center>
+
+source: https://timogrossenbacher.ch/2016/12/beautiful-thematic-maps-with-ggplot2-only/
+
+---------------
+
+<center>
+<img src="../../img/slides/metacoder-microbiome.png" width="50%">
+</center>
+
+source: Foster *et al.* 2017 https://doi.org/10.1371/journal.pcbi.1005404
+
+
+## R can automate analyses
+
+<center>
+<img src="../../img/slides/automation-win.png" width="75%">
+<center>
 <!-- 
 
 ## What is reproducibility in science?
