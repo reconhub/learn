@@ -3,7 +3,9 @@ title: "Reproducible science <br>using ![Rlogo](../../img/slides/Rlogo-small.png
 author: Zhian Kamvar
 date: "2018-10-05"
 output:
-  ioslides_presentation
+  ioslides_presentation:
+    widescreen: true
+
 ---
 
 
@@ -27,17 +29,64 @@ knit_hooks$set(source = function(x, options){
 ```
 
 
-# Why R is awesome!
-
-Reasons for learning it and where to go from here!
-
-<center>
-<img src = "../../img/slides/Rlogo-small.png">
-</center>
-
-## R has over 10,000 add on packages
+# Why ![Rlogo](../../img/slides/Rlogo-small.png) is awesome!
 
 
+## What is R? {.columns-2}
+
+ - functional programming language
+ - ideal for statistics and graphs
+ - open source
+   - transparent
+   - freely available
+ - over 10,000 R packages
+   - Easy to install `install.packages("incidence")`
+   - Easy to use `library("incidence")`
+<br>
+<br>
+<br>
+<br>
+
+```{r echo = FALSE, fig.width = 5}
+results <- c(44,  35,  26,  37,  38,  36,  33,  35,  40,  31,  33,  23,  
+             32,  32,  55,  42,  34,  65,  43,  39,  68,  51,  63,  41,
+             46,  57,  62,  50,  70,  55,  41,  54,  61,  56,  48,  47,  
+             85,  70,  76,  71,  58,  73,  76,  72,  68,  76,  98,  89,  
+             81,  70, 104,  92, 104,  93, 109, 107,  85, 103, 111,  91, 
+             108, 105, 121, 121, 119, 102, 110, 114, 102, 127,  99, 102, 
+             136, 117, 152, 131, 131, 126, 126, 143, 145, 125, 142, 130, 
+             129, 148, 133, 127, 133, 149, 186, 151, 157, 204, 152, 163,
+             156, 183, 190, 161, 184, 195, 190, 214, 205, 174, 189,  217)
+# Build a vector of dates. It is convenient to use the first of the month
+time <- seq(as.Date("2008/1/1"),as.Date("2016/12/1"),by="month")
+
+# Build a data frame to plot
+pkg_data <- data.frame(time,results)
+names(pkg_data) <- c("Month", "New_Pkg")
+#head(pkg_data)
+
+p <- ggplot2::ggplot(pkg_data, ggplot2::aes(x=Month, y=New_Pkg)) +
+     ggplot2::geom_line() +
+     ggplot2::geom_smooth(method="loess") +
+     ggplot2::theme_bw(base_size = 16) + 
+     ggplot2::labs(list(
+                        title = "New packages per month",
+                        y = "Number of packages"
+     ))
+p
+```
+
+## 
+
+## R is a language for data analysis
+
+Sensible tests are built in
+
+```{r ttest}
+t.test(extra ~ group, data = sleep)
+```
+
+## R is 
 
 <!-- 
 
