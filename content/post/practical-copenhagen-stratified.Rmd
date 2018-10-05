@@ -123,7 +123,7 @@ Like we did before, we can use these steps to write a function:
 
 ```{r risk-ratio-fun}
 strata_risk <- function(var, case, strat) {
-  a <- table(cph$veal, cph$case, cph$pasta)
+  a <- table(var, case, strat)
 
   mhtable <- epiR::epi.2by2(a, method = "cohort.count")
   
@@ -150,7 +150,7 @@ lapply(cph[vars], strata_risk, case = cph$case, strat = cph$pasta)
 
 The exact same can be done for veal (switch veal and pasta)
 
-```{r, eval = FALSE}
+```{r, veal-as-strata}
 # List the exposure variables
 vars <- c("pasta", "rocket", "shrimps", "champagne", "sauce")
 # run strata_risk for each one using veal as strata

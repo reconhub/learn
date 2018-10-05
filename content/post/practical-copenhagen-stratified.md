@@ -170,7 +170,7 @@ Like we did before, we can use these steps to write a function:
 
 ``` r
 strata_risk <- function(var, case, strat) {
-  a <- table(cph$veal, cph$case, cph$pasta)
+  a <- table(var, case, strat)
 
   mhtable <- epiR::epi.2by2(a, method = "cohort.count")
   
@@ -203,32 +203,32 @@ lapply(cph[vars], strata_risk, case = cph$case, strat = cph$pasta)
     ## Adjusted 1.141738 0.6405961 2.034927
     ## 
     ## $rocket
-    ##               est     lower    upper
-    ## Crude    1.521555 1.0007766 2.313334
-    ## Strata 1 1.193939 0.5937236 2.400934
-    ## Strata 0 1.050000 0.3773566 2.921639
-    ## Adjusted 1.141738 0.6405961 2.034927
+    ##                est      lower     upper
+    ## Crude    0.8681467 0.72741416 1.0361066
+    ## Strata 1 0.8235294 0.69114596 0.9812698
+    ## Strata 0 0.3636364 0.05592816 2.3643083
+    ## Adjusted 0.8048371 0.67387797 0.9612463
     ## 
     ## $shrimps
     ##               est     lower    upper
-    ## Crude    1.521555 1.0007766 2.313334
-    ## Strata 1 1.193939 0.5937236 2.400934
-    ## Strata 0 1.050000 0.3773566 2.921639
-    ## Adjusted 1.141738 0.6405961 2.034927
+    ## Crude    1.052964 0.8686243 1.276425
+    ## Strata 1 1.016949 0.8377118 1.234536
+    ## Strata 0 1.101852 0.4635572 2.619046
+    ## Adjusted 1.022840 0.8454977 1.237380
     ## 
     ## $champagne
     ##               est     lower    upper
-    ## Crude    1.521555 1.0007766 2.313334
-    ## Strata 1 1.193939 0.5937236 2.400934
-    ## Strata 0 1.050000 0.3773566 2.921639
-    ## Adjusted 1.141738 0.6405961 2.034927
+    ## Crude    1.350981 0.9676189 1.886229
+    ## Strata 1 1.394552 0.9844555 1.975482
+    ## Strata 0 0.862069 0.2635860 2.819432
+    ## Adjusted 1.344662 0.9633515 1.876903
     ## 
     ## $sauce
     ##               est     lower    upper
-    ## Crude    1.521555 1.0007766 2.313334
-    ## Strata 1 1.193939 0.5937236 2.400934
-    ## Strata 0 1.050000 0.3773566 2.921639
-    ## Adjusted 1.141738 0.6405961 2.034927
+    ## Crude    1.123279 0.9340155 1.350894
+    ## Strata 1 1.075893 0.8926480 1.296754
+    ## Strata 0 1.090909 0.3379015 3.521981
+    ## Adjusted 1.076414 0.8948041 1.294884
 
 The exact same can be done for veal (switch veal and pasta)
 
@@ -238,6 +238,41 @@ vars <- c("pasta", "rocket", "shrimps", "champagne", "sauce")
 # run strata_risk for each one using veal as strata
 lapply(cph[vars], strata_risk, case = cph$case, strat = cph$veal)
 ```
+
+    ## $pasta
+    ##               est     lower    upper
+    ## Crude    1.646791 1.0570739 2.565498
+    ## Strata 1 1.591919 0.6478873 3.911493
+    ## Strata 0 1.400000 0.5967549 3.284431
+    ## Adjusted 1.509126 0.8010437 2.843116
+    ## 
+    ## $rocket
+    ##                est     lower     upper
+    ## Crude    0.8681467 0.7274142 1.0361066
+    ## Strata 1 0.8373409 0.7015432 0.9994249
+    ## Strata 0 0.5252525 0.1428526 1.9312932
+    ## Adjusted 0.8210678 0.6872771 0.9809031
+    ## 
+    ## $shrimps
+    ##                est     lower    upper
+    ## Crude    1.0529644 0.8686243 1.276425
+    ## Strata 1 0.9858156 0.8135252 1.194594
+    ## Strata 0 1.7000000 0.7126936 4.055038
+    ## Adjusted 1.0269359 0.8503386 1.240209
+    ## 
+    ## $champagne
+    ##                est     lower    upper
+    ## Crude    1.3509813 0.9676189 1.886229
+    ## Strata 1 1.3865827 0.9786528 1.964549
+    ## Strata 0 0.9482759 0.2942761 3.055726
+    ## Adjusted 1.3455170 0.9639351 1.878151
+    ## 
+    ## $sauce
+    ##               est     lower    upper
+    ## Crude    1.123279 0.9340155 1.350894
+    ## Strata 1 1.068421 0.8860069 1.288391
+    ## Strata 0 1.363636 0.4598608 4.043624
+    ## Adjusted 1.076885 0.8954576 1.295070
 
 It appears that pasta confounds the association between eating veal and
 being a case. For a variable to be a confounder it needs to be
