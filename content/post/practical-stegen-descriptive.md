@@ -4,7 +4,7 @@ author: "Janetta Skarp, Zhian N. Kamvar, Alexander Spina, and Patrick Keating"
 authors: ["Janetta Skarp", "Zhian N. Kamvar", "Alexander Spina", "Patrick Keating"]
 categories: ["practicals"]
 tags: ["level: beginner", "epicurve", "single variable analysis", "2x2 tables", "reproducible research", "gastroenteritis"]
-date: 2018-10-04
+date: 2018-10-06
 slug: stegen-descriptive
 licenses: CC-BY
 ---

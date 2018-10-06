@@ -4,7 +4,7 @@ author: "Janetta Skarp, Zhian N. Kamvar, Alexander Spina, and Patrick Keating"
 authors: ["Janetta Skarp", "Zhian N. Kamvar", "Alexander Spina", "Patrick Keating"]
 categories: ["practicals"]
 tags: ["level: beginner", "epicurve", "single variable analysis", "2x2 tables", "reproducible research", "gastroenteritis"]
-date: 2018-10-04
+date: 2018-10-06
 slug: stegen-analysis
 licenses: CC-BY
 ---
@@ -60,8 +60,6 @@ attack_rate <- function(table) {
 ``` r
 stegen_data <- read.csv(here::here("data", "stegen_clean.csv"), stringsAsFactors = FALSE)
 ```
-
-\`\`\`
 
 Question 1: What is/are the vehicle/s for this outbreak?
 --------------------------------------------------------
