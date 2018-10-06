@@ -7,7 +7,7 @@ tags: ["level: beginner", "epicurve", "single variable analysis", "2x2 tables", 
 date: 2018-10-06
 slug: stegen-descriptive
 licenses: CC-BY
-image: img/highres/graduation-1965.jpg
+image: img/highres/graduation-1965-grey.jpg
 showonlyimage: true
 ---
 
