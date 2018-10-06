@@ -125,6 +125,19 @@ source: Foster *et al.* 2017 https://doi.org/10.1371/journal.pcbi.1005404
 <center>
 <img src="../../img/slides/automation-win.png" width="75%">
 <center>
+source: http://blog.yhat.com/posts/R-for-excel-users.html
+
+## Interactive analyses and automated reports
+
+<center>
+<img src="https://paula-moraga.github.io/img/imagespaula/animation.gif" width="100%">
+</center>
+
+source: https://paula-moraga.github.io/software/
+
+# Great! How do I use it?
+
+
 <!-- 
 
 ## What is reproducibility in science?
