@@ -20,7 +20,7 @@ inspection and cleaning. This practical will focus on descriptive stats
 including 2x2 tables and epicurves.
 
 > If you get stuck with any of the tasks in this practical, additional
-> information for each task can be found in the **Help** section
+> information for each task can be found in the [**Help** section](#help)
 
 Preparing packages and data
 ---------------------------

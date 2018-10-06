@@ -46,7 +46,7 @@ R packages are bundles of functions which extend the capability of R. Thousands 
 
 We will mainly use packages which come ready installed with R (base code), but where it makes things easier we will use add-on packages. In addition, we have included a few extra functions to simplify the code required. All the R packages you need for the exercises can be installed over the Internet.
 
-> If you get stuck with any of the tasks in this practical, additional information for each task can be found in the **Help** section 
+> If you get stuck with any of the tasks in this practical, additional information for each task can be found in the [**Help** section](#help) 
 
 ## Setting up
 

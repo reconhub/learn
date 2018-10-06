@@ -82,7 +82,7 @@ required. All the R packages you need for the exercises can be installed
 over the Internet.
 
 > If you get stuck with any of the tasks in this practical, additional
-> information for each task can be found in the **Help** section
+> information for each task can be found in the [**Help** section](#help)
 
 Setting up
 ----------

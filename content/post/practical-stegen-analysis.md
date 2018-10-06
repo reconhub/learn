@@ -24,7 +24,7 @@ use statistical tests to investigate the associations of some suspicious
 food items with the disease.
 
 > If you get stuck with any of the tasks in this practical, additional
-> information for each task can be found in the **Help** section
+> information for each task can be found in the [**Help** section](#help)
 
 Preparing packages and data
 ---------------------------
