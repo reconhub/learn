@@ -3,7 +3,7 @@ title: Phylogenetic tree reconstruction
 author: Thibaut Jombart
 authors: ["Thibaut Jombart"]
 categories: ["practicals"]
-topics: ["genetics"]
+topics: ["genetics", "evolution", "influenza"]
 date: 2017-11-01
 image: img/highres/trees.jpg
 showonlyimage: true

@@ -23,8 +23,8 @@ pygmentsCodeFences = true
   title = "RECON learn"
   # Use custom.css for your custom styling
   style = "default"
-  subtitle = "A free and open collection of training resources for epidemics analysis and outbreak response."
-  copyright = "©2017 Thibaut Jombart"
+  subtitle = "Free and open training resources to respond to outbreaks, health emergencies and humanitarian crises."
+  copyright = "©2018 RECON"
   description = "For more about the R Epidemics Consortium (RECON), visit our website: https://repidemicsconsortium.org"
   singleViewStyle = "casper"
   pageNotFoundTitle = "404 - Page not found"
