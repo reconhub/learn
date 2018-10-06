@@ -15,7 +15,7 @@ Descriptive analysis in *R*
 This practical is a continuation of the analysis concerning the outbreak
 of gastroenteritis after a high school graduation dinner in Stegen,
 Germany. The [introduction to this case is presented in part
-1](./practical-stegen-introduction.html), which focussed on initial data
+1](./stegen-introduction.html), which focussed on initial data
 inspection and cleaning. This practical will focus on descriptive stats
 including 2x2 tables and epicurves.
 

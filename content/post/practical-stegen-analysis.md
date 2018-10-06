@@ -15,8 +15,8 @@ Univariable and stratified analysis
 This practical is a continuation of the analysis concerning the outbreak
 of gastroenteritis after a high school graduation dinner in Stegen,
 Germany. The [introduction to this case is presented in part
-1](./practical-stegen-introduction.html), which focussed on initial data
-inspection and cleaning. [Part 2](./practical-stegen-descriptive.html)
+1](./stegen-introduction.html), which focussed on initial data
+inspection and cleaning. [Part 2](./stegen-descriptive.html)
 focussed on descriptive statistics. This practical will focus on
 univariable and stratified analysis. To identify (the) potential
 vehicle(s) in the outbreak, proceed with an analytical study where you
