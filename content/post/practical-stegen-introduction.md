@@ -1,7 +1,7 @@
 ---
 title: "An outbreak of gastroenteritis in Stegen, Germany, June 1998 (part 1)"
-author: "Zhian N. Kamvar, Janetta Skarp, Alexander Spina, and Patrick Keating"
-authors: ["Zhian N. Kamvar", "Janetta Skarp", "Alexander Spina", "Patrick Keating"]
+author: "Janetta Skarp, Zhian N. Kamvar, Alexander Spina, and Patrick Keating"
+authors: ["Janetta Skarp", "Zhian N. Kamvar", "Alexander Spina", "Patrick Keating"]
 categories: ["practicals"]
 tags: ["level: beginner", "epicurve", "single variable analysis", "2x2 tables", "reproducible research", "gastroenteritis"]
 date: 2018-10-04
@@ -185,10 +185,11 @@ stegen_data <- read.csv(here::here("data", "stegen_raw.csv"), stringsAsFactors =
 
 </details>
 <details>
-<summary> <b> c) Browse your dataset </b> </summary> *RStudio* has the
-nice feature that everything is in one browser window, so you can browse
-your dataset and your code without having to switch between browser
-windows.
+<summary> <b> c) Browse your dataset </b> </summary>
+
+*RStudio* has the nice feature that everything is in one browser window,
+so you can browse your dataset and your code without having to switch
+between browser windows.
 
 ``` r
 # to browse your data, use the View command
@@ -203,21 +204,23 @@ session.
 
 </details>
 <details>
-<summary> <b> d) Recode data </b> </summary> Use the “describe” command
-to assess your data and identify variables with missing values. The
-describe command showed that the variables salmon, pork and horseradish
-have a few records with a value of 9. These need to be recoded to NA.
+<summary> <b> d) Recode data </b> </summary>
 
--   Using the square brackets “\[…\]” after a variable allows you to
+Use the “describe” command to assess your data and identify variables
+with missing values. The describe command showed that the variables
+salmon, pork and horseradish have a few records with a value of 9. These
+need to be recoded to NA.
+
+-   Using the square brackets “`[...]`” after a variable allows you to
     subset for certain observations. To recode values of 9 to NA for the
     pork variable, select observations where pork
-    **(stegen\_data$pork)** is equal to 9 **\[stegen\_data$pork == 9\]**
+    **(`stegen_data$pork`)** is equal to 9 **`[stegen_data$pork == 9]`**
     and set these observations equal to NA
 
--   Always use the double equals “==” within square brackets; this a
+-   Always use the double equals “`==`” within square brackets; this a
     logical (Boolean) operator
 
--   Use “! =” when you want to write “not equal to”
+-   Use “`!=`” when you want to write “not equal to”
 
 ``` r
 # The first line below is read as follows:  assign a value of NA to stegen_data$pork WHERE stegen_data$pork is equal to 9
@@ -282,4 +285,4 @@ Karagiannis
 -   Notice - For any reuse or distribution, you must make clear to
     others the license terms of this work by keeping together this work
     and the current license. This licence is based on
-    <a href="http://creativecommons.org/licenses/by-sa/3.0/" class="uri">http://creativecommons.org/licenses/by-sa/3.0/</a>
+    <http://creativecommons.org/licenses/by-sa/3.0/>

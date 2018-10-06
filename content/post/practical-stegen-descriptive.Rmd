@@ -22,13 +22,7 @@ This practical is a continuation of the analysis concerning the outbreak of gast
 
 ## Preparing packages and data
 
-```{r stegen_hw_difficult-1, eval = FALSE, results = 'hide', message = FALSE, warning = FALSE}
-# Installing required packages for the week
-required_packages <- c("epiR", "Hmisc", "epitools", "here", "incidence") 
-install.packages(required_packages)
-```
-
-```{r stegen_hw_difficult-2, results = 'hide', message = FALSE, warning = FALSE}
+```{r stegen-2, results = 'hide', message = FALSE, warning = FALSE}
 library("epiR")
 library("Hmisc")
 library("epitools")
@@ -36,7 +30,7 @@ library("here")
 library("incidence")
 ```
 
-```{r stegen_hw_difficult-3, results = 'hide', message = FALSE, warning = FALSE}
+```{r stegen-3, results = 'hide', message = FALSE, warning = FALSE}
 # Function to make tables with counts, proportions and cumulative sum
 big_table <- function(data, useNA = "no") {
   count <- table(data, useNA = useNA)
@@ -56,11 +50,11 @@ attack_rate <- function(table) {
 }
 ```
 
-```{r stegen_hw_difficult-4, eval = FALSE}
+```{r stegen-4, eval = FALSE}
 stegen_data <- read.csv(here::here("data", "stegen_clean.csv"), stringsAsFactors = FALSE)
 ```
 
-```{r stegen_hw_difficult-4.1, results = 'hide', echo = FALSE}
+```{r stegen-4.1, results = 'hide', echo = FALSE}
 stegen_data <- read.csv(here::here("static", "data", "stegen_clean.csv"), stringsAsFactors = FALSE)
 ```
 
@@ -93,7 +87,7 @@ For each variable in the dataset.
 
 You can view the structure of your data set using the following commands:
 
-```{r stegen_hw_difficult-6}
+```{r stegen-6}
 # str provides an overview of the number of observations and variable types
 str(stegen_data)
 
@@ -110,10 +104,10 @@ Hmisc::describe(stegen_data)
 * the whole dataset
 * specific variables of interest  
 
-In the example below we look at sex, age and pork in the **stegen_data** dataset. You can examine a variable within a dataset using the '$' sign followed by the variable name. 
+In the example below we look at sex, age and pork in the **stegen_data** dataset. You can examine a variable within a dataset using the '`$`' sign followed by the variable name. 
 
 
-```{r stegen_hw_difficult-7}
+```{r stegen-7}
 # table will give a very basic frequency table (counts), 
 table(stegen_data$sex)
 
@@ -132,7 +126,7 @@ describe(stegen_data$pork)
 
 We can create individual tables for each variable with the following steps:
 
-```{r stegen_hw_difficult-9}
+```{r stegen-9}
 # Assign the counts of stegen_data$sex to the object "sex"
 sex <- table(stegen_data$sex)
 
@@ -146,13 +140,13 @@ cumul <- cumsum(prop)
 table1 <- rbind(sex,prop,cumul)
 ```
 
-```{r stegen_hw_difficult-10}
+```{r stegen-10}
 table1
 ```
 
 We could also use the big_table function (on page 2), which does all of the above steps in one line.
 
-```{r stegen_hw_difficult-11}
+```{r stegen-11}
 big_table(stegen_data$sex)
 
 big_table(stegen_data$beer)
@@ -160,7 +154,7 @@ big_table(stegen_data$beer)
 
 We could use lapply to apply `big_table()` to each of our variables.
 
-```{r stegen_hw_difficult-12}
+```{r stegen-12}
 # List the variables of interest and use c() to combine the elements into a vector
 vars <- c("ill", "tira", "beer", "pork", "salmon")
 
@@ -174,13 +168,13 @@ lapply(stegen_data[, vars, drop = FALSE], FUN = big_table)
 
 You can use the following to examine the age distribution among people who attended the party, as well as only those and who fell ill. 
 
-```{r stegen_hw_difficult-13}
+```{r stegen-13}
 # Boxplot of the age of all who attended the party
 boxplot(stegen_data$age)
 ```
 
 
-```{r stegen_hw_difficult-14, eval = FALSE}
+```{r stegen-14, eval = FALSE}
 # Histogram of the ages of those who attended the party and who fell ill
 
 # Here we use the hist function to plot the age of cases only (ill == 1)
@@ -188,31 +182,30 @@ boxplot(stegen_data$age)
 age_hist_all <- hist(stegen_data$age[stegen_data$ill == 1],
                      xlab = "Age",
                      ylab = "No. of cases",
-                   main = "Histogram of the ages of cases")
+                     main = "Histogram of the ages of cases")
 ```
 
-```{r stegen_hw_difficult-15, echo = FALSE}
+```{r stegen-15, echo = FALSE}
 age_hist_all <- hist(stegen_data$age[stegen_data$ill == 1],
                      xlab = "Age",
                      ylab = "No. of cases",
-                   main = "Histogram of the ages of cases")
+                     main = "Histogram of the ages of cases")
 
 ```
 
 If we believe that there are two identifiable age groups, then we can create a new age group variable using **one** of the following approaches:
 
-```{r stegen_hw_difficult-16}
+```{r stegen-16}
 # by using ifelse (similar to Excel if statements)
 stegen_data$agegroup <- ifelse(stegen_data$age >= 30, 1, 0)
 ```
-```{r stegen_hw_difficult-17, eval = FALSE}
+```{r stegen-17, eval = FALSE}
 # Two alternative approaches
 # The below are particularly useful when you want to create more than 2 categories
 # by using cut
-stegen_data$agegroup <- cut(stegen_data$age, c(0,30,150), labels = FALSE) - 1
+stegen_data$agegroup <- cut(stegen_data$age, c(0, 30, 150), labels = FALSE) - 1
 # by using findInterval
-stegen_data$agegroup <- findInterval(stegen_data$age, c(30,150))
-
+stegen_data$agegroup <- findInterval(stegen_data$age, c(30, 150))
 ```
 
 </details>
@@ -222,7 +215,7 @@ stegen_data$agegroup <- findInterval(stegen_data$age, c(30,150))
 
 You can produce summary tables by person and time (no place variable provided) using the big_table function.
 
-```{r stegen_hw_difficult-18}
+```{r stegen-18}
 # Table 1: Descriptive epidemiology: Study population by sex
 big_table(stegen_data$sex)
 
@@ -231,11 +224,9 @@ big_table(stegen_data$sex)
 big_table(stegen_data$agegroup, useNA = "always")
 
 summary(stegen_data$age)
-        
 
 # Table 3: Descriptive epidemiology: Attack rate
 big_table(stegen_data$ill)
-
 
 # Table 4: Descriptive epidemiology: Cases by date of onset of illness
 big_table(stegen_data$dateonset)
@@ -246,7 +237,7 @@ big_table(stegen_data$dateonset)
 <details>
 <summary> <b> e) Create an epicurve for this outbreak </b> </summary>
 
-```{r stegen_hw_difficult-19}
+```{r stegen-19}
 # Make sure the dates are "Date" objects
 stegen_data$dateonset <- as.Date(stegen_data$dateonset)
 
@@ -258,6 +249,7 @@ plot(stegen_incidence)
 </details>
 
 ## Copyright and license
+
 **Source:**
 This case study was first designed by Alain Moren and Gilles Desve, EPIET. It is based on an investigation conducted by Anja Hauri, RKI, Berlin, 1998.
 

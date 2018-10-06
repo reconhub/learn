@@ -1,7 +1,7 @@
 ---
 title: "An outbreak of gastroenteritis in Stegen, Germany, June 1998 (part 1)"
-author: "Zhian N. Kamvar, Janetta Skarp, Alexander Spina, and Patrick Keating"
-authors: ["Zhian N. Kamvar", "Janetta Skarp", "Alexander Spina", "Patrick Keating"]
+author: "Janetta Skarp, Zhian N. Kamvar, Alexander Spina, and Patrick Keating"
+authors: ["Janetta Skarp", "Zhian N. Kamvar", "Alexander Spina", "Patrick Keating"]
 categories: ["practicals"]
 tags: ["level: beginner", "epicurve", "single variable analysis", "2x2 tables", "reproducible research", "gastroenteritis"]
 date: 2018-10-04
@@ -22,6 +22,7 @@ A self-service party buffet was supplied by a commercial caterer in Freiburg. Fo
 Festivities started with a dinner buffet open from 8.30 pm onwards and were followed by a dessert buffet offered from 10 pm. The party and the buffet extended late during the night and alcoholic beverages were quite popular. All agreed it was a party to be remembered.
 
 ## The alert
+
 On 2nd July 1998, the Freiburg local health office reported to the Robert Koch Institute (RKI) in Berlin the occurrence of many cases of gastroenteritis following the graduation party described above. More than 100 cases were suspected among participants and some of them were admitted to nearby hospitals. Sick people suffered from fever, nausea, diarrhoea and vomiting lasting for several days. Most believed that the tiramisu consumed at dinner was responsible for their illness. *Salmonella enteritidis* was isolated from 19 stool samples.
 
 The Freiburg health office sent a team to investigate the kitchen of the caterer. Food preparation procedures were reviewed. Food samples, except tiramisu (none was left over), were sent to the laboratory of Freiburg University. Microbiological analyses were performed on samples of the following: brown chocolate mousse, caramel cream, remoulade sauce, yoghurt dill sauce, and 10 raw eggs.
@@ -29,8 +30,8 @@ The Freiburg health office sent a team to investigate the kitchen of the caterer
 The Freiburg health office requested help from the RKI in the investigation to assess the magnitude of the outbreak and identify potential vehicle(s) and risk factors for transmission in order to better control the outbreak
 
 ## The study
-Cases were defined as any person who had attended the party at St Sebastian High School who suffered from diarrhoea
-(min. 3 loose stool for 24 hours) between 27 June and 29 June 1998; or who suffered from at least three of the following symptoms: vomiting, fever over 38.5° C, nausea, abdominal pain, headache.
+
+Cases were defined as any person who had attended the party at St Sebastian High School who suffered from diarrhoea (min. 3 loose stool for 24 hours) between 27 June and 29 June 1998; or who suffered from at least three of the following symptoms: vomiting, fever over 38.5° C, nausea, abdominal pain, headache.
 
 Students from both schools attending the party were asked through phone interviews to provide names of persons who
 attended the party.
@@ -62,7 +63,7 @@ The required packages are:
 
 The two required functions are **big_table** and **attack_rate** and can be found below.
 
-```{r stegen_hw_difficult-3}
+```{r stegen-3}
 # Function to make tables with counts, proportions and cumulative sum
 big_table <- function(data, useNA = "no") {
   count <- table(data, useNA = useNA)
@@ -109,13 +110,13 @@ As a csv file named **stegen_clean**.
 
 Below you can find the commands for installing and loading the required packages.
 
-```{r stegen_hw_difficult-1, eval = FALSE, message = FALSE, warning = FALSE}
+```{r stegen-1, eval = FALSE, message = FALSE, warning = FALSE}
 # Installing required packages for the practical
 required_packages <- c("epiR", "Hmisc", "epitools", "here", "incidence") 
 install.packages(required_packages)
 ```
 
-```{r stegen_hw_difficult-2, results = 'hide', message = FALSE, warning = FALSE}
+```{r stegen-2, results = 'hide', message = FALSE, warning = FALSE}
 # Loading required packages for the practical
 library("epiR")
 library("Hmisc")
@@ -129,20 +130,22 @@ library("incidence")
 <details>
 <summary> <b> b) Read in the dataset for this practical </b> </summary>
 
-```{r stegen_hw_difficult-4, eval = FALSE}
+```{r stegen-4, eval = FALSE}
 stegen_data <- read.csv(here::here("data", "stegen_raw.csv"), stringsAsFactors = FALSE)
 ```
 
-```{r stegen_hw_difficult-4.1, results = 'hide', echo = FALSE}
+```{r stegen-4.1, results = 'hide', echo = FALSE}
 stegen_data <- read.csv(here::here("static", "data", "stegen_raw.csv"), stringsAsFactors = FALSE)
 ```
+
 </details>
 
 <details>
 <summary> <b> c) Browse your dataset </b> </summary>
+
 *RStudio* has the nice feature that everything is in one browser window, so you can browse your dataset and your code without having to switch between browser windows. 
 
-```{r stegen_hw_difficult-5, eval = FALSE}
+```{r stegen-5, eval = FALSE}
 # to browse your data, use the View command
 View(stegen_data)
 ```
@@ -153,15 +156,16 @@ Alternatively, you can also view your dataset by clicking on **stegen_data** in 
 
 <details>
 <summary> <b> d) Recode data </b> </summary>
+
 Use the "describe" command to assess your data and identify variables with missing values. The describe command showed that the variables salmon, pork and horseradish have a few records with a value of 9. These need to be recoded to NA.
 
-* Using the square brackets "[...]" after a variable allows you to subset for certain observations. To recode values of 9 to NA for the pork variable, select observations where pork **(stegen_data\$pork)** is equal to 9 **[stegen_data\$pork == 9]** and set these observations equal to NA 
+* Using the square brackets "`[...]`" after a variable allows you to subset for certain observations. To recode values of 9 to NA for the pork variable, select observations where pork **(`stegen_data$pork`)** is equal to 9 **`[stegen_data$pork == 9]`** and set these observations equal to NA 
     
-* Always use the double equals "==" within square brackets; this a logical (Boolean) operator
+* Always use the double equals "`==`" within square brackets; this a logical (Boolean) operator
 
-* Use "! = " when you want to write "not equal to"
+* Use "`!=`" when you want to write "not equal to"
 
-```{r stegen_hw_difficult-8, eval = TRUE}
+```{r stegen-8, eval = TRUE}
 # The first line below is read as follows:  assign a value of NA to stegen_data$pork WHERE stegen_data$pork is equal to 9
 stegen_data$pork[stegen_data$pork == 9] <- NA
 
@@ -174,7 +178,8 @@ stegen_data$horseradish[stegen_data$horseradish == 9] <- NA
 
 <details>
 <summary> <b> e) Save your new dataset </b> </summary>
-```{r stegen_hw_difficult-10, eval = FALSE}
+
+```{r stegen-10, eval = FALSE}
 write.csv(stegen_data, file = here::here("data", "stegen_clean.csv"))
 ```
 

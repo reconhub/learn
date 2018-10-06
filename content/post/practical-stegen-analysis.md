@@ -1,7 +1,7 @@
 ---
 title: "An outbreak of gastroenteritis in Stegen, Germany, June 1998 (part 3)"
-author: "Zhian N. Kamvar, Janetta Skarp, Alexander Spina, and Patrick Keating"
-authors: ["Zhian N. Kamvar", "Janetta Skarp", "Alexander Spina", "Patrick Keating"]
+author: "Janetta Skarp, Zhian N. Kamvar, Alexander Spina, and Patrick Keating"
+authors: ["Janetta Skarp", "Zhian N. Kamvar", "Alexander Spina", "Patrick Keating"]
 categories: ["practicals"]
 tags: ["level: beginner", "epicurve", "single variable analysis", "2x2 tables", "reproducible research", "gastroenteritis"]
 date: 2018-10-04
@@ -28,12 +28,6 @@ food items with the disease.
 
 Preparing packages and data
 ---------------------------
-
-``` r
-# Installing required packages for the week
-required_packages <- c("epiR", "Hmisc", "epitools", "here", "incidence") 
-install.packages(required_packages)
-```
 
 ``` r
 library("epiR")
@@ -123,16 +117,16 @@ in R. Below you will see two approaches. The first approach gives us the
 
 ``` r
 # The first element will be rows and the 2nd will be columns
-count <- table(stegen_data$tira,stegen_data$ill, deparse.level = 2)
+count <- table(tiramisu = stegen_data$tira,  ill = stegen_data$ill)
 
 # Here we select row % of count by including ,1 in the prop.table section
-prop <- round(prop.table(count,1),digits = 2) 
+prop <- round(prop.table(count, 1), digits = 2) 
 
 # We obtain the denominator using the rowSums function
 denominator <- rowSums(count) 
 
 # We combine all the elements together using cbind (binding by columns)
-tira <- cbind(Ill = count[,2], N = denominator, Proportions = prop[,2])
+tira <- cbind(Ill = count[, 2], N = denominator, Proportions = prop[, 2])
 tira
 ```
 
@@ -145,7 +139,7 @@ analysis.v.02 (developed by Daniel Gardiner Cohort 2015).
 
 ``` r
 # This function needs to be saved in the same folder as the working directory
-source(here::here("scripts/single.variable.analysis.v0.2.R"))
+source(here::here("scripts", "single.variable.analysis.v0.2.R"))
 ```
 
 ``` r
@@ -155,7 +149,7 @@ vars <- c("tira", "wmousse", "dmousse", "mousse", "beer", "redjelly", "fruitsala
 
 ``` r
 #NB. click on "sva" in your global environment to view Daniel's source code and read his explanations
-a <- sva(stegen_data, outcome = "ill", exposures = c(vars), measure = "rr", verbose = TRUE)
+a <- sva(stegen_data, outcome = "ill", exposures = vars, measure = "rr", verbose = TRUE)
 a
 ```
 
@@ -225,7 +219,7 @@ recode this variable so it has fewer categories, and actually do it.
 
 ``` r
 # Tabulate tportion variable against illness using attack_rate function
-counts_tportion <- table(stegen_data$tportion, stegen_data$ill)
+counts_tportion <- table(tportion = stegen_data$tportion, ill = stegen_data$ill)
 attack_rate(counts_tportion)
 ```
 
@@ -244,7 +238,7 @@ stegen_data$tportion2[stegen_data$tportion2 == 3] <- 2
 
 ``` r
 # Calculate counts, proportions and sum of recoded tportion2
-counts_tportion2 <- table(stegen_data$tportion2,stegen_data$ill)
+counts_tportion2 <- table(tportion2 = stegen_data$tportion2, ill = stegen_data$ill)
 attack_rate(counts_tportion2)
 ```
 
@@ -290,16 +284,16 @@ The **epi.2by2** function in the epiR package can be used to to identify
 effect modifiers/confounders. Outcome and exposure variables of interest
 need to be **factor/categorical variables** prior to performing
 stratified analysis with this function and also need to be **relevelled
-from (0,1) to (1,0)** so that they can be correctly organised in a 2 by
+from (0, 1) to (1,0)** so that they can be correctly organised in a 2 by
 2 table.
 
 ``` r
 # Convert outcome/exposure variables to factor variables and reorder them
 # The variables of interest are identified by their column number but variable names could equally be used
-vars <- colnames(stegen_data[, c(2,6,8:10,12:21)])
+vars <- colnames(stegen_data[, c(2, 6, 8:10, 12:21)])
 
 for (var in vars) {
-  stegen_data[[var]] <- factor(stegen_data[[var]], levels = c(1, 0)) # levels of the variable are now (1,0) instead of (0,1)
+  stegen_data[[var]] <- factor(stegen_data[[var]], levels = c(1, 0)) # levels of the variable are now (1, 0) instead of (0, 1)
 }
 ```
 
@@ -309,10 +303,12 @@ steps required and then run a loop over all variables of interest.
 
 ``` r
 # Make a 3-way table with exposure of interest, the outcome and the stratifying variable in that order
-a <- table(stegen_data$wmousse, stegen_data$ill, stegen_data$tira)
+a <- table(wmousse = stegen_data$wmousse, 
+           ill = stegen_data$ill, 
+           tiramisu = stegen_data$tira)
 
 # Use the epi.2by2 function to calculate RRs (by stating method = "cohort.count")
-mh1 <- epi.2by2(a, method = "cohort.count")
+mh1 <- epiR::epi.2by2(a, method = "cohort.count")
 
 # View the output of mh1
 mh1
@@ -375,8 +371,8 @@ mh1$massoc$RR.mh.wald
 ``` r
 # We can combine all of those elements in to a single table using rbind
 results <- rbind(mh1$massoc$RR.crude.wald, 
-                          mh1$massoc$RR.strata.wald, 
-                          mh1$massoc$RR.mh.wald)
+                 mh1$massoc$RR.strata.wald, 
+                 mh1$massoc$RR.mh.wald)
 
 
 # We can label the rows of this table as below
@@ -574,4 +570,4 @@ Karagiannis
 -   Notice - For any reuse or distribution, you must make clear to
     others the license terms of this work by keeping together this work
     and the current license. This licence is based on
-    <a href="http://creativecommons.org/licenses/by-sa/3.0/" class="uri">http://creativecommons.org/licenses/by-sa/3.0/</a>
+    <http://creativecommons.org/licenses/by-sa/3.0/>

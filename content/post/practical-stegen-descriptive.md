@@ -26,12 +26,6 @@ Preparing packages and data
 ---------------------------
 
 ``` r
-# Installing required packages for the week
-required_packages <- c("epiR", "Hmisc", "epitools", "here", "incidence") 
-install.packages(required_packages)
-```
-
-``` r
 library("epiR")
 library("Hmisc")
 library("epitools")
@@ -326,7 +320,7 @@ Hmisc::describe(stegen_data)
 
 In the example below we look at sex, age and pork in the
 **stegen\_data** dataset. You can examine a variable within a dataset
-using the ‘$’ sign followed by the variable name.
+using the ‘`$`’ sign followed by the variable name.
 
 ``` r
 # table will give a very basic frequency table (counts), 
@@ -457,7 +451,7 @@ who attended the party, as well as only those and who fell ill.
 boxplot(stegen_data$age)
 ```
 
-![](practical-stegen-descriptive_files/figure-markdown_github/stegen_hw_difficult-13-1.png)
+![](practical-stegen-descriptive_files/figure-markdown_github/stegen-13-1.png)
 
 ``` r
 # Histogram of the ages of those who attended the party and who fell ill
@@ -467,10 +461,10 @@ boxplot(stegen_data$age)
 age_hist_all <- hist(stegen_data$age[stegen_data$ill == 1],
                      xlab = "Age",
                      ylab = "No. of cases",
-                   main = "Histogram of the ages of cases")
+                     main = "Histogram of the ages of cases")
 ```
 
-![](practical-stegen-descriptive_files/figure-markdown_github/stegen_hw_difficult-15-1.png)
+![](practical-stegen-descriptive_files/figure-markdown_github/stegen-15-1.png)
 
 If we believe that there are two identifiable age groups, then we can
 create a new age group variable using **one** of the following
@@ -485,9 +479,9 @@ stegen_data$agegroup <- ifelse(stegen_data$age >= 30, 1, 0)
 # Two alternative approaches
 # The below are particularly useful when you want to create more than 2 categories
 # by using cut
-stegen_data$agegroup <- cut(stegen_data$age, c(0,30,150), labels = FALSE) - 1
+stegen_data$agegroup <- cut(stegen_data$age, c(0, 30, 150), labels = FALSE) - 1
 # by using findInterval
-stegen_data$agegroup <- findInterval(stegen_data$age, c(30,150))
+stegen_data$agegroup <- findInterval(stegen_data$age, c(30, 150))
 ```
 
 </details>
@@ -566,7 +560,7 @@ stegen_incidence <- incidence::incidence(stegen_data$dateonset, interval = 1)
 plot(stegen_incidence)
 ```
 
-![](practical-stegen-descriptive_files/figure-markdown_github/stegen_hw_difficult-19-1.png)
+![](practical-stegen-descriptive_files/figure-markdown_github/stegen-19-1.png)
 
 </details>
 Copyright and license
@@ -614,4 +608,4 @@ Karagiannis
 -   Notice - For any reuse or distribution, you must make clear to
     others the license terms of this work by keeping together this work
     and the current license. This licence is based on
-    <a href="http://creativecommons.org/licenses/by-sa/3.0/" class="uri">http://creativecommons.org/licenses/by-sa/3.0/</a>
+    <http://creativecommons.org/licenses/by-sa/3.0/>
