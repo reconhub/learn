@@ -88,7 +88,7 @@ Consider effect modification and confounding.
 
 ## Question 1
 
-<details style='display: inline;'>
+<details>
 <summary> <b> a)-d) </b> </summary>
 
 As we are carrying out a cohort study, the appropriate measure of association is relative risk. 
@@ -154,7 +154,7 @@ attack_rate(counts_age)
 
 </details>
 
-<details style='display: inline;'>
+<details>
 <summary> <b> e) Search for any dose response if appropriate </b> </summary>
 
 Use the variable tportion and tabulate it. Consider whether you would recode this variable so it has fewer categories, and actually do it. 
@@ -181,7 +181,7 @@ Here you should be able to see that those who ate 2 or more portions of tiramisu
 
 </details>
 
-<details style='display: inline;'>
+<details>
 <summary> <b> f) Interpret the results and identify the outbreak vehicle if any </b> </summary>
 
 Refer to the results of the **sva** output and identify likely vehicles.
@@ -195,7 +195,7 @@ From the crude analysis, epidemiologists noticed that the occurrence of gastroen
 
 ## Question 2 and 3
 
-<details style='display: inline;'>
+<details>
 <summary> <b> Details </b> </summary>
 
 Identify the variables which are potential effect modifiers and confounders.

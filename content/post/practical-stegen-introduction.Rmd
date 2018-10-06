@@ -106,7 +106,7 @@ As a csv file named **stegen_clean**.
 
 # Help
 
-<details style='display: inline;'>
+<details>
 <summary> <b> a) Install and load the required packages and functions for this practical </b> </summary>
 
 Below you can find the commands for installing and loading the required packages.
@@ -128,7 +128,7 @@ library("incidence")
 
 </details>
 
-<details style='display: inline;'>
+<details>
 <summary> <b> b) Read in the dataset for this practical </b> </summary>
 
 ```{r stegen-4, eval = FALSE}
@@ -141,7 +141,7 @@ stegen_data <- read.csv(here::here("static", "data", "stegen_raw.csv"), stringsA
 
 </details>
 
-<details style='display: inline;'>
+<details>
 <summary> <b> c) Browse your dataset </b> </summary>
 
 *RStudio* has the nice feature that everything is in one browser window, so you can browse your dataset and your code without having to switch between browser windows. 
@@ -155,7 +155,7 @@ Alternatively, you can also view your dataset by clicking on **stegen_data** in 
 
 </details>
 
-<details style='display: inline;'>
+<details>
 <summary> <b> d) Recode data </b> </summary>
 
 Use the "describe" command to assess your data and identify variables with missing values. The describe command showed that the variables salmon, pork and horseradish have a few records with a value of 9. These need to be recoded to NA.
@@ -177,7 +177,7 @@ stegen_data$horseradish[stegen_data$horseradish == 9] <- NA
 
 </details>
 
-<details style='display: inline;'>
+<details>
 <summary> <b> e) Save your new dataset </b> </summary>
 
 ```{r stegen-10, eval = FALSE}

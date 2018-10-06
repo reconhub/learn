@@ -4,6 +4,11 @@
 /* Original theme - https://github.com/chriskempson/tomorrow-theme */
 /* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
 
+/* details tags */
+
+details {
+  display: inline;
+}
 
 /* default style */
 .hljs {

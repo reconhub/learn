@@ -97,7 +97,7 @@ Help
 Question 1
 ----------
 
-<details style="display: inline;">
+<details>
 <summary> <b> a)-d) </b> </summary>
 
 As we are carrying out a cohort study, the appropriate measure of
@@ -210,7 +210,7 @@ attack_rate(counts_age)
     ## 1  25  68        0.37
 
 </details>
-<details style="display: inline;">
+<details>
 <summary> <b> e) Search for any dose response if appropriate </b>
 </summary>
 
@@ -253,7 +253,7 @@ tiramisu. Those who ate 1 portion of tiramisu have a higher attack rate
 than those who ate no tiramisu.
 
 </details>
-<details style="display: inline;">
+<details>
 <summary> <b> f) Interpret the results and identify the outbreak vehicle
 if any </b> </summary>
 
@@ -274,7 +274,7 @@ occurrence of gastroenteritis.
 Question 2 and 3
 ----------------
 
-<details style="display: inline;">
+<details>
 <summary> <b> Details </b> </summary>
 
 Identify the variables which are potential effect modifiers and
