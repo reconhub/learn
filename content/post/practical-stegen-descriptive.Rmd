@@ -82,7 +82,7 @@ For each variable in the dataset.
 
 # Help
 
-<details>
+<details style='display: inline;'>
 <summary> <b> a) Describe your dataset </b> </summary>
 
 You can view the structure of your data set using the following commands:
@@ -121,7 +121,7 @@ describe(stegen_data$pork)
 
 </details>
 
-<details>
+<details style='display: inline;'>
 <summary> <b> b) Create summary tables with counts and proportions </b> </summary>
 
 We can create individual tables for each variable with the following steps:
@@ -163,7 +163,7 @@ lapply(stegen_data[, vars, drop = FALSE], FUN = big_table)
 
 </details>
 
-<details>
+<details style='display: inline;'>
 <summary> <b> c) Make box plot and histogram of age </b> </summary>
 
 You can use the following to examine the age distribution among people who attended the party, as well as only those and who fell ill. 
@@ -210,7 +210,7 @@ stegen_data$agegroup <- findInterval(stegen_data$age, c(30, 150))
 
 </details>
 
-<details>
+<details style='display: inline;'>
 <summary> <b> d) Number of cases by date of onset </b> </summary>
 
 You can produce summary tables by person and time (no place variable provided) using the big_table function.
@@ -234,7 +234,7 @@ big_table(stegen_data$dateonset)
 
 </details>
 
-<details>
+<details style='display: inline;'>
 <summary> <b> e) Create an epicurve for this outbreak </b> </summary>
 
 ```{r stegen-19}

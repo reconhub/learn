@@ -86,7 +86,7 @@ Consider effect modification and confounding.
 
 ## Question 1
 
-<details>
+<details style='display: inline;'>
 <summary> <b> a)-d) </b> </summary>
 
 As we are carrying out a cohort study, the appropriate measure of association is relative risk. 
@@ -152,7 +152,7 @@ attack_rate(counts_age)
 
 </details>
 
-<details>
+<details style='display: inline;'>
 <summary> <b> e) Search for any dose response if appropriate </b> </summary>
 
 Use the variable tportion and tabulate it. Consider whether you would recode this variable so it has fewer categories, and actually do it. 
@@ -179,7 +179,7 @@ Here you should be able to see that those who ate 2 or more portions of tiramisu
 
 </details>
 
-<details>
+<details style='display: inline;'>
 <summary> <b> f) Interpret the results and identify the outbreak vehicle if any </b> </summary>
 
 Refer to the results of the **sva** output and identify likely vehicles.
@@ -191,14 +191,14 @@ From the crude analysis, epidemiologists noticed that the occurrence of gastroen
 </details>
 
 
-## Question 3 and 4
+## Question 2 and 3
 
-<details>
+<details style='display: inline;'>
 <summary> <b> Details </b> </summary>
 
 Identify the variables which are potential effect modifiers and confounders.
 
-The **epi.2by2** function in the epiR package can be used to to identify effect modifiers/confounders. Outcome and exposure variables of interest need to be **factor/categorical variables** prior to performing stratified analysis with this function and also need to be **relevelled from (0, 1) to (1,0)** so that they can be correctly organised in a 2 by 2 table.
+The `epi.2by2()` function in the epiR package can be used to to identify effect modifiers/confounders. Outcome and exposure variables of interest need to be **factor/categorical variables** prior to performing stratified analysis with this function and also need to be **relevelled from (0, 1) to (1,0)** so that they can be correctly organised in a 2 by 2 table.
 
 
 ```{r stegen-27}

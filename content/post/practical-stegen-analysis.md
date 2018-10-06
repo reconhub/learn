@@ -95,7 +95,7 @@ Help
 Question 1
 ----------
 
-<details>
+<details style="display: inline;">
 <summary> <b> a)-d) </b> </summary>
 
 As we are carrying out a cohort study, the appropriate measure of
@@ -208,7 +208,7 @@ attack_rate(counts_age)
     ## 1  25  68        0.37
 
 </details>
-<details>
+<details style="display: inline;">
 <summary> <b> e) Search for any dose response if appropriate </b>
 </summary>
 
@@ -251,7 +251,7 @@ tiramisu. Those who ate 1 portion of tiramisu have a higher attack rate
 than those who ate no tiramisu.
 
 </details>
-<details>
+<details style="display: inline;">
 <summary> <b> f) Interpret the results and identify the outbreak vehicle
 if any </b> </summary>
 
@@ -269,16 +269,16 @@ They also decided to assess if beer had a protective effect on the
 occurrence of gastroenteritis.
 
 </details>
-Question 3 and 4
+Question 2 and 3
 ----------------
 
-<details>
+<details style="display: inline;">
 <summary> <b> Details </b> </summary>
 
 Identify the variables which are potential effect modifiers and
 confounders.
 
-The **epi.2by2** function in the epiR package can be used to to identify
+The `epi.2by2()` function in the epiR package can be used to to identify
 effect modifiers/confounders. Outcome and exposure variables of interest
 need to be **factor/categorical variables** prior to performing
 stratified analysis with this function and also need to be **relevelled

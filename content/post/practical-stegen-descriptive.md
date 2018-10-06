@@ -85,7 +85,7 @@ For each variable in the dataset.
 Help
 ====
 
-<details>
+<details style="display: inline;">
 <summary> <b> a) Describe your dataset </b> </summary>
 
 You can view the structure of your data set using the following
@@ -349,7 +349,7 @@ describe(stegen_data$pork)
     ##      289        2        2    0.728      120   0.4152   0.4873
 
 </details>
-<details>
+<details style="display: inline;">
 <summary> <b> b) Create summary tables with counts and proportions </b>
 </summary>
 
@@ -440,7 +440,7 @@ lapply(stegen_data[, vars, drop = FALSE], FUN = big_table)
     ## cumulative  63.76 100.00
 
 </details>
-<details>
+<details style="display: inline;">
 <summary> <b> c) Make box plot and histogram of age </b> </summary>
 
 You can use the following to examine the age distribution among people
@@ -485,7 +485,7 @@ stegen_data$agegroup <- findInterval(stegen_data$age, c(30, 150))
 ```
 
 </details>
-<details>
+<details style="display: inline;">
 <summary> <b> d) Number of cases by date of onset </b> </summary>
 
 You can produce summary tables by person and time (no place variable
@@ -548,7 +548,7 @@ big_table(stegen_data$dateonset)
     ## cumulative      99.98
 
 </details>
-<details>
+<details style="display: inline;">
 <summary> <b> e) Create an epicurve for this outbreak </b> </summary>
 
 ``` r

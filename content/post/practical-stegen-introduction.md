@@ -153,7 +153,7 @@ As a csv file named **stegen\_clean**.
 Help
 ====
 
-<details style="align: left;">
+<details style="display: inline;">
 <summary> <b> a) Install and load the required packages and functions
 for this practical </b> </summary>
 
@@ -176,7 +176,7 @@ library("incidence")
 ```
 
 </details>
-<details style="align: left;">
+<details style="display: inline;">
 <summary> <b> b) Read in the dataset for this practical </b> </summary>
 
 ``` r
@@ -184,7 +184,7 @@ stegen_data <- read.csv(here::here("data", "stegen_raw.csv"), stringsAsFactors =
 ```
 
 </details>
-<details style="align: left;">
+<details style="display: inline;">
 <summary> <b> c) Browse your dataset </b> </summary>
 
 *RStudio* has the nice feature that everything is in one browser window,
@@ -203,7 +203,7 @@ datasets, functions and other things you have loaded in the current
 session.
 
 </details>
-<details style="align: left;">
+<details style="display: inline;">
 <summary> <b> d) Recode data </b> </summary>
 
 Use the “describe” command to assess your data and identify variables
@@ -232,7 +232,7 @@ stegen_data$horseradish[stegen_data$horseradish == 9] <- NA
 ```
 
 </details>
-<details style="align: left;">
+<details style="display: inline;">
 <summary> <b> e) Save your new dataset </b> </summary>
 
 ``` r
