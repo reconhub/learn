@@ -1,5 +1,5 @@
 ---
-title: "Reproducible science <br>using ![Rlogo](../../img/slides/Rlogo-small.png)<br><br>"
+title: "<br>Why you should use ![Rlogo](../../img/slides/Rlogo-small.png)<br><br>"
 author: Zhian Kamvar
 date: "2018-10-05"
 output:
