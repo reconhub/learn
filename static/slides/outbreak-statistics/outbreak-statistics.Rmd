@@ -124,10 +124,20 @@ From empirical distribution (data) to estimated distribution.
 
 - choose type of distribution (e.g. normal, Poisson, Gamma)
 
-- find $\theta_x$ which maximise $p(x)$, i.e. the likelihood
+- find $\theta_x$ which maximise $p(x)$, i.e. the <font color="#99004d">likelihood</font>
 
 - visually: best fit between bars (data) and curve (distribution)
 
+
+
+## Reminder: what is a likelihood?
+
+<center>
+<img src="../../img/slides/likelihood.png" width="85%">
+
+> A <font color="#99004d">relative measure</font> of <font color="#99004d">fit</font> between <font color="#99004d">data</font> and <font color="#99004d">model</font>
+
+</center>
 
 
 ## Discretising continuous distributions
