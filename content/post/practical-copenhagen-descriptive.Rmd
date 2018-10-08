@@ -1,5 +1,6 @@
 ---
 title: "Outbreak of gastroenteritis after a high school dinner in Copenhagen, Denmark,November 2006 (part 2)"
+
 author: "Zhian N. Kamvar, Janetta Skarp, Alexander Spina, and Patrick Keating"
 authors: ["Zhian N. Kamvar", "Janetta Skarp", "Alexander Spina", "Patrick Keating", "Thibaut Jombart"]
 categories: ["practicals"]
@@ -67,18 +68,22 @@ ggplot(cph) + geom_boxplot(aes(x = sex, y = age))
 ```
 
 Other *geoms* can be used, several can be combined, and *aesthetics* common to all *geoms* can be input to *ggplot*. Here are a few examples:
+
 ```{r age_violin}
-ggplot(cph, aes(x = sex, y = age)) + geom_violin() +
-  geom_jitter(aes(color = sex), alpha = .4)
+ggplot(cph, aes(x = sex, y = age)) + 
+  geom_violin() +
+  geom_jitter(aes(color = sex), alpha = 0.4)
 
 ggplot(cph, aes(x = age, fill = sex)) + geom_histogram()
 
 ```
 
 Also note that the default theme can be customised, e.g.:
-```{}
-my_plot <- ggplot(cph, aes(x = sex, y = age)) + geom_violin() +
-  geom_jitter(aes(color = sex), alpha = .4)
+
+```{r custom_ggplot}
+my_plot <- ggplot(cph, aes(x = sex, y = age)) + 
+  geom_violin() +
+  geom_jitter(aes(color = sex), alpha = 0.4)
 
 my_plot
 my_plot + theme_bw(base_size = 20, base_family = "times")

@@ -1,25 +1,15 @@
 ---
-author: 'Zhian N. Kamvar, Janetta Skarp, Alexander Spina, and Patrick Keating'
-authors:
-- 'Zhian N. Kamvar'
-- Janetta Skarp
-- Alexander Spina
-- Patrick Keating
-- Thibaut Jombart
-categories:
-- practicals
-date: '2018-10-04'
-image: 'img/highres/van-der-helst-banquet-02.png'
-licenses: 'CC-BY'
-showonlyimage: True
-slug: 'copenhagen-descriptive'
-tags:
-- epicurve
-- single variable analysis
-- 2x2 tables
-title: |
-    Outbreak of gastroenteritis after a high school dinner in Copenhagen,
-    Denmark,November 2006 (part 2)
+title: "Outbreak of gastroenteritis after a high school dinner in Copenhagen, Denmark,November 2006 (part 2)"
+
+author: "Zhian N. Kamvar, Janetta Skarp, Alexander Spina, and Patrick Keating"
+authors: ["Zhian N. Kamvar", "Janetta Skarp", "Alexander Spina", "Patrick Keating", "Thibaut Jombart"]
+categories: ["practicals"]
+tags: ["epicurve", "single variable analysis", "2x2 tables"]
+date: 2018-10-04
+image: img/highres/van-der-helst-banquet-02.png
+slug: copenhagen-descriptive
+showonlyimage: true
+licenses: CC-BY
 ---
 
 Descriptive analysis in *R*
@@ -35,7 +25,7 @@ including 2x2 tables and epicurves.
 Preparing packages and data
 ---------------------------
 
-``` {.r}
+``` r
 library("ggplot2")
 library("skimr")
 library("Hmisc")
@@ -44,7 +34,7 @@ library("incidence")
 library("here")
 ```
 
-``` {.r}
+``` r
 # read in your data from a csv file 
 # Select separator as comma (sep=",")
 # do not import 'string' variables as 'Factors' (stringsAsFactors=FALSE) 
@@ -69,37 +59,48 @@ building a graphic by combining different items, tied together using the
 data into visual features (e.g. axis, color, shape, using `aes()`). Here
 is a basic example plotting the distribution of ages using a boxplot:
 
-``` {.r}
+``` r
 ggplot(cph) + geom_boxplot(aes(x = sex, y = age))
 ```
 
-![](practical-copenhagen-descriptive_files/figure-markdown/age_boxplot-1.png)
+![](practical-copenhagen-descriptive_files/figure-markdown_github/age_boxplot-1.png)
 
 Other *geoms* can be used, several can be combined, and *aesthetics*
 common to all *geoms* can be input to *ggplot*. Here are a few examples:
 
-``` {.r}
-ggplot(cph, aes(x = sex, y = age)) + geom_violin() +
-  geom_jitter(aes(color = sex), alpha = .4)
+``` r
+ggplot(cph, aes(x = sex, y = age)) + 
+  geom_violin() +
+  geom_jitter(aes(color = sex), alpha = 0.4)
 ```
 
-![](practical-copenhagen-descriptive_files/figure-markdown/age_violin-1.png)
+![](practical-copenhagen-descriptive_files/figure-markdown_github/age_violin-1.png)
 
-``` {.r}
+``` r
 ggplot(cph, aes(x = age, fill = sex)) + geom_histogram()
 ```
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
-![](practical-copenhagen-descriptive_files/figure-markdown/age_violin-2.png)
+![](practical-copenhagen-descriptive_files/figure-markdown_github/age_violin-2.png)
 
 Also note that the default theme can be customised, e.g.:
 
-    my_plot <- ggplot(cph, aes(x = sex, y = age)) + geom_violin() +
-      geom_jitter(aes(color = sex), alpha = .4)
+``` r
+my_plot <- ggplot(cph, aes(x = sex, y = age)) + 
+  geom_violin() +
+  geom_jitter(aes(color = sex), alpha = 0.4)
 
-    my_plot
-    my_plot + theme_bw(base_size = 20, base_family = "times")
+my_plot
+```
+
+![](practical-copenhagen-descriptive_files/figure-markdown_github/custom_ggplot-1.png)
+
+``` r
+my_plot + theme_bw(base_size = 20, base_family = "times")
+```
+
+![](practical-copenhagen-descriptive_files/figure-markdown_github/custom_ggplot-2.png)
 
 For more information on how *ggplot2*, check the [dedicated
 website](https://ggplot2.tidyverse.org/).
@@ -109,10 +110,10 @@ website](https://ggplot2.tidyverse.org/).
 We will use 2x2 tables with percentages to describe the signs and
 symptoms of all the cases. To do this, we must tabulate the counts,
 calculate the proportions of those counts, and then combine those into a
-single table. Here's an example of the table for cases that have
+single table. Here’s an example of the table for cases that have
 diarrhoea:
 
-``` {.r}
+``` r
 # create a frequency table diarrhoea among cases
 a <- table(cph$diarrhoea[cph$case == 1])
 
@@ -128,15 +129,15 @@ b
     ## 0   6  2.8
     ## 1 206 97.2
 
-However, we have a lot of variables we want to do this over, it's better
+However, we have a lot of variables we want to do this over, it’s better
 to write a function that can do this for us over and over again. The key
 to writing a function to to look at a procedure and think about what
 parts stay the same and what parts change. In the case of our 2x2 table,
 the only thing that changes is the vector we want to describe. If we
-replace that by a variable called "x", we can write our function like
+replace that by a variable called “x”, we can write our function like
 so:
 
-``` {.r}
+``` r
 twobytwo <- function(x) {
   # create a frequency table diarrhoea among cases
   a <- table(x)
@@ -156,7 +157,7 @@ twobytwo <- function(x) {
 Now that we have our function, we can create the table with just one
 line:
 
-``` {.r}
+``` r
 twobytwo(cph$diarrhoea[cph$case == 1])
 ```
 
@@ -164,7 +165,7 @@ twobytwo(cph$diarrhoea[cph$case == 1])
     ## 0   6  2.8
     ## 1 206 97.2
 
-``` {.r}
+``` r
 twobytwo(cph$bloody[cph$case == 1])
 ```
 
@@ -172,13 +173,13 @@ twobytwo(cph$bloody[cph$case == 1])
     ## 0 147 97.4
     ## 1   4  2.6
 
-Of course, we have several variables, we don't necessarily want to write
+Of course, we have several variables, we don’t necessarily want to write
 this over and over, so we will use a function called `lapply()`. This
 function takes a dataframe, list, or vector, applies a function over
 each variable separately, and then returns a list of results. If we were
 to use `lapply()` to get the results from above, we might do this:
 
-``` {.r}
+``` r
 vars <- c("diarrhoea", "bloody")
 lapply(cph[cph$case == 1, vars, drop = FALSE], FUN = twobytwo)
 ```
@@ -195,7 +196,7 @@ lapply(cph[cph$case == 1, vars, drop = FALSE], FUN = twobytwo)
 
 Now you try it with the following variables:
 
-``` {.r}
+``` r
 vars <- c("diarrhoea", "bloody", "vomiting", "abdo", "nausea", "fever", "headache", "jointpain")
 ```
 
@@ -241,7 +242,7 @@ vars <- c("diarrhoea", "bloody", "vomiting", "abdo", "nausea", "fever", "headach
 
 ### Determine the median incubation period
 
-``` {.r}
+``` r
 summary(cph$incubation[cph$case == 1])
 ```
 
@@ -250,7 +251,7 @@ summary(cph$incubation[cph$case == 1])
 
 ### Describe the cohort in terms of person
 
-``` {.r}
+``` r
 # look at age and other variables of interest
 Hmisc::describe(cph$age)
 ```
@@ -278,9 +279,9 @@ part before a comma refers to the rows and after refers to columns
 gives you rows two to four.
 
 This is a very similar procedure to the 2x2 tables above, except now we
-want to include the non-cases. We'll demonstrate it for "group" first:
+want to include the non-cases. We’ll demonstrate it for “group” first:
 
-``` {.r}
+``` r
 tab  <- table(cph$group, cph$case)
 
 # create a table of proportions
@@ -301,9 +302,9 @@ res
 Much like the function we used above, only one thing changes: the
 variable of interest, but we also need to have a vector of cases to
 complete the table. Since functions should be stand-alone, we will
-create another variable called "case":
+create another variable called “case”:
 
-``` {.r}
+``` r
 AR <- function(x, case) {
   tab  <- table(x, case)
 
@@ -321,7 +322,7 @@ AR <- function(x, case) {
 
 We can see that it works for group:
 
-``` {.r}
+``` r
 AR(cph$group, case = cph$case)
 ```
 
@@ -329,10 +330,10 @@ AR(cph$group, case = cph$case)
     ## 0        9    6 40.0
     ## 1      153  209 57.7
 
-Now we can use it with lapply, supplying our "case" argument after the
-function name. This is explained in the help documentation for "lapply"
+Now we can use it with lapply, supplying our “case” argument after the
+function name. This is explained in the help documentation for “lapply”
 
-``` {.r}
+``` r
 # students and sex
 vars <- c("group", "class", "sex")
 lapply(cph[vars], AR, case = cph$case)
@@ -373,7 +374,7 @@ The variable *start* is an example of bad data collection. Nevertheless
 it consists of numbers (1, 2 and 3); these numbers correspond to dates
 (11th, 12th and 13th of November 2006).
 
-``` {.r}
+``` r
 # Create a useful date variable from start
 # set yourself a reference date (one day before onset)
 refdate <- as.Date("2006-11-10")
@@ -396,22 +397,22 @@ uses the *ggplot2* package (use `?ggplot` to find out more about this
 function) and so is quite easily manipulated and saved after being
 created.
 
-``` {.r}
+``` r
 cph_incidence <- incidence::incidence(cph$dayonset, interval = 1)
 plot(cph_incidence)
 ```
 
-![](practical-copenhagen-descriptive_files/figure-markdown/epicurve-1.png)
+![](practical-copenhagen-descriptive_files/figure-markdown_github/epicurve-1.png)
 
 Conclusions from the descriptive analyses
 =========================================
 
-We didn't find anything surprising in the descriptive analysis of the
-cohort's age given it consists of two groups, the students and the
+We didn’t find anything surprising in the descriptive analysis of the
+cohort’s age given it consists of two groups, the students and the
 teachers.
 
 The distribution of the cohort regarding sex, group and class also
-didn't reveal anything unusual. Students seem a bit more affected by the
+didn’t reveal anything unusual. Students seem a bit more affected by the
 outbreak than teachers and the attack rate is higher for older students
 in higher classes. This, however, is a purely descriptive result.
 
@@ -432,16 +433,16 @@ This code has been adapted to *R* for learning purposes. The initial
 contributors and copyright license are listed below. All copyrights and
 licenses of the original document apply here as well.
 
-**Contributors to *R* code:**\
+**Contributors to *R* code:**  
 Zhian N. Kamvar, Daniel Gardiner (PHE), and Lukas Richter (AGES)
 
 Citation
 --------
 
 Pakalniskiene, J., G. Falkenhorst, M. Lisby, S. B. Madsen, K. E. P.
-Olsen, E. M. Nielsen, A. Mygh, Jeppe Boel, and K. Mølbak. "A foodborne
+Olsen, E. M. Nielsen, A. Mygh, Jeppe Boel, and K. Mølbak. “A foodborne
 outbreak of enterotoxigenic E. coli and Salmonella Anatum infection
-after a high-school dinner in Denmark, November 2006." Epidemiology &
+after a high-school dinner in Denmark, November 2006.” Epidemiology &
 Infection 137, no. 3 (2009): 396-401. [doi:
 10.1017/S0950268808000484](https://doi.org/10.1017/S0950268808000484)
 
@@ -492,10 +493,10 @@ Ioannis Karagiannis and Pawel Stefanoff
     the license:
 -   Your fair dealing or fair use rights, or other applicable copyright
     exceptions and limitations;
--   The author's moral rights;
+-   The author’s moral rights;
 -   Rights other persons may have either in the work itself or in how
     the work is used, such as publicity or privacy rights.
 -   Notice - For any reuse or distribution, you must make clear to
     others the license terms of this work by keeping together this work
     and the current license. This licence is based on
-    <http://creativecommons.org/licenses/by-sa/3.0/>
+    <a href="http://creativecommons.org/licenses/by-sa/3.0/" class="uri">http://creativecommons.org/licenses/by-sa/3.0/</a>

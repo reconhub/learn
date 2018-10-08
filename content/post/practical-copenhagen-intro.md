@@ -1,27 +1,14 @@
 ---
-author: 'Zhian N. Kamvar, Janetta Skarp, Alexander Spina, and Patrick Keating'
-authors:
-- 'Zhian N. Kamvar'
-- Janetta Skarp
-- Alexander Spina
-- Patrick Keating
-categories:
-- practicals
-date: '2018-10-04'
-image: 'img/highres/van-der-helst-banquet.jpg'
-licenses: 'CC-BY'
-showonlyimage: True
-slug: 'copenhagen-introduction'
-tags:
-- 'level: beginner'
-- epicurve
-- single variable analysis
-- 2x2 tables
-- reproducible research
-- gastroenteritis
-title: |
-    Outbreak of gastroenteritis after a high school dinner in Copenhagen,
-    Denmark,November 2006 (part 1)
+title: "Outbreak of gastroenteritis after a high school dinner in Copenhagen, Denmark,November 2006 (part 1)"
+author: "Zhian N. Kamvar, Janetta Skarp, Alexander Spina, and Patrick Keating"
+authors: ["Zhian N. Kamvar", "Janetta Skarp", "Alexander Spina", "Patrick Keating"]
+categories: ["practicals"]
+tags: ["level: beginner", "epicurve", "single variable analysis", "2x2 tables", "reproducible research", "gastroenteritis"]
+date: 2018-10-04
+image: img/highres/van-der-helst-banquet.jpg
+slug: copenhagen-introduction
+showonlyimage: true
+licenses: CC-BY
 ---
 
 The Alert
@@ -44,13 +31,13 @@ teachers who had attended the party at the high school on 11th of
 November 2006. A questionnaire was designed to conduct a survey on food
 consumption and on presentation of the illness. Information about the
 survey and a link to the questionnaire was circulated to students and
-teachers via the school's intranet with the request that everyone who
+teachers via the school’s intranet with the request that everyone who
 attended the school party on 11th of November 2006 should fill in the
 questionnaire. Practically all students and teachers check the intranet
-on a daily basis, because it is the school's main communication channel
+on a daily basis, because it is the school’s main communication channel
 for information about courses, homework assignments, cancellation of
 lessons etc. The information about the investigation was therefore also
-displayed on the screen in the main hall of the school. The school's
+displayed on the screen in the main hall of the school. The school’s
 intranet was also accessible for ill students or teachers from home so
 that everyone in the cohort could potentially participate and the
 response rate could be maximised. Symptomatic party attendees were asked
@@ -65,7 +52,7 @@ the cohort, who presented with diarrhoea or vomiting within 48 hours of
 the meal. So anyone who presented with diarrhoea or vomiting from 6pm on
 November 11th to 5:59pm on November 13th was included as a case. Anyone
 with symptoms outside this time window is defined as a control as this
-person probably didn't become sick at the party.
+person probably didn’t become sick at the party.
 
 An introduction to the *R* companion
 ====================================
@@ -81,9 +68,9 @@ upper-right-hand dropdown menu.
 > You can set a folder to be your working directory (using the setwd
 > command), but we will not be using this because it makes transferring
 > between computers difficult (see
-> <https://www.tidyverse.org/articles/2017/12/workflow-vs-script/> for
-> details). Instead, we will be using the RStudio project files and the
-> 'here' package to keep track of files.
+> <a href="https://www.tidyverse.org/articles/2017/12/workflow-vs-script/" class="uri">https://www.tidyverse.org/articles/2017/12/workflow-vs-script/</a>
+> for details). Instead, we will be using the RStudio project files and
+> the ‘here’ package to keep track of files.
 
 This tutorial is designed to be followed along in the context of an R
 project folder structure:
@@ -106,7 +93,7 @@ project folder structure:
         └── single.variable.analysis.v0.2.R
 
 You should create a folder on your computer for the project with the
-above structure (containing a "data", "reports", and "scripts"
+above structure (containing a “data”, “reports”, and “scripts”
 directory). Once you have done that you can download the following data
 sets and place them in the `data/` directory:
 
@@ -137,7 +124,7 @@ addition, we have included a few extra functions to simplify the code
 required. All the R packages you need for the exercises can be installed
 over the Internet.
 
-``` {.r}
+``` r
 # Installing required packages for the week
 required_packages <- c("ggplot2", "skimr", "Hmisc", "epitools", "epiR", "incidence", "here")
 install.packages(required_packages)
@@ -149,7 +136,7 @@ Run the following code at the beginning of the day to make sure that you
 have made available all the packages and functions that you need. Be
 sure to include it in any scripts too.
 
-``` {.r}
+``` r
 library("ggplot2")
 library("skimr")
 library("Hmisc")
@@ -158,7 +145,7 @@ library("incidence")
 library("here")
 ```
 
-``` {.r}
+``` r
 # Functions required
 
 # Adds a function that creates a nice table for output
@@ -182,9 +169,9 @@ Data management and *R* scripts
 Open the dataset **copenhagen\_raw.csv** using the `read.csv()` command.
 It is also possible to import datasets from other formats, such as
 Excel; see appendix for example. Datasets in *R* are stored and can be
-referred to using the name it is saved as (in our case "cph").
+referred to using the name it is saved as (in our case “cph”).
 
-``` {.r}
+``` r
 # read in your data from a csv file
 # Select separator as comma (sep=",")
 # do not import 'string' variables as 'Factors' (stringsAsFactors=FALSE)
@@ -200,13 +187,13 @@ cph <- read.csv(here::here("data", "copenhagen_raw.csv"), stringsAsFactors = FAL
 window, so you can browse your dataset and your code without having to
 switch between browser windows.
 
-``` {.r}
+``` r
 # to browse your data, use the View command
 View(cph)
 ```
 
 Alternatively, you can also view your dataset by clicking on *cph* in
-the top right "global environment" panel of your *R Studio* browser.
+the top right “global environment” panel of your *R Studio* browser.
 Your global environment is where you can see all the datasets, functions
 and other things you have running in the current session. (see figure 1
 below)
@@ -217,73 +204,161 @@ Studio](../../img/screenshots/copenhagen-screenshot1.png)
 Most of the variables are coded as numeric variables. Here is the key to
 what the values in each varaiable means:
 
-  ---------------------------------------------------------------------------
-  Variable name           Type          Categories         Definition
-  ----------------------- ------------- ------------------ ------------------
-  sex                     Dichotomous   male, female       Gender
-
-  age                     Continuous    NA                 Age in years
-                          (can be                          
-                          transformed                      
-                          to a                             
-                          categorical                      
-                          one)                             
-
-  diarrhoea               Dichotomous   1=Yes, 0=No        Had diarrhoea Y/N
-
-  vomiting                Dichotomous   1=Yes, 0=No        Had vomiting Y/N
-
-  start                   Numeric       1=11th,            Date diarrhoea or
-                                                           vomiting started
-
-                                        2=12th,            
-
-                                        3=13th,            
-
-                                        4=14th,            
-
-                                        5=15th,            
-
-                                        6=16th             
-
-  starthour               Categorical   1=00:00-05:59,     6 hour time frame
-                                                           when symptoms
-                                                           started
-
-                                        2=06:00-11:59,     
-
-                                        3=12:00-17:59,     
-
-                                        4=18:00-23:59      
-
-  shrimps                 Dichotomous   1=Yes, 0=No        Consumption of
-                                                           shrimp
-
-  shrimpsD                Categorical   0=None,            Amount of portions
-                                                           of shrimp consumed
-
-                                        1=less than 1      
-                                        portion,           
-
-                                        2=1 portion,       
-
-                                        3=more than 1      
-                                        portion            
-
-  veal                    Dichotomous   1=Yes, 0=No        Consumption of
-                                                           veal
-
-  beer                    Dichotomous   1=Yes, 0=No        Consumption of
-                                                           beer
-
-  sauce                   Dichotomous   1=Yes, 0=No        Consumption of
-                                                           sauce
-  ---------------------------------------------------------------------------
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 13%" />
+<col style="width: 26%" />
+<col style="width: 26%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable name</th>
+<th>Type</th>
+<th>Categories</th>
+<th>Definition</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>sex</td>
+<td>Dichotomous</td>
+<td>male, female</td>
+<td>Gender</td>
+</tr>
+<tr class="even">
+<td>age</td>
+<td>Continuous (can be transformed to a categorical one)</td>
+<td>NA</td>
+<td>Age in years</td>
+</tr>
+<tr class="odd">
+<td>diarrhoea</td>
+<td>Dichotomous</td>
+<td>1=Yes, 0=No</td>
+<td>Had diarrhoea Y/N</td>
+</tr>
+<tr class="even">
+<td>vomiting</td>
+<td>Dichotomous</td>
+<td>1=Yes, 0=No</td>
+<td>Had vomiting Y/N</td>
+</tr>
+<tr class="odd">
+<td>start</td>
+<td>Numeric</td>
+<td>1=11th,</td>
+<td>Date diarrhoea or vomiting started</td>
+</tr>
+<tr class="even">
+<td></td>
+<td></td>
+<td>2=12th,</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td></td>
+<td></td>
+<td>3=13th,</td>
+<td></td>
+</tr>
+<tr class="even">
+<td></td>
+<td></td>
+<td>4=14th,</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td></td>
+<td></td>
+<td>5=15th,</td>
+<td></td>
+</tr>
+<tr class="even">
+<td></td>
+<td></td>
+<td>6=16th</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>starthour</td>
+<td>Categorical</td>
+<td>1=00:00-05:59,</td>
+<td>6 hour time frame when symptoms started</td>
+</tr>
+<tr class="even">
+<td></td>
+<td></td>
+<td>2=06:00-11:59,</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td></td>
+<td></td>
+<td>3=12:00-17:59,</td>
+<td></td>
+</tr>
+<tr class="even">
+<td></td>
+<td></td>
+<td>4=18:00-23:59</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>shrimps</td>
+<td>Dichotomous</td>
+<td>1=Yes, 0=No</td>
+<td>Consumption of shrimp</td>
+</tr>
+<tr class="even">
+<td>shrimpsD</td>
+<td>Categorical</td>
+<td>0=None,</td>
+<td>Amount of portions of shrimp consumed</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td></td>
+<td>1=less than 1 portion,</td>
+<td></td>
+</tr>
+<tr class="even">
+<td></td>
+<td></td>
+<td>2=1 portion,</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td></td>
+<td></td>
+<td>3=more than 1 portion</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>veal</td>
+<td>Dichotomous</td>
+<td>1=Yes, 0=No</td>
+<td>Consumption of veal</td>
+</tr>
+<tr class="odd">
+<td>beer</td>
+<td>Dichotomous</td>
+<td>1=Yes, 0=No</td>
+<td>Consumption of beer</td>
+</tr>
+<tr class="even">
+<td>sauce</td>
+<td>Dichotomous</td>
+<td>1=Yes, 0=No</td>
+<td>Consumption of sauce</td>
+</tr>
+</tbody>
+</table>
 
 ### Saving your code in R Scripts
 
 You can save your code in R scripts. (see figure 2 below) You can write
-comments in your code using "`#`"
+comments in your code using “`#`”
 
 ![Creating a new R-script in R
 studio](../../img/screenshots/copenhagen-screenshot2.png)
@@ -303,7 +378,7 @@ refer to an individual variable of a dataset by using the `$`, for
 example, if you wanted to obtain a summary of the age variable, then you
 would write `summary(cph$age)`.
 
-``` {.r}
+``` r
 # str provides an overview of the number of observations and variable types
 str(cph)
 
@@ -318,14 +393,14 @@ Hmisc::describe(cph)
 
 > **n.b.** we are using the convention package::function() to make it
 > clear when we are using a function that comes from an external
-> package.\
+> package.  
 > \# Data cleaning and recoding in *R*
 
-Check the dataset "Copenhagen.csv"
+Check the dataset “Copenhagen.csv”
 ----------------------------------
 
-Using the "table" command, you can get information on how the counts of
-cases are split across a variable. Using the "summary" command, you can
+Using the “table” command, you can get information on how the counts of
+cases are split across a variable. Using the “summary” command, you can
 obtain summary measures, such as the median and quantiles. In the
 example below we look at age in the cph dataset.
 
@@ -341,19 +416,19 @@ You can subset a dataset using `[...]` in combination with double-equals
 
 In *R*, when defining the filter this can be both numerical or text
 (i.e. the gender example). In order to combine multiple filtering
-commands in to one selection you can use the "`|`" (bar not capital i)
-or "`&`" symbols. The **`|`** stands for **or** whereas the **`&`**
+commands in to one selection you can use the “`|`” (bar not capital i)
+or “`&`” symbols. The **`|`** stands for **or** whereas the **`&`**
 stands for **and**.
 
 To select cases which are empty, use `is.na()`, for those which are not,
-`!is.na(...)`. The exclamation mark ("`!`") implies "not" in this
+`!is.na(...)`. The exclamation mark (“`!`”) implies “not” in this
 situation.
 
 You can add new variables to a dataframe by using the `$` sign after the
 dataset name and writing a name not already in the dataset, then
 defining what should go in that variable.
 
-``` {.r}
+``` r
 # table will give a very basic frequency table (counts),
 # in this example the first line of the output is the age and the second is the frequency.
 table(cph$age)
@@ -365,7 +440,7 @@ table(cph$age)
     ##  58  59  61  65 180 
     ##   2   1   1   1   1
 
-``` {.r}
+``` r
 # summary gives you more detailed statistics
 summary(cph$age)
 ```
@@ -377,7 +452,7 @@ Often, plotting the data can be much more informative. For example,
 instead of using table, we can plot a histogram of age to see if we have
 any outliers:
 
-``` {.r}
+``` r
 hist(cph$age,
      main = "Distribution of Age", 
      xlab = "Age",
@@ -387,11 +462,11 @@ hist(cph$age,
 rug(cph$age)
 ```
 
-![](practical-copenhagen-intro_files/figure-markdown/density_of_age-1.png)
+![](practical-copenhagen-intro_files/figure-markdown_github/density_of_age-1.png)
 
 > Question: Is there anything weird about these data?
 
-``` {.r}
+``` r
 # You can look at age among teachers using the group variable
 table(cph$age[cph$group == 0])
 ```
@@ -400,7 +475,7 @@ table(cph$age[cph$group == 0])
     ## 26 29 30 31 32 33 34 39 43 54 56 58 59 61 65 
     ##  1  1  1  1  1  1  1  1  1  1  1  2  1  1  1
 
-``` {.r}
+``` r
 ### Things you may have noticed:
 
 # an outlier in incubation
@@ -410,7 +485,7 @@ summary(cph$incubation)
     ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
     ##     3.0    15.0    15.0    19.9    21.0   210.0     177
 
-``` {.r}
+``` r
 # people did not have dinner but ate tuna, bread or veal
   # you can label the table by adding labels
 table(meal = cph$meal, tuna = cph$tuna)
@@ -421,7 +496,7 @@ table(meal = cph$meal, tuna = cph$tuna)
     ##    0   7   1
     ##    1 102 271
 
-``` {.r}
+``` r
 table(meal = cph$meal, bread = cph$bread)
 ```
 
@@ -430,7 +505,7 @@ table(meal = cph$meal, bread = cph$bread)
     ##    0   5   3
     ##    1  29 342
 
-``` {.r}
+``` r
 table(meal = cph$meal, veal = cph$veal)
 ```
 
@@ -439,7 +514,7 @@ table(meal = cph$meal, veal = cph$veal)
     ##    0   6   2
     ##    1  36 338
 
-``` {.r}
+``` r
 # people with day of onset but no symptoms
   # is.na() returns True/False if value is missing
   # So this selects the participants that are either 0 or missing for all three symptoms
@@ -461,7 +536,7 @@ Data cleaning
 
 ### Handling missing values, typos and recoding variables
 
-``` {.r}
+``` r
 # correct mistakes in age
 cph$age[cph$age == 8]   <- 18
 cph$age[cph$age == 180] <- 18
@@ -489,17 +564,17 @@ table(symptomless_dvb) # how many were symptomless?
     ## FALSE  TRUE 
     ##   219   178
 
-``` {.r}
+``` r
 cph$start[symptomless_dvb] <- NA
 ```
 
 ### Creating a case definition
 
 > Remember, in order to combine multiple filtering commands in to one
-> selection you can use the "`|`" (bar not capital i) or "&" symbols.
+> selection you can use the “`|`” (bar not capital i) or “&” symbols.
 > The **`|`** stands for **or** whereas the **`&`** stands for **and**.
 
-``` {.r}
+``` r
 # create new variable where people who have diarrhoea or vomiting get a 1 and all others a 0
 cph$case <- 0
 cph$case[cph$diarrhoea == 1 | cph$vomiting == 1] <- 1
@@ -515,7 +590,7 @@ cph$case[is.na(cph$meal) | cph$meal == 0] <- NA
 
 Do a plausibility check to see if everything worked
 
-``` {.r}
+``` r
 # how many cases did you generate?
 table(cph$case)
 ```
@@ -524,7 +599,7 @@ table(cph$case)
     ##   0   1 
     ## 162 215
 
-``` {.r}
+``` r
 # check if people were assigned properly according to symptoms
 
 table(case = cph$case, vomiting = cph$vomiting)
@@ -535,7 +610,7 @@ table(case = cph$case, vomiting = cph$vomiting)
     ##    0  42   0
     ##    1 107  66
 
-``` {.r}
+``` r
 table(case = cph$case, diarrhoea = cph$diarrhoea)
 ```
 
@@ -546,7 +621,7 @@ table(case = cph$case, diarrhoea = cph$diarrhoea)
 
 Drop cases that do not meet the case definition
 
-``` {.r}
+``` r
 cph <- cph[!is.na(cph$case), ]
 ```
 
@@ -557,7 +632,7 @@ You can save your cleaned dataset in two ways:
 1.  as a flat csv file.
 2.  as a binary R data file (`*.rds`).
 
-Saving as a flat csv file means that it's easier to inspect and move the
+Saving as a flat csv file means that it’s easier to inspect and move the
 data between non-R programs, but you lose any special formatting or
 attributes you may have attached to it. Saving as an R data file allows
 you to seamlessly move data between R sessions without worry that it
@@ -570,7 +645,7 @@ re-clean it over and over again.
 <!-- In reality you would never do this; your code should be stand-alone in that raw data is read and cleaned and analysis comes thereafter.  -->
 <!-- But if you wanted to, this is how you would do it.  -->
 
-``` {.r}
+``` r
 # save as a flat csv file:
 write.csv(cph, file = here::here("data", "clean_copenhagen.csv"), row.names = FALSE)
 # read the file
@@ -599,16 +674,16 @@ This code has been adapted to *R* for learning purposes. The initial
 contributors and copyright license are listed below. All copyrights and
 licenses of the original document apply here as well.
 
-**Contributors to *R* code:**\
+**Contributors to *R* code:**  
 Zhian N. Kamvar, Daniel Gardiner (PHE), and Lukas Richter (AGES)
 
 Citation
 --------
 
 Pakalniskiene, J., G. Falkenhorst, M. Lisby, S. B. Madsen, K. E. P.
-Olsen, E. M. Nielsen, A. Mygh, Jeppe Boel, and K. Mølbak. "A foodborne
+Olsen, E. M. Nielsen, A. Mygh, Jeppe Boel, and K. Mølbak. “A foodborne
 outbreak of enterotoxigenic E. coli and Salmonella Anatum infection
-after a high-school dinner in Denmark, November 2006." Epidemiology &
+after a high-school dinner in Denmark, November 2006.” Epidemiology &
 Infection 137, no. 3 (2009): 396-401. [doi:
 10.1017/S0950268808000484](https://doi.org/10.1017/S0950268808000484)
 
@@ -659,10 +734,10 @@ Ioannis Karagiannis and Pawel Stefanoff
     the license:
 -   Your fair dealing or fair use rights, or other applicable copyright
     exceptions and limitations;
--   The author's moral rights;
+-   The author’s moral rights;
 -   Rights other persons may have either in the work itself or in how
     the work is used, such as publicity or privacy rights.
 -   Notice - For any reuse or distribution, you must make clear to
     others the license terms of this work by keeping together this work
     and the current license. This licence is based on
-    <http://creativecommons.org/licenses/by-sa/3.0/>
+    <a href="http://creativecommons.org/licenses/by-sa/3.0/" class="uri">http://creativecommons.org/licenses/by-sa/3.0/</a>
