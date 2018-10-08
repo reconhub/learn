@@ -1,7 +1,8 @@
 ---
 title: "Outbreak of gastroenteritis after a high school dinner in Copenhagen, Denmark,November 2006 (part 2)"
+
 author: "Zhian N. Kamvar, Janetta Skarp, Alexander Spina, and Patrick Keating"
-authors: ["Zhian N. Kamvar", "Janetta Skarp", "Alexander Spina", "Patrick Keating"]
+authors: ["Zhian N. Kamvar", "Janetta Skarp", "Alexander Spina", "Patrick Keating", "Thibaut Jombart"]
 categories: ["practicals"]
 tags: ["epicurve", "single variable analysis", "2x2 tables"]
 date: 2018-10-04
@@ -45,7 +46,64 @@ cph <- read.csv(here::here("data", "copenhagen_descriptive.csv"),
                 stringsAsFactors = FALSE) 
 ```
 
-### Dataset description and tabulation
+Dataset description and tabulation
+----------------------------------
+
+### Basic graphics
+
+In the following, we show how *ggplot2* can be used for visualising the
+data. Unlike the basic plotting system in **R**, *ggplot2* proceed by
+building a graphic by combining different items, tied together using the
+`+` operator: specifing the data (`ggplot()`), adding geometric elements
+(i.e. type of graph, using `geom_...`), and aesthetic properties mapping
+data into visual features (e.g. axis, color, shape, using `aes()`). Here
+is a basic example plotting the distribution of ages using a boxplot:
+
+``` r
+ggplot(cph) + geom_boxplot(aes(x = sex, y = age))
+```
+
+![](practical-copenhagen-descriptive_files/figure-markdown_github/age_boxplot-1.png)
+
+Other *geoms* can be used, several can be combined, and *aesthetics*
+common to all *geoms* can be input to *ggplot*. Here are a few examples:
+
+``` r
+ggplot(cph, aes(x = sex, y = age)) + 
+  geom_violin() +
+  geom_jitter(aes(color = sex), alpha = 0.4)
+```
+
+![](practical-copenhagen-descriptive_files/figure-markdown_github/age_violin-1.png)
+
+``` r
+ggplot(cph, aes(x = age, fill = sex)) + geom_histogram()
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+![](practical-copenhagen-descriptive_files/figure-markdown_github/age_violin-2.png)
+
+Also note that the default theme can be customised, e.g.:
+
+``` r
+my_plot <- ggplot(cph, aes(x = sex, y = age)) + 
+  geom_violin() +
+  geom_jitter(aes(color = sex), alpha = 0.4)
+
+my_plot
+```
+
+![](practical-copenhagen-descriptive_files/figure-markdown_github/custom_ggplot-1.png)
+
+``` r
+my_plot + theme_bw(base_size = 20, base_family = "times")
+```
+
+![](practical-copenhagen-descriptive_files/figure-markdown_github/custom_ggplot-2.png)
+
+For more information on how *ggplot2*, check the [dedicated
+website](https://ggplot2.tidyverse.org/).
 
 ### Describe signs and symptoms of cases
 
@@ -293,15 +351,15 @@ lapply(cph[vars], AR, case = cph$case)
     ## 3       38   73 65.8
     ## 
     ## $sex
-    ##   non case case  AR%
-    ## 0       97  116 54.5
-    ## 1       65   99 60.4
+    ##        non case case  AR%
+    ## female       97  116 54.5
+    ## male         65   99 60.4
 
 To see how to combine this code to create a ready-to-present table for
 exporting see the appendix.
 
-Describing time in *R*
-======================
+Describing temporal dynamics
+============================
 
 ### Recoding for date compatability
 

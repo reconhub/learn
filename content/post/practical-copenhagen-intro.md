@@ -3,7 +3,7 @@ title: "Outbreak of gastroenteritis after a high school dinner in Copenhagen, De
 author: "Zhian N. Kamvar, Janetta Skarp, Alexander Spina, and Patrick Keating"
 authors: ["Zhian N. Kamvar", "Janetta Skarp", "Alexander Spina", "Patrick Keating"]
 categories: ["practicals"]
-tags: ["epicurve", "single variable analysis", "2x2 tables"]
+tags: ["level: beginner", "epicurve", "single variable analysis", "2x2 tables", "reproducible research", "gastroenteritis"]
 date: 2018-10-04
 image: img/highres/van-der-helst-banquet.jpg
 slug: copenhagen-introduction
@@ -534,7 +534,7 @@ table(onset = cph$start[no_symptoms(cph$diarrhoea) &
 Data cleaning
 -------------
 
-### Recoding missing values, age and sex
+### Handling missing values, typos and recoding variables
 
 ``` r
 # correct mistakes in age
@@ -566,10 +566,6 @@ table(symptomless_dvb) # how many were symptomless?
 
 ``` r
 cph$start[symptomless_dvb] <- NA
-
-# re-code sex in to binary
-cph$sex <- ifelse(cph$sex == "male", 1, 0)
-cph$sex <- as.numeric(cph$sex)
 ```
 
 ### Creating a case definition

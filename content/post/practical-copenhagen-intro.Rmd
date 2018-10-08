@@ -283,7 +283,7 @@ table(onset = cph$start[no_symptoms(cph$diarrhoea) &
 
 ## Data cleaning
 
-### Recoding missing values, age and sex
+### Handling missing values, typos and recoding variables
 
 
 
@@ -311,9 +311,6 @@ symptomless_dvb <- no_symptoms(cph$diarrhoea) & no_symptoms(cph$vomiting) & no_s
 table(symptomless_dvb) # how many were symptomless?
 cph$start[symptomless_dvb] <- NA
 
-# re-code sex in to binary
-cph$sex <- ifelse(cph$sex == "male", 1, 0)
-cph$sex <- as.numeric(cph$sex)
 ```
 
 ### Creating a case definition

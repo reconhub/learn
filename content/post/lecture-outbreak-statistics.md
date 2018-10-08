@@ -4,7 +4,7 @@ author: "Thibaut Jombart"
 authors: ["Thibaut Jombart"]
 categories: ["lectures"]
 topics: ["epicurve", "delays", "reproduction number", "forecasting"]
-date: 2017-12-09
+date: 2018-10-07
 image: img/highres/stats-notebook.jpg
 slug: "outbreakstatsprimer"
 showonlyimage: true
