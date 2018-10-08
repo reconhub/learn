@@ -357,7 +357,7 @@ lapply(cph[vars], AR, case = cph$case)
 To see how to combine this code to create a ready-to-present table for
 exporting see the appendix.
 
-Describing timporal dynamics
+Describing temporal dynamics
 ============================
 
 ### Recoding for date compatability
