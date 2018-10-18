@@ -324,3 +324,10 @@ body {
 .gateway:hover{
     box-shadow: 5px 5px 20px #80002a;
 }
+
+/* make sure highlight blocks take up the entire width */
+
+.highlight {
+  width: 100%;
+}
+ 
