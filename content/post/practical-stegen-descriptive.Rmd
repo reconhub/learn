@@ -2,9 +2,9 @@
 title: "An outbreak of gastroenteritis in Stegen, Germany, June 1998 (part 2)"
 author: "Janetta Skarp, Zhian N. Kamvar, Alexander Spina, and Patrick Keating"
 authors: ["Janetta Skarp", "Zhian N. Kamvar", "Alexander Spina", "Patrick Keating"]
-categories: ["practicals"]
+categories:
 tags: ["level: beginner", "epicurve", "single variable analysis", "2x2 tables", "reproducible research", "gastroenteritis"]
-date: 2018-10-06
+date: 2918-10-06
 slug: stegen-descriptive
 licenses: CC-BY
 image: img/highres/graduation-1965-grey.jpg
