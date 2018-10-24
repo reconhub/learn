@@ -4,7 +4,7 @@ author: Thibaut Jombart
 authors: ["Thibaut Jombart"]
 categories: ["lectures"]
 topics: ["rmarkdown", "data science", "reproducibility"]
-date: 2017-11-10
+date: 2018-24-10
 image: img/highres/printing-press.jpg
 slug: reproducibility
 showonlyimage: true
