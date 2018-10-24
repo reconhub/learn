@@ -5,7 +5,7 @@ authors:
 categories:
 - lectures
 css: 'css/custom.css'
-date: '2018-24-10'
+date: '2018-10-23'
 image: 'img/highres/printing-press.jpg'
 licenses: 'CC-BY'
 showonlyimage: True
