@@ -6,12 +6,14 @@ output:
 authors: ["Zhian N. Kamvar", "Janetta Skarp", "Alexander Spina", "Patrick Keating"]
 categories: ["practicals"]
 tags: ["epicurve", "single variable analysis", "2x2 tables"]
-date: 2018-10-04
+date: 6911-10-04
 image: img/highres/van-der-helst-banquet-03.png
 slug: copenhagen-univariate
 showonlyimage: true
 licenses: CC-BY
 ---
+
+<img src="../img/under-review.png" alt="Under Review: this practical is currently being revised and may change in the future">
 
 Univariable analysis (Cohort and case control)
 ==============================================
