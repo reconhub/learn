@@ -489,10 +489,11 @@ More information on the `incidence` package can be found from the
 We can also customise this graphic like other `ggplot2` plots (see [this tutorial](https://www.repidemicsconsortium.org/incidence/articles/customize_plot.html) for more):
 
 ```{r incidence_stratified_custom}
-plot(i_ill, border = "white") + scale_fill_manual(values = c(male = "#4775d1", female = "#cc6699")) +
+plot(i_ill, border = "white", color = c("non case" = "#66cc99", "case" = "#990033")) + 
   labs(title = "Epicurve by gender", x = "Date of onset", y = "Number of cases") +
   theme_light(base_family = "Times", base_size = 16) +
-  theme(legend.position = c(0.8, 0.8), axis.text.x = element_text(angle = 45, hjust = 1))
+  geom_hline(yintercept = 1:55, color = "white") +
+  theme(legend.position = c(0.8, 0.8), axis.text.x = element_text(angle = 45, hjust = 1, vjust = 0.5))
 ```
 
 </p>
@@ -555,7 +556,7 @@ bartlett.test(stegen$age ~ stegen$ill)
 The resulting p-value (`r round(bartlett.test(stegen$age ~ stegen$ill)[["p.value"]], 3)`) suggests the variances are indeed comparable. Wecan thus proceed to a $t$-test:
 
 
-```{r stegen_bartlett_test}
+```{r stegen_t_test}
 t.test(stegen$age ~ stegen$ill, var.equal = TRUE)
 ```
 
@@ -592,12 +593,198 @@ Here, the p-value of `r round(chisq.test(tab_ill_sex)[["p.value"]], 3)` suggests
 
 ## Making multiple tests
 
+The natural next step is to run multiple tests for all potential risk factors
+recorded. There are many ways to go about this in **R**, but we will illustrate
+one of the most common workflows:
+
+1. isolate a subset of variables to test (the ones indicative of food consumption) (using `[]`)
+2. for each:
+    i) build contingency table with illness status (using `table`)
+    ii) run a Chi-square test on this table (using `chisq.test`)
+
+All of these have been seen so far; the only missing piece is step 2), which we
+will cover using a very handy function called `lapply`.
+
+
+### Isolating the variables to test
+
+We use the natural structure of the dataset, as variables representing food
+consumption are all the last columns:
+
+```{r stegen_isolate_food}
+names(stegen)
+```
+
+In this case, we need to retain columns 6 to 21, excluding `tportion` and
+`mportion`, which are not binary; this can be done using the subsetting operator
+`[...]`, where `...` are numbers indicating the columns to retain:
+
+```{r stegen_food}
+to_keep <- c(6, 8, 9, 10, 12:21)
+to_keep
+food <- stegen[to_keep]
+food
+```
+
+
+### Building several contingency tables
+
+There are many variables to test, and having to enter separate command lines for
+each would be cumbersome and prone to errors. As a workaround, the function
+`lapply` can be used. This function allows to repeat an operation using a vector
+of inputs, using each element in turn. Its general syntax is
+`lapply(vector_of_inputs, function_to_use, other_arguments)`, where
+`other_arguments` can be any secondary arguments taken by
+`function_to_use`. Here, we use it to build a separate contingency table of each
+variable in `food` crossed with illness status (`stegen$ill`); note that we show
+only the first few tables:
+
+```{r stegen_food_tables, echo = c(1,3), eval = -2}
+food_tables <- lapply(food, table, stegen$ill)
+food_tables
+head(food_tables)
+```
+
+
+### Realising multiple Chi-squared tests
+
+The same principle used to compute several contingency tables can be used to
+compute Chi-square tests for each table, using `lapply`; note that we show
+only the first few tests:
+
+```{r stegen_food_tests, echo = c(1,3), eval = -2}
+food_tests <- lapply(food_tables, chisq.test)
+food_tests
+head(food_tests)
+```
+
+Looking at these results, it seems a large number of food items are
+significantly correlated to the illness. Which food item is the biggest suspect?
+We will try and address this question using risk ratios.
+
+
+
+## Risk ratios
+
+### For one variable 
+
+The [risk ratio](https://en.wikipedia.org/wiki/Risk_ratio) is defined as the
+ratio between the proportion of illness in one group (typically 'exposed') vs
+another ('non-exposed'). For instance, let us consider the contingency table of
+pork consumption and illness:
+```{r stegen_pork_table}
+food_tables$pork
+```
+
+This can be turned into proportions using `prop.table`, specifying that we want
+proportions by rows (`margin = 1`):
+```{r stegen_pork_prop}
+pork_prop <- prop.table(food_tables$pork, margin = 1)
+pork_prop
+```
+
+the corresponding risk ratio is:
+```{r stegen_pork_rr}
+## ill & exposed: row 2, column 2
+pork_prop[2, 2] # row 2, column 2
+
+## ill & non-exposed: row 1, column 2
+pork_prop[1, 2]
+
+## compute the risk ratio
+pork_rr <- pork_prop[2, 2] / pork_prop[1, 2]
+pork_rr
+```
+
+Note the use of the syntax `[rows, columns]` to subset specific rows and columns
+of 2-dimensional objects.
+
+
+### Multiple variables
+
+In the example above, we have computed the risk ratio using a simple recipe:
+
+1. select a contingency table
+2. convert raw numbers to proportions (using `prop.table`)
+3. isolating the risks in exposed and non-exposed groups, and compute their
+   ratio
+
+Repeating these tasks manually for all variables in `food` would be
+cumbersome. As an alternative, we can define the steps above as `function`,
+i.e. a generic recipe which we can then apply to any contingency table. This new
+function will be called `risk_ratio`, and is defined as follows:
+```{r stegen_risk_ratio_function}
+risk_ratio <- function(tab) { # 'tab' is a placeholder for the input 2x2 table
+  ## compute table of proportions
+  tab_prop <- prop.table(tab, margin = 1)
+  
+  ## compute the risk ratio
+  result <- tab_prop[2, 2] / tab_prop[1, 2]
+
+  ## return the output
+  return(result) # this will be the output of the function
+}
+```
+
+We can now try this function on any of the tables in `food_tables`, for instance:
+```{r rr_demo}
+food_tables$pork
+risk_ratio(food_tables$pork)
+```
+
+And we can now apply this function sequentially to all variables in `food` as
+before, using `lapply` (we show only the first few values):
+
+```{r stegen_all_rr, echo = 1:2, eval = -2}
+all_rr <- lapply(food_tables, risk_ratio)
+all_rr
+head(all_rr)
+```
+
+Finally, we re-shape these results into a numeric `vector` (using `unlist)` for
+further plotting; note that for this graph, the basic system is easier to use
+than `ggplot2`:
+```{r stegen_rr_plot}
+## convert results from list to numeric vector
+rr_data <- unlist(all_rr)
+rr_data
+
+## sort results by decreasing order
+rr_data <- sort(rr_data, decreasing = TRUE)
+
+## plot using the basic system
+par(mar = c(5, 7, 4, 1)) # change margins
+barplot(rr_data, horiz = TRUE, las = 1,
+        xlab = "Risk ratio",
+        col = heat.colors(15), # add colors
+        main = "Risk ratio by food exposure")
+abline(v = 1, lty = 2) # add vertical line x = 1
+```
+
+The results are a lot clearer now: the tiramisu is by far the largest risk
+factor in this outbreak.
+
+
 
 
 # Conclusion
 
+This case study illustrated how **R** can be used to import data, clean them,
+and derive basic summaries for a first glance at the data. It also showed how to
+generate graphics using `ggplot2`, and how to detect associations between
+several potential risk factors and the occurrence of illness. One major caveat
+here is that we are not accounting for potential confounding factors. These will
+be treated in a separate case study, which will focus on the use of logistic
+regression in epidemic studies.
+
+
 
 <br>
+<br>
+<br>
+
+
+
 
 # About this document
 
@@ -614,7 +801,7 @@ based on an investigation conducted by Anja Hauri, RKI, Berlin, 1998.
 
 - adaptation for EPIET module: Alicia Barrasa, Ioannis Karagiannis
 
-- translation to R: Alexander Spina, Patrick Keating, Janetta Skarp, Zhian N. Kamvar, Thibaut Jombart
+- rewriting for R: Alexander Spina, Patrick Keating, Janetta Skarp, Zhian N. Kamvar, Thibaut Jombart
 
 
 Contributions are welcome via [pull
