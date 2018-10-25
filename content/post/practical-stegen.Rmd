@@ -520,6 +520,57 @@ is the topic of the next and final section.
 
 
 
+# Looking for the culprits
+
+## Univariate tests
+
+Methods for testing the association between two variables can be broken down in 3 types,
+depending on which types these variables are:
+
+1. **2 quantitative variables**: Pearson's correlation coefficient ($r$) and similar
+  methods
+2. **1 quantitative, 1 categorical**: ANOVA types of approaches; particular case with
+  2 groups: Student's$t$-test
+3. **2 categorical variables**: Chi-squared test on the 2x2 table
+  (a.k.a. *contingency* table) and similar methods (e.g. Fisher's exact test)
+
+
+We can use these approaches to test if the disease is linked to any of the other
+recorded variables. As illness itself is a categorical variable, only approaches
+of type 2 and 3 will be illustrated here.
+
+
+### Is illness linked to age?
+
+We can use the function `t.test` to test if the average age is different across
+illness status. As this test assumes that the two categories exhibit similar
+variation, we first ensure that the variances are comparable using Bartlett's
+test. The syntax`variable ~ group` is used to indicate the variable of interest (left hand-side), and the group
+ (right hand-side):
+
+```{r stegen_bartlett_test}
+bartlett.test(stegen$age ~ stegen$ill)
+```
+
+The resulting p-value (`r round(bartlett.test(stegen$age ~ stegen$ill)["p.value"], 3)`) suggests the variances are indeed comparable. Wecan thus proceed to a $t$-test:
+
+
+```{r stegen_bartlett_test}
+t.test(stegen$age ~ stegen$ill, var.equal = TRUE)
+```
+
+The p-value of `r round(t.test(stegen$age ~ stegen$ill, var.equal = TRUE)["p.value"], 3)` confirms the previous graphics: the illness does not seem to be linked to age.
+
+
+
+
+## Making multiple tests
+
+
+
+# Conclusion
+
+
 <br>
 
 # About this document
