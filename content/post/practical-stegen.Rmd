@@ -89,7 +89,7 @@ analysis using **R**, including:
 
 
 
-# First look at the data
+# Initial data processing
 
 ## Loading required packages
 
@@ -109,6 +109,7 @@ library(readxl) # read xlsx files
 library(incidence) # make epicurves
 library(epitrix) # clean labels and variables
 library(dplyr) # general data handling
+library(ggplot2) # advanced graphics
 ```
 
 Note that you will get an error if the packages have not been installed on your
@@ -118,6 +119,9 @@ system. To install them (you only need to do this once!), type:
 install.packages("here")
 install.packages("readxl")
 install.packages("incidence")
+install.packages("epitrix")
+install.packages("dplyr")
+install.packages("ggplot2")
 ```
 
 
@@ -196,6 +200,19 @@ We can now try and summarise the dataset using:
 ```{r stegen_summary}
 summary(stegen)
 ```
+
+Note that binary variables, when treated as numeric values (0/1), are summarised
+at such, which may not always be useful. As an alternative, `table` can be used
+to list all possible values of a variable, and count how many time each value
+appears in the data. For instance, we can compare the `summary` and `table` for
+consumption of `tiramisu`:
+```{r stegen_summary_table}
+stegen$tiramisu # all values
+summary(stegen$tiramisu) # summary
+table(stegen$tiramisu) # table
+```
+
+
 Good news: the dataset has the expected dimensions, and all the relevant
 variables seem to be present. There are, however, a few issues: 
 
@@ -228,11 +245,12 @@ new_labels # check the result
 names(stegen) <- new_labels
 ```
 
-We set convert the unique identifiers to character strings (`character`), and
-sex to a categorical variable (`factor`):
+We set convert the unique identifiers to character strings (`character`), dates
+of onset to actual `Date` objects, and sex to a categorical variable (`factor`):
 ```{r stegen_unique_ids}
 stegen$unique_key <- as.character(stegen$unique_key)
 stegen$sex <- factor(stegen$sex)
+stegen$date_onset <- as.Date(stegen$date_onset)
 ```
 
 And we use the function `recode` from the `dplyr' package to recode `sex` more
@@ -242,8 +260,114 @@ stegen$sex <- recode_factor(stegen$sex, "0" = "male", "1" = "female")
 ```
 
 
+We now have a cleaner dataset:
 
-## Graphics
+```{r stegen_cleaner_data}
+stegen
+```
+
+We can save it for further records, as a `csv` file:
+```{r stegen_save_data, eval = FALSE}
+out_path <- here("data", "stegen_clean.csv")
+write.csv(stegen, file = out_path)
+```
+
+
+
+# Data exploration
+
+## Summaries of ge and sex distribution
+
+We can have a brief look at age and sex distributions using some basic
+summaries; for instance:
+```{r stegen_age_sex}
+summary(stegen$age) # age stats
+summary(stegen$sex) # gender distribution
+tapply(stegen$age, stegen$sex, summary) # age stats by gender      
+```
+
+<div class="container">
+<p>**Going further** click on the button below to learn about `tapply`:</p>
+  <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#stegen_help_2">Tell me more</button>
+  <div id="stegen_help_2" class="collapse">
+
+`tapply` is a very handy function to stratify any kind of analyses. You will
+find more details by reading the documentation of the functiton `?tapply`, but
+briefly, the syntax to be used is `tapply(input_data, stratification,
+function_to_use, optional_arguments)`. In the command used above:
+```{r eval = FALSE}
+tapply(stegen$age, stegen$sex, summary)
+```
+
+this literally means: select the age variable in the dataset `stegen`
+(`stegen$age`), stratify it by sex (`stegen$sex`), and summaries each strata
+(`summary`). So for instance, to get the average age by sex (function `mean`), one could use:
+```{r stegen_age_per_sex}
+tapply(stegen$age, stegen$sex, mean, na.rm = TRUE)
+```
+Here we illustrate that further arguments to the function can be passed as extra
+arguments; here, `na.rm = TRUE` means "ignore missing data".
+
+</div>
+</div>
+
+
+
+## Graphical exploration
+
+The summaries above may be useful for reporting purposes, but graphics are
+usually better for getting a feel for the data. Here, we illustrate how the
+package `ggplot2` can be used to derive informative graphics of age/sex
+distribution. It implements an alternative graphics system to the basic **R**
+plots, in which the plot is built by adding (literally using `+`) different
+layers of information, using:
+
+- `ggplot()` to specify the dataset to use
+- `geom_...()` functions which define a type of graphics to use (e.g. barplot, histogram)
+- `aes()` to map elements of the data into aesthetic properties (e.g. x/y axes, color, shape)
+
+For instance, to get an histogram of age:
+
+```{r stegen_histogram}
+ggplot(stegen) + geom_histogram(aes(x = age))
+```
+
+Color can be added using:
+```{r stegen_histogram_sex}
+ggplot(stegen) + geom_histogram(aes(x = age, fill = sex))
+```
+
+
+
+<div class="container">
+<p>**Going further** click on the button below to learn about customising `ggplot2` graphics:</p>
+  <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#stegen_help_3">Tell me more</button>
+  <div id="stegen_help_3" class="collapse">
+
+`ggplot2` graphics are highly customisable, and a lot of help and examples can
+be found online. The [official website](https://ggplot2.tidyverse.org/) is a good place to start.
+
+For instance, here we:
+
+- add white borders to the plot (`color = "white"`)
+- specify colors manually for male / female, using specified color codes (see
+  [html color picker](https://www.w3schools.com/colors/colors_picker.asp) to
+  define your own colors) (`scale_fill_manual(...)`)
+- adding labels for title, *x* and *y* axes (`labs()`)
+- specify a lighter general color theme, using Times font of a larger size by default (`theme_light(...)`)
+- move the legend inside the plot (`theme(...)`)
+
+```{r stegen_ggplot2_custom}
+ggplot(stegen) + geom_histogram(aes(x = age, fill = sex), color = "white") +
+  scale_fill_manual(values = c(male = "#4775d1", female = "#cc6699")) +
+  labs(title = "Age distribution by gender", x = "Age (years)", y = "Number of cases") +
+  theme_light(base_family = "Times", base_size = 16) +
+  theme(legend.position = c(0.8, 0.8))
+```
+
+</div>
+</div>
+
 
 
 ```{r stegen-8, eval = FALSE}
@@ -286,3 +410,6 @@ requests](https://github.com/reconhub/learn/pulls). The source file can be found
 
 **License**: [CC-BY](https://creativecommons.org/licenses/by/3.0/)
 **Copyright**: 2018 
+
+<br>
+<br>
