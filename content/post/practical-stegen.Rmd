@@ -2,7 +2,7 @@
 title: "An outbreak of gastroenteritis in Stegen, Germany, June 1998"
 author: "Janetta Skarp, Zhian N. Kamvar, Alexander Spina, Patrick Keating and Thibaut Jombart"
 authors: ["Thibaut Jombart", "Janetta Skarp", "Zhian N. Kamvar", "Alexander Spina", "Patrick Keating"]
-categories:
+categories: "case study"
 tags: ["level: beginner", "epicurve", "single variable analysis", "2x2 tables", "gastroenteritis"]
 date: 2018-10-24
 slug: stegen
@@ -20,11 +20,11 @@ knitr::opts_chunk$set(echo = TRUE)
 On 26 June 1998, the St Sebastian High School in Stegen (school A), Germany,
 celebrated a graduation party, where 250 to 350 participants were
 expected. Attendants included graduates from that school, their families and
-friends, teachers, 12th grade students and some graduates from a nearby school
+friends, teachers, 12th grade students, and some graduates from a nearby school
 (school B).
 
 A self-service party buffet was supplied by a commercial caterer in
-Freiburg. Food was prepared the day of the party and transported in a
+Freiburg. Food was prepared on the day of the party and transported in a
 refrigerated van to the school.
 
 Festivities started with a dinner buffet open from 8.30 pm onwards and were
@@ -54,101 +54,206 @@ brown chocolate mousse, caramel cream, remoulade sauce, yoghurt dill sauce, and
 
 The Freiburg health office requested help from the RKI in the investigation to
 assess the magnitude of the outbreak and identify potential vehicle(s) and risk
-factors for transmission in order to better control the outbreak
+factors for transmission in order to better control the outbreak.
 
 
 
-## The study
+## The epidemiological study
 
-Cases were defined as any person who had attended the party at St Sebastian High
-School who suffered from diarrhoea (min. 3 loose stool for 24 hours) between 27
-June and 29 June 1998; or who suffered from at least three of the following
-symptoms: vomiting, fever over 38.5° C, nausea, abdominal pain, headache.
+**Case definition**: cases were defined as any person who had attended the party
+at St Sebastian High School and who suffered from *diarrhoea* (min. 3 loose
+stool for 24 hours) between 27 June and 29 June 1998, or from at least three of
+the following symptoms: *vomiting*, *fever over 38.5° C*, *nausea*, 
+*abdominal pain*, *headache*.
 
 Students from both schools attending the party were asked through phone
 interviews to provide names of persons who attended the party.
 
-Overall, 291 responded to enquiries and 103 cases were identified.
+Overall, 291 responded to enquiries and 103 cases were identified. The linelist
+analysed in this case study was built from these 291 responses.
+
+
+## This case study
+
+In this case study, we will take you through the analysis of this epidemic. This
+will be the occasion to illustrate more generally useful practices for data
+analysis using **R**, including:
+
+- how to read data from Excel
+- how to explore data using tables and summaries
+- how to clean data
+- how to make graphics to describe the data
+- how to test if specific food items are linked to the disease
+
 
 
 
 
 # First look at the data
 
+## Loading required packages
+
+The following packages will be used in the case study:
+
+- `here`: to find the path to data or script files
+- `readxl`: to read Excel spreadsheets into **R**
+- `incidence`: to build epicurves
+
+To avoid having to specify the name of the package whenever we use a function
+using the syntax `package_name::function_name()`, we load these packages using
+`library`:
+
+```{r stegen_libraries}
+library(here) # find data/script files
+library(readxl) # read xlsx files
+library(incidence) # make epicurves
+library(epitrix) # clean labels and variables
+library(dplyr) # general data handling
+```
+
+Note that you will get an error if the packages have not been installed on your
+system. To install them (you only need to do this once!), type:
+
+```{r stegen_install_libraries, eval = FALSE}
+install.packages("here")
+install.packages("readxl")
+install.packages("incidence")
+```
+
+
+Loading these packages makes all functions implemented by the packages
+available, so that `function_name()` can be used directly (without the
+`package_name::` prefix). This is not a problem here as these packages do now
+implement functions with identical names.
+
+
+
 ## Importing data from Excel
+
+Linelist data can be read from various formats, including flat text files
+(e.g. `.txt`, `.csv`), other statistical software (e.g. STATA) or Excel
+spreadsheets. We illustrate the latter, which is probably the most common
+format.  We assume that the data file `stegen_raw.xlsx` has been saved in a
+`data/` folder of your project, and that your current R session is at the root
+of the project.
+
+
+Here we decompose the steps to read data in: finding the path to the data
+(`path_to_data`), using the function `read_xlsx` to read data in, and saving the
+output in a new object `stegen`:
+
+```{r eval = FALSE}
+path_to_data <- here("data", "stegen_raw.xlsx")
+stegen <- read_xlsx(path_to_data)
+```
+
+```{r stegen_read_data, results = 'hide', echo = FALSE}
+stegen <- readxl::read_xlsx(here::here("static", "data", "stegen_raw.xlsx"))
+```
+
+To print the content of the dataset, we can use either of these commands:
+```{r stegen_print_data, eval = 1}
+stegen
+View(stegen)
+```
+
+
+<div class="container">
+<p>**Problems?** In case of trouble, click on the button below to toggle additional help:</p>
+  <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#stegen_help_1">Show additional help</button>
+  <div id="stegen_help_1" class="collapse">
+
+If the above fails, you should check:
+
+- that your data file has been saved in the right folder, with the right name
+  (lower case and upper case do matter)
+- that your R session was started from the right project - if unsure, close R
+and re-open Rstudio by double-clicking on the `.Rproj` file 
+- that all packages are installed and loaded (see installation guidelines above)
+
+</div>
+</div>
+
+
+
 
 ## Overview and summaries
 
-## Graphics
+We first have a quick look at the content of the data set. The information we are looking for is:
+
+- the numbers of cases (rows) and variables (columns) in the data
+- the *name* of the variables: do they use consistent capitalisation and separators?
+- the *type* of the variables: are dates, numeric or categorical variables used when they should?
+- the *coding* of the variables: are explicit labels (e.g. `"male"`/`"female"`) used where relevant?
+
+We first check the dimensions of the `stegen` object, and the name of the variables:
+```{r stegen_dim}
+dim(stegen) # rows x columns
+names(stegen) # column labels
+```
+
+We can now try and summarise the dataset using:
+```{r stegen_summary}
+summary(stegen)
+```
+Good news: the dataset has the expected dimensions, and all the relevant
+variables seem to be present. There are, however, a few issues: 
+
+1. variable names are a bit messy, and include different separators, spaces, and
+  irregular capitalisation
+2. variable types are partly wrong: 
+    - *unique keys* should be `character` (i.e. character strings)
+    - *dates of onset* should be `Date` (**R** is good at handling actual dates)
+    - *sex* should be a `factor` (i.e. a categorical variable)
+3. labels used in some variables are ambiguous:
+    - *sex* should be coded explicitely, not as 0 (here, male) and 1 (here,
+      female)
+
 
 ## Data cleaning
 
+While it is tempting to go back to the Excel spreadsheet to fix issues with
+data, it is almost always quicker and more reliable to clean data in **R**
+directly. Here, we make a copy of the old data set, and clean `stegen` before
+further analysis.
 
-
-```{r stegen-4, eval = FALSE}
-stegen_data <- read.csv(here::here("data", "stegen_raw.csv"), stringsAsFactors = FALSE)
+```{r stegen_old}
+stegen_old <- stegen # save 'dirty data'
 ```
 
-```{r stegen-4.1, results = 'hide', echo = FALSE}
-stegen_data <- read.csv(here::here("static", "data", "stegen_raw.csv"), stringsAsFactors = FALSE)
+We use `epitrix`'s function `clean_labels` to standardise the variable names:
+```{r stegen_clean_labels}
+new_labels <- clean_labels(names(stegen)) # generate standardised labels
+new_labels # check the result
+names(stegen) <- new_labels
 ```
 
-</details>
-
-<details>
-<summary> <b> c) Browse your dataset </b> </summary>
-
-*RStudio* has the nice feature that everything is in one browser window, so you
-can browse your dataset and your code without having to switch between browser
-windows.
-
-```{r stegen-5, eval = FALSE}
-# to browse your data, use the View command
-View(stegen_data)
+We set convert the unique identifiers to character strings (`character`), and
+sex to a categorical variable (`factor`):
+```{r stegen_unique_ids}
+stegen$unique_key <- as.character(stegen$unique_key)
+stegen$sex <- factor(stegen$sex)
 ```
 
-Alternatively, you can also view your dataset by clicking on **stegen_data** in
-the top right "global environment" panel of your *RStudio* browser.  Your global
-environment is where you can see all the datasets, functions and other things
-you have loaded in the current session.
-
-</details>
-
-<details>
-<summary> <b> d) Recode data </b> </summary>
-
-Use the "describe" command to assess your data and identify variables with
-missing values. The describe command showed that the variables salmon, pork and
-horseradish have a few records with a value of 9. These need to be recoded to
-NA.
-
-* Using the square brackets "`[...]`" after a variable allows you to subset for certain observations. To recode values of 9 to NA for the pork variable, select observations where pork **(`stegen_data$pork`)** is equal to 9 **`[stegen_data$pork == 9]`** and set these observations equal to NA 
-    
-* Always use the double equals "`==`" within square brackets; this a logical (Boolean) operator
-
-* Use "`!=`" when you want to write "not equal to"
-
-```{r stegen-8, eval = TRUE}
-# The first line below is read as follows:  assign a value of NA to stegen_data$pork WHERE stegen_data$pork is equal to 9
-stegen_data$pork[stegen_data$pork == 9] <- NA
-
-stegen_data$salmon[stegen_data$salmon == 9] <- NA
-
-stegen_data$horseradish[stegen_data$horseradish == 9] <- NA
+And we use the function `recode` from the `dplyr' package to recode `sex` more
+explicitely:
+```{r stegen_recode}
+stegen$sex <- recode_factor(stegen$sex, "0" = "male", "1" = "female")
 ```
 
-</details>
 
-<details>
-<summary> <b> e) Save your new dataset </b> </summary>
 
-```{r stegen-10, eval = FALSE}
-write.csv(stegen_data, file = here::here("data", "stegen_clean.csv"))
+## Graphics
+
+
+```{r stegen-8, eval = FALSE}
+# The first line below is read as follows:  assign a value of NA to stegen$pork WHERE stegen$pork is equal to 9
+stegen$pork[stegen$pork == 9] <- NA
+
+stegen$salmon[stegen$salmon == 9] <- NA
+
+stegen$horseradish[stegen$horseradish == 9] <- NA
 ```
-
-</details>
-
-
 
 
 <br>
