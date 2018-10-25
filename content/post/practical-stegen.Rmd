@@ -164,7 +164,8 @@ View(stegen)
 
 <div class="container">
 <p>**Problems?** In case of trouble, click on the button below to toggle additional help:</p>
-  <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#stegen_help_1">Show additional help</button>
+<p>
+<button type="button" class="btn btn-info" data-toggle="collapse" data-target="#stegen_help_1">Show additional help</button>
   <div id="stegen_help_1" class="collapse">
 
 If the above fails, you should check:
@@ -175,6 +176,7 @@ If the above fails, you should check:
 and re-open Rstudio by double-clicking on the `.Rproj` file 
 - that all packages are installed and loaded (see installation guidelines above)
 
+</p>
 </div>
 </div>
 
@@ -213,8 +215,8 @@ table(stegen$tiramisu) # table
 ```
 
 
-Good news: the dataset has the expected dimensions, and all the relevant
-variables seem to be present. There are, however, a few issues: 
+**Good news**: the dataset has the expected dimensions, and all the relevant
+variables seem to be present. There are, however, **a few issues**: 
 
 1. variable names are a bit messy, and include different separators, spaces, and
   irregular capitalisation
@@ -225,6 +227,7 @@ variables seem to be present. There are, however, a few issues:
 3. labels used in some variables are ambiguous:
     - *sex* should be coded explicitely, not as 0 (here, male) and 1 (here,
       female)
+4. some binary variables have maximum values of 9 (see `summary(stegen)`)
 
 
 ## Data cleaning
@@ -253,24 +256,76 @@ stegen$sex <- factor(stegen$sex)
 stegen$date_onset <- as.Date(stegen$date_onset)
 ```
 
-And we use the function `recode` from the `dplyr' package to recode `sex` more
+We use the function `recode` from the `dplyr' package to recode `sex` more
 explicitely:
 ```{r stegen_recode}
 stegen$sex <- recode_factor(stegen$sex, "0" = "male", "1" = "female")
 ```
 
 
-We now have a cleaner dataset:
+Finally we look in more depth into these variables having maximum values of 9,
+where we expect 0/1; `table` is useful to list all values taken by a variable,
+and listing their frequencies:
 
-```{r stegen_cleaner_data}
-stegen
+```{r stegen_nines}
+
+table(stegen$pork)
+table(stegen$salmon)
+table(stegen$horseradish)
+
 ```
 
-We can save it for further records, as a `csv` file:
-```{r stegen_save_data, eval = FALSE}
-out_path <- here("data", "stegen_clean.csv")
-write.csv(stegen, file = out_path)
+The only rogue values are `9`; they are likely either data entry issues, or
+missing data, which in **R** should be coded as `NA` ("not available"). We can
+replace these values using:
+
+```{r stegen_replace_9}
+stegen$pork[stegen$pork == 9] <- NA
+stegen$salmon[stegen$salmon == 9] <- NA
+stegen$horseradish[stegen$horseradish == 9] <- NA
 ```
+
+
+<div class="container">
+<p>**Going further** click on the button below for more explanation:</p>
+
+<button type="button" class="btn btn-info" data-toggle="collapse" data-target="#stegen_help_2">Why does this work?</button>
+  <div id="stegen_help_2" class="collapse">
+
+<p>
+There are several things going on in a command like:
+```{r eval = FALSE}
+stegen$pork[stegen$pork == 9] <- NA
+```
+
+let us break them down:
+
+1. `stegen$pork` means "get the variable called `pork` in the dataset `stegen`"
+2. `[...]` subset the vector according to `...`; if `...` is a series of
+   `TRUE/FALSE` values, only entries corresponding to `TRUE` are retained
+3. `... == 9` for each value of `...`  test if it is equal to `9`, and return `TRUE` if so (`FALSE` otherwise) 
+4. `... <- NA` replace `...` with `NA` (missing value)
+
+in other words: "isolate the entries of `stegen$pork` which equal `9`, and
+replace them with `NA`; here is another toy example to illustrate the procedure:
+
+```{r stegen_subset}
+## make toy input vector
+toy_vector <- 1:5
+toy_vector
+
+## make toy logical vector for subsetting
+toy_logical <- c(FALSE, TRUE, TRUE, FALSE, TRUE)
+toy_logical
+toy_vector[toy_logical] # subset values
+toy_vector[toy_logical] <- 0 # replace subset values
+toy_vector # check outcome
+
+```
+
+</p>
+</div>
+</div>
 
 
 
@@ -288,11 +343,13 @@ tapply(stegen$age, stegen$sex, summary) # age stats by gender
 
 <div class="container">
 <p>**Going further** click on the button below to learn about `tapply`:</p>
-  <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#stegen_help_2">Tell me more</button>
-  <div id="stegen_help_2" class="collapse">
+  <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#stegen_help_3">More about `tapply`</button>
+  <div id="stegen_help_3" class="collapse">
+
+<p>
 
 `tapply` is a very handy function to stratify any kind of analyses. You will
-find more details by reading the documentation of the functiton `?tapply`, but
+find more details by reading the documentation of the function `?tapply`, but
 briefly, the syntax to be used is `tapply(input_data, stratification,
 function_to_use, optional_arguments)`. In the command used above:
 ```{r eval = FALSE}
@@ -307,6 +364,8 @@ tapply(stegen$age, stegen$sex, mean, na.rm = TRUE)
 ```
 Here we illustrate that further arguments to the function can be passed as extra
 arguments; here, `na.rm = TRUE` means "ignore missing data".
+
+</p>
 
 </div>
 </div>
@@ -341,8 +400,10 @@ ggplot(stegen) + geom_histogram(aes(x = age, fill = sex))
 
 <div class="container">
 <p>**Going further** click on the button below to learn about customising `ggplot2` graphics:</p>
-  <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#stegen_help_3">Tell me more</button>
-  <div id="stegen_help_3" class="collapse">
+  <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#stegen_help_4">More on `ggplot2`</button>
+  <div id="stegen_help_4" class="collapse">
+
+<p>
 
 `ggplot2` graphics are highly customisable, and a lot of help and examples can
 be found online. The [official website](https://ggplot2.tidyverse.org/) is a good place to start.
@@ -365,19 +426,10 @@ ggplot(stegen) + geom_histogram(aes(x = age, fill = sex), color = "white") +
   theme(legend.position = c(0.8, 0.8))
 ```
 
+</p>
+
 </div>
 </div>
-
-
-
-```{r stegen-8, eval = FALSE}
-# The first line below is read as follows:  assign a value of NA to stegen$pork WHERE stegen$pork is equal to 9
-stegen$pork[stegen$pork == 9] <- NA
-
-stegen$salmon[stegen$salmon == 9] <- NA
-
-stegen$horseradish[stegen$horseradish == 9] <- NA
-```
 
 
 <br>
