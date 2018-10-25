@@ -552,16 +552,42 @@ test. The syntax`variable ~ group` is used to indicate the variable of interest 
 bartlett.test(stegen$age ~ stegen$ill)
 ```
 
-The resulting p-value (`r round(bartlett.test(stegen$age ~ stegen$ill)["p.value"], 3)`) suggests the variances are indeed comparable. Wecan thus proceed to a $t$-test:
+The resulting p-value (`r round(bartlett.test(stegen$age ~ stegen$ill)[["p.value"]], 3)`) suggests the variances are indeed comparable. Wecan thus proceed to a $t$-test:
 
 
 ```{r stegen_bartlett_test}
 t.test(stegen$age ~ stegen$ill, var.equal = TRUE)
 ```
 
-The p-value of `r round(t.test(stegen$age ~ stegen$ill, var.equal = TRUE)["p.value"], 3)` confirms the previous graphics: the illness does not seem to be linked to age.
+The p-value of `r round(t.test(stegen$age ~ stegen$ill, var.equal = TRUE)[["p.value"]], 3)` confirms the previous graphics: the illness does not seem to be linked to age.
 
 
+
+### Is illness linked to gender?
+
+To test the association between gender and illness (2 categorical variables), we
+first build a 2-by-2 (contingency) table, using:
+
+```{r stegen_2by2}
+tab_ill_sex <- table(stegen$ill, stegen$sex)
+tab_ill_sex
+```
+
+Note that proportions can be obtained using `prop.table`:
+```{r stegen_prop_table}
+## basic proportions
+prop.table(tab_ill_sex)
+
+## expressed in %, rounded:
+round(100 * prop.table(tab_ill_sex))
+```
+
+Once a contingency table has been built, the Chi-square test can be run using `chisq.test`:
+```{r stegen_chisq}
+chisq.test(tab_ill_sex)
+```
+
+Here, the p-value of `r round(chisq.test(tab_ill_sex)[["p.value"]], 3)` suggests illness is not related to sex either.
 
 
 ## Making multiple tests
