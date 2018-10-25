@@ -12,7 +12,7 @@ showonlyimage: true
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, collapse = TRUE, warning = FALSE)
 ```
 
 # Context
@@ -223,10 +223,11 @@ variables seem to be present. There are, however, **a few issues**:
 2. variable types are partly wrong: 
     - *unique keys* should be `character` (i.e. character strings)
     - *dates of onset* should be `Date` (**R** is good at handling actual dates)
-    - *sex* should be a `factor` (i.e. a categorical variable)
+    - *illness* and *sex* should be `factor` (i.e. a categorical variables)
 3. labels used in some variables are ambiguous:
     - *sex* should be coded explicitely, not as 0 (here, male) and 1 (here,
       female)
+	- *illness* should be coded explicitely, not as 0 (here, non-case) and 1 (case)
 4. some binary variables have maximum values of 9 (see `summary(stegen)`)
 
 
@@ -249,10 +250,11 @@ names(stegen) <- new_labels
 ```
 
 We set convert the unique identifiers to character strings (`character`), dates
-of onset to actual `Date` objects, and sex to a categorical variable (`factor`):
+of onset to actual `Date` objects, and sex and illness are set to categorical variables (`factor`):
 ```{r stegen_unique_ids}
 stegen$unique_key <- as.character(stegen$unique_key)
 stegen$sex <- factor(stegen$sex)
+stegen$ill <- factor(stegen$ill)
 stegen$date_onset <- as.Date(stegen$date_onset)
 ```
 
@@ -260,6 +262,7 @@ We use the function `recode` from the `dplyr' package to recode `sex` more
 explicitely:
 ```{r stegen_recode}
 stegen$sex <- recode_factor(stegen$sex, "0" = "male", "1" = "female")
+stegen$ill <- recode_factor(stegen$ill, "0" = "non case", "1" = "case")
 ```
 
 
@@ -331,7 +334,8 @@ toy_vector # check outcome
 
 # Data exploration
 
-## Summaries of ge and sex distribution
+
+## Summaries of age and sex distribution
 
 We can have a brief look at age and sex distributions using some basic
 summaries; for instance:
@@ -396,6 +400,7 @@ Color can be added using:
 ggplot(stegen) + geom_histogram(aes(x = age, fill = sex))
 ```
 
+Here, the age distribution is pretty much identical between male and female.
 
 
 <div class="container">
@@ -430,6 +435,80 @@ ggplot(stegen) + geom_histogram(aes(x = age, fill = sex), color = "white") +
 
 </div>
 </div>
+
+
+## Epidemic curve
+
+Incidence curves can be built using the package `incidence`, which will compute
+the number of new cases given a vector of dates (here, onset) and a time
+interval (1 day by default). We use the function `incidence` to achieve this, and
+then visualise the results:
+
+```{r stegen_incidence}
+i <- incidence(stegen$date_onset)
+i
+plot(i)
+```
+
+Details of the case counts can be obtained using:
+```{r stegen_case_counts}
+as.data.frame(i)
+```
+
+Note that the plots produced by `incidence` are `ggplot2` objects, so that the
+options seen before can be used for further customisation.
+
+
+
+<div class="container">
+<p>**Going further** click on the button below to learn about `incidence`:</p>
+  <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#stegen_help_5">More on `incidence`</button>
+  <div id="stegen_help_5" class="collapse">
+
+<p>
+
+More information on the `incidence` package can be found from the
+[dedicated website](https://www.repidemicsconsortium.org/incidence/). Here, we illustrate how incidence can be stratified e.g. gender:
+
+```{r incidence_stratified}
+i_sex <- incidence(stegen$date_onset, group = stegen$sex)
+i_sex
+as.data.frame(i_sex)
+plot(i_sex)
+```
+
+We can also customise this graphic like other `ggplot2` plots (see [this tutorial](https://www.repidemicsconsortium.org/incidence/articles/customize_plot.html) for more):
+
+```{r incidence_stratified_custom}
+plot(i_sex, border = "white") + scale_fill_manual(values = c(male = "#4775d1", female = "#cc6699")) +
+  labs(title = "Epicurve by gender", x = "Date of onset", y = "Number of cases") +
+  theme_light(base_family = "Times", base_size = 16) +
+  theme(legend.position = c(0.8, 0.8), axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+</p>
+
+</div>
+</div>
+
+
+
+## Age and gender distribution of the cases
+
+We use the same principles as before to visualise the distribution of illness by
+age and gender. To split the plot into different panels according to `sex`, we
+use `facet_grid()` (see previous extra info on `ggplot2` customisation for
+further details otions):
+
+```{r stegen_case_age_sex}
+ggplot(stegen) + geom_histogram(aes(x = age, fill = ill)) +
+  scale_fill_manual("Illness", values = c("non case" = "#66cc99", "case" = "#990033")) +
+  facet_grid(sex ~ .) + labs(title = "Cases by age and gender") + theme_light()
+```
+
+Illness does not seem to be depending on age or gender. This can be tested: this
+is the topic of the next and final section.
+
 
 
 <br>
