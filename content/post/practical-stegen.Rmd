@@ -455,9 +455,25 @@ Details of the case counts can be obtained using:
 as.data.frame(i)
 ```
 
-Note that the plots produced by `incidence` are `ggplot2` objects, so that the
-options seen before can be used for further customisation.
+How long is this outbreak? It looks like most cases occurred over the course of
+3 days, but that cases kept showing up 10 days after the peak. Is this true? Not
+really. Stratifying the epidemic curve by case definition will clarify the
+situation:
 
+```{r incidence_stratified}
+i_ill <- incidence(stegen$date_onset, group = stegen$ill)
+i_ill
+as.data.frame(i_ill)
+plot(i_ill, color = c("non case" = "#66cc99", "case" = "#990033"))
+```
+
+The outbreak really only happened over 3 days: onsets reported after did not
+match the epi case definition. This is compatible with a food-borne outbreak
+with limited or no person-to-person transmission.
+
+
+Note that the plots produced by `incidence` are `ggplot2` objects, so that the
+options seen before can be used for further customisation (see below).
 
 
 <div class="container">
@@ -468,19 +484,12 @@ options seen before can be used for further customisation.
 <p>
 
 More information on the `incidence` package can be found from the
-[dedicated website](https://www.repidemicsconsortium.org/incidence/). Here, we illustrate how incidence can be stratified e.g. gender:
-
-```{r incidence_stratified}
-i_sex <- incidence(stegen$date_onset, group = stegen$sex)
-i_sex
-as.data.frame(i_sex)
-plot(i_sex)
-```
+[dedicated website](https://www.repidemicsconsortium.org/incidence/). Here, we illustrate how incidence can be stratified e.g. by case definition:
 
 We can also customise this graphic like other `ggplot2` plots (see [this tutorial](https://www.repidemicsconsortium.org/incidence/articles/customize_plot.html) for more):
 
 ```{r incidence_stratified_custom}
-plot(i_sex, border = "white") + scale_fill_manual(values = c(male = "#4775d1", female = "#cc6699")) +
+plot(i_ill, border = "white") + scale_fill_manual(values = c(male = "#4775d1", female = "#cc6699")) +
   labs(title = "Epicurve by gender", x = "Date of onset", y = "Number of cases") +
   theme_light(base_family = "Times", base_size = 16) +
   theme(legend.position = c(0.8, 0.8), axis.text.x = element_text(angle = 45, hjust = 1))
