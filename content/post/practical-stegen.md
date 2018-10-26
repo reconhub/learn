@@ -162,8 +162,8 @@ stegen
 
 <div class="container">
 
-> **Problems?** In case of trouble, click here to toggle additional
-> help:
+**Problems?** In case of trouble, click here to toggle additional
+help:
 
 <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#stegen_help_1">
 
