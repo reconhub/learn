@@ -12,6 +12,8 @@ Here is an attempt at collapse button, taken from:
 
 <https://www.w3schools.com/bootstrap/tryit.asp?filename=trybs_collapsible&stacked=h>
 
+<!-- This one will work: -->
+
 <!-- <div class="container"> -->
 <!--   <h2>Simple Collapsible</h2> -->
 <!--   <p>Click on the button to toggle between showing and hiding content.</p> -->
