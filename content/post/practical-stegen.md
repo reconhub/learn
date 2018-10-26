@@ -168,11 +168,8 @@ stegen
 ```
 
 <details>
-<summary>
-<h4>
-Problems?
-</h4>
-In case of trouble, click here to toggle additional help:</summary>
+<summary><b>Problems?</b> In case of trouble, click here to toggle
+additional help:</summary>
 
 <!-- <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#stegen_help_1">Show additional help</button> -->
 <!--   <div id="stegen_help_1" class="collapse"> -->
