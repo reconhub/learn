@@ -1,7 +1,7 @@
 ---
 title: "Test collapse button"
 author: "Thibaut Jombart"
-authors: "Thibaut Jombart"
+authors: ["Thibaut Jombart"]
 date: 2018-10-24
 licenses: CC-BY
 categories: "case study"
