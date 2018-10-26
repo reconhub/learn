@@ -171,6 +171,8 @@ Show additional help
 
 </button>
 
+<p>
+
 <div id="stegen_help_1" class="collapse">
 
 If the above fails, you should check:
@@ -181,6 +183,8 @@ If the above fails, you should check:
     close R and re-open Rstudio by double-clicking on the `.Rproj` file
   - that all packages are installed and loaded (see installation
     guidelines above)
+
+</p>
 
 </div>
 
