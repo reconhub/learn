@@ -162,11 +162,12 @@ View(stegen)
 ```
 
 
-<details>
-<summary><b>Problems?</b> In case of trouble, click here to toggle additional help:</summary>
+<div class="container">
 
-<!-- <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#stegen_help_1">Show additional help</button> -->
-<!--   <div id="stegen_help_1" class="collapse"> -->
+> **Problems?** In case of trouble, click here to toggle additional help:
+
+<button type="button" class="btn btn-info" data-toggle="collapse" data-target="#stegen_help_1">Show additional help</button>
+  <div id="stegen_help_1" class="collapse">
 
 If the above fails, you should check:
 
@@ -176,8 +177,8 @@ If the above fails, you should check:
 and re-open Rstudio by double-clicking on the `.Rproj` file 
 - that all packages are installed and loaded (see installation guidelines above)
 
-</details>
-
+</div>
+</div>
 
 
 ## Overview and summaries
