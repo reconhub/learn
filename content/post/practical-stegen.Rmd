@@ -336,23 +336,26 @@ toy_vector # check outcome
 
 We can have a brief look at age and sex distributions using some basic
 summaries; for instance:
+
 ```{r stegen_age_sex}
 summary(stegen$age) # age stats
 summary(stegen$sex) # gender distribution
 tapply(stegen$age, stegen$sex, summary) # age stats by gender      
 ```
 
-<div class="container">
-<p>**Going further** click on the button below to learn about `tapply`:</p>
-  <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#stegen_help_3">More about `tapply`</button>
-  <div id="stegen_help_3" class="collapse">
+**Going further** click on the button below to learn about `tapply`:
 
-<p>
+<!--   <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#stegen_help_3">More about `tapply`</button> -->
+<!--   <div id="stegen_help_3" class="collapse"> -->
+
+<details>
+<summary> <b> More about <code>tapply</code> </b> </summary>
 
 `tapply` is a very handy function to stratify any kind of analyses. You will
 find more details by reading the documentation of the function `?tapply`, but
 briefly, the syntax to be used is `tapply(input_data, stratification,
 function_to_use, optional_arguments)`. In the command used above:
+
 ```{r eval = FALSE}
 tapply(stegen$age, stegen$sex, summary)
 ```
@@ -360,16 +363,14 @@ tapply(stegen$age, stegen$sex, summary)
 this literally means: select the age variable in the dataset `stegen`
 (`stegen$age`), stratify it by sex (`stegen$sex`), and summaries each strata
 (`summary`). So for instance, to get the average age by sex (function `mean`), one could use:
+
 ```{r stegen_age_per_sex}
 tapply(stegen$age, stegen$sex, mean, na.rm = TRUE)
 ```
 Here we illustrate that further arguments to the function can be passed as extra
 arguments; here, `na.rm = TRUE` means "ignore missing data".
 
-</p>
-
-</div>
-</div>
+</details>
 
 
 
@@ -400,12 +401,13 @@ ggplot(stegen) + geom_histogram(aes(x = age, fill = sex))
 Here, the age distribution is pretty much identical between male and female.
 
 
-<div class="container">
-<p>**Going further** click on the button below to learn about customising `ggplot2` graphics:</p>
-  <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#stegen_help_4">More on `ggplot2`</button>
-  <div id="stegen_help_4" class="collapse">
+**Going further** click on the button below to learn about customising `ggplot2` graphics:
 
-<p>
+<!--   <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#stegen_help_4">More on `ggplot2`</button> -->
+<!--   <div id="stegen_help_4" class="collapse"> -->
+
+<details>
+</summary> <b> More on ggplot2 </b> </summary>
 
 `ggplot2` graphics are highly customisable, and a lot of help and examples can
 be found online. The [official website](https://ggplot2.tidyverse.org/) is a good place to start.
@@ -428,10 +430,7 @@ ggplot(stegen) + geom_histogram(aes(x = age, fill = sex), color = "white") +
   theme(legend.position = c(0.8, 0.8))
 ```
 
-</p>
-
-</div>
-</div>
+</details>
 
 
 ## Epidemic curve
@@ -448,6 +447,7 @@ plot(i)
 ```
 
 Details of the case counts can be obtained using:
+
 ```{r stegen_case_counts}
 as.data.frame(i)
 ```
@@ -473,12 +473,14 @@ Note that the plots produced by `incidence` are `ggplot2` objects, so that the
 options seen before can be used for further customisation (see below).
 
 
-<div class="container">
-<p>**Going further** click on the button below to learn about `incidence`:</p>
-  <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#stegen_help_5">More on `incidence`</button>
-  <div id="stegen_help_5" class="collapse">
+**Going further** click on the button below to learn about `incidence`:
 
-<p>
+
+<!--   <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#stegen_help_5">More on `incidence`</button> -->
+<!--   <div id="stegen_help_5" class="collapse"> -->
+
+<details>
+<summary> More on <code>incidence</code> </summary>
 
 More information on the `incidence` package can be found from the
 [dedicated website](https://www.repidemicsconsortium.org/incidence/). Here, we illustrate how incidence can be stratified e.g. by case definition:
@@ -493,10 +495,7 @@ plot(i_ill, border = "white", color = c("non case" = "#66cc99", "case" = "#99003
   theme(legend.position = c(0.8, 0.8), axis.text.x = element_text(angle = 45, hjust = 1, vjust = 0.5))
 ```
 
-</p>
-
-</div>
-</div>
+</details>
 
 
 
@@ -581,6 +580,7 @@ round(100 * prop.table(tab_ill_sex))
 ```
 
 Once a contingency table has been built, the Chi-square test can be run using `chisq.test`:
+
 ```{r stegen_chisq}
 chisq.test(tab_ill_sex)
 ```
@@ -669,18 +669,21 @@ The [risk ratio](https://en.wikipedia.org/wiki/Risk_ratio) is defined as the
 ratio between the proportion of illness in one group (typically 'exposed') vs
 another ('non-exposed'). For instance, let us consider the contingency table of
 pork consumption and illness:
+
 ```{r stegen_pork_table}
 food_tables$pork
 ```
 
 This can be turned into proportions using `prop.table`, specifying that we want
 proportions by rows (`margin = 1`):
+
 ```{r stegen_pork_prop}
 pork_prop <- prop.table(food_tables$pork, margin = 1)
 pork_prop
 ```
 
 the corresponding risk ratio is:
+
 ```{r stegen_pork_rr}
 ## ill & exposed: row 2, column 2
 pork_prop[2, 2] # row 2, column 2
@@ -710,6 +713,7 @@ Repeating these tasks manually for all variables in `food` would be
 cumbersome. As an alternative, we can define the steps above as `function`,
 i.e. a generic recipe which we can then apply to any contingency table. This new
 function will be called `risk_ratio`, and is defined as follows:
+
 ```{r stegen_risk_ratio_function}
 risk_ratio <- function(tab) { # 'tab' is a placeholder for the input 2x2 table
   ## compute table of proportions
@@ -724,6 +728,7 @@ risk_ratio <- function(tab) { # 'tab' is a placeholder for the input 2x2 table
 ```
 
 We can now try this function on any of the tables in `food_tables`, for instance:
+
 ```{r rr_demo}
 food_tables$pork
 risk_ratio(food_tables$pork)
@@ -741,6 +746,7 @@ head(all_rr)
 Finally, we re-shape these results into a numeric `vector` (using `unlist)` for
 further plotting; note that for this graph, the basic system is easier to use
 than `ggplot2`:
+
 ```{r stegen_rr_plot}
 ## convert results from list to numeric vector
 rr_data <- unlist(all_rr)

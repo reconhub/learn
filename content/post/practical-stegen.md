@@ -462,13 +462,13 @@ tapply(stegen$age, stegen$sex, summary) # age stats by gender
 ##   13.00   18.00   20.00   26.93   24.50   65.00       4
 ```
 
-<p>
 **Going further** click on the button below to learn about `tapply`:
-</p>
-<button type="button" class="btn btn-info" data-toggle="collapse" data-target="#stegen_help_3">More
-about `tapply`</button>
 
-<p>
+<!--   <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#stegen_help_3">More about `tapply`</button> -->
+<!--   <div id="stegen_help_3" class="collapse"> -->
+<details>
+<summary> <b> More about <code>tapply</code> </b> </summary>
+
 `tapply` is a very handy function to stratify any kind of analyses. You
 will find more details by reading the documentation of the function
 `?tapply`, but briefly, the syntax to be used is
@@ -493,8 +493,7 @@ tapply(stegen$age, stegen$sex, mean, na.rm = TRUE)
 Here we illustrate that further arguments to the function can be passed
 as extra arguments; here, `na.rm = TRUE` means “ignore missing data”.
 
-</p>
-
+</details>
 Graphical exploration
 ---------------------
 
@@ -532,14 +531,14 @@ ggplot(stegen) + geom_histogram(aes(x = age, fill = sex))
 Here, the age distribution is pretty much identical between male and
 female.
 
-<p>
 **Going further** click on the button below to learn about customising
 `ggplot2` graphics:
-</p>
-<button type="button" class="btn btn-info" data-toggle="collapse" data-target="#stegen_help_4">More
-on `ggplot2`</button>
 
-<p>
+<!--   <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#stegen_help_4">More on `ggplot2`</button> -->
+<!--   <div id="stegen_help_4" class="collapse"> -->
+<details>
+</summary> <b> More on ggplot2 </b> </summary>
+
 `ggplot2` graphics are highly customisable, and a lot of help and
 examples can be found online. The [official
 website](https://ggplot2.tidyverse.org/) is a good place to start.
@@ -567,8 +566,7 @@ ggplot(stegen) + geom_histogram(aes(x = age, fill = sex), color = "white") +
 
 ![](practical-stegen_files/figure-markdown_github/stegen_ggplot2_custom-1.png)
 
-</p>
-
+</details>
 Epidemic curve
 --------------
 
@@ -662,13 +660,13 @@ Note that the plots produced by `incidence` are `ggplot2` objects, so
 that the options seen before can be used for further customisation (see
 below).
 
-<p>
 **Going further** click on the button below to learn about `incidence`:
-</p>
-<button type="button" class="btn btn-info" data-toggle="collapse" data-target="#stegen_help_5">More
-on `incidence`</button>
 
-<p>
+<!--   <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#stegen_help_5">More on `incidence`</button> -->
+<!--   <div id="stegen_help_5" class="collapse"> -->
+<details>
+<summary> More on <code>incidence</code> </summary>
+
 More information on the `incidence` package can be found from the
 [dedicated website](https://www.repidemicsconsortium.org/incidence/).
 Here, we illustrate how incidence can be stratified e.g. by case
@@ -688,8 +686,7 @@ plot(i_ill, border = "white", color = c("non case" = "#66cc99", "case" = "#99003
 
 ![](practical-stegen_files/figure-markdown_github/incidence_stratified_custom-1.png)
 
-</p>
-
+</details>
 Age and gender distribution of the cases
 ----------------------------------------
 
