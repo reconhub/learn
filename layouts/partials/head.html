@@ -29,12 +29,12 @@
 
     {{ if .Site.Params.RSSLink}}<link href="{{.Site.Params.RSSLink }}" rel="alternate" type="application/rss+xml" title="{{ .Site.Title }}" /> {{else}}{{ if eq .URL "/" }}<link href="{{ "index.xml" | absURL}}" rel="alternate" type="application/rss+xml" title="{{ .Site.Title }}" /> {{ end }} {{ end }}
 
-    {{ partial "mathjax-support.html" . }}
-
     <!-- addind support for bootstrap collapse buttons  -->
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    {{ partial "mathjax-support.html" . }}
+
 </head>
