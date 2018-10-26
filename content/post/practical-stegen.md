@@ -390,13 +390,13 @@ stegen$salmon[stegen$salmon == 9] <- NA
 stegen$horseradish[stegen$horseradish == 9] <- NA
 ```
 
-<p>
 **Going further** click on the button below for more explanation:
-</p>
-<button type="button" class="btn btn-info" data-toggle="collapse" data-target="#stegen_help_2">
-Why does this work?
-</button>
-<p>
+
+<details>
+<summary> <b> Why does this work? </b> </summary>
+<!-- <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#stegen_help_2">Why does this work?</button> -->
+<!--   <div id="stegen_help_2" class="collapse"> -->
+
 There are several things going on in a command like:
 
 ``` r
@@ -435,8 +435,7 @@ toy_vector # check outcome
 ## [1] 1 0 0 4 0
 ```
 
-</p>
-
+</details>
 Data exploration
 ================
 
