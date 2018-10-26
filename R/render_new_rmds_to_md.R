@@ -51,7 +51,7 @@ render_new_rmds_to_md <- function(dir = "content/post",
     for (b in to_build) {
       rmd <- b
       rmarkdown::render(rmd,
-                        rmarkdown::md_document(variant = "markdown_github",
+                        rmarkdown::md_document(variant = "gfm",
                                                preserve_yaml = TRUE ))
     }
   }else{
