@@ -55,6 +55,12 @@ pygmentsCodeFences = true
   pre = "<i class='far fa-align-justify'></i>"
   
 [[menu.main]]
+  name = "Case Studies"
+  url = "/categories/case-studies.html"
+  weight = 99
+  pre = "<i class='far fa-align-justify'></i>"
+
+[[menu.main]]
   name = "Lectures"
   url = "/categories/lectures.html"
   weight = 99
