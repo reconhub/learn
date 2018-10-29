@@ -2,7 +2,7 @@
 title: "An outbreak of gastroenteritis in Stegen, Germany, June 1998"
 author: "Janetta Skarp, Zhian N. Kamvar, Alexander Spina, Patrick Keating and Thibaut Jombart"
 authors: ["Thibaut Jombart", "Janetta Skarp", "Zhian N. Kamvar", "Alexander Spina", "Patrick Keating"]
-categories: "case study"
+categories: "case studies"
 tags: ["level: beginner", "epicurve", "single variable analysis", "2x2 tables", "gastroenteritis"]
 date: 2018-10-24
 slug: stegen
@@ -160,20 +160,10 @@ stegen
 ## View(stegen)
 ```
 
-<div class="container">
+<details>
 
-**Problems?** In case of trouble, click here to toggle additional
-help:
-
-<button type="button" class="btn btn-info" data-toggle="collapse" data-target="#stegen_help_1">
-
-Show additional help
-
-</button>
-
-<p>
-
-<div id="stegen_help_1" class="collapse">
+<summary><b>Problems?</b> In case of trouble, click here to toggle
+additional help:</summary>
 
 If the above fails, you should check:
 
@@ -184,11 +174,7 @@ If the above fails, you should check:
   - that all packages are installed and loaded (see installation
     guidelines above)
 
-</p>
-
-</div>
-
-</div>
+</details>
 
 ## Overview and summaries
 
@@ -357,7 +343,7 @@ stegen$ill <- factor(stegen$ill)
 stegen$date_onset <- as.Date(stegen$date_onset)
 ```
 
-We use the function `recode` from the `dplyr' package to recode`sex\`
+We use the function `recode` from the `dplyr` package to recode `sex`
 more explicitely:
 
 ``` r
@@ -400,8 +386,6 @@ stegen$horseradish[stegen$horseradish == 9] <- NA
 <details>
 
 <summary> <b> Why does this work? </b> </summary>
-<!-- <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#stegen_help_2">Why does this work?</button> -->
-<!--   <div id="stegen_help_2" class="collapse"> -->
 
 There are several things going on in a command like:
 
@@ -467,12 +451,7 @@ tapply(stegen$age, stegen$sex, summary) # age stats by gender
 ##   13.00   18.00   20.00   26.93   24.50   65.00       4
 ```
 
-**Going further** click on the button below to learn about
-`tapply`:
-
-<!--   <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#stegen_help_3">More about `tapply`</button> -->
-
-<!--   <div id="stegen_help_3" class="collapse"> -->
+**Going further** click on the button below to learn about `tapply`:
 
 <details>
 
@@ -541,12 +520,7 @@ Here, the age distribution is pretty much identical between male and
 female.
 
 **Going further** click on the button below to learn about customising
-`ggplot2`
-graphics:
-
-<!--   <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#stegen_help_4">More on `ggplot2`</button> -->
-
-<!--   <div id="stegen_help_4" class="collapse"> -->
+`ggplot2` graphics:
 
 <details>
 
@@ -593,6 +567,7 @@ to achieve this, and then visualise the results:
 
 ``` r
 i <- incidence(stegen$date_onset)
+## 160 missing observations were removed.
 i
 ## <incidence object>
 ## [131 cases from days 1998-06-26 to 1998-07-09]
@@ -636,6 +611,7 @@ definition will clarify the situation:
 
 ``` r
 i_ill <- incidence(stegen$date_onset, group = stegen$ill)
+## 160 missing observations were removed.
 i_ill
 ## <incidence object>
 ## [131 cases from days 1998-06-26 to 1998-07-09]
@@ -676,12 +652,7 @@ Note that the plots produced by `incidence` are `ggplot2` objects, so
 that the options seen before can be used for further customisation (see
 below).
 
-**Going further** click on the button below to learn about
-`incidence`:
-
-<!--   <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#stegen_help_5">More on `incidence`</button> -->
-
-<!--   <div id="stegen_help_5" class="collapse"> -->
+**Going further** click on the button below to learn about `incidence`:
 
 <details>
 
@@ -738,7 +709,7 @@ down in 3 types, depending on which types these variables are:
 1.  **2 quantitative variables**: Pearson’s correlation coefficient
     (\(r\)) and similar methods
 2.  **1 quantitative, 1 categorical**: ANOVA types of approaches;
-    particular case with 2 groups: Student’s\(t\)-test
+    particular case with 2 groups: Student’s \(t\)-test
 3.  **2 categorical variables**: Chi-squared test on the 2x2 table
     (a.k.a. *contingency* table) and similar methods (e.g. Fisher’s
     exact test)

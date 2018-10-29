@@ -2,7 +2,7 @@
 title: "An outbreak of gastroenteritis in Stegen, Germany, June 1998"
 author: "Janetta Skarp, Zhian N. Kamvar, Alexander Spina, Patrick Keating and Thibaut Jombart"
 authors: ["Thibaut Jombart", "Janetta Skarp", "Zhian N. Kamvar", "Alexander Spina", "Patrick Keating"]
-categories: "case study"
+categories: "case studies"
 tags: ["level: beginner", "epicurve", "single variable analysis", "2x2 tables", "gastroenteritis"]
 date: 2018-10-24
 slug: stegen
@@ -162,13 +162,10 @@ View(stegen)
 ```
 
 
-<div class="container">
+<details>
 
-**Problems?** In case of trouble, click here to toggle additional help:
+<summary><b>Problems?</b> In case of trouble, click here to toggle additional help:</summary>
 
-<button type="button" class="btn btn-info" data-toggle="collapse" data-target="#stegen_help_1">Show additional help</button>
-<p>
-<div id="stegen_help_1" class="collapse">
 
 If the above fails, you should check:
 
@@ -178,9 +175,7 @@ If the above fails, you should check:
 and re-open Rstudio by double-clicking on the `.Rproj` file 
 - that all packages are installed and loaded (see installation guidelines above)
 
-</p>
-</div>
-</div>
+</details>
 
 
 ## Overview and summaries
@@ -193,12 +188,14 @@ We first have a quick look at the content of the data set. The information we ar
 - the *coding* of the variables: are explicit labels (e.g. `"male"`/`"female"`) used where relevant?
 
 We first check the dimensions of the `stegen` object, and the name of the variables:
+
 ```{r stegen_dim}
 dim(stegen) # rows x columns
 names(stegen) # column labels
 ```
 
 We can now try and summarise the dataset using:
+
 ```{r stegen_summary}
 summary(stegen)
 ```
@@ -208,6 +205,7 @@ at such, which may not always be useful. As an alternative, `table` can be used
 to list all possible values of a variable, and count how many time each value
 appears in the data. For instance, we can compare the `summary` and `table` for
 consumption of `tiramisu`:
+
 ```{r stegen_summary_table}
 stegen$tiramisu # all values
 summary(stegen$tiramisu) # summary
@@ -243,6 +241,7 @@ stegen_old <- stegen # save 'dirty data'
 ```
 
 We use `epitrix`'s function `clean_labels` to standardise the variable names:
+
 ```{r stegen_clean_labels}
 new_labels <- clean_labels(names(stegen)) # generate standardised labels
 new_labels # check the result
@@ -251,6 +250,7 @@ names(stegen) <- new_labels
 
 We set convert the unique identifiers to character strings (`character`), dates
 of onset to actual `Date` objects, and sex and illness are set to categorical variables (`factor`):
+
 ```{r stegen_unique_ids}
 stegen$unique_key <- as.character(stegen$unique_key)
 stegen$sex <- factor(stegen$sex)
@@ -258,8 +258,9 @@ stegen$ill <- factor(stegen$ill)
 stegen$date_onset <- as.Date(stegen$date_onset)
 ```
 
-We use the function `recode` from the `dplyr' package to recode `sex` more
+We use the function `recode` from the `dplyr` package to recode `sex` more
 explicitely:
+
 ```{r stegen_recode}
 stegen$sex <- recode_factor(stegen$sex, "0" = "male", "1" = "female")
 stegen$ill <- recode_factor(stegen$ill, "0" = "non case", "1" = "case")
@@ -294,8 +295,6 @@ stegen$horseradish[stegen$horseradish == 9] <- NA
 <details>
 
 <summary> <b> Why does this work? </b> </summary>
-<!-- <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#stegen_help_2">Why does this work?</button> -->
-<!--   <div id="stegen_help_2" class="collapse"> -->
 
 
 There are several things going on in a command like:
@@ -347,9 +346,6 @@ tapply(stegen$age, stegen$sex, summary) # age stats by gender
 ```
 
 **Going further** click on the button below to learn about `tapply`:
-
-<!--   <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#stegen_help_3">More about `tapply`</button> -->
-<!--   <div id="stegen_help_3" class="collapse"> -->
 
 <details>
 <summary> <b> More about <code>tapply</code> </b> </summary>
@@ -405,9 +401,6 @@ Here, the age distribution is pretty much identical between male and female.
 
 
 **Going further** click on the button below to learn about customising `ggplot2` graphics:
-
-<!--   <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#stegen_help_4">More on `ggplot2`</button> -->
-<!--   <div id="stegen_help_4" class="collapse"> -->
 
 <details>
 </summary> <b> More on ggplot2 </b> </summary>
@@ -478,10 +471,6 @@ options seen before can be used for further customisation (see below).
 
 **Going further** click on the button below to learn about `incidence`:
 
-
-<!--   <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#stegen_help_5">More on `incidence`</button> -->
-<!--   <div id="stegen_help_5" class="collapse"> -->
-
 <details>
 <summary> More on <code>incidence</code> </summary>
 
@@ -530,7 +519,7 @@ depending on which types these variables are:
 1. **2 quantitative variables**: Pearson's correlation coefficient ($r$) and similar
   methods
 2. **1 quantitative, 1 categorical**: ANOVA types of approaches; particular case with
-  2 groups: Student's$t$-test
+  2 groups: Student's $t$-test
 3. **2 categorical variables**: Chi-squared test on the 2x2 table
   (a.k.a. *contingency* table) and similar methods (e.g. Fisher's exact test)
 
@@ -574,6 +563,7 @@ tab_ill_sex
 ```
 
 Note that proportions can be obtained using `prop.table`:
+
 ```{r stegen_prop_table}
 ## basic proportions
 prop.table(tab_ill_sex)
