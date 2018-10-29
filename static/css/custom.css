@@ -49,6 +49,7 @@
 
 .kg-card-markdown {
     max-width: 1440px;
+    width: 100%;
 }
 
 .floating-header{
@@ -145,6 +146,12 @@ body, input, select, button, p {
         -ms-flex-direction: column;
         flex-direction: column;
     }
+}
+
+/* Make the Friggen Code and Details Elements Full Width */
+
+details {
+  width: 100%;
 }
 
 .highlight {
