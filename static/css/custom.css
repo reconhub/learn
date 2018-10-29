@@ -152,6 +152,8 @@ body, input, select, button, p {
 
 details {
   width: 100%;
+  color: #3d3d5c;
+  background: #ffffe0;
 }
 
 .highlight {
