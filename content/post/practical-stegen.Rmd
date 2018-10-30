@@ -95,22 +95,27 @@ analysis using **R**, including:
 
 The following packages will be used in the case study:
 
-- `here`: to find the path to data or script files
-- `readxl`: to read Excel spreadsheets into **R**
-- `incidence`: to build epicurves
+- *here*: to find the path to data or script files
+- *readxl*: to read Excel spreadsheets into **R**
+- *incidence*: to build epicurves
+- *epitrix*: to clean labels from our spreadsheet
+- dplyr: to help with factors
+- ggplot2: to create custom visualisations
 
-To avoid having to specify the name of the package whenever we use a function
-using the syntax `package_name::function_name()`, we load these packages using
-`library`:
+If we have these packages installed, we can tell R to load these packages from
+our R library:
 
 ```{r stegen_libraries, warning=FALSE, message=FALSE}
-library(here)      # find data/script files
-library(readxl)    # read xlsx files
-library(incidence) # make epicurves
-library(epitrix)   # clean labels and variables
-library(dplyr)     # general data handling
-library(ggplot2)   # advanced graphics
+library("here")      # find data/script files
+library("readxl")    # read xlsx files
+library("incidence") # make epicurves
+library("epitrix")   # clean labels and variables
+library("dplyr")     # general data handling
+library("ggplot2")   # advanced graphics
 ```
+
+<details>
+<summary> <b> Package not installed? Did you get an error? </b> </summary>
 
 Note that you will get an error if the packages have not been installed on your
 system. To install them (you only need to do this once!), type:
@@ -124,10 +129,11 @@ install.packages("dplyr")
 install.packages("ggplot2")
 ```
 
+<details>
 
 Loading these packages makes all functions implemented by the packages
 available, so that `function_name()` can be used directly (without the
-`package_name::` prefix). This is not a problem here as these packages do now
+`package_name::` prefix). This is not a problem here as these packages do not
 implement functions with identical names.
 
 
@@ -143,7 +149,7 @@ of the project.
 
 
 Here we decompose the steps to read data in: finding the path to the data
-(`path_to_data`), using the function `read_xlsx` to read data in, and saving the
+(`path_to_data`), using the function `read_xlsx()` from the *readxl* package to read data in, and saving the
 output in a new object `stegen`:
 
 ```{r eval = FALSE}
@@ -201,9 +207,9 @@ summary(stegen)
 ```
 
 Note that binary variables, when treated as numeric values (0/1), are summarised
-at such, which may not always be useful. As an alternative, `table` can be used
+at such, which may not always be useful. As an alternative, `table()` can be used
 to list all possible values of a variable, and count how many time each value
-appears in the data. For instance, we can compare the `summary` and `table` for
+appears in the data. For instance, we can compare the `summary()` and `table()` for
 consumption of `tiramisu`:
 
 ```{r stegen_summary_table}
@@ -240,7 +246,7 @@ further analysis.
 stegen_old <- stegen # save 'dirty data'
 ```
 
-We use `epitrix`'s function `clean_labels` to standardise the variable names:
+We use *epitrix*'s function `clean_labels()` to standardise the variable names:
 
 ```{r stegen_clean_labels}
 new_labels <- clean_labels(names(stegen)) # generate standardised labels
@@ -258,7 +264,7 @@ stegen$ill <- factor(stegen$ill)
 stegen$date_onset <- as.Date(stegen$date_onset)
 ```
 
-We use the function `recode` from the `dplyr` package to recode `sex` more
+We use the function `recode()` from the *dplyr* package to recode `sex` more
 explicitely:
 
 ```{r stegen_recode}
@@ -268,7 +274,7 @@ stegen$ill <- recode_factor(stegen$ill, "0" = "non case", "1" = "case")
 
 
 Finally we look in more depth into these variables having maximum values of 9,
-where we expect 0/1; `table` is useful to list all values taken by a variable,
+where we expect 0/1; `table()` is useful to list all values taken by a variable,
 and listing their frequencies:
 
 ```{r stegen_nines}
@@ -345,13 +351,13 @@ summary(stegen$sex) # gender distribution
 tapply(stegen$age, stegen$sex, summary) # age stats by gender      
 ```
 
-**Going further** click on the button below to learn about `tapply`:
+
 
 <details>
-<summary> <b> More about <code>tapply</code> </b> </summary>
+<summary> <b>Going further</b> click on the button below to learn about <code>tapply()</code>: </summary>
 
-`tapply` is a very handy function to stratify any kind of analyses. You will
-find more details by reading the documentation of the function `?tapply`, but
+`tapply()` is a very handy function to stratify any kind of analyses. You will
+find more details by reading the documentation of the function `?tapply()`, but
 briefly, the syntax to be used is `tapply(input_data, stratification,
 function_to_use, optional_arguments)`. In the command used above:
 
@@ -361,7 +367,7 @@ tapply(stegen$age, stegen$sex, summary)
 
 this literally means: select the age variable in the dataset `stegen`
 (`stegen$age`), stratify it by sex (`stegen$sex`), and summaries each strata
-(`summary`). So for instance, to get the average age by sex (function `mean`), one could use:
+(`summary()`). So for instance, to get the average age by sex (function `mean()`), one could use:
 
 ```{r stegen_age_per_sex}
 tapply(stegen$age, stegen$sex, mean, na.rm = TRUE)
@@ -377,7 +383,7 @@ arguments; here, `na.rm = TRUE` means "ignore missing data".
 
 The summaries above may be useful for reporting purposes, but graphics are
 usually better for getting a feel for the data. Here, we illustrate how the
-package `ggplot2` can be used to derive informative graphics of age/sex
+package *ggplot2* can be used to derive informative graphics of age/sex
 distribution. It implements an alternative graphics system to the basic **R**
 plots, in which the plot is built by adding (literally using `+`) different
 layers of information, using:
@@ -399,13 +405,10 @@ ggplot(stegen) + geom_histogram(aes(x = age, fill = sex))
 
 Here, the age distribution is pretty much identical between male and female.
 
-
-**Going further** click on the button below to learn about customising `ggplot2` graphics:
-
 <details>
-</summary> <b> More on ggplot2 </b> </summary>
+<summary> <b> Going further:</b> click here to learn about customising <i>ggplot2</i> graphics:</summary>
 
-`ggplot2` graphics are highly customisable, and a lot of help and examples can
+*ggplot2* graphics are highly customisable, and a lot of help and examples can
 be found online. The [official website](https://ggplot2.tidyverse.org/) is a good place to start.
 
 For instance, here we:
@@ -418,8 +421,10 @@ For instance, here we:
 - specify a lighter general color theme, using Times font of a larger size by default (`theme_light(...)`)
 - move the legend inside the plot (`theme(...)`)
 
+
 ```{r stegen_ggplot2_custom}
-ggplot(stegen) + geom_histogram(aes(x = age, fill = sex), color = "white") +
+ggplot(stegen) + 
+  geom_histogram(aes(x = age, fill = sex), color = "white") +
   scale_fill_manual(values = c(male = "#4775d1", female = "#cc6699")) +
   labs(title = "Age distribution by gender", x = "Age (years)", y = "Number of cases") +
   theme_light(base_family = "Times", base_size = 16) +
@@ -431,9 +436,9 @@ ggplot(stegen) + geom_histogram(aes(x = age, fill = sex), color = "white") +
 
 ## Epidemic curve
 
-Incidence curves can be built using the package `incidence`, which will compute
+Incidence curves can be built using the package *incidence*, which will compute
 the number of new cases given a vector of dates (here, onset) and a time
-interval (1 day by default). We use the function `incidence` to achieve this, and
+interval (1 day by default). We use the function `incidence()` to achieve this, and
 then visualise the results:
 
 ```{r stegen_incidence}
@@ -465,26 +470,26 @@ match the epi case definition. This is compatible with a food-borne outbreak
 with limited or no person-to-person transmission.
 
 
-Note that the plots produced by `incidence` are `ggplot2` objects, so that the
+Note that the plots produced by *incidence* are *ggplot2* objects, so that the
 options seen before can be used for further customisation (see below).
 
 
-**Going further** click on the button below to learn about `incidence`:
-
 <details>
-<summary> More on <code>incidence</code> </summary>
+<summary> <b> Going further</b> click here to learn about the <i>incidence</i> package: </summary>
 
-More information on the `incidence` package can be found from the
+
+More information on the *incidence* package can be found from the
 [dedicated website](https://www.repidemicsconsortium.org/incidence/). Here, we illustrate how incidence can be stratified e.g. by case definition:
 
-We can also customise this graphic like other `ggplot2` plots (see [this tutorial](https://www.repidemicsconsortium.org/incidence/articles/customize_plot.html) for more):
+We can also customise this graphic like other *ggplot2* plots (see [this tutorial](https://www.repidemicsconsortium.org/incidence/articles/customize_plot.html) for more):
 
 ```{r incidence_stratified_custom}
 plot(i_ill, border = "white", color = c("non case" = "#66cc99", "case" = "#990033")) + 
   labs(title = "Epicurve by gender", x = "Date of onset", y = "Number of cases") +
   theme_light(base_family = "Times", base_size = 16) +
   geom_hline(yintercept = 1:55, color = "white") +
-  theme(legend.position = c(0.8, 0.8), axis.text.x = element_text(angle = 45, hjust = 1, vjust = 0.5))
+  theme(legend.position = c(0.8, 0.8)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 0.5))
 ```
 
 </details>
@@ -495,13 +500,16 @@ plot(i_ill, border = "white", color = c("non case" = "#66cc99", "case" = "#99003
 
 We use the same principles as before to visualise the distribution of illness by
 age and gender. To split the plot into different panels according to `sex`, we
-use `facet_grid()` (see previous extra info on `ggplot2` customisation for
+use `facet_grid()` (see previous extra info on *ggplot2* customisation for
 further details otions):
 
 ```{r stegen_case_age_sex}
-ggplot(stegen) + geom_histogram(aes(x = age, fill = ill)) +
+ggplot(stegen) + 
+  geom_histogram(aes(x = age, fill = ill)) +
   scale_fill_manual("Illness", values = c("non case" = "#66cc99", "case" = "#990033")) +
-  facet_grid(sex ~ .) + labs(title = "Cases by age and gender") + theme_light()
+  facet_grid(sex ~ .) + 
+  labs(title = "Cases by age and gender") + 
+  theme_light()
 ```
 
 Illness does not seem to be depending on age or gender. This can be tested: this
@@ -531,10 +539,10 @@ of type 2 and 3 will be illustrated here.
 
 ### Is illness linked to age?
 
-We can use the function `t.test` to test if the average age is different across
+We can use the function `t.test()` to test if the average age is different across
 illness status. As this test assumes that the two categories exhibit similar
 variation, we first ensure that the variances are comparable using Bartlett's
-test. The syntax`variable ~ group` is used to indicate the variable of interest (left hand-side), and the group
+test. The syntax `variable ~ group` is used to indicate the variable of interest (left hand-side), and the group
  (right hand-side):
 
 ```{r stegen_bartlett_test}
@@ -593,7 +601,7 @@ one of the most common workflows:
     ii) run a Chi-square test on this table (using `chisq.test`)
 
 All of these have been seen so far; the only missing piece is step 2), which we
-will cover using a very handy function called `lapply`.
+will cover using a very handy function called `lapply()`.
 
 
 ### Isolating the variables to test
@@ -621,11 +629,11 @@ food
 
 There are many variables to test, and having to enter separate command lines for
 each would be cumbersome and prone to errors. As a workaround, the function
-`lapply` can be used. This function allows to repeat an operation using a vector
+`lapply()` can be used. This function allows to repeat an operation using a vector
 of inputs, using each element in turn. Its general syntax is
 `lapply(vector_of_inputs, function_to_use, other_arguments)`, where
 `other_arguments` can be any secondary arguments taken by
-`function_to_use`. Here, we use it to build a separate contingency table of each
+`function_to_use()`. Here, we use it to build a separate contingency table of each
 variable in `food` crossed with illness status (`stegen$ill`); note that we show
 only the first few tables:
 
@@ -639,7 +647,7 @@ head(food_tables)
 ### Realising multiple Chi-squared tests
 
 The same principle used to compute several contingency tables can be used to
-compute Chi-square tests for each table, using `lapply`; note that we show
+compute Chi-square tests for each table, using `lapply()`; note that we show
 only the first few tests:
 
 ```{r stegen_food_tests, echo = c(1,3), eval = -2}
@@ -667,7 +675,7 @@ pork consumption and illness:
 food_tables$pork
 ```
 
-This can be turned into proportions using `prop.table`, specifying that we want
+This can be turned into proportions using `prop.table()`, specifying that we want
 proportions by rows (`margin = 1`):
 
 ```{r stegen_pork_prop}
@@ -698,14 +706,14 @@ of 2-dimensional objects.
 In the example above, we have computed the risk ratio using a simple recipe:
 
 1. select a contingency table
-2. convert raw numbers to proportions (using `prop.table`)
+2. convert raw numbers to proportions (using `prop.table()`)
 3. isolating the risks in exposed and non-exposed groups, and compute their
    ratio
 
 Repeating these tasks manually for all variables in `food` would be
-cumbersome. As an alternative, we can define the steps above as `function`,
+cumbersome. As an alternative, we can define the steps above as a function,
 i.e. a generic recipe which we can then apply to any contingency table. This new
-function will be called `risk_ratio`, and is defined as follows:
+function will be called `risk_ratio()`, and is defined as follows:
 
 ```{r stegen_risk_ratio_function}
 risk_ratio <- function(tab) { # 'tab' is a placeholder for the input 2x2 table
@@ -728,7 +736,7 @@ risk_ratio(food_tables$pork)
 ```
 
 And we can now apply this function sequentially to all variables in `food` as
-before, using `lapply` (we show only the first few values):
+before, using `lapply()` (we show only the first few values):
 
 ```{r stegen_all_rr, echo = 1:2, eval = -2}
 all_rr <- lapply(food_tables, risk_ratio)
@@ -736,9 +744,9 @@ all_rr
 head(all_rr)
 ```
 
-Finally, we re-shape these results into a numeric `vector` (using `unlist)` for
+Finally, we re-shape these results into a numeric `vector` (using `unlist()`) for
 further plotting; note that for this graph, the basic system is easier to use
-than `ggplot2`:
+than *ggplot2*:
 
 ```{r stegen_rr_plot}
 ## convert results from list to numeric vector
@@ -767,7 +775,7 @@ factor in this outbreak.
 
 This case study illustrated how **R** can be used to import data, clean them,
 and derive basic summaries for a first glance at the data. It also showed how to
-generate graphics using `ggplot2`, and how to detect associations between
+generate graphics using *ggplot2*, and how to detect associations between
 several potential risk factors and the occurrence of illness. One major caveat
 here is that we are not accounting for potential confounding factors. These will
 be treated in a separate case study, which will focus on the use of logistic
