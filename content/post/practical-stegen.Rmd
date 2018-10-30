@@ -129,7 +129,7 @@ install.packages("dplyr")
 install.packages("ggplot2")
 ```
 
-<details>
+</details>
 
 Loading these packages makes all functions implemented by the packages
 available, so that `function_name()` can be used directly (without the
@@ -162,6 +162,7 @@ stegen <- readxl::read_xlsx(here::here("static", "data", "stegen_raw.xlsx"))
 ```
 
 To print the content of the dataset, we can use either of these commands:
+
 ```{r stegen_print_data, eval = 1}
 stegen
 View(stegen)
@@ -296,11 +297,9 @@ stegen$horseradish[stegen$horseradish == 9] <- NA
 ```
 
 
-**Going further** click on the button below for more explanation:
-
 <details>
 
-<summary> <b> Why does this work? </b> </summary>
+<summary> <b> Going furhter </b> Why does this work? Click here for more details. </summary>
 
 
 There are several things going on in a command like:
@@ -348,13 +347,13 @@ summaries; for instance:
 ```{r stegen_age_sex}
 summary(stegen$age) # age stats
 summary(stegen$sex) # gender distribution
-tapply(stegen$age, stegen$sex, summary) # age stats by gender      
+tapply(stegen$age, INDEX = stegen$sex, FUN = summary) # age stats by gender      
 ```
 
 
 
 <details>
-<summary> <b>Going further</b> click on the button below to learn about <code>tapply()</code>: </summary>
+<summary> <b>Going further</b> click here to learn about <code>tapply()</code>: </summary>
 
 `tapply()` is a very handy function to stratify any kind of analyses. You will
 find more details by reading the documentation of the function `?tapply()`, but
@@ -362,7 +361,7 @@ briefly, the syntax to be used is `tapply(input_data, stratification,
 function_to_use, optional_arguments)`. In the command used above:
 
 ```{r eval = FALSE}
-tapply(stegen$age, stegen$sex, summary)
+tapply(stegen$age, INDEX = stegen$sex, FUN = summary)
 ```
 
 this literally means: select the age variable in the dataset `stegen`
@@ -370,7 +369,7 @@ this literally means: select the age variable in the dataset `stegen`
 (`summary()`). So for instance, to get the average age by sex (function `mean()`), one could use:
 
 ```{r stegen_age_per_sex}
-tapply(stegen$age, stegen$sex, mean, na.rm = TRUE)
+tapply(stegen$age, INDEX = stegen$sex, FUN = mean, na.rm = TRUE)
 ```
 Here we illustrate that further arguments to the function can be passed as extra
 arguments; here, `na.rm = TRUE` means "ignore missing data".
@@ -399,6 +398,7 @@ ggplot(stegen) + geom_histogram(aes(x = age))
 ```
 
 Color can be added using:
+
 ```{r stegen_histogram_sex}
 ggplot(stegen) + geom_histogram(aes(x = age, fill = sex))
 ```
@@ -413,18 +413,21 @@ be found online. The [official website](https://ggplot2.tidyverse.org/) is a goo
 
 For instance, here we:
 
+- define the width of each bin to be 1 year (`binwidth = 1` to avoid the warning from above)
 - add white borders to the plot (`color = "white"`)
 - specify colors manually for male / female, using specified color codes (see
   [html color picker](https://www.w3schools.com/colors/colors_picker.asp) to
   define your own colors) (`scale_fill_manual(...)`)
-- adding labels for title, *x* and *y* axes (`labs()`)
+- add labels for title, *x* and *y* axes (`labs()`)
 - specify a lighter general color theme, using Times font of a larger size by default (`theme_light(...)`)
 - move the legend inside the plot (`theme(...)`)
 
+Note, it's best practice to include only one *ggplot2* command per line if you
+are using more than two.
 
 ```{r stegen_ggplot2_custom}
 ggplot(stegen) + 
-  geom_histogram(aes(x = age, fill = sex), color = "white") +
+  geom_histogram(aes(x = age, fill = sex), binwidth = 1, color = "white") +
   scale_fill_manual(values = c(male = "#4775d1", female = "#cc6699")) +
   labs(title = "Age distribution by gender", x = "Age (years)", y = "Number of cases") +
   theme_light(base_family = "Times", base_size = 16) +
@@ -485,11 +488,11 @@ We can also customise this graphic like other *ggplot2* plots (see [this tutoria
 
 ```{r incidence_stratified_custom}
 plot(i_ill, border = "white", color = c("non case" = "#66cc99", "case" = "#990033")) + 
-  labs(title = "Epicurve by gender", x = "Date of onset", y = "Number of cases") +
-  theme_light(base_family = "Times", base_size = 16) +
   geom_hline(yintercept = 1:55, color = "white") +
+  labs(title = "Epicurve by case", x = "Date of onset", y = "Number of cases") +
+  theme_light(base_family = "Times", base_size = 16) +
   theme(legend.position = c(0.8, 0.8)) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 0.5))
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
 ```
 
 </details>
@@ -744,9 +747,23 @@ all_rr
 head(all_rr)
 ```
 
-Finally, we re-shape these results into a numeric `vector` (using `unlist()`) for
-further plotting; note that for this graph, the basic system is easier to use
-than *ggplot2*:
+Finally, we re-shape these results into a sorted data frame for further plotting
+with *ggplot2*. Reshaping will take three steps:
+
+1. convert from a list to a vector using `unlist()`
+2. sort the vector using `sort()`
+3. convert the named vector to a data frame using `stack()` (from the *utils* package)
+
+<details>
+<summary><b>Going Further</b> click here to learn more about <code>stack()</code></summary>
+
+The first two functions, `unlist()` and `sort()` have self-explanitory names, 
+but `stack()` may not be so clear. This function takes the elements in a vector
+and **stacks** them together to make a data frame with two columns: one column 
+called "values" containing the data in the vector, and the other column called 
+"ind" containing the names of those elements as a factor.
+
+</details>
 
 ```{r stegen_rr_plot}
 ## convert results from list to numeric vector
@@ -756,20 +773,20 @@ rr_data
 ## sort results by decreasing order
 rr_data <- sort(rr_data, decreasing = TRUE)
 
-## plot using the basic system
-par(mar = c(5, 7, 4, 1)) # change margins
-barplot(rr_data, horiz = TRUE, las = 1,
-        xlab = "Risk ratio",
-        col = heat.colors(15), # add colors
-        main = "Risk ratio by food exposure")
-abline(v = 1, lty = 2) # add vertical line x = 1
+## create a data frame from the named vector
+rr_df   <- stack(rr_data)
+rr_df
+
+ggplot(rr_df, aes(x = values, y = ind)) +
+  geom_point() +
+  geom_vline(xintercept = 1, lty = 2) +
+  geom_segment(aes(xend = 1, yend = ind)) +
+  theme_light(base_size = 16, base_family = "Times") +
+  labs(title = "Risk Ratio by Food Exposure", x = "Risk Ratio", y = "Food Item")
 ```
 
 The results are a lot clearer now: the tiramisu is by far the largest risk
 factor in this outbreak.
-
-
-
 
 # Conclusion
 
@@ -809,8 +826,8 @@ based on an investigation conducted by Anja Hauri, RKI, Berlin, 1998.
 
 
 Contributions are welcome via [pull
-requests](https://github.com/reconhub/learn/pulls). The source file can be found
-[here](https://github.com/reconhub/learn/blob/master/static/slides/outbreaker2/outbreaker2.Rmd).
+requests](https://github.com/reconhub/learn/pulls). The [source file for this case study can be found
+here](https://github.com/reconhub/learn/blob/master/content/post/practical-stegen.Rmd).
 
 
 
