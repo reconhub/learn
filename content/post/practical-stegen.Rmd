@@ -299,7 +299,7 @@ stegen$horseradish[stegen$horseradish == 9] <- NA
 
 <details>
 
-<summary> <b> Going furhter </b> Why does this work? Click here for more details. </summary>
+<summary> <b> Going further </b> Why does this work? Click here for more details. </summary>
 
 
 There are several things going on in a command like:
@@ -334,6 +334,27 @@ toy_vector # check outcome
 ```
 
 </details>
+
+## Saving clean data
+
+Now that we've cleaned our data, we will probably want to re-use it in further
+analyses, but we probably don't want to go through the steps of cleaning it
+again. Here, we will save our cleaned data into a new folder under `data/`
+called `cleaned/`. We will use **R**'s function `dir.create()` to create this
+folder under our data folder:
+
+```{r create-clean-dir, eval = FALSE}
+clean_dir <- here("data", "cleaned")
+dir.create(clean_dir)
+```
+
+After this, we can save our cleaned data into a new file called 
+`stegen_clean.csv`:
+
+```{r save-clean-data, eval = FALSE}
+stegen_clean_file <- here("data", "cleaned", "stegen_clean.csv")
+write.csv(stegen, file = stegen_clean_file, rownames = FALSE, sep = ",")
+```
 
 
 # Data exploration
