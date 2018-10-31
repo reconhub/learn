@@ -131,9 +131,10 @@ do not implement functions with identical names.
 Linelist data can be read from various formats, including flat text
 files (e.g. `.txt`, `.csv`), other statistical software (e.g. STATA) or
 Excel spreadsheets. We illustrate the latter, which is probably the most
-common format. We assume that the data file `stegen_raw.xlsx` has been
-saved in a `data/` folder of your project, and that your current R
-session is at the root of the project.
+common format. We assume that [the data file
+`stegen_raw.xlsx`](../../data/stegen_raw.xlsx) has been saved in a
+`data/` folder of your project, and that your current R session is at
+the root of the project.
 
 Here we decompose the steps to read data in: finding the path to the
 data (`path_to_data`), using the function `read_xlsx()` from the
