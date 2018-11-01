@@ -19,32 +19,46 @@ were expected. Attendants included graduates from that school, their
 families and friends, teachers, 12th grade students, and some graduates
 from a nearby school (school B).
 
-A self-service party buffet was supplied by a commercial caterer in
-Freiburg. Food was prepared on the day of the party and transported in a
-refrigerated van to the school.
+A self-service party buffet was supplied by a commercial caterer from a
+the nearby city of Freiburg. Food was prepared on the day of the party
+and transported in a refrigerated van to the school. Relative locations
+of the two schools and Freiburg can be seen on image 1
+
+![Image 1: Map of Stegen, with annoted school A and
+B](../../img/screenshots/map_stegen.png)
+
+<!--
+Please find the HTML for the iframe of the embedded interactive map: <iframe src="https://www.google.com/maps/d/u/0/embed?mid=1xYZh1AyB3h_mG4QihrO9LhFT3g5tjOv_" width="640" height="480"></iframe>
+-->
 
 Festivities started with a dinner buffet open from 8.30 pm onwards and
 were followed by a dessert buffet offered from 10 pm. The party and the
-buffet extended late during the night and alcoholic beverages were quite
+buffet extended late into the night and alcoholic beverages were quite
 popular. All agreed it was a party to be remembered.
 
 ## The alert
 
 On 2nd July 1998, the Freiburg local health office reported to the
-Robert Koch Institute (RKI) in Berlin the occurrence of many cases of
-gastroenteritis following the graduation party described above. More
-than 100 cases were suspected among participants and some of them were
-admitted to nearby hospitals. Sick people suffered from fever, nausea,
-diarrhoea and vomiting lasting for several days. Most believed that the
-tiramisu consumed at dinner was responsible for their illness.
-*Salmonella enteritidis* was isolated from 19 stool samples.
+Robert Koch Institute (RKI) in Berlin a significant increase of cases of
+gastroenteritis in the munipality of Stegen following the graduation
+party described above. More than 100 cases were suspected among
+participants and some of them were so ill that they were admitted to
+nearby hospitals. Sick people showed symptoms like; *fever, nausea,
+diarrhoea and vomiting* lasting for several days. Stool samples were
+collected from several ill cases and send to the laboratory in Freiburg
+for microbiological identification. *Salmonella enteritidis* was
+identified in 19 stool samples.
 
-The Freiburg health office sent a team to investigate the kitchen of the
-caterer. Food preparation procedures were reviewed. Food samples, except
-tiramisu (none was left over), were sent to the laboratory of Freiburg
+In response to the large number of cases associated with the dinner the
+Freiburg health office sent an outbreak control team to investigate the
+kitchen of the caterer in Freiburg. Food preparation procedures were
+reviewed. Samples were taken of remaining food items after the
+graduation ceremony and were sent to the laboratory of Freiburg
 University. Microbiological analyses were performed on samples of the
-following: brown chocolate mousse, caramel cream, remoulade sauce,
-yoghurt dill sauce, and 10 raw eggs.
+following food items: brown chocolate mousse, caramel cream, remoulade
+sauce, yoghurt dill sauce, and 10 raw eggs. Unfortunately no tiramisu
+was left over after the dinner so no samples were tested of this
+specific food item.
 
 The Freiburg health office requested help from the RKI in the
 investigation to assess the magnitude of the outbreak and identify
@@ -57,7 +71,7 @@ better control the outbreak.
 the party at St Sebastian High School and who suffered from *diarrhoea*
 (min. 3 loose stool for 24 hours) between 27 June and 29 June 1998, or
 from at least three of the following symptoms: *vomiting*, *fever over
-38.5° C*, *nausea*, *abdominal pain*, *headache*.
+38.5Â° C*, *nausea*, *abdominal pain*, *headache*.
 
 Students from both schools attending the party were asked through phone
 interviews to provide names of persons who attended the party.
@@ -68,14 +82,15 @@ linelist analysed in this case study was built from these 291 responses.
 ## This case study
 
 In this case study, we will take you through the analysis of this
-epidemic. This will be the occasion to illustrate more generally useful
-practices for data analysis using **R**, including:
+epidemic using R. This will be the occasion to illustrate more generally
+useful practices for data analysis using **R**, including:
 
-  - how to read data from Excel
+  - how to read and import data from Excel
   - how to explore data using tables and summaries
   - how to clean data
   - how to make graphics to describe the data
   - how to test if specific food items are linked to the disease
+  - how to plot a very basic spatial overview of cases
 
 # Initial data processing
 
@@ -269,7 +284,7 @@ summary(stegen)
 ```
 
 Note that binary variables, when treated as numeric values (0/1), are
-summarised at such, which may not always be useful. As an alternative,
+summarised as such, which may not always be useful. As an alternative,
 `table()` can be used to list all possible values of a variable, and
 count how many time each value appears in the data. For instance, we can
 compare the `summary()` and `table()` for consumption of `tiramisu`:
@@ -299,8 +314,8 @@ table(stegen$tiramisu) # table
 ```
 
 **Good news**: the dataset has the expected dimensions, and all the
-relevant variables seem to be present. There are, however, **a few
-issues**:
+relevant variables seem to be present. There are, however, **a few often
+observed issues**:
 
 1.  variable names are a bit messy, and include different separators,
     spaces, and irregular capitalisation
@@ -462,7 +477,9 @@ write.csv(stegen, file = stegen_clean_file, rownames = FALSE, sep = ",")
 
 ## Summaries of age and sex distribution
 
-We can have a brief look at age and sex distributions using some basic
+It is good practice to first start to explore and familiarise yourself
+with a dataset before heading into the analyses of your data. We can
+have a brief look at age and sex distributions using some basic
 summaries; for instance:
 
 ``` r
@@ -597,7 +614,6 @@ and a time interval (1 day by default). We use the function
 
 ``` r
 i <- incidence(stegen$date_onset)
-## 160 missing observations were removed.
 i
 ## <incidence object>
 ## [131 cases from days 1998-06-26 to 1998-07-09]
@@ -641,7 +657,6 @@ definition will clarify the situation:
 
 ``` r
 i_ill <- incidence(stegen$date_onset, group = stegen$ill)
-## 160 missing observations were removed.
 i_ill
 ## <incidence object>
 ## [131 cases from days 1998-06-26 to 1998-07-09]
@@ -1193,16 +1208,38 @@ ggplot(rr_df, aes(x = values, y = ind)) +
 The results are a lot clearer now: the tiramisu is by far the largest
 risk factor in this outbreak.
 
+# \- Plotting a very basic spatial overview of cases
+
+To conclude your report you would like to include a very basic spatial
+overview of cases. Based on the postal codes of all individuals that had
+symptoms gps coordinates were generated providing each individual with a
+latitude and longtitude which corresponds with their household. The
+variables *lat* and *long* include the longitude and latitude which we
+will use to plot the cases using *ggplot2*.
+
+<details>
+
+<summary>Advanced mapping and spatial methodologies?</b> </summary>
+
+Normally you would generate maps in R using more sufisticated mapping
+tools, but for the scope of this case study we will keep it more basic.
+We will explore mapping and spatial analytical methods this in future
+case studies
+
+</details>
+
 # Conclusion
 
 This case study illustrated how **R** can be used to import data, clean
-them, and derive basic summaries for a first glance at the data. It also
+data, and derive basic summaries for a first glance at the data. It also
 showed how to generate graphics using *ggplot2*, and how to detect
 associations between several potential risk factors and the occurrence
 of illness. One major caveat here is that we are not accounting for
 potential confounding factors. These will be treated in a separate case
 study, which will focus on the use of logistic regression in epidemic
-studies.
+studies. Lastly we plotted a basic overview of the cases in this
+outbreak in relative distance to each other. More suffisticated mapping
+and spatial mathodologies will be covered in other case studies.
 
 <br> <br> <br>
 
@@ -1211,8 +1248,8 @@ studies.
 ## Source
 
 This case study was first designed by Alain Moren and Gilles Desve,
-EPIET. It is based on an investigation conducted by Anja Hauri, RKI,
-Berlin, 1998.
+EPIET. It is based on an real outbreak investigation conducted by Anja
+Hauri, RKI, Berlin, 1998.
 
 ## Contributors
 
