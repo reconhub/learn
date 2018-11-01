@@ -3,7 +3,7 @@ title: "An outbreak of gastroenteritis in Stegen, Germany, June 1998"
 author: "Janetta Skarp, Zhian N. Kamvar, Alexander Spina, Patrick Keating and Thibaut Jombart"
 authors: ["Thibaut Jombart", "Janetta Skarp", "Zhian N. Kamvar", "Alexander Spina", "Patrick Keating"]
 categories: "case studies"
-tags: ["level: beginner", "epicurve", "single variable analysis", "2x2 tables", "gastroenteritis"]
+tags: ["level: beginner", "epicurve", "single variable analysis", "2x2 tables", "gastroenteritis", "plotting ases"]
 date: 2018-10-24
 slug: stegen
 licenses: CC-BY
@@ -811,8 +811,8 @@ ggplot(rr_df, aes(x = values, y = ind)) +
 The results are a lot clearer now: the tiramisu is by far the largest risk
 factor in this outbreak.
 
-# - Plotting a very basic spatial overview of cases
-To conclude your report you would like to include a very basic spatial overview of cases. Based on the postal codes of all individuals that had symptoms gps coordinates were generated providing each individual with a latitude and longtitude which corresponds with their household. The variables *lat* and *long* include the longitude and latitude which we will use to plot the cases using *ggplot2*.
+# Plotting a very basic spatial overview of cases
+To complete your report, you would like to include a very basic spatial overview of cases. Based on the postal codes of all individuals with a date of symptom onset spatial coordinates were generated providing everyone with a latitude and longitude which corresponds with their household (in relation to their postal code). The variables *lat* and *long* include the longitude and latitude which we will use to plot the cases using *ggplot2*.
 
 <details>
 <summary>Advanced mapping and spatial methodologies?</b> </summary>
