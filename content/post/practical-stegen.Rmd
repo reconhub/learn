@@ -9,6 +9,7 @@ slug: stegen
 licenses: CC-BY
 image: img/highres/graduation-1965.jpg
 showonlyimage: true
+toc: true
 ---
 
 ```{r setup, include=FALSE}
@@ -102,7 +103,8 @@ The following packages will be used in the case study:
 - *incidence*: to build epicurves
 - *epitrix*: to clean labels from our spreadsheet
 - dplyr: to help with factors
-- ggplot2: to create custom visualisations
+- *ggplot2*: to create custom visualisations
+- *epitools*: to calculate risk ratios
 
 If we have these packages installed, we can tell R to load these packages from
 our R library:
@@ -114,6 +116,7 @@ library("incidence") # make epicurves
 library("epitrix")   # clean labels and variables
 library("dplyr")     # general data handling
 library("ggplot2")   # advanced graphics
+library("epitools")  # statistics for epi data
 ```
 
 <details>
@@ -129,6 +132,7 @@ install.packages("incidence")
 install.packages("epitrix")
 install.packages("dplyr")
 install.packages("ggplot2")
+install.packages("epitools")
 ```
 
 </details>
@@ -420,10 +424,36 @@ For instance, to get an histogram of age:
 ggplot(stegen) + geom_histogram(aes(x = age))
 ```
 
-Color can be added using:
+<details>
+
+<summary>What does "`stat_bin()` using `bins = 30`. Pick better value with `binwidth`" mean?</summary>
+
+This is a message that came from `geom_histogram()`. If we look at the help 
+documentation for `geom_histogram()`, we can see this paragraph in the **Details**
+section:
+
+> By default, the underlying computation (‘stat_bin()’) uses 30
+> bins; this is not a good default, but the idea is to get you
+> experimenting with different bin widths. You may need to look
+> at a few to uncover the full story behind your data.
+
+Each bar in a histogram is considered a "bin". The height of each bar is the
+number of observations that fall within the bounds of that bar. Because we are
+looking at age, it may be better for us to define a binwidth of 1 so that each
+bar represents a single year.
+
+```{r stegen_histogram-bin}
+ggplot(stegen) + geom_histogram(aes(x = age), binwidth = 1)
+```
+
+</details>
+
+
+We can differentiate between genders by filling the bars with color (n.b. we are
+also setting the binwidth to be 1 year):
 
 ```{r stegen_histogram_sex}
-ggplot(stegen) + geom_histogram(aes(x = age, fill = sex))
+ggplot(stegen) + geom_histogram(aes(x = age, fill = sex), binwidth = 1)
 ```
 
 Here, the age distribution is pretty much identical between male and female.
@@ -531,45 +561,58 @@ further details otions):
 
 ```{r stegen_case_age_sex}
 ggplot(stegen) + 
-  geom_histogram(aes(x = age, fill = ill)) +
+  geom_histogram(aes(x = age, fill = ill), binwidth = 1) +
   scale_fill_manual("Illness", values = c("non case" = "#66cc99", "case" = "#990033")) +
   facet_grid(sex ~ .) + 
   labs(title = "Cases by age and gender") + 
   theme_light()
 ```
 
-Illness does not seem to be depending on age or gender. This can be tested: this
-is the topic of the next and final section.
+From these graphics, we can see that illness does not appear to depend on age or
+gender, which suggests that the illness was caused by one or more of the foods
+consumed. We will explore this with a risk ratio analysis in the next section.
 
-
+--------------------------------------------------------------------------------
 
 # Looking for the culprits
+
+In order to figure out which food item was responsible for the outbreak, we need
+to test the [Risk Ratio](https://en.wikipedia.org/wiki/Risk_ratio) for all of
+the food items recorded. Risk ratios are normally computed on *contingency*
+tables (commonly known as 2x2 tables). In this part, we will compute contingency
+tables for each predictor (food item) against the defined cases, calculate their
+risk ratio with confidence intervals and p-values, and plot them as points and
+errorbars using *ggplot2*.
+
+<details>
+
+<summary> Going Further: Different types of Univariate tests </summary>
 
 ## Univariate tests
 
 Methods for testing the association between two variables can be broken down in 3 types,
 depending on which types these variables are:
 
-1. **2 quantitative variables**: Pearson's correlation coefficient ($r$) and similar
-  methods
+1. **2 categorical variables**: Chi-squared test on the 2x2 table
+  (a.k.a. *contingency* table) and similar methods (e.g. Fisher's exact test)
 2. **1 quantitative, 1 categorical**: ANOVA types of approaches; particular case with
   2 groups: Student's $t$-test
-3. **2 categorical variables**: Chi-squared test on the 2x2 table
-  (a.k.a. *contingency* table) and similar methods (e.g. Fisher's exact test)
+3. **2 quantitative variables**: Pearson's correlation coefficient ($r$) and similar
+  methods
 
 
 We can use these approaches to test if the disease is linked to any of the other
 recorded variables. As illness itself is a categorical variable, only approaches
-of type 2 and 3 will be illustrated here.
+of type 2 and 3 are illustrated in this case study.
 
 
 ### Is illness linked to age?
 
-We can use the function `t.test()` to test if the average age is different across
-illness status. As this test assumes that the two categories exhibit similar
-variation, we first ensure that the variances are comparable using Bartlett's
-test. The syntax `variable ~ group` is used to indicate the variable of interest (left hand-side), and the group
- (right hand-side):
+We can use the function `t.test()` to test if the average age is different
+across illness status. As this test assumes that the two categories exhibit
+similar variation, we first ensure that the variances are comparable using
+Bartlett's test. The syntax `variable ~ group` is used to indicate the variable
+of interest (left hand-side), and the group (right hand-side):
 
 ```{r stegen_bartlett_test}
 bartlett.test(stegen$age ~ stegen$ill)
@@ -612,81 +655,34 @@ Once a contingency table has been built, the Chi-square test can be run using `c
 chisq.test(tab_ill_sex)
 ```
 
-Here, the p-value of `r round(chisq.test(tab_ill_sex)[["p.value"]], 3)` suggests illness is not related to sex either.
+Here, the p-value of `r round(chisq.test(tab_ill_sex)[["p.value"]], 3)` suggests illness is not related to gender either.
 
-
-## Making multiple tests
-
-The natural next step is to run multiple tests for all potential risk factors
-recorded. There are many ways to go about this in **R**, but we will illustrate
-one of the most common workflows:
-
-1. isolate a subset of variables to test (the ones indicative of food consumption) (using `[]`)
-2. for each:
-    i) build contingency table with illness status (using `table`)
-    ii) run a Chi-square test on this table (using `chisq.test`)
-
-All of these have been seen so far; the only missing piece is step 2), which we
-will cover using a very handy function called `lapply()`.
+</details>
 
 
 ### Isolating the variables to test
 
-We use the natural structure of the dataset, as variables representing food
-consumption are all the last columns:
+Because not all of the columns in our data set are food items (i.e. "age", and
+"tportion"), we only want to keep the columns that are food items for our 
+analysis. 
 
 ```{r stegen_isolate_food}
 names(stegen)
 ```
 
 In this case, we need to retain columns 6 to 21, excluding `tportion` and
-`mportion`, which are not binary; this can be done using the subsetting operator
-`[...]`, where `...` are numbers indicating the columns to retain:
+`mportion`, which are not binary; this can be done using the subsetting
+brackets `[ ]`, where we will place character vector indicating the columns we
+want to keep.
 
 ```{r stegen_food}
-to_keep <- c(6, 8, 9, 10, 12:21)
+to_keep <- c('tiramisu', 'wmousse', 'dmousse', 'mousse', 'beer', 'redjelly',
+             'fruit_salad', 'tomato', 'mince', 'salmon', 'horseradish',
+             'chickenwin', 'roastbeef', 'pork') 
 to_keep
 food <- stegen[to_keep]
 food
 ```
-
-
-### Building several contingency tables
-
-There are many variables to test, and having to enter separate command lines for
-each would be cumbersome and prone to errors. As a workaround, the function
-`lapply()` can be used. This function allows to repeat an operation using a vector
-of inputs, using each element in turn. Its general syntax is
-`lapply(vector_of_inputs, function_to_use, other_arguments)`, where
-`other_arguments` can be any secondary arguments taken by
-`function_to_use()`. Here, we use it to build a separate contingency table of each
-variable in `food` crossed with illness status (`stegen$ill`); note that we show
-only the first few tables:
-
-```{r stegen_food_tables, echo = c(1,3), eval = -2}
-food_tables <- lapply(food, table, stegen$ill)
-food_tables
-head(food_tables)
-```
-
-
-### Realising multiple Chi-squared tests
-
-The same principle used to compute several contingency tables can be used to
-compute Chi-square tests for each table, using `lapply()`; note that we show
-only the first few tests:
-
-```{r stegen_food_tests, echo = c(1,3), eval = -2}
-food_tests <- lapply(food_tables, chisq.test)
-food_tests
-head(food_tests)
-```
-
-Looking at these results, it seems a large number of food items are
-significantly correlated to the illness. Which food item is the biggest suspect?
-We will try and address this question using risk ratios.
-
-
 
 ## Risk ratios
 
@@ -695,123 +691,245 @@ We will try and address this question using risk ratios.
 The [risk ratio](https://en.wikipedia.org/wiki/Risk_ratio) is defined as the
 ratio between the proportion of illness in one group (typically 'exposed') vs
 another ('non-exposed'). For instance, let us consider the contingency table of
-pork consumption and illness:
+pork consumption and illness. One way to calcuate a contingency table is using
+the `epitable()` function from the *epitools* package:
 
 ```{r stegen_pork_table}
-food_tables$pork
+pork_table <- epitable(food$pork, stegen$ill)
+pork_table
 ```
 
-This can be turned into proportions using `prop.table()`, specifying that we want
-proportions by rows (`margin = 1`):
-
-```{r stegen_pork_prop}
-pork_prop <- prop.table(food_tables$pork, margin = 1)
-pork_prop
-```
-
-the corresponding risk ratio is:
+We can get the risk ratio by using the `riskratio()` function from the *epitools*
+package. Here, we want to use Yates' continuity correction and calculate Wald
+confidence intervals (more inforamtion about this can be found on the help page
+for `riskratio()` by typing `?riskratio` in your R console).
 
 ```{r stegen_pork_rr}
-## ill & exposed: row 2, column 2
-pork_prop[2, 2] # row 2, column 2
-
-## ill & non-exposed: row 1, column 2
-pork_prop[1, 2]
-
-## compute the risk ratio
-pork_rr <- pork_prop[2, 2] / pork_prop[1, 2]
+pork_rr <- riskratio(pork_table, correct = TRUE, method = "wald")
 pork_rr
 ```
 
-Note the use of the syntax `[rows, columns]` to subset specific rows and columns
-of 2-dimensional objects.
+The documentation of `riskratio()` shows that it returns quite a few things as
+a list. However, we only want three things from this list:
 
+1. risk ratio estimate
+2. 95% confidence interval
+3. P-value
+
+
+<details>
+
+<summary> <b>Going further:</b> What is a list? </summary>
+
+`pork_rr` is an R object called a "list":
+
+```{r stegen_pork-list1}
+class(pork_rr)
+```
+
+A list is an R vector that can hold other vectors. While this may look strange
+and unfamiliar, we've actually seen lists before. If you look close, you can
+see that each element of a list starts with a `$`. This is the exact same syntax
+as data frames. If we inspect our `stegen` data frame, we can see that it is
+actually a list:
+
+```{r stegen_is_list}
+is.list(stegen)
+is.list(pork_rr)
+```
+
+Each column of a data frame is just a different element of a list. In fact, we
+can use the `$` operator to access different elements of the list just as we
+would the columns of a data frame:
+
+```{r stegen_is_list2}
+stegen_list <- as.list(stegen)
+head(stegen_list)
+stegen_list$ill
+stegen$ill
+```
+
+</details>
+
+All of these are present in the `pork_rr` object, but this output does not lend
+itself well to quick visual inspection. What we can do now is to *extract* 
+elements from this output and place it in a data frame.
+
+The first thing we want is the risk ratio and the confidence intervals for those
+consumption of pork. This is presented in the `$measure` element of the list: 
+
+```{r extract-rr}
+pork_rr$measure
+class(pork_rr$measure)
+```
+
+We can see that this is present as a "matrix". A matrix has rows and columns and
+we can access them like we do a vector with square brackets (`[ ]`), but we
+separate the rows and columns with a comma like so: `[rows, columns]`. For 
+example, if we wanted the risk ratio for pork consumed, we would take the second
+row in the first column:
+
+```{r pork-rr-mat}
+pork_rr$measure[2, 1]
+```
+
+In our case, we want to take the entire second row, so we can leave the `columns`
+portion blank:
+
+```{r pork-rr-mat2}
+pork_est_ci <- pork_rr$measure[2, ]
+pork_est_ci
+```
+
+We also want to get the P-value, of which, we have three choices. In our case,
+we will choose the P-value from Fisher's exact test and combine the result into
+a vector that we will turn into a data frame:
+
+```{r pork-rr-p-value}
+pork_p <- pork_rr$p.value[2, "fisher.exact"]
+pork_p
+res <- data.frame(estimate = pork_est_ci["estimate"],
+                  lower    = pork_est_ci["lower"],
+                  upper    = pork_est_ci["upper"],
+                  p.value  = pork_p
+                 )
+res
+```
+
+Now we have a table that tells us that pork has a risk ratio of 
+`r round(res$estimate, 3)` CI: (`r round(res$lower, 3)`, 
+`r round (res$upper, 3)`), P = `r round(res$p.value, 3)`. 
+
+### Consolidating several steps into one
+
+To recap, to get a risk ratio we've done the following:
+
+1. created a contingency table
+2. estimated the risk ratio
+3. extracted estimate into a data frame
+
+However, we have `r ncol(food)` potential predictors to sort through and we
+don't want to have to repeat these procedures manually over and over. One 
+strategy to help with this is to create our own *function*, which we can think 
+of as a miniature recipe for a computer to read. If we take the steps above and
+place them into individual steps we would get:
+
+```{r make-fun-1}
+et  <- epitable(food$pork, stegen$ill)
+rr  <- riskratio(et)
+estimate <- rr$measure[2, ]
+res <- data.frame(estimate = estimate["estimate"],
+                  lower    = estimate["lower"],
+                  upper    = estimate["upper"],
+                  p.value  = rr$p.value[2, "fisher.exact"]
+                 )
+res
+```
+
+Just like a recipe, a function needs both ingredients and instructions. What we
+have above are instructions, but we still need to say what our ingredients are.
+If we look at the above code, we can see that we need to define our predictor
+(`food$pork`) and outcome (`stegen$ill`); everything else flows from that. We 
+can then write our function (which we will call `single_risk_ratio()`) like this:
+
+```{r make-fun-2}
+single_risk_ratio <- function(predictor, outcome) { # ingredients defined here
+  et  <- epitable(predictor, outcome) # ingredients used here
+  rr  <- riskratio(et)
+  estimate <- rr$measure[2, ]
+  res <- data.frame(estimate = estimate["estimate"],
+                    lower    = estimate["lower"],
+                    upper    = estimate["upper"],
+                    p.value  = rr$p.value[2, "fisher.exact"]
+                   )
+  return(res) # return the data frame
+}
+```
+
+Now, we can use this `single_risk_ratio()` like any other function:
+
+```{r risk-ratio-df-fun-run}
+pork_rr <- single_risk_ratio(predictor = food$pork, outcome = stegen$ill)
+pork_rr
+```
+
+If we change the variable, we'll get a different answer:
+
+```{r risk-ratio-df-fun-run-fruit}
+fruit_rr <- single_risk_ratio(predictor = food$fruit_salad, outcome = stegen$ill)
+fruit_rr
+```
+
+We can combine the two using a function from *dplyr* called `bind_rows()`:
+
+```{r pork-fruit}
+bind_rows(pork = pork_rr, fruit = fruit_rr, .id = "predictor")
+```
+
+Here we can see that the fruit salad has a higher risk ratio with a lower
+P-value, but we want to compare all of the variables and still, copying and
+pasting all this code would be a nightmare and potentially lead to errors. We
+will see in the next section how we can use R to apply the function 
+`single_risk_ratio()` to each column of our `food` data frame to give us a table of
+risk ratios for all the food items.
 
 ### Multiple variables
 
 In the example above, we have computed the risk ratio using a simple recipe:
 
-1. select a contingency table
-2. convert raw numbers to proportions (using `prop.table()`)
-3. isolating the risks in exposed and non-exposed groups, and compute their
-   ratio
+1. create a contingency table
+2. estimate the risk ratio
+3. extract estimate into a data frame
 
-Repeating these tasks manually for all variables in `food` would be
-cumbersome. As an alternative, we can define the steps above as a function,
-i.e. a generic recipe which we can then apply to any contingency table. This new
-function will be called `risk_ratio()`, and is defined as follows:
+We placed this recipe in a function called `single_risk_ratio()` and we know we can
+use it to calcuate the risk ratio for individual variables, but we need to be
+able to calculate it over all the variables in our `food` data frame. The solution
+is to use an R function called `lapply()`, which takes each element of a list
+(or column of a data frame) and uses it as the first ingredient (also known as
+argument) of a function. Like `tapply()`, the function can be anything and
+additional arguments are placed behind the function. It will then return the
+output as a list:
 
-```{r stegen_risk_ratio_function}
-risk_ratio <- function(tab) { # 'tab' is a placeholder for the input 2x2 table
-  ## compute table of proportions
-  tab_prop <- prop.table(tab, margin = 1)
-  
-  ## compute the risk ratio
-  result <- tab_prop[2, 2] / tab_prop[1, 2]
 
-  ## return the output
-  return(result) # this will be the output of the function
-}
-```
-
-We can now try this function on any of the tables in `food_tables`, for instance:
-
-```{r rr_demo}
-food_tables$pork
-risk_ratio(food_tables$pork)
-```
-
-And we can now apply this function sequentially to all variables in `food` as
-before, using `lapply()` (we show only the first few values):
-
-```{r stegen_all_rr, echo = 1:2, eval = -2}
-all_rr <- lapply(food_tables, risk_ratio)
-all_rr
+```{r stegen_all_rr}
+all_rr <- lapply(food, FUN = single_risk_ratio, outcome = stegen$ill)
 head(all_rr)
 ```
+Finally, like we did above, we re-shape these results into a data frame 
 
-Finally, we re-shape these results into a sorted data frame for further plotting
-with *ggplot2*. Reshaping will take three steps:
+```{r all-food-df}
+all_food_df <- bind_rows(all_rr, .id = "predictor")
+all_food_df
+```
 
-1. convert from a list to a vector using `unlist()`
-2. sort the vector using `sort()`
-3. convert the named vector to a data frame using `stack()` (from the *utils* package)
+This is still in the order of our data, but we want it sorted in order of the
+risk ratio. For this, we will use the *dplyr* functions `arrange()` and `desc()`
+to arrange our data by the risk ratio estimate in descending order:
 
-<details>
-<summary><b>Going Further</b> click here to learn more about <code>stack()</code></summary>
+```{r arrange-desc}
+all_food_df <- arrange(all_food_df, desc(estimate))
+all_food_df
+```
 
-The first two functions, `unlist()` and `sort()` have self-explanitory names, 
-but `stack()` may not be so clear. This function takes the elements in a vector
-and **stacks** them together to make a data frame with two columns: one column 
-called "values" containing the data in the vector, and the other column called 
-"ind" containing the names of those elements as a factor.
+Now we can use this data frame to plot the results using *ggplot2*:
 
-</details>
-
-```{r stegen_rr_plot}
-## convert results from list to numeric vector
-rr_data <- unlist(all_rr)
-rr_data
-
-## sort results by decreasing order
-rr_data <- sort(rr_data, decreasing = TRUE)
-
-## create a data frame from the named vector
-rr_df   <- stack(rr_data)
-rr_df
-
-ggplot(rr_df, aes(x = values, y = ind)) +
+```{r plot-arrange}
+# first, make sure the predictors are factored in the right order
+all_food_df$predictor <- factor(all_food_df$predictor, unique(all_food_df$predictor))
+# plot
+ggplot(all_food_df, aes(x = estimate, y = predictor, color = p.value)) +
   geom_point() +
-  geom_vline(xintercept = 1, lty = 2) +
-  geom_segment(aes(xend = 1, yend = ind)) +
-  theme_light(base_size = 16, base_family = "Times") +
-  labs(title = "Risk Ratio by Food Exposure", x = "Risk Ratio", y = "Food Item")
+  geom_errorbarh(aes(xmin = lower, xmax = upper)) +
+  geom_vline(xintercept = 1, linetype = 2) + 
+  scale_color_viridis_c()
 ```
 
 The results are a lot clearer now: the tiramisu is by far the largest risk
-factor in this outbreak.
+factor in this outbreak, but it's wide confidence interval suggests that there
+may be confounding factors involved (i.e. the food items were not independent).
 
 # Plotting a very basic spatial overview of cases
+
 To complete your report, you would like to include a very basic spatial overview of cases. Based on the postal codes of all individuals with a date of symptom onset spatial coordinates were generated providing everyone with a latitude and longitude which corresponds with their household (in relation to their postal code). The variables *lat* and *long* include the longitude and latitude which we will use to plot the cases using *ggplot2*.
 
 <details>

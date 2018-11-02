@@ -3,13 +3,16 @@ title: "An outbreak of gastroenteritis in Stegen, Germany, June 1998"
 author: "Janetta Skarp, Zhian N. Kamvar, Alexander Spina, Patrick Keating and Thibaut Jombart"
 authors: ["Thibaut Jombart", "Janetta Skarp", "Zhian N. Kamvar", "Alexander Spina", "Patrick Keating"]
 categories: "case studies"
-tags: ["level: beginner", "epicurve", "single variable analysis", "2x2 tables", "gastroenteritis"]
+tags: ["level: beginner", "epicurve", "single variable analysis", "2x2 tables", "gastroenteritis", "plotting cases"]
 date: 2018-10-24
 slug: stegen
 licenses: CC-BY
 image: img/highres/graduation-1965.jpg
 showonlyimage: true
+toc: true
 ---
+
+
 
 # Context
 
@@ -71,7 +74,7 @@ better control the outbreak.
 the party at St Sebastian High School and who suffered from *diarrhoea*
 (min. 3 loose stool for 24 hours) between 27 June and 29 June 1998, or
 from at least three of the following symptoms: *vomiting*, *fever over
-38.5Â° C*, *nausea*, *abdominal pain*, *headache*.
+38.5° C*, *nausea*, *abdominal pain*, *headache*.
 
 Students from both schools attending the party were asked through phone
 interviews to provide names of persons who attended the party.
@@ -103,7 +106,8 @@ The following packages will be used in the case study:
   - *incidence*: to build epicurves
   - *epitrix*: to clean labels from our spreadsheet
   - dplyr: to help with factors
-  - ggplot2: to create custom visualisations
+  - *ggplot2*: to create custom visualisations
+  - *epitools*: to calculate risk ratios
 
 If we have these packages installed, we can tell R to load these
 packages from our R library:
@@ -115,6 +119,7 @@ library("incidence") # make epicurves
 library("epitrix")   # clean labels and variables
 library("dplyr")     # general data handling
 library("ggplot2")   # advanced graphics
+library("epitools")  # statistics for epi data
 ```
 
 <details>
@@ -132,6 +137,7 @@ install.packages("incidence")
 install.packages("epitrix")
 install.packages("dplyr")
 install.packages("ggplot2")
+install.packages("epitools")
 ```
 
 </details>
@@ -554,11 +560,40 @@ ggplot(stegen) + geom_histogram(aes(x = age))
 
 ![](practical-stegen_files/figure-gfm/stegen_histogram-1.png)<!-- -->
 
-Color can be added using:
+<details>
+
+<summary>What does “`stat_bin()` using `bins = 30`. Pick better value
+with `binwidth`” mean?</summary>
+
+This is a message that came from `geom_histogram()`. If we look at the
+help documentation for `geom_histogram()`, we can see this paragraph in
+the **Details** section:
+
+> By default, the underlying computation (‘stat\_bin()’) uses 30 bins;
+> this is not a good default, but the idea is to get you experimenting
+> with different bin widths. You may need to look at a few to uncover
+> the full story behind your data.
+
+Each bar in a histogram is considered a “bin”. The height of each bar is
+the number of observations that fall within the bounds of that bar.
+Because we are looking at age, it may be better for us to define a
+binwidth of 1 so that each bar represents a single
+year.
 
 ``` r
-ggplot(stegen) + geom_histogram(aes(x = age, fill = sex))
-## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+ggplot(stegen) + geom_histogram(aes(x = age), binwidth = 1)
+```
+
+![](practical-stegen_files/figure-gfm/stegen_histogram-bin-1.png)<!-- -->
+
+</details>
+
+We can differentiate between genders by filling the bars with color
+(n.b. we are also setting the binwidth to be 1
+year):
+
+``` r
+ggplot(stegen) + geom_histogram(aes(x = age, fill = sex), binwidth = 1)
 ```
 
 ![](practical-stegen_files/figure-gfm/stegen_histogram_sex-1.png)<!-- -->
@@ -614,6 +649,7 @@ and a time interval (1 day by default). We use the function
 
 ``` r
 i <- incidence(stegen$date_onset)
+## 160 missing observations were removed.
 i
 ## <incidence object>
 ## [131 cases from days 1998-06-26 to 1998-07-09]
@@ -657,6 +693,7 @@ definition will clarify the situation:
 
 ``` r
 i_ill <- incidence(stegen$date_onset, group = stegen$ill)
+## 160 missing observations were removed.
 i_ill
 ## <incidence object>
 ## [131 cases from days 1998-06-26 to 1998-07-09]
@@ -734,37 +771,54 @@ according to `sex`, we use `facet_grid()` (see previous extra info on
 
 ``` r
 ggplot(stegen) + 
-  geom_histogram(aes(x = age, fill = ill)) +
+  geom_histogram(aes(x = age, fill = ill), binwidth = 1) +
   scale_fill_manual("Illness", values = c("non case" = "#66cc99", "case" = "#990033")) +
   facet_grid(sex ~ .) + 
   labs(title = "Cases by age and gender") + 
   theme_light()
-## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 ```
 
 ![](practical-stegen_files/figure-gfm/stegen_case_age_sex-1.png)<!-- -->
 
-Illness does not seem to be depending on age or gender. This can be
-tested: this is the topic of the next and final section.
+From these graphics, we can see that illness does not appear to depend
+on age or gender, which suggests that the illness was caused by one or
+more of the foods consumed. We will explore this with a risk ratio
+analysis in the next section.
+
+-----
 
 # Looking for the culprits
+
+In order to figure out which food item was responsible for the outbreak,
+we need to test the [Risk
+Ratio](https://en.wikipedia.org/wiki/Risk_ratio) for all of the food
+items recorded. Risk ratios are normally computed on *contingency*
+tables (commonly known as 2x2 tables). In this part, we will compute
+contingency tables for each predictor (food item) against the defined
+cases, calculate their risk ratio with confidence intervals and
+p-values, and plot them as points and errorbars using *ggplot2*.
+
+<details>
+
+<summary> Going Further: Different types of Univariate tests </summary>
 
 ## Univariate tests
 
 Methods for testing the association between two variables can be broken
 down in 3 types, depending on which types these variables are:
 
-1.  **2 quantitative variables**: Pearson’s correlation coefficient
-    (\(r\)) and similar methods
-2.  **1 quantitative, 1 categorical**: ANOVA types of approaches;
-    particular case with 2 groups: Student’s \(t\)-test
-3.  **2 categorical variables**: Chi-squared test on the 2x2 table
+1.  **2 categorical variables**: Chi-squared test on the 2x2 table
     (a.k.a. *contingency* table) and similar methods (e.g. Fisher’s
     exact test)
+2.  **1 quantitative, 1 categorical**: ANOVA types of approaches;
+    particular case with 2 groups: Student’s \(t\)-test
+3.  **2 quantitative variables**: Pearson’s correlation coefficient
+    (\(r\)) and similar methods
 
 We can use these approaches to test if the disease is linked to any of
 the other recorded variables. As illness itself is a categorical
-variable, only approaches of type 2 and 3 will be illustrated here.
+variable, only approaches of type 2 and 3 are illustrated in this case
+study.
 
 ### Is illness linked to age?
 
@@ -849,28 +903,16 @@ chisq.test(tab_ill_sex)
 ## X-squared = 0.6562, df = 1, p-value = 0.4179
 ```
 
-Here, the p-value of 0.418 suggests illness is not related to sex
+Here, the p-value of 0.418 suggests illness is not related to gender
 either.
 
-## Making multiple tests
-
-The natural next step is to run multiple tests for all potential risk
-factors recorded. There are many ways to go about this in **R**, but we
-will illustrate one of the most common workflows:
-
-1.  isolate a subset of variables to test (the ones indicative of food
-    consumption) (using `[]`)
-2.  for each:
-    1)  build contingency table with illness status (using `table`)
-    2)  run a Chi-square test on this table (using `chisq.test`)
-
-All of these have been seen so far; the only missing piece is step 2),
-which we will cover using a very handy function called `lapply()`.
+</details>
 
 ### Isolating the variables to test
 
-We use the natural structure of the dataset, as variables representing
-food consumption are all the last columns:
+Because not all of the columns in our data set are food items (i.e.
+“age”, and “tportion”), we only want to keep the columns that are
+food items for our analysis.
 
 ``` r
 names(stegen)
@@ -883,13 +925,18 @@ names(stegen)
 
 In this case, we need to retain columns 6 to 21, excluding `tportion`
 and `mportion`, which are not binary; this can be done using the
-subsetting operator `[...]`, where `...` are numbers indicating the
-columns to retain:
+subsetting brackets `[ ]`, where we will place character vector
+indicating the columns we want to
+keep.
 
 ``` r
-to_keep <- c(6, 8, 9, 10, 12:21)
+to_keep <- c('tiramisu', 'wmousse', 'dmousse', 'mousse', 'beer', 'redjelly',
+             'fruit_salad', 'tomato', 'mince', 'salmon', 'horseradish',
+             'chickenwin', 'roastbeef', 'pork') 
 to_keep
-##  [1]  6  8  9 10 12 13 14 15 16 17 18 19 20 21
+##  [1] "tiramisu"    "wmousse"     "dmousse"     "mousse"      "beer"       
+##  [6] "redjelly"    "fruit_salad" "tomato"      "mince"       "salmon"     
+## [11] "horseradish" "chickenwin"  "roastbeef"   "pork"
 food <- stegen[to_keep]
 food
 ## # A tibble: 291 x 14
@@ -909,120 +956,6 @@ food
 ## #   horseradish <dbl>, chickenwin <dbl>, roastbeef <dbl>, pork <dbl>
 ```
 
-### Building several contingency tables
-
-There are many variables to test, and having to enter separate command
-lines for each would be cumbersome and prone to errors. As a workaround,
-the function `lapply()` can be used. This function allows to repeat an
-operation using a vector of inputs, using each element in turn. Its
-general syntax is `lapply(vector_of_inputs, function_to_use,
-other_arguments)`, where `other_arguments` can be any secondary
-arguments taken by `function_to_use()`. Here, we use it to build a
-separate contingency table of each variable in `food` crossed with
-illness status (`stegen$ill`); note that we show only the first few
-tables:
-
-``` r
-food_tables <- lapply(food, table, stegen$ill)
-head(food_tables)
-## $tiramisu
-##    
-##     non case case
-##   0      158    7
-##   1       27   94
-## 
-## $wmousse
-##    
-##     non case case
-##   0      156   49
-##   1       23   49
-## 
-## $dmousse
-##    
-##     non case case
-##   0      148   26
-##   1       37   76
-## 
-## $mousse
-##    
-##     non case case
-##   0      144   22
-##   1       42   81
-## 
-## $beer
-##    
-##     non case case
-##   0       96   69
-##   1       76   30
-## 
-## $redjelly
-##    
-##     non case case
-##   0      154   58
-##   1       34   45
-```
-
-### Realising multiple Chi-squared tests
-
-The same principle used to compute several contingency tables can be
-used to compute Chi-square tests for each table, using `lapply()`; note
-that we show only the first few tests:
-
-``` r
-food_tests <- lapply(food_tables, chisq.test)
-head(food_tests)
-## $tiramisu
-## 
-##  Pearson's Chi-squared test with Yates' continuity correction
-## 
-## data:  X[[i]]
-## X-squared = 161.64, df = 1, p-value < 2.2e-16
-## 
-## 
-## $wmousse
-## 
-##  Pearson's Chi-squared test with Yates' continuity correction
-## 
-## data:  X[[i]]
-## X-squared = 43.526, df = 1, p-value = 4.183e-11
-## 
-## 
-## $dmousse
-## 
-##  Pearson's Chi-squared test with Yates' continuity correction
-## 
-## data:  X[[i]]
-## X-squared = 79.574, df = 1, p-value < 2.2e-16
-## 
-## 
-## $mousse
-## 
-##  Pearson's Chi-squared test with Yates' continuity correction
-## 
-## data:  X[[i]]
-## X-squared = 82.943, df = 1, p-value < 2.2e-16
-## 
-## 
-## $beer
-## 
-##  Pearson's Chi-squared test with Yates' continuity correction
-## 
-## data:  X[[i]]
-## X-squared = 4.519, df = 1, p-value = 0.03352
-## 
-## 
-## $redjelly
-## 
-##  Pearson's Chi-squared test with Yates' continuity correction
-## 
-## data:  X[[i]]
-## X-squared = 20.781, df = 1, p-value = 5.148e-06
-```
-
-Looking at these results, it seems a large number of food items are
-significantly correlated to the illness. Which food item is the biggest
-suspect? We will try and address this question using risk ratios.
-
 ## Risk ratios
 
 ### For one variable
@@ -1030,192 +963,651 @@ suspect? We will try and address this question using risk ratios.
 The [risk ratio](https://en.wikipedia.org/wiki/Risk_ratio) is defined as
 the ratio between the proportion of illness in one group (typically
 ‘exposed’) vs another (‘non-exposed’). For instance, let us consider
-the contingency table of pork consumption and illness:
+the contingency table of pork consumption and illness. One way to
+calcuate a contingency table is using the `epitable()` function from the
+*epitools* package:
 
 ``` r
-food_tables$pork
-##    
-##     non case case
-##   0      115   54
-##   1       72   48
+pork_table <- epitable(food$pork, stegen$ill)
+pork_table
+##          Outcome
+## Predictor non case case
+##         0      115   54
+##         1       72   48
 ```
 
-This can be turned into proportions using `prop.table()`, specifying
-that we want proportions by rows (`margin = 1`):
+We can get the risk ratio by using the `riskratio()` function from the
+*epitools* package. Here, we want to use Yates’ continuity correction
+and calculate Wald confidence intervals (more inforamtion about this can
+be found on the help page for `riskratio()` by typing `?riskratio` in
+your R console).
 
 ``` r
-pork_prop <- prop.table(food_tables$pork, margin = 1)
-pork_prop
-##    
-##      non case      case
-##   0 0.6804734 0.3195266
-##   1 0.6000000 0.4000000
-```
-
-the corresponding risk ratio is:
-
-``` r
-## ill & exposed: row 2, column 2
-pork_prop[2, 2] # row 2, column 2
-## [1] 0.4
-
-## ill & non-exposed: row 1, column 2
-pork_prop[1, 2]
-## [1] 0.3195266
-
-## compute the risk ratio
-pork_rr <- pork_prop[2, 2] / pork_prop[1, 2]
+pork_rr <- riskratio(pork_table, correct = TRUE, method = "wald")
 pork_rr
+## $data
+##          Outcome
+## Predictor non case case Total
+##     0          115   54   169
+##     1           72   48   120
+##     Total      187  102   289
+## 
+## $measure
+##          risk ratio with 95% C.I.
+## Predictor estimate     lower    upper
+##         0 1.000000        NA       NA
+##         1 1.251852 0.9176849 1.707703
+## 
+## $p.value
+##          two-sided
+## Predictor midp.exact fisher.exact chi.square
+##         0         NA           NA         NA
+##         1  0.1620037    0.1708777   0.198536
+## 
+## $correction
+## [1] TRUE
+## 
+## attr(,"method")
+## [1] "Unconditional MLE & normal approximation (Wald) CI"
+```
+
+The documentation of `riskratio()` shows that it returns quite a few
+things as a list. However, we only want three things from this list:
+
+1.  risk ratio estimate
+2.  95% confidence interval
+3.  P-value
+
+<details>
+
+<summary> <b>Going further:</b> What is a list? </summary>
+
+`pork_rr` is an R object called a “list”:
+
+``` r
+class(pork_rr)
+## [1] "list"
+```
+
+A list is an R vector that can hold other vectors. While this may look
+strange and unfamiliar, we’ve actually seen lists before. If you look
+close, you can see that each element of a list starts with a `$`. This
+is the exact same syntax as data frames. If we inspect our `stegen` data
+frame, we can see that it is actually a list:
+
+``` r
+is.list(stegen)
+## [1] TRUE
+is.list(pork_rr)
+## [1] TRUE
+```
+
+Each column of a data frame is just a different element of a list. In
+fact, we can use the `$` operator to access different elements of the
+list just as we would the columns of a data frame:
+
+``` r
+stegen_list <- as.list(stegen)
+head(stegen_list)
+## $unique_key
+##   [1] "210" "12"  "288" "186" "20"  "148" "201" "106" "272" "50"  "216"
+##  [12] "141" "91"  "98"  "200" "109" "117" "281" "269" "77"  "196" "16" 
+##  [23] "168" "102" "204" "205" "271" "48"  "287" "25"  "15"  "45"  "125"
+##  [34] "113" "284" "121" "52"  "207" "63"  "43"  "175" "214" "251" "213"
+##  [45] "65"  "159" "29"  "14"  "165" "145" "202" "255" "169" "274" "254"
+##  [56] "61"  "2"   "86"  "59"  "74"  "133" "115" "103" "138" "70"  "173"
+##  [67] "144" "212" "234" "156" "146" "152" "31"  "279" "36"  "75"  "286"
+##  [78] "215" "56"  "199" "154" "27"  "42"  "49"  "96"  "66"  "104" "13" 
+##  [89] "221" "51"  "177" "111" "242" "143" "278" "62"  "176" "134" "256"
+## [100] "55"  "235" "58"  "194" "282" "137" "118" "220" "24"  "187" "190"
+## [111] "189" "195" "231" "239" "289" "184" "126" "209" "290" "67"  "170"
+## [122] "230" "151" "283" "211" "69"  "35"  "233" "208" "155" "198" "40" 
+## [133] "119" "139" "180" "188" "157" "80"  "203" "280" "37"  "193" "53" 
+## [144] "22"  "85"  "232" "258" "265" "54"  "237" "266" "236" "88"  "10" 
+## [155] "11"  "174" "185" "161" "226" "273" "227" "260" "223" "107" "183"
+## [166] "250" "253" "44"  "182" "228" "285" "83"  "248" "136" "172" "46" 
+## [177] "114" "166" "164" "101" "21"  "158" "108" "34"  "276" "222" "130"
+## [188] "275" "72"  "218" "267" "76"  "241" "171" "142" "89"  "105" "39" 
+## [199] "167" "140" "124" "131" "17"  "73"  "97"  "5"   "123" "9"   "99" 
+## [210] "84"  "229" "116" "238" "217" "122" "240" "95"  "110" "41"  "206"
+## [221] "23"  "257" "163" "64"  "100" "120" "160" "224" "94"  "60"  "263"
+## [232] "191" "147" "179" "93"  "57"  "112" "268" "243" "219" "247" "38" 
+## [243] "33"  "68"  "4"   "150" "79"  "178" "127" "153" "261" "92"  "90" 
+## [254] "264" "277" "181" "197" "225" "18"  "1"   "252" "47"  "245" "78" 
+## [265] "162" "81"  "3"   "82"  "32"  "71"  "30"  "28"  "135" "246" "149"
+## [276] "7"   "19"  "249" "128" "6"   "192" "270" "262" "259" "87"  "8"  
+## [287] "129" "26"  "132" "244" "291"
+## 
+## $ill
+##   [1] case     case     case     case     case     case     case    
+##   [8] case     case     case     case     case     case     case    
+##  [15] case     case     case     case     case     case     case    
+##  [22] case     case     case     case     case     case     case    
+##  [29] case     case     case     case     case     case     case    
+##  [36] case     case     case     case     case     case     case    
+##  [43] case     case     case     case     case     case     case    
+##  [50] case     case     case     case     case     case     case    
+##  [57] case     case     case     case     case     case     case    
+##  [64] case     case     case     case     case     case     case    
+##  [71] case     case     case     case     case     case     case    
+##  [78] case     case     case     case     case     case     case    
+##  [85] case     case     case     case     case     case     case    
+##  [92] case     case     case     case     case     case     case    
+##  [99] non case non case non case non case case     non case non case
+## [106] non case non case non case non case non case non case non case
+## [113] non case non case non case non case non case non case non case
+## [120] non case non case non case case     non case non case non case
+## [127] non case non case non case non case non case non case non case
+## [134] non case non case non case non case non case non case non case
+## [141] non case non case non case non case non case non case non case
+## [148] non case non case non case non case non case non case non case
+## [155] non case non case non case non case non case non case non case
+## [162] non case non case non case non case non case non case non case
+## [169] non case non case non case non case non case non case non case
+## [176] non case non case non case non case non case non case non case
+## [183] non case non case non case non case non case non case non case
+## [190] non case non case non case non case non case non case non case
+## [197] non case non case non case non case non case non case non case
+## [204] non case non case non case non case non case non case non case
+## [211] non case non case case     non case non case non case non case
+## [218] non case non case non case non case non case non case non case
+## [225] non case non case non case non case non case non case non case
+## [232] non case non case non case non case non case non case non case
+## [239] non case non case non case non case non case case     non case
+## [246] case     non case non case non case non case non case non case
+## [253] non case non case non case non case non case non case non case
+## [260] non case non case non case non case non case non case non case
+## [267] non case non case non case non case non case non case non case
+## [274] non case non case non case non case non case non case non case
+## [281] non case non case non case non case non case non case non case
+## [288] non case non case non case non case
+## Levels: non case case
+## 
+## $date_onset
+##   [1] "1998-06-27" "1998-06-27" "1998-06-27" "1998-06-27" "1998-06-27"
+##   [6] "1998-06-27" "1998-06-27" "1998-06-27" "1998-06-27" "1998-06-27"
+##  [11] "1998-06-27" "1998-06-27" "1998-06-27" "1998-06-27" "1998-06-27"
+##  [16] "1998-06-27" "1998-06-27" "1998-06-27" "1998-06-27" "1998-06-27"
+##  [21] "1998-06-27" "1998-06-27" "1998-06-27" "1998-06-27" "1998-06-27"
+##  [26] "1998-06-27" "1998-06-27" "1998-06-27" "1998-06-27" "1998-06-27"
+##  [31] "1998-06-27" "1998-06-27" "1998-06-27" "1998-06-27" "1998-06-27"
+##  [36] "1998-06-27" "1998-06-27" "1998-06-27" "1998-06-27" "1998-06-27"
+##  [41] "1998-06-27" "1998-06-27" "1998-06-27" "1998-06-27" "1998-06-27"
+##  [46] "1998-06-27" "1998-06-27" "1998-06-28" "1998-06-28" "1998-06-28"
+##  [51] "1998-06-28" "1998-06-28" "1998-06-28" "1998-06-28" "1998-06-28"
+##  [56] "1998-06-28" "1998-06-28" "1998-06-28" "1998-06-28" "1998-06-28"
+##  [61] "1998-06-28" "1998-06-28" "1998-06-28" "1998-06-28" "1998-06-28"
+##  [66] "1998-06-28" "1998-06-28" "1998-06-28" "1998-06-28" "1998-06-28"
+##  [71] "1998-06-28" "1998-06-28" "1998-06-28" "1998-06-28" "1998-06-28"
+##  [76] "1998-06-28" "1998-06-28" "1998-06-28" "1998-06-28" "1998-06-28"
+##  [81] "1998-06-28" "1998-06-28" "1998-06-28" "1998-06-28" "1998-06-28"
+##  [86] "1998-06-28" "1998-06-28" "1998-06-28" "1998-06-28" "1998-06-28"
+##  [91] "1998-06-29" "1998-06-29" "1998-06-29" "1998-06-29" "1998-06-29"
+##  [96] "1998-06-29" "1998-06-29" "1998-06-29" NA           NA          
+## [101] "1998-07-05" NA           "1998-06-27" NA           NA          
+## [106] NA           NA           "1998-07-02" NA           NA          
+## [111] NA           "1998-06-28" NA           NA           NA          
+## [116] NA           NA           NA           NA           "1998-07-01"
+## [121] NA           NA           "1998-06-28" NA           NA          
+## [126] NA           NA           NA           "1998-06-30" NA          
+## [131] NA           NA           NA           "1998-06-28" NA          
+## [136] NA           NA           NA           NA           NA          
+## [141] NA           NA           NA           NA           NA          
+## [146] NA           NA           NA           NA           "1998-07-09"
+## [151] NA           NA           "1998-06-29" NA           "1998-07-02"
+## [156] NA           NA           NA           NA           NA          
+## [161] "1998-07-06" NA           NA           NA           NA          
+## [166] NA           NA           NA           NA           NA          
+## [171] NA           NA           "1998-06-27" NA           NA          
+## [176] NA           NA           NA           "1998-06-27" NA          
+## [181] NA           NA           NA           "1998-06-28" NA          
+## [186] NA           NA           NA           NA           "1998-06-30"
+## [191] NA           NA           NA           NA           NA          
+## [196] "1998-06-27" NA           NA           "1998-06-28" NA          
+## [201] NA           NA           NA           NA           NA          
+## [206] NA           NA           NA           NA           NA          
+## [211] "1998-06-26" NA           "1998-06-28" "1998-06-27" NA          
+## [216] NA           NA           NA           "1998-06-27" NA          
+## [221] NA           NA           "1998-06-27" "1998-07-01" NA          
+## [226] NA           NA           NA           NA           NA          
+## [231] NA           NA           NA           NA           NA          
+## [236] NA           NA           NA           NA           NA          
+## [241] NA           NA           NA           NA           NA          
+## [246] "1998-06-28" "1998-07-02" NA           NA           NA          
+## [251] NA           "1998-06-27" NA           NA           NA          
+## [256] NA           NA           NA           NA           NA          
+## [261] NA           NA           NA           "1998-06-29" "1998-07-01"
+## [266] "1998-06-27" NA           "1998-06-28" NA           NA          
+## [271] NA           "1998-07-04" NA           NA           NA          
+## [276] NA           NA           NA           NA           NA          
+## [281] NA           NA           NA           NA           NA          
+## [286] NA           NA           "1998-06-30" NA           NA          
+## [291] NA          
+## 
+## $sex
+##   [1] female male   female male   female male   male   male   female male  
+##  [11] female male   male   female male   male   male   male   female female
+##  [21] male   female male   male   male   female male   female male   male  
+##  [31] female female female male   female female male   male   female male  
+##  [41] male   female male   male   female female male   female female female
+##  [51] male   male   male   female female female male   male   female male  
+##  [61] male   male   male   female female female female male   female female
+##  [71] female female male   female male   male   male   female male   female
+##  [81] female female male   male   female male   female male   female male  
+##  [91] female female male   female male   male   female male   female male  
+## [101] male   female male   male   male   female male   female female female
+## [111] female male   female male   male   male   male   male   female male  
+## [121] male   female female female female male   female female male   female
+## [131] male   female male   male   female female female female male   male  
+## [141] female male   female male   male   female male   female female female
+## [151] female female female female female female female male   male   male  
+## [161] male   female female male   female female female male   male   male  
+## [171] female male   male   male   female male   male   female male   female
+## [181] male   male   male   male   female female male   male   female male  
+## [191] male   female female male   female female male   female female female
+## [201] male   male   male   female female male   female female female male  
+## [211] male   female male   female male   female male   male   male   male  
+## [221] male   male   female male   male   male   female female male   female
+## [231] female female male   male   male   male   female male   female female
+## [241] female female female female female female male   female female female
+## [251] female female male   female female female female male   female male  
+## [261] female male   female male   male   female male   female female female
+## [271] female male   female female male   male   female male   male   female
+## [281] female female female male   female female female female male   female
+## [291] male  
+## Levels: male female
+## 
+## $age
+##   [1] 18 57 56 17 19 16 19 19 40 53 20 23 17 19 15 19 57 17 47 16 17 19 17
+##  [24] 17 18 18 29 14 13 21 19 20 57 38 18 64 57 27 23 21 21 20 20 18 24 24
+##  [47] 19 58 19 18 27 20 19 54 23 18 16 26 16 14 20 56 46 18 19 21 18 80 23
+##  [70] 20 50 18 48 21 47 18 47 17 NA 52 20 32 17 16 17 20 19 19 NA 19 19 19
+##  [93] 19 48 19 52 19 NA 21 18 20 19 39 17 22 13 20 18 17 17 62 17 21 54 20
+## [116] 16 17 18 22 18 18 NA 19 17 20 57 20 20 48 19 44 19 46 51 17 16 22 18
+## [139] 19 20 47 15 19 20 13 20 21 20 18 20 45 20 44 18 22 58 17 14 NA 20 20
+## [162] NA 19 19 16 26 20 19 17 19 57 18 19 17 18 18 23 19 45 15 20 19 25 20
+## [185] 20 20 48 23 17 17 46 19 21 18 24 18 52 50 23 55 19 16 18 19 50 49 65
+## [208] 19 43 43 20 59 21 19 20 56 14 55 47 19 42 22 49 45 42 60 16 20 18 18
+## [231] 21 19 19 17 17 18 45 58 20 24 57 19 20 56 46 18 17 37 44 19 21 19 18
+## [254] 28 53 17 19 19 19 17 20 18 24 15 12 16 48 18 21 59 57 15 NA 20 18 18
+## [277] 18 NA 16 20 16 51 18 21 22 18 18 21 17 21 22
+## 
+## $tiramisu
+##   [1]  1  1  0  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1
+##  [24]  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1
+##  [47]  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  0  1  1  1 NA  1
+##  [70]  0  1  1 NA  1  1  1  1  1  1  1  1  1  1  1  0  1  1  0  1  1  1  1
+##  [93]  1  0  1  1  1  1  0  0  0  0  0  0  0  0  1  0  1  0  0  1  0  0  0
+## [116]  0  0  0 NA  1  0  0  1  0  0  0  0  0  1  0  0  0  0  1  0  0  0  0
+## [139]  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  1
+## [162]  0  0  1  0  0  0  0  0  0  0  0  0  0  1  1  0  0  0  0  0  0  0  0
+## [185]  0  0  0 NA  0  0  0  0  0  1  0  0  1  0  1  1  0  0  0  0  1  0  0
+## [208]  0  0  0  0  0  1  0  0  1  0  0  0  0  1  0  0  1  0  0  0  1  1  0
+## [231]  0  0  0  0  0  1  0  0  0  0  0  0  0  1  0  1  0  0  0  0  0  0  0
+## [254]  0  0  1  0  0  0  1  0  0  0  1  0  0  0  0  0  0 NA  0  1  0  0  0
+## [277]  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1
+stegen_list$ill
+##   [1] case     case     case     case     case     case     case    
+##   [8] case     case     case     case     case     case     case    
+##  [15] case     case     case     case     case     case     case    
+##  [22] case     case     case     case     case     case     case    
+##  [29] case     case     case     case     case     case     case    
+##  [36] case     case     case     case     case     case     case    
+##  [43] case     case     case     case     case     case     case    
+##  [50] case     case     case     case     case     case     case    
+##  [57] case     case     case     case     case     case     case    
+##  [64] case     case     case     case     case     case     case    
+##  [71] case     case     case     case     case     case     case    
+##  [78] case     case     case     case     case     case     case    
+##  [85] case     case     case     case     case     case     case    
+##  [92] case     case     case     case     case     case     case    
+##  [99] non case non case non case non case case     non case non case
+## [106] non case non case non case non case non case non case non case
+## [113] non case non case non case non case non case non case non case
+## [120] non case non case non case case     non case non case non case
+## [127] non case non case non case non case non case non case non case
+## [134] non case non case non case non case non case non case non case
+## [141] non case non case non case non case non case non case non case
+## [148] non case non case non case non case non case non case non case
+## [155] non case non case non case non case non case non case non case
+## [162] non case non case non case non case non case non case non case
+## [169] non case non case non case non case non case non case non case
+## [176] non case non case non case non case non case non case non case
+## [183] non case non case non case non case non case non case non case
+## [190] non case non case non case non case non case non case non case
+## [197] non case non case non case non case non case non case non case
+## [204] non case non case non case non case non case non case non case
+## [211] non case non case case     non case non case non case non case
+## [218] non case non case non case non case non case non case non case
+## [225] non case non case non case non case non case non case non case
+## [232] non case non case non case non case non case non case non case
+## [239] non case non case non case non case non case case     non case
+## [246] case     non case non case non case non case non case non case
+## [253] non case non case non case non case non case non case non case
+## [260] non case non case non case non case non case non case non case
+## [267] non case non case non case non case non case non case non case
+## [274] non case non case non case non case non case non case non case
+## [281] non case non case non case non case non case non case non case
+## [288] non case non case non case non case
+## Levels: non case case
+stegen$ill
+##   [1] case     case     case     case     case     case     case    
+##   [8] case     case     case     case     case     case     case    
+##  [15] case     case     case     case     case     case     case    
+##  [22] case     case     case     case     case     case     case    
+##  [29] case     case     case     case     case     case     case    
+##  [36] case     case     case     case     case     case     case    
+##  [43] case     case     case     case     case     case     case    
+##  [50] case     case     case     case     case     case     case    
+##  [57] case     case     case     case     case     case     case    
+##  [64] case     case     case     case     case     case     case    
+##  [71] case     case     case     case     case     case     case    
+##  [78] case     case     case     case     case     case     case    
+##  [85] case     case     case     case     case     case     case    
+##  [92] case     case     case     case     case     case     case    
+##  [99] non case non case non case non case case     non case non case
+## [106] non case non case non case non case non case non case non case
+## [113] non case non case non case non case non case non case non case
+## [120] non case non case non case case     non case non case non case
+## [127] non case non case non case non case non case non case non case
+## [134] non case non case non case non case non case non case non case
+## [141] non case non case non case non case non case non case non case
+## [148] non case non case non case non case non case non case non case
+## [155] non case non case non case non case non case non case non case
+## [162] non case non case non case non case non case non case non case
+## [169] non case non case non case non case non case non case non case
+## [176] non case non case non case non case non case non case non case
+## [183] non case non case non case non case non case non case non case
+## [190] non case non case non case non case non case non case non case
+## [197] non case non case non case non case non case non case non case
+## [204] non case non case non case non case non case non case non case
+## [211] non case non case case     non case non case non case non case
+## [218] non case non case non case non case non case non case non case
+## [225] non case non case non case non case non case non case non case
+## [232] non case non case non case non case non case non case non case
+## [239] non case non case non case non case non case case     non case
+## [246] case     non case non case non case non case non case non case
+## [253] non case non case non case non case non case non case non case
+## [260] non case non case non case non case non case non case non case
+## [267] non case non case non case non case non case non case non case
+## [274] non case non case non case non case non case non case non case
+## [281] non case non case non case non case non case non case non case
+## [288] non case non case non case non case
+## Levels: non case case
+```
+
+</details>
+
+All of these are present in the `pork_rr` object, but this output does
+not lend itself well to quick visual inspection. What we can do now is
+to *extract* elements from this output and place it in a data frame.
+
+The first thing we want is the risk ratio and the confidence intervals
+for those consumption of pork. This is presented in the `$measure`
+element of the list:
+
+``` r
+pork_rr$measure
+##          risk ratio with 95% C.I.
+## Predictor estimate     lower    upper
+##         0 1.000000        NA       NA
+##         1 1.251852 0.9176849 1.707703
+class(pork_rr$measure)
+## [1] "matrix"
+```
+
+We can see that this is present as a “matrix”. A matrix has rows and
+columns and we can access them like we do a vector with square brackets
+(`[ ]`), but we separate the rows and columns with a comma like so:
+`[rows, columns]`. For example, if we wanted the risk ratio for pork
+consumed, we would take the second row in the first column:
+
+``` r
+pork_rr$measure[2, 1]
 ## [1] 1.251852
 ```
 
-Note the use of the syntax `[rows, columns]` to subset specific rows and
-columns of 2-dimensional objects.
+In our case, we want to take the entire second row, so we can leave the
+`columns` portion blank:
+
+``` r
+pork_est_ci <- pork_rr$measure[2, ]
+pork_est_ci
+##  estimate     lower     upper 
+## 1.2518519 0.9176849 1.7077027
+```
+
+We also want to get the P-value, of which, we have three choices. In our
+case, we will choose the P-value from Fisher’s exact test and combine
+the result into a vector that we will turn into a data frame:
+
+``` r
+pork_p <- pork_rr$p.value[2, "fisher.exact"]
+pork_p
+## [1] 0.1708777
+res <- data.frame(estimate = pork_est_ci["estimate"],
+                  lower    = pork_est_ci["lower"],
+                  upper    = pork_est_ci["upper"],
+                  p.value  = pork_p
+                 )
+res
+##          estimate     lower    upper   p.value
+## estimate 1.251852 0.9176849 1.707703 0.1708777
+```
+
+Now we have a table that tells us that pork has a risk ratio of 1.252
+CI: (0.918, 1.708), P = 0.171.
+
+### Consolidating several steps into one
+
+To recap, to get a risk ratio we’ve done the following:
+
+1.  created a contingency table
+2.  estimated the risk ratio
+3.  extracted estimate into a data frame
+
+However, we have 14 potential predictors to sort through and we don’t
+want to have to repeat these procedures manually over and over. One
+strategy to help with this is to create our own *function*, which we can
+think of as a miniature recipe for a computer to read. If we take the
+steps above and place them into individual steps we would get:
+
+``` r
+et  <- epitable(food$pork, stegen$ill)
+rr  <- riskratio(et)
+estimate <- rr$measure[2, ]
+res <- data.frame(estimate = estimate["estimate"],
+                  lower    = estimate["lower"],
+                  upper    = estimate["upper"],
+                  p.value  = rr$p.value[2, "fisher.exact"]
+                 )
+res
+##          estimate     lower    upper   p.value
+## estimate 1.251852 0.9176849 1.707703 0.1708777
+```
+
+Just like a recipe, a function needs both ingredients and instructions.
+What we have above are instructions, but we still need to say what our
+ingredients are. If we look at the above code, we can see that we need
+to define our predictor (`food$pork`) and outcome (`stegen$ill`);
+everything else flows from that. We can then write our function (which
+we will call `single_risk_ratio()`) like
+this:
+
+``` r
+single_risk_ratio <- function(predictor, outcome) { # ingredients defined here
+  et  <- epitable(predictor, outcome) # ingredients used here
+  rr  <- riskratio(et)
+  estimate <- rr$measure[2, ]
+  res <- data.frame(estimate = estimate["estimate"],
+                    lower    = estimate["lower"],
+                    upper    = estimate["upper"],
+                    p.value  = rr$p.value[2, "fisher.exact"]
+                   )
+  return(res) # return the data frame
+}
+```
+
+Now, we can use this `single_risk_ratio()` like any other
+function:
+
+``` r
+pork_rr <- single_risk_ratio(predictor = food$pork, outcome = stegen$ill)
+pork_rr
+##          estimate     lower    upper   p.value
+## estimate 1.251852 0.9176849 1.707703 0.1708777
+```
+
+If we change the variable, we’ll get a different
+answer:
+
+``` r
+fruit_rr <- single_risk_ratio(predictor = food$fruit_salad, outcome = stegen$ill)
+fruit_rr
+##          estimate    lower    upper      p.value
+## estimate 2.500618 1.886773 3.314171 9.998203e-09
+```
+
+We can combine the two using a function from *dplyr* called
+`bind_rows()`:
+
+``` r
+bind_rows(pork = pork_rr, fruit = fruit_rr, .id = "predictor")
+##   predictor estimate     lower    upper      p.value
+## 1      pork 1.251852 0.9176849 1.707703 1.708777e-01
+## 2     fruit 2.500618 1.8867735 3.314171 9.998203e-09
+```
+
+Here we can see that the fruit salad has a higher risk ratio with a
+lower P-value, but we want to compare all of the variables and still,
+copying and pasting all this code would be a nightmare and potentially
+lead to errors. We will see in the next section how we can use R to
+apply the function `single_risk_ratio()` to each column of our `food`
+data frame to give us a table of risk ratios for all the food items.
 
 ### Multiple variables
 
 In the example above, we have computed the risk ratio using a simple
 recipe:
 
-1.  select a contingency table
-2.  convert raw numbers to proportions (using `prop.table()`)
-3.  isolating the risks in exposed and non-exposed groups, and compute
-    their ratio
+1.  create a contingency table
+2.  estimate the risk ratio
+3.  extract estimate into a data frame
 
-Repeating these tasks manually for all variables in `food` would be
-cumbersome. As an alternative, we can define the steps above as a
-function, i.e. a generic recipe which we can then apply to any
-contingency table. This new function will be called `risk_ratio()`, and
-is defined as
-follows:
-
-``` r
-risk_ratio <- function(tab) { # 'tab' is a placeholder for the input 2x2 table
-  ## compute table of proportions
-  tab_prop <- prop.table(tab, margin = 1)
-  
-  ## compute the risk ratio
-  result <- tab_prop[2, 2] / tab_prop[1, 2]
-
-  ## return the output
-  return(result) # this will be the output of the function
-}
-```
-
-We can now try this function on any of the tables in `food_tables`, for
-instance:
+We placed this recipe in a function called `single_risk_ratio()` and we
+know we can use it to calcuate the risk ratio for individual variables,
+but we need to be able to calculate it over all the variables in our
+`food` data frame. The solution is to use an R function called
+`lapply()`, which takes each element of a list (or column of a data
+frame) and uses it as the first ingredient (also known as argument) of a
+function. Like `tapply()`, the function can be anything and additional
+arguments are placed behind the function. It will then return the output
+as a list:
 
 ``` r
-food_tables$pork
-##    
-##     non case case
-##   0      115   54
-##   1       72   48
-risk_ratio(food_tables$pork)
-## [1] 1.251852
-```
-
-And we can now apply this function sequentially to all variables in
-`food` as before, using `lapply()` (we show only the first few values):
-
-``` r
-all_rr <- lapply(food_tables, risk_ratio)
-## all_rr
+all_rr <- lapply(food, FUN = single_risk_ratio, outcome = stegen$ill)
+head(all_rr)
 ## $tiramisu
-## [1] 18.31169
+##          estimate    lower    upper      p.value
+## estimate 18.31169 8.814202 38.04291 1.794084e-41
 ## 
 ## $wmousse
-## [1] 2.847222
+##          estimate    lower    upper      p.value
+## estimate 2.847222 2.128267 3.809049 5.825494e-11
 ## 
 ## $dmousse
-## [1] 4.501021
+##          estimate    lower    upper      p.value
+## estimate 4.501021 3.086945 6.562862 1.167009e-19
 ## 
 ## $mousse
-## [1] 4.968958
+##          estimate    lower    upper      p.value
+## estimate 4.968958 3.299403 7.483336 1.257341e-20
 ## 
 ## $beer
-## [1] 0.6767842
+##           estimate     lower   upper    p.value
+## estimate 0.6767842 0.4757688 0.96273 0.02806394
 ## 
 ## $redjelly
-## [1] 2.08206
+##          estimate    lower    upper      p.value
+## estimate  2.08206 1.555917 2.786123 4.415074e-06
 ```
 
-Finally, we re-shape these results into a sorted data frame for further
-plotting with *ggplot2*. Reshaping will take three steps:
-
-1.  convert from a list to a vector using `unlist()`
-2.  sort the vector using `sort()`
-3.  convert the named vector to a data frame using `stack()` (from the
-    *utils* package)
-
-<details>
-
-<summary><b>Going Further</b> click here to learn more about
-<code>stack()</code></summary>
-
-The first two functions, `unlist()` and `sort()` have self-explanitory
-names, but `stack()` may not be so clear. This function takes the
-elements in a vector and **stacks** them together to make a data frame
-with two columns: one column called “values” containing the data in the
-vector, and the other column called “ind” containing the names of those
-elements as a factor.
-
-</details>
+Finally, like we did above, we re-shape these results into a data frame
 
 ``` r
-## convert results from list to numeric vector
-rr_data <- unlist(all_rr)
-rr_data
-##    tiramisu     wmousse     dmousse      mousse        beer    redjelly 
-##  18.3116883   2.8472222   4.5010211   4.9689579   0.6767842   2.0820602 
-## fruit_salad      tomato       mince      salmon horseradish  chickenwin 
-##   2.5006177   1.2898653   1.0568237   1.0334249   1.2557870   1.1617347 
-##   roastbeef        pork 
-##   0.7607985   1.2518519
-
-## sort results by decreasing order
-rr_data <- sort(rr_data, decreasing = TRUE)
-
-## create a data frame from the named vector
-rr_df   <- stack(rr_data)
-rr_df
-##        values         ind
-## 1  18.3116883    tiramisu
-## 2   4.9689579      mousse
-## 3   4.5010211     dmousse
-## 4   2.8472222     wmousse
-## 5   2.5006177 fruit_salad
-## 6   2.0820602    redjelly
-## 7   1.2898653      tomato
-## 8   1.2557870 horseradish
-## 9   1.2518519        pork
-## 10  1.1617347  chickenwin
-## 11  1.0568237       mince
-## 12  1.0334249      salmon
-## 13  0.7607985   roastbeef
-## 14  0.6767842        beer
-
-ggplot(rr_df, aes(x = values, y = ind)) +
-  geom_point() +
-  geom_vline(xintercept = 1, lty = 2) +
-  geom_segment(aes(xend = 1, yend = ind)) +
-  theme_light(base_size = 16, base_family = "Times") +
-  labs(title = "Risk Ratio by Food Exposure", x = "Risk Ratio", y = "Food Item")
+all_food_df <- bind_rows(all_rr, .id = "predictor")
+all_food_df
+##      predictor   estimate     lower     upper      p.value
+## 1     tiramisu 18.3116883 8.8142022 38.042913 1.794084e-41
+## 2      wmousse  2.8472222 2.1282671  3.809049 5.825494e-11
+## 3      dmousse  4.5010211 3.0869446  6.562862 1.167009e-19
+## 4       mousse  4.9689579 3.2994031  7.483336 1.257341e-20
+## 5         beer  0.6767842 0.4757688  0.962730 2.806394e-02
+## 6     redjelly  2.0820602 1.5559166  2.786123 4.415074e-06
+## 7  fruit_salad  2.5006177 1.8867735  3.314171 9.998203e-09
+## 8       tomato  1.2898653 0.9379601  1.773799 1.368934e-01
+## 9        mince  1.0568237 0.7571858  1.475036 7.893882e-01
+## 10      salmon  1.0334249 0.7452531  1.433026 8.976422e-01
+## 11 horseradish  1.2557870 0.9008457  1.750578 2.026013e-01
+## 12  chickenwin  1.1617347 0.8376217  1.611261 4.176598e-01
+## 13   roastbeef  0.7607985 0.4129094  1.401795 4.172932e-01
+## 14        pork  1.2518519 0.9176849  1.707703 1.708777e-01
 ```
 
-![](practical-stegen_files/figure-gfm/stegen_rr_plot-1.png)<!-- -->
+This is still in the order of our data, but we want it sorted in order
+of the risk ratio. For this, we will use the *dplyr* functions
+`arrange()` and `desc()` to arrange our data by the risk ratio estimate
+in descending order:
+
+``` r
+all_food_df <- arrange(all_food_df, desc(estimate))
+all_food_df
+##      predictor   estimate     lower     upper      p.value
+## 1     tiramisu 18.3116883 8.8142022 38.042913 1.794084e-41
+## 2       mousse  4.9689579 3.2994031  7.483336 1.257341e-20
+## 3      dmousse  4.5010211 3.0869446  6.562862 1.167009e-19
+## 4      wmousse  2.8472222 2.1282671  3.809049 5.825494e-11
+## 5  fruit_salad  2.5006177 1.8867735  3.314171 9.998203e-09
+## 6     redjelly  2.0820602 1.5559166  2.786123 4.415074e-06
+## 7       tomato  1.2898653 0.9379601  1.773799 1.368934e-01
+## 8  horseradish  1.2557870 0.9008457  1.750578 2.026013e-01
+## 9         pork  1.2518519 0.9176849  1.707703 1.708777e-01
+## 10  chickenwin  1.1617347 0.8376217  1.611261 4.176598e-01
+## 11       mince  1.0568237 0.7571858  1.475036 7.893882e-01
+## 12      salmon  1.0334249 0.7452531  1.433026 8.976422e-01
+## 13   roastbeef  0.7607985 0.4129094  1.401795 4.172932e-01
+## 14        beer  0.6767842 0.4757688  0.962730 2.806394e-02
+```
+
+Now we can use this data frame to plot the results using *ggplot2*:
+
+``` r
+# first, make sure the predictors are factored in the right order
+all_food_df$predictor <- factor(all_food_df$predictor, unique(all_food_df$predictor))
+# plot
+ggplot(all_food_df, aes(x = estimate, y = predictor, color = p.value)) +
+  geom_point() +
+  geom_errorbarh(aes(xmin = lower, xmax = upper)) +
+  geom_vline(xintercept = 1, linetype = 2) + 
+  scale_color_viridis_c()
+```
+
+![](practical-stegen_files/figure-gfm/plot-arrange-1.png)<!-- -->
 
 The results are a lot clearer now: the tiramisu is by far the largest
-risk factor in this outbreak.
+risk factor in this outbreak, but it’s wide confidence interval suggests
+that there may be confounding factors involved (i.e. the food items were
+not independent).
 
-# \- Plotting a very basic spatial overview of cases
+# Plotting a very basic spatial overview of cases
 
-To conclude your report you would like to include a very basic spatial
-overview of cases. Based on the postal codes of all individuals that had
-symptoms gps coordinates were generated providing each individual with a
-latitude and longtitude which corresponds with their household. The
-variables *lat* and *long* include the longitude and latitude which we
-will use to plot the cases using *ggplot2*.
+To complete your report, you would like to include a very basic spatial
+overview of cases. Based on the postal codes of all individuals with a
+date of symptom onset spatial coordinates were generated providing
+everyone with a latitude and longitude which corresponds with their
+household (in relation to their postal code). The variables *lat* and
+*long* include the longitude and latitude which we will use to plot the
+cases using *ggplot2*.
 
 <details>
 
