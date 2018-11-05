@@ -29,12 +29,16 @@ A self-service party buffet was supplied by a commercial caterer from a the near
 Freiburg. Food was prepared on the day of the party and transported in a
 refrigerated van to the school. Relative locations of the two schools and Freiburg can be seen on image 1
 
-![Image 1: Map of Stegen, with annoted school A and B](../../img/screenshots/map_stegen.png)
+<!-- ![Image 1: Map of Stegen, with annoted school A and B](../../img/screenshots/map_stegen.png) -->
 
 
 <!--
 Please find the HTML for the iframe of the embedded interactive map: <iframe src="https://www.google.com/maps/d/u/0/embed?mid=1xYZh1AyB3h_mG4QihrO9LhFT3g5tjOv_" width="640" height="480"></iframe>
 --> 
+
+<!--html_preserve-->
+<iframe src="https://www.google.com/maps/d/u/0/embed?mid=1xYZh1AyB3h_mG4QihrO9LhFT3g5tjOv_" width="100%" height="500"></iframe>
+<!--html_preserve-->
 
 Festivities started with a dinner buffet open from 8.30 pm onwards and were
 followed by a dessert buffet offered from 10 pm. The party and the buffet
