@@ -167,17 +167,29 @@ common format. We assume that [the data file
 `data/` folder of your project, and that your current R session is at
 the root of the project.
 
-Here we decompose the steps to read data in: finding the path to the
-data (`path_to_data`), using the function `read_xlsx()` from the
-*readxl* package to read data in, and saving the output in a new object
-`stegen`:
+Here we decompose the steps to read data in:
+
+1.  finding the path to the data (`path_to_data`) with the *here*
+    package
+2.  using the function `read_xlsx()` from the *readxl* package to read
+    data in, and saving the output in a new object `stegen`.
+
+<!-- end list -->
 
 ``` r
 path_to_data <- here("data", "stegen_raw.xlsx")
+path_to_data
+## [1] "/Users/zhian/Documents/Imperial/Websites/recon-learn/data/stegen_raw.xlsx"
+```
+
+> n.b. the value of `path_to_data` will not be the what you see in this
+> tutorial. It will be the location of this data set on your computer.
+
+``` r
 stegen <- read_xlsx(path_to_data)
 ```
 
-To print the content of the dataset, we can use either of these
+To look at the content of the dataset, we can use either of these
 commands:
 
 ``` r
@@ -435,16 +447,20 @@ There are several things going on in a command like:
 stegen$pork[stegen$pork == 9] <- NA
 ```
 
-let us break them down:
+let us break them down from the inside out.
 
 1.  `stegen$pork` means “get the variable called `pork` in the dataset
     `stegen`”
-2.  `[...]` subset the vector according to `...`; if `...` is a series
-    of `TRUE/FALSE` values, only entries corresponding to `TRUE` are
-    retained
-3.  `... == 9` for each value of `...` test if it is equal to `9`, and
-    return `TRUE` if so (`FALSE` otherwise)
-4.  `... <- NA` replace `...` with `NA` (missing value)
+2.  The `==` is a logical test for equality. `stegen$pork == 9` tests
+    each element in `stegen$pork` if it’s equal to `9`, returning `TRUE`
+    if an element of `stegen$pork` is equal to `9` and `FALSE` if it
+    doesn’t.
+3.  The square brackets (`[ ]`) subset the vector `stegen$pork`
+    according to whatever is between them; In this case, it’s the test
+    `stegen$pork == 9`, which evaluates to FALSE, FALSE, FALSE, TRUE,
+    FALSE, FALSE… This will return only the cases in `stegen$pork` that
+    have `9`s recorded.
+4.  The replacement: `... <- NA` replace `...` with `NA` (missing value)
 
 in other words: "isolate the entries of `stegen$pork` which equal `9`,
 and replace them with `NA`; here is another toy example to illustrate
@@ -481,6 +497,9 @@ under `data/` called `cleaned/`. We will use **R**’s function
 clean_dir <- here("data", "cleaned")
 dir.create(clean_dir)
 ```
+
+> STOP: open your file browser and confirm that file called
+> “data/cleaned” has been created
 
 After this, we can save our cleaned data into a new file called
 `stegen_clean.csv`:
@@ -524,7 +543,7 @@ tapply(stegen$age, INDEX = stegen$sex, FUN = summary) # age stats by gender
 `tapply()` is a very handy function to stratify any kind of analyses.
 You will find more details by reading the documentation of the function
 `?tapply()`, but briefly, the syntax to be used is `tapply(input_data,
-stratification, function_to_use, optional_arguments)`. In the command
+stratification, function_to_use, further_arguments)`. In the command
 used above:
 
 ``` r
@@ -542,8 +561,8 @@ tapply(stegen$age, INDEX = stegen$sex, FUN = mean, na.rm = TRUE)
 ## 26.37778 26.92568
 ```
 
-Here we illustrate that further arguments to the function can be passed
-as extra arguments; here, `na.rm = TRUE` means “ignore missing data”.
+Here we illustrate that further arguments to the function `mean()` can
+be passed on; here, `na.rm = TRUE` means “ignore missing data”.
 
 </details>
 
@@ -1625,8 +1644,8 @@ with *ggplot2*. Here we will use points and color them based on whether
 or not the student was ill:
 
 ``` r
-ggplot(stegen, aes(x = longitude, y = latitude, color = ill)) +
-  geom_point() +
+ggplot(stegen) +
+  geom_point(aes(x = longitude, y = latitude, color = ill)) +
   coord_map()
 ```
 
@@ -1636,31 +1655,37 @@ ggplot(stegen, aes(x = longitude, y = latitude, color = ill)) +
 
 <summary>Advanced mapping and spatial methodologies?</b> </summary>
 
-Normally you would generate maps in R using more sophisticated mapping
-tools, but for the scope of this case study we will keep it more basic.
-We will explore mapping and spatial analytical methods this in future
-case
-studies
+If we wanted to get a sense of where these cases were in relation to the
+buildings, one option is to use the *ggmap* package. This provides the
+ability to download maps from google or open street maps to use as a
+background for your data. Note that here, the first call is to `ggmap()`
+instead of `ggplot()` and in the `geom_point()`, we use an extra
+parameter called `data` to tell the geom where the data for the points
+are coming from:
+
+> **If you are currently in a workshop: PLEASE DO NOT RUN THIS
+CODE**
 
 ``` r
 stegen_coord <- c(longitude = 7.96301545767211, latitude = 47.9816228184647)
 ## smap <- get_googlemap(center = stegen_coord, zoom = 15)
 #> Map from URL : http://maps.googleapis.com/maps/api/staticmap?center=47.981623,7.963015&zoom=15&size=640x640&scale=2&maptype=terrain&sensor=false
-tiramisu_labels <- c(`0` = "No Tiramisu", `1` = "Had Tiramisu")
 ggmap(smap) +
   geom_point(aes(x = longitude, y = latitude, color = ill), data = stegen) +
-  facet_wrap(~tiramisu, labeller = as_labeller(tiramisu_labels)) +
   coord_map()
 ## Coordinate system already present. Adding new coordinate system, which will replace the existing one.
 ```
 
-![](practical-stegen_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+![](practical-stegen_files/figure-gfm/ggmap-1.png)<!-- -->
+
+The downside of using *ggmap* is that you are limited by your internet
+connection and how many times you can download data from the API. In
+most situations, you would be using
+shapefiles.
 
 <!--html_preserve-->
 
-<iframe src="widgets/stegen-casemap.html" width="100%" height="500">
-
-</iframe>
+<!-- <iframe src="widgets/stegen-casemap.html" width="100%" height="500"></iframe> -->
 
 <!--html_preserve-->
 
