@@ -109,6 +109,7 @@ The following packages will be used in the case study:
 - dplyr: to help with factors
 - *ggplot2*: to create custom visualisations
 - *epitools*: to calculate risk ratios
+- *ggmap*: to plot googlemaps
 
 If we have these packages installed, we can tell R to load these packages from
 our R library:
@@ -121,6 +122,7 @@ library("epitrix")   # clean labels and variables
 library("dplyr")     # general data handling
 library("ggplot2")   # advanced graphics
 library("epitools")  # statistics for epi data
+library("ggmap")     # plotting googlemaps
 ```
 
 <details>
@@ -934,12 +936,37 @@ may be confounding factors involved (i.e. the food items were not independent).
 
 # Plotting a very basic spatial overview of cases
 
-To complete your report, you would like to include a very basic spatial overview of cases. Based on the postal codes of all individuals with a date of symptom onset spatial coordinates were generated providing everyone with a latitude and longitude which corresponds with their household (in relation to their postal code). The variables *lat* and *long* include the longitude and latitude which we will use to plot the cases using *ggplot2*.
+To complete your report, you would like to include a very basic spatial overview of cases. Based on the postal codes of all individuals with a date of symptom onset spatial coordinates were generated providing everyone with a latitude and longitude which corresponds with their household (in relation to their postal code). The variables `latitude` and `longitude` include the longitude and latitude which we will use to plot the cases using *ggplot2*. Here, we want to plot the data to see if
+there is any spatial component to the outbreak. Since we have the coordinates
+for each household, it becomes straightforward to plot them with *ggplot2*. Here
+we will use points and color them based on whether or not the student was ill:
+
+```{r stegen-ill-plot-1}
+ggplot(stegen, aes(x = longitude, y = latitude, color = ill)) +
+  geom_point() +
+  coord_map()
+```
+
+
+
 
 <details>
 <summary>Advanced mapping and spatial methodologies?</b> </summary>
 
-Normally you would generate maps in R using more sufisticated mapping tools, but for the scope of this case study we will keep it more basic. We will explore mapping and spatial analytical methods this in future case studies
+Normally you would generate maps in R using more sophisticated mapping tools, but for the scope of this case study we will keep it more basic. We will explore mapping and spatial analytical methods this in future case studies
+
+```{r, eval = -2, echo = -4}
+stegen_coord <- c(longitude = 7.96301545767211, latitude = 47.9816228184647)
+smap <- get_googlemap(center = stegen_coord, zoom = 15)
+#> Map from URL : http://maps.googleapis.com/maps/api/staticmap?center=47.981623,7.963015&zoom=15&size=640x640&scale=2&maptype=terrain&sensor=false
+smap <- readRDS(here::here("static", "data", "stegen-map", "background.rds"))
+tiramisu_labels <- c(`0` = "No Tiramisu", `1` = "Had Tiramisu")
+ggmap(smap) +
+  geom_point(aes(x = longitude, y = latitude, color = ill), data = stegen) +
+  facet_wrap(~tiramisu, labeller = as_labeller(tiramisu_labels)) +
+  coord_map()
+```
+
 
 <!--html_preserve-->
 <iframe src="widgets/stegen-casemap.html" width="100%" height="500"></iframe>

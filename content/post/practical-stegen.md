@@ -116,6 +116,7 @@ The following packages will be used in the case study:
   - dplyr: to help with factors
   - *ggplot2*: to create custom visualisations
   - *epitools*: to calculate risk ratios
+  - *ggmap*: to plot googlemaps
 
 If we have these packages installed, we can tell R to load these
 packages from our R library:
@@ -128,6 +129,7 @@ library("epitrix")   # clean labels and variables
 library("dplyr")     # general data handling
 library("ggplot2")   # advanced graphics
 library("epitools")  # statistics for epi data
+library("ggmap")     # plotting googlemaps
 ```
 
 <details>
@@ -180,7 +182,7 @@ commands:
 
 ``` r
 stegen
-## # A tibble: 291 x 21
+## # A tibble: 291 x 23
 ##    `Unique key`   ill `Date-onset`   SEX   Age tiramisu tportion wmousse
 ##           <dbl> <dbl> <chr>        <dbl> <dbl>    <dbl>    <dbl>   <dbl>
 ##  1          210     1 1998-06-27       1    18        1        3       0
@@ -193,10 +195,11 @@ stegen
 ##  8          106     1 1998-06-27       0    19        1        2       1
 ##  9          272     1 1998-06-27       1    40        1        2       1
 ## 10           50     1 1998-06-27       0    53        1        1       1
-## # ... with 281 more rows, and 13 more variables: dmousse <dbl>,
+## # ... with 281 more rows, and 15 more variables: dmousse <dbl>,
 ## #   mousse <dbl>, mportion <dbl>, Beer <dbl>, redjelly <dbl>, `Fruit
 ## #   salad` <dbl>, tomato <dbl>, mince <dbl>, salmon <dbl>,
-## #   horseradish <dbl>, chickenwin <dbl>, roastbeef <dbl>, PORK <dbl>
+## #   horseradish <dbl>, chickenwin <dbl>, roastbeef <dbl>, PORK <dbl>,
+## #   latitude <dbl>, longitude <dbl>
 ## View(stegen)
 ```
 
@@ -234,13 +237,13 @@ the variables:
 
 ``` r
 dim(stegen) # rows x columns
-## [1] 291  21
+## [1] 291  23
 names(stegen) # column labels
 ##  [1] "Unique key"  "ill"         "Date-onset"  "SEX"         "Age"        
 ##  [6] "tiramisu"    "tportion"    "wmousse"     "dmousse"     "mousse"     
 ## [11] "mportion"    "Beer"        "redjelly"    "Fruit salad" "tomato"     
 ## [16] "mince"       "salmon"      "horseradish" "chickenwin"  "roastbeef"  
-## [21] "PORK"
+## [21] "PORK"        "latitude"    "longitude"
 ```
 
 We can now try and summarise the dataset using:
@@ -287,14 +290,14 @@ summary(stegen)
 ##  3rd Qu.:1.0000   3rd Qu.:1.0000   3rd Qu.:1.0000   3rd Qu.:0.00000  
 ##  Max.   :9.0000   Max.   :9.0000   Max.   :1.0000   Max.   :1.00000  
 ##                                                                      
-##       PORK       
-##  Min.   :0.0000  
-##  1st Qu.:0.0000  
-##  Median :0.0000  
-##  Mean   :0.4742  
-##  3rd Qu.:1.0000  
-##  Max.   :9.0000  
-## 
+##       PORK           latitude       longitude    
+##  Min.   :0.0000   Min.   :47.98   Min.   :7.952  
+##  1st Qu.:0.0000   1st Qu.:47.98   1st Qu.:7.959  
+##  Median :0.0000   Median :47.98   Median :7.962  
+##  Mean   :0.4742   Mean   :47.98   Mean   :7.962  
+##  3rd Qu.:1.0000   3rd Qu.:47.98   3rd Qu.:7.965  
+##  Max.   :9.0000   Max.   :47.99   Max.   :7.974  
+##                   NA's   :160     NA's   :160
 ```
 
 Note that binary variables, when treated as numeric values (0/1), are
@@ -368,7 +371,7 @@ new_labels # check the result
 ##  [6] "tiramisu"    "tportion"    "wmousse"     "dmousse"     "mousse"     
 ## [11] "mportion"    "beer"        "redjelly"    "fruit_salad" "tomato"     
 ## [16] "mince"       "salmon"      "horseradish" "chickenwin"  "roastbeef"  
-## [21] "pork"
+## [21] "pork"        "latitude"    "longitude"
 names(stegen) <- new_labels
 ```
 
@@ -928,7 +931,7 @@ names(stegen)
 ##  [6] "tiramisu"    "tportion"    "wmousse"     "dmousse"     "mousse"     
 ## [11] "mportion"    "beer"        "redjelly"    "fruit_salad" "tomato"     
 ## [16] "mince"       "salmon"      "horseradish" "chickenwin"  "roastbeef"  
-## [21] "pork"
+## [21] "pork"        "latitude"    "longitude"
 ```
 
 In this case, we need to retain columns 6 to 21, excluding `tportion`
@@ -1613,18 +1616,45 @@ To complete your report, you would like to include a very basic spatial
 overview of cases. Based on the postal codes of all individuals with a
 date of symptom onset spatial coordinates were generated providing
 everyone with a latitude and longitude which corresponds with their
-household (in relation to their postal code). The variables *lat* and
-*long* include the longitude and latitude which we will use to plot the
-cases using *ggplot2*.
+household (in relation to their postal code). The variables `latitude`
+and `longitude` include the longitude and latitude which we will use to
+plot the cases using *ggplot2*. Here, we want to plot the data to see if
+there is any spatial component to the outbreak. Since we have the
+coordinates for each household, it becomes straightforward to plot them
+with *ggplot2*. Here we will use points and color them based on whether
+or not the student was ill:
+
+``` r
+ggplot(stegen, aes(x = longitude, y = latitude, color = ill)) +
+  geom_point() +
+  coord_map()
+```
+
+![](practical-stegen_files/figure-gfm/stegen-ill-plot-1-1.png)<!-- -->
 
 <details>
 
 <summary>Advanced mapping and spatial methodologies?</b> </summary>
 
-Normally you would generate maps in R using more sufisticated mapping
+Normally you would generate maps in R using more sophisticated mapping
 tools, but for the scope of this case study we will keep it more basic.
 We will explore mapping and spatial analytical methods this in future
-case studies
+case
+studies
+
+``` r
+stegen_coord <- c(longitude = 7.96301545767211, latitude = 47.9816228184647)
+## smap <- get_googlemap(center = stegen_coord, zoom = 15)
+#> Map from URL : http://maps.googleapis.com/maps/api/staticmap?center=47.981623,7.963015&zoom=15&size=640x640&scale=2&maptype=terrain&sensor=false
+tiramisu_labels <- c(`0` = "No Tiramisu", `1` = "Had Tiramisu")
+ggmap(smap) +
+  geom_point(aes(x = longitude, y = latitude, color = ill), data = stegen) +
+  facet_wrap(~tiramisu, labeller = as_labeller(tiramisu_labels)) +
+  coord_map()
+## Coordinate system already present. Adding new coordinate system, which will replace the existing one.
+```
+
+![](practical-stegen_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
 <!--html_preserve-->
 
