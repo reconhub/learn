@@ -27,7 +27,7 @@ friends, teachers, 12th grade students, and some graduates from a nearby school
 
 A self-service party buffet was supplied by a commercial caterer from a the nearby city of
 Freiburg. Food was prepared on the day of the party and transported in a
-refrigerated van to the school. Relative locations of the two schools and Freiburg can be seen on image 1
+refrigerated van to the school. Relative locations of the two schools and Freiburg can be seen below:
 
 <!-- ![Image 1: Map of Stegen, with annoted school A and B](../../img/screenshots/map_stegen.png) -->
 
@@ -940,6 +940,10 @@ To complete your report, you would like to include a very basic spatial overview
 <summary>Advanced mapping and spatial methodologies?</b> </summary>
 
 Normally you would generate maps in R using more sufisticated mapping tools, but for the scope of this case study we will keep it more basic. We will explore mapping and spatial analytical methods this in future case studies
+
+<!--html_preserve-->
+<iframe src="widgets/stegen-casemap.html" width="100%" height="500"></iframe>
+<!--html_preserve-->
 
 </details>
 
