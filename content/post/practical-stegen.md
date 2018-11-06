@@ -1672,7 +1672,7 @@ function from the *sf* package to read the shapefiles
 in:
 
 ``` r
-## stegen_shp <- read_sf(here("data", "stegen-map", "stegen_households.shp"))
+stegen_shp <- read_sf(here("data", "stegen-map", "stegen_households.shp"))
 ```
 
 Now we can use the same ggplot2 code as above, but we place a call to

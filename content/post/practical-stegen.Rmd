@@ -977,8 +977,11 @@ shapefiles of the households located in `data/stegen-map/stegen_households.shp`.
 We will use the `read_sf()` function from the *sf* package to read the
 shapefiles in:
 
-```{r read-shapefiles, eval = 2, echo = 1}
+```{r read-shapefiles_fake, eval = FALSE}
 stegen_shp <- read_sf(here("data", "stegen-map", "stegen_households.shp"))
+```
+
+```{r read-shapefiles, echo = FALSE}
 stegen_shp <- read_sf(here("static/data/stegen-map/stegen_households.shp"))
 ```
 
