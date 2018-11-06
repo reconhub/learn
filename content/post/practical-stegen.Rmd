@@ -40,7 +40,7 @@ Please find the HTML for the iframe of the embedded interactive map: <iframe src
 <iframe src="https://www.google.com/maps/d/u/0/embed?mid=1xYZh1AyB3h_mG4QihrO9LhFT3g5tjOv_" width="100%" height="500"></iframe>
 <!--html_preserve-->
 
-Festivities started with a dinner buffet open from 8.30 pm onwards and were
+Festivities at school A started with a dinner buffet open from 8.30 pm onwards and were
 followed by a dessert buffet offered from 10 pm. The party and the buffet
 extended late into the night and alcoholic beverages were quite popular. All
 agreed it was a party to be remembered.
@@ -173,6 +173,9 @@ path_to_data
 
 > n.b. the value of `path_to_data` will not be the what you see in this
 tutorial. It will be the location of this data set on your computer.
+
+<!-- !Should we add an e.g. here, change 'path to data' to .../../stegencasestudy/data/.. ? 
+-->
 
 ```{r fake_read_Data, eval = FALSE}
 stegen <- read_xlsx(path_to_data)
@@ -945,9 +948,9 @@ ggplot(all_food_df, aes(x = estimate, y = predictor, color = p.value)) +
   scale_color_viridis_c()
 ```
 
-The results are a lot clearer now: the tiramisu is by far the largest risk
-factor in this outbreak, but it's wide confidence interval suggests that there
-may be confounding factors involved (i.e. the food items were not independent).
+The results are a lot clearer now: the tiramisu has by far the highest risk
+ratio in this outbreak, but it's wide confidence interval suggests that there
+may be confounding factors involved (i.e. the food items were not independent or in this case, were potentially sharing contaminated ingredients).
 
 # Plotting a very basic spatial overview of cases
 
