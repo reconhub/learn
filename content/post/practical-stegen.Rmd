@@ -122,7 +122,8 @@ library("epitrix")   # clean labels and variables
 library("dplyr")     # general data handling
 library("ggplot2")   # advanced graphics
 library("epitools")  # statistics for epi data
-library("ggmap")     # plotting googlemaps
+library("sf")
+library("leaflet")
 ```
 
 <details>
@@ -962,7 +963,9 @@ ggplot(stegen) +
   coord_map()
 ```
 
+## Using shapefile data
 
+It's not uncommon to have community-level s
 
 
 <details>
@@ -975,17 +978,22 @@ data. Note that here, the first call is to `ggmap()` instead of `ggplot()` and
 in the `geom_point()`, we use an extra parameter called `data` to tell the geom
 where the data for the points are coming from:
 
+```{r read-shapefiles, eval = 2, echo = 1}
+stegen_shp <- read_sf(here("data", "stegen-map", "stegen_households.shp"))
+stegen_shp <- read_sf(here("static/data/stegen-map/stegen_households.shp"))
+```
+
+
 > **If you are currently in a workshop: PLEASE DO NOT RUN THIS CODE**
 
-```{r ggmap, eval = -2, echo = -4}
-stegen_coord <- c(longitude = 7.96301545767211, latitude = 47.9816228184647)
-smap <- get_googlemap(center = stegen_coord, zoom = 15)
-#> Map from URL : http://maps.googleapis.com/maps/api/staticmap?center=47.981623,7.963015&zoom=15&size=640x640&scale=2&maptype=terrain&sensor=false
-smap <- readRDS(here::here("static", "data", "stegen-map", "background.rds"))
-ggmap(smap) +
-  geom_point(aes(x = longitude, y = latitude, color = ill), data = stegen) +
-  coord_map()
+```{r sf_map}
+
+ggplot(stegen) +
+  geom_point(aes(x = longitude, y = latitude, color = ill)) +
+  geom_sf(data = stegen_shp)
 ```
+
+
 
 The downside of using *ggmap* is that you are limited by your internet connection
 and how many times you can download data from the API. In most situations, you
