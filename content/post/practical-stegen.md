@@ -10,6 +10,7 @@ licenses: CC-BY
 image: img/highres/graduation-1965.jpg
 showonlyimage: true
 toc: true
+always_allow_html: yes
 ---
 
 
@@ -42,10 +43,11 @@ Please find the HTML for the iframe of the embedded interactive map: <iframe src
 
 <!--html_preserve-->
 
-Festivities started with a dinner buffet open from 8.30 pm onwards and
-were followed by a dessert buffet offered from 10 pm. The party and the
-buffet extended late into the night and alcoholic beverages were quite
-popular. All agreed it was a party to be remembered.
+Festivities at school A started with a dinner buffet open from 8.30 pm
+onwards and were followed by a dessert buffet offered from 10 pm. The
+party and the buffet extended late into the night and alcoholic
+beverages were quite popular. All agreed it was a party to be
+remembered.
 
 ## The alert
 
@@ -129,7 +131,8 @@ library("epitrix")   # clean labels and variables
 library("dplyr")     # general data handling
 library("ggplot2")   # advanced graphics
 library("epitools")  # statistics for epi data
-library("ggmap")     # plotting googlemaps
+library("sf")
+library("leaflet")
 ```
 
 <details>
@@ -183,7 +186,11 @@ path_to_data
 ```
 
 > n.b. the value of `path_to_data` will not be the what you see in this
-> tutorial. It will be the location of this data set on your computer.
+> tutorial. It will be the location of this data set on your
+computer.
+
+<!-- !Should we add an e.g. here, change 'path to data' to .../../stegencasestudy/data/.. ? 
+-->
 
 ``` r
 stegen <- read_xlsx(path_to_data)
@@ -1624,10 +1631,11 @@ ggplot(all_food_df, aes(x = estimate, y = predictor, color = p.value)) +
 
 ![](practical-stegen_files/figure-gfm/plot-arrange-1.png)<!-- -->
 
-The results are a lot clearer now: the tiramisu is by far the largest
-risk factor in this outbreak, but it’s wide confidence interval suggests
+The results are a lot clearer now: the tiramisu has by far the highest
+risk ratio in this outbreak, but it’s wide confidence interval suggests
 that there may be confounding factors involved (i.e. the food items were
-not independent).
+not independent or in this case, were potentially sharing contaminated
+ingredients).
 
 # Plotting a very basic spatial overview of cases
 
@@ -1641,7 +1649,7 @@ plot the cases using *ggplot2*. Here, we want to plot the data to see if
 there is any spatial component to the outbreak. Since we have the
 coordinates for each household, it becomes straightforward to plot them
 with *ggplot2*. Here we will use points and color them based on whether
-or not the student was ill:
+or not the person was ill:
 
 ``` r
 ggplot(stegen) +
@@ -1651,45 +1659,76 @@ ggplot(stegen) +
 
 ![](practical-stegen_files/figure-gfm/stegen-ill-plot-1-1.png)<!-- -->
 
-<details>
+Here, we can see that there is no clear correlation between illness and
+location.
 
-<summary>Advanced mapping and spatial methodologies?</b> </summary>
+## Using shapefile data
 
-If we wanted to get a sense of where these cases were in relation to the
-buildings, one option is to use the *ggmap* package. This provides the
-ability to download maps from google or open street maps to use as a
-background for your data. Note that here, the first call is to `ggmap()`
-instead of `ggplot()` and in the `geom_point()`, we use an extra
-parameter called `data` to tell the geom where the data for the points
-are coming from:
-
-> **If you are currently in a workshop: PLEASE DO NOT RUN THIS
-CODE**
+It’s not uncommon to have community-level shapefile data. These data
+give us a better idea of how the cases relate to each other. In this
+instance, we have shapefiles of the households located in
+`data/stegen-map/stegen_households.shp`. We will use the `read_sf()`
+function from the *sf* package to read the shapefiles
+in:
 
 ``` r
-stegen_coord <- c(longitude = 7.96301545767211, latitude = 47.9816228184647)
-## smap <- get_googlemap(center = stegen_coord, zoom = 15)
-#> Map from URL : http://maps.googleapis.com/maps/api/staticmap?center=47.981623,7.963015&zoom=15&size=640x640&scale=2&maptype=terrain&sensor=false
-ggmap(smap) +
-  geom_point(aes(x = longitude, y = latitude, color = ill), data = stegen) +
-  coord_map()
-## Coordinate system already present. Adding new coordinate system, which will replace the existing one.
+## stegen_shp <- read_sf(here("data", "stegen-map", "stegen_households.shp"))
 ```
 
-![](practical-stegen_files/figure-gfm/ggmap-1.png)<!-- -->
+Now we can use the same ggplot2 code as above, but we place a call to
+`geom_sf()` right after the ggplot call to place the shapes underneath
+the points. Note that we are removing the `coord_map()` because the
+shapefile ensures that the projection is correct.
 
-The downside of using *ggmap* is that you are limited by your internet
-connection and how many times you can download data from the API. In
-most situations, you would be using
-shapefiles.
+``` r
+ggplot(stegen) +
+  geom_sf(data = stegen_shp) +
+  geom_point(aes(x = longitude, y = latitude, color = ill))
+```
+
+![](practical-stegen_files/figure-gfm/sf_map-1.png)<!-- -->
+
+## Interactive maps
+
+It is also possible to create interactive maps that allow you to zoom in
+and get information about individual cases. This uses a different system
+than *ggplot2*, but behaves in a similar idea of building up the map
+layer by layer. Here, we use the package *leaflet*, which uses image
+data from open street maps. Because mapping could take up an entire
+workshop in and of itself, we will present the code as is. One thing
+that we must do first is to subset the data to all cases with
+non-missing coordinates with the command `!is.na()` where the `!` means
+“not” and `is.na()` checks each element of a vector if it’s missing.
+
+``` r
+stegen_sub <- stegen[!is.na(stegen$longitude), ]
+```
+
+> **If you are currently in a workshop: PLEASE DO NOT RUN THIS CODE**.
+> It may overload the servers
+
+``` r
+# create the map
+lmap <- leaflet()
+# add open street map tiles
+lmap <- addTiles(lmap)
+# set the coordinates for Stegen
+lmap <- setView(lmap, lng = 7.963, lat = 47.982, zoom = 15)
+# Add the shapefile
+lmap <- addPolygons(lmap, data = st_transform(stegen_shp, '+proj=longlat +ellps=GRS80'))
+# Add the cases
+lmap <- addMarkers(lmap, label = ~ill, data = stegen_sub)
+# show the map
+lmap
+```
 
 <!--html_preserve-->
 
-<!-- <iframe src="widgets/stegen-casemap.html" width="100%" height="500"></iframe> -->
+<iframe src="widgets/stegen-casemap.html" width="100%" height="500">
+
+</iframe>
 
 <!--html_preserve-->
-
-</details>
 
 # Conclusion
 

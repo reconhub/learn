@@ -10,6 +10,7 @@ licenses: CC-BY
 image: img/highres/graduation-1965.jpg
 showonlyimage: true
 toc: true
+always_allow_html: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -958,7 +959,7 @@ may be confounding factors involved (i.e. the food items were not independent or
 To complete your report, you would like to include a very basic spatial overview of cases. Based on the postal codes of all individuals with a date of symptom onset spatial coordinates were generated providing everyone with a latitude and longitude which corresponds with their household (in relation to their postal code). The variables `latitude` and `longitude` include the longitude and latitude which we will use to plot the cases using *ggplot2*. Here, we want to plot the data to see if
 there is any spatial component to the outbreak. Since we have the coordinates
 for each household, it becomes straightforward to plot them with *ggplot2*. Here
-we will use points and color them based on whether or not the student was ill:
+we will use points and color them based on whether or not the person was ill:
 
 ```{r stegen-ill-plot-1}
 ggplot(stegen) +
@@ -966,47 +967,69 @@ ggplot(stegen) +
   coord_map()
 ```
 
+Here, we can see that there is no clear correlation between illness and location.
+
 ## Using shapefile data
 
-It's not uncommon to have community-level s
-
-
-<details>
-<summary>Advanced mapping and spatial methodologies?</b> </summary>
-
-If we wanted to get a sense of where these cases were in relation to the 
-buildings, one option is to use the *ggmap* package. This provides the ability
-to download maps from google or open street maps to use as a background for your
-data. Note that here, the first call is to `ggmap()` instead of `ggplot()` and
-in the `geom_point()`, we use an extra parameter called `data` to tell the geom
-where the data for the points are coming from:
+It's not uncommon to have community-level shapefile data. These data give us a
+better idea of how the cases relate to each other. In this instance, we have
+shapefiles of the households located in `data/stegen-map/stegen_households.shp`.
+We will use the `read_sf()` function from the *sf* package to read the
+shapefiles in:
 
 ```{r read-shapefiles, eval = 2, echo = 1}
 stegen_shp <- read_sf(here("data", "stegen-map", "stegen_households.shp"))
 stegen_shp <- read_sf(here("static/data/stegen-map/stegen_households.shp"))
 ```
 
-
-> **If you are currently in a workshop: PLEASE DO NOT RUN THIS CODE**
+Now we can use the same ggplot2 code as above, but we place a call to `geom_sf()`
+right after the ggplot call to place the shapes underneath the points. Note that
+we are removing the `coord_map()` because the shapefile ensures that the 
+projection is correct.
 
 ```{r sf_map}
-
 ggplot(stegen) +
-  geom_point(aes(x = longitude, y = latitude, color = ill)) +
-  geom_sf(data = stegen_shp)
+  geom_sf(data = stegen_shp) +
+  geom_point(aes(x = longitude, y = latitude, color = ill))
 ```
 
+## Interactive maps
 
+It is also possible to create interactive maps that allow you to zoom in and get
+information about individual cases. This uses a different system than *ggplot2*, 
+but behaves in a similar idea of building up the map layer by layer. Here, we
+use the package *leaflet*, which uses image data from open street maps. Because
+mapping could take up an entire workshop in and of itself, we will present the
+code as is. One thing that we must do first is to subset the data to all cases
+with non-missing coordinates with the command `!is.na()` where the `!` means 
+"not" and `is.na()` checks each element of a vector if it's missing.
 
-The downside of using *ggmap* is that you are limited by your internet connection
-and how many times you can download data from the API. In most situations, you
-would be using shapefiles.
+```{r subset_coords}
+stegen_sub <- stegen[!is.na(stegen$longitude), ]
+```
+
+> **If you are currently in a workshop: PLEASE DO NOT RUN THIS CODE**. It may
+> overload the servers
+
+```{r interactive_map, eval = FALSE}
+# create the map
+lmap <- leaflet()
+# add open street map tiles
+lmap <- addTiles(lmap)
+# set the coordinates for Stegen
+lmap <- setView(lmap, lng = 7.963, lat = 47.982, zoom = 15)
+# Add the shapefile
+lmap <- addPolygons(lmap, data = st_transform(stegen_shp, '+proj=longlat +ellps=GRS80'))
+# Add the cases
+lmap <- addMarkers(lmap, label = ~ill, data = stegen_sub)
+# show the map
+lmap
+```
 
 <!--html_preserve-->
-<!-- <iframe src="widgets/stegen-casemap.html" width="100%" height="500"></iframe> -->
+<iframe src="widgets/stegen-casemap.html" width="100%" height="500"></iframe>
 <!--html_preserve-->
 
-</details>
 
 # Conclusion
 
