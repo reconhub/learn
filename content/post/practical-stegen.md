@@ -118,7 +118,8 @@ The following packages will be used in the case study:
   - dplyr: to help with factors
   - *ggplot2*: to create custom visualisations
   - *epitools*: to calculate risk ratios
-  - *ggmap*: to plot googlemaps
+  - *sf*: To read in shape files
+  - *leaflet*: to demonstrate interactive maps
 
 If we have these packages installed, we can tell R to load these
 packages from our R library:
@@ -131,8 +132,8 @@ library("epitrix")   # clean labels and variables
 library("dplyr")     # general data handling
 library("ggplot2")   # advanced graphics
 library("epitools")  # statistics for epi data
-library("sf")
-library("leaflet")
+library("sf")        # shapefile handling
+library("leaflet")   # interactive maps
 ```
 
 <details>
@@ -151,6 +152,8 @@ install.packages("epitrix")
 install.packages("dplyr")
 install.packages("ggplot2")
 install.packages("epitools")
+install.packages("sf")
+install.packages("leaflet")
 ```
 
 </details>
@@ -182,7 +185,7 @@ Here we decompose the steps to read data in:
 ``` r
 path_to_data <- here("data", "stegen_raw.xlsx")
 path_to_data
-## [1] "/Users/zhian/Documents/Imperial/Websites/recon-learn/data/stegen_raw.xlsx"
+## [1] "/home/zkamvar/Documents/Websites/recon-learn/data/stegen_raw.xlsx"
 ```
 
 > n.b. the value of `path_to_data` will not be the what you see in this
@@ -835,116 +838,6 @@ contingency tables for each predictor (food item) against the defined
 cases, calculate their risk ratio with confidence intervals and
 p-values, and plot them as points and errorbars using *ggplot2*.
 
-<details>
-
-<summary> Going Further: Different types of Univariate tests </summary>
-
-## Univariate tests
-
-Methods for testing the association between two variables can be broken
-down in 3 types, depending on which types these variables are:
-
-1.  **2 categorical variables**: Chi-squared test on the 2x2 table
-    (a.k.a. *contingency* table) and similar methods (e.g. Fisher’s
-    exact test)
-2.  **1 quantitative, 1 categorical**: ANOVA types of approaches;
-    particular case with 2 groups: Student’s \(t\)-test
-3.  **2 quantitative variables**: Pearson’s correlation coefficient
-    (\(r\)) and similar methods
-
-We can use these approaches to test if the disease is linked to any of
-the other recorded variables. As illness itself is a categorical
-variable, only approaches of type 2 and 3 are illustrated in this case
-study.
-
-### Is illness linked to age?
-
-We can use the function `t.test()` to test if the average age is
-different across illness status. As this test assumes that the two
-categories exhibit similar variation, we first ensure that the variances
-are comparable using Bartlett’s test. The syntax `variable ~ group` is
-used to indicate the variable of interest (left hand-side), and the
-group (right hand-side):
-
-``` r
-bartlett.test(stegen$age ~ stegen$ill)
-## 
-##  Bartlett test of homogeneity of variances
-## 
-## data:  stegen$age by stegen$ill
-## Bartlett's K-squared = 0.82311, df = 1, p-value = 0.3643
-```
-
-The resulting p-value (0.364) suggests the variances are indeed
-comparable. Wecan thus proceed to a \(t\)-test:
-
-``` r
-t.test(stegen$age ~ stegen$ill, var.equal = TRUE)
-## 
-##  Two Sample t-test
-## 
-## data:  stegen$age by stegen$ill
-## t = -0.55979, df = 281, p-value = 0.5761
-## alternative hypothesis: true difference in means is not equal to 0
-## 95 percent confidence interval:
-##  -4.509729  2.512679
-## sample estimates:
-## mean in group non case     mean in group case 
-##               26.31148               27.31000
-```
-
-The p-value of 0.576 confirms the previous graphics: the illness does
-not seem to be linked to age.
-
-### Is illness linked to gender?
-
-To test the association between gender and illness (2 categorical
-variables), we first build a 2-by-2 (contingency) table, using:
-
-``` r
-tab_ill_sex <- table(stegen$ill, stegen$sex)
-tab_ill_sex
-##           
-##            male female
-##   non case   86    102
-##   case       53     50
-```
-
-Note that proportions can be obtained using `prop.table`:
-
-``` r
-## basic proportions
-prop.table(tab_ill_sex)
-##           
-##                 male    female
-##   non case 0.2955326 0.3505155
-##   case     0.1821306 0.1718213
-
-## expressed in %, rounded:
-round(100 * prop.table(tab_ill_sex))
-##           
-##            male female
-##   non case   30     35
-##   case       18     17
-```
-
-Once a contingency table has been built, the Chi-square test can be run
-using `chisq.test`:
-
-``` r
-chisq.test(tab_ill_sex)
-## 
-##  Pearson's Chi-squared test with Yates' continuity correction
-## 
-## data:  tab_ill_sex
-## X-squared = 0.6562, df = 1, p-value = 0.4179
-```
-
-Here, the p-value of 0.418 suggests illness is not related to gender
-either.
-
-</details>
-
 ### Isolating the variables to test
 
 Because not all of the columns in our data set are food items (i.e.
@@ -1435,7 +1328,117 @@ res
 Now we have a table that tells us that pork has a risk ratio of 1.252
 CI: (0.918, 1.708), P = 0.171.
 
-### Consolidating several steps into one
+<details>
+
+<summary> Going Further: Different types of Univariate tests </summary>
+
+## Univariate tests
+
+Methods for testing the association between two variables can be broken
+down in 3 types, depending on which types these variables are:
+
+1.  **2 categorical variables**: Chi-squared test on the 2x2 table
+    (a.k.a. *contingency* table) and similar methods (e.g. Fisher’s
+    exact test)
+2.  **1 quantitative, 1 categorical**: ANOVA types of approaches;
+    particular case with 2 groups: Student’s \(t\)-test
+3.  **2 quantitative variables**: Pearson’s correlation coefficient
+    (\(r\)) and similar methods
+
+We can use these approaches to test if the disease is linked to any of
+the other recorded variables. As illness itself is a categorical
+variable, only approaches of type 2 and 3 are illustrated in this case
+study.
+
+### Is illness linked to age?
+
+We can use the function `t.test()` to test if the average age is
+different across illness status. As this test assumes that the two
+categories exhibit similar variation, we first ensure that the variances
+are comparable using Bartlett’s test. The syntax `variable ~ group` is
+used to indicate the variable of interest (left hand-side), and the
+group (right hand-side):
+
+``` r
+bartlett.test(stegen$age ~ stegen$ill)
+## 
+##  Bartlett test of homogeneity of variances
+## 
+## data:  stegen$age by stegen$ill
+## Bartlett's K-squared = 0.82311, df = 1, p-value = 0.3643
+```
+
+The resulting p-value (0.364) suggests the variances are indeed
+comparable. We can thus proceed to a \(t\)-test:
+
+``` r
+t.test(stegen$age ~ stegen$ill, var.equal = TRUE)
+## 
+##  Two Sample t-test
+## 
+## data:  stegen$age by stegen$ill
+## t = -0.55979, df = 281, p-value = 0.5761
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -4.509729  2.512679
+## sample estimates:
+## mean in group non case     mean in group case 
+##               26.31148               27.31000
+```
+
+The p-value of 0.576 confirms the previous graphics: the illness does
+not seem to be linked to age.
+
+### Is illness linked to gender?
+
+To test the association between gender and illness (2 categorical
+variables), we first build a 2-by-2 (contingency) table, using:
+
+``` r
+tab_ill_sex <- table(stegen$ill, stegen$sex)
+tab_ill_sex
+##           
+##            male female
+##   non case   86    102
+##   case       53     50
+```
+
+Note that proportions can be obtained using `prop.table`:
+
+``` r
+## basic proportions
+prop.table(tab_ill_sex)
+##           
+##                 male    female
+##   non case 0.2955326 0.3505155
+##   case     0.1821306 0.1718213
+
+## expressed in %, rounded:
+round(100 * prop.table(tab_ill_sex))
+##           
+##            male female
+##   non case   30     35
+##   case       18     17
+```
+
+Once a contingency table has been built, the Chi-square test can be run
+using `chisq.test`:
+
+``` r
+chisq.test(tab_ill_sex)
+## 
+##  Pearson's Chi-squared test with Yates' continuity correction
+## 
+## data:  tab_ill_sex
+## X-squared = 0.6562, df = 1, p-value = 0.4179
+```
+
+Here, the p-value of 0.418 suggests illness is not related to gender
+either.
+
+</details>
+
+### Consolidating several steps into one (writing functions)
 
 To recap, to get a risk ratio we’ve done the following:
 
@@ -1622,11 +1625,13 @@ Now we can use this data frame to plot the results using *ggplot2*:
 # first, make sure the predictors are factored in the right order
 all_food_df$predictor <- factor(all_food_df$predictor, unique(all_food_df$predictor))
 # plot
-ggplot(all_food_df, aes(x = estimate, y = predictor, color = p.value)) +
+p <- ggplot(all_food_df, aes(x = estimate, y = predictor, color = p.value)) +
   geom_point() +
   geom_errorbarh(aes(xmin = lower, xmax = upper)) +
   geom_vline(xintercept = 1, linetype = 2) + 
+  scale_x_log10() + 
   scale_color_viridis_c()
+p
 ```
 
 ![](practical-stegen_files/figure-gfm/plot-arrange-1.png)<!-- -->
@@ -1636,6 +1641,97 @@ risk ratio in this outbreak, but it’s wide confidence interval suggests
 that there may be confounding factors involved (i.e. the food items were
 not independent or in this case, were potentially sharing contaminated
 ingredients).
+
+<details>
+
+<summary> <b>Going Further:</b> Creating a function for multiple risk
+ratios </summary>
+
+Just like we created the function `single_risk_ratio()` to calculate the
+risk ratio of a single variable, we can create another function that
+will calculcate the risk ratio for all variables in a data frame. We can
+do it the same way we did above. First, define the recipe:
+
+``` r
+all_rr <- lapply(food, FUN = single_risk_ratio, outcome = stegen$ill)
+all_food_df <- bind_rows(all_rr, .id = "predictor")
+all_food_df <- arrange(all_food_df, desc(estimate))
+all_food_df$predictor <- factor(all_food_df$predictor, unique(all_food_df$predictor))
+```
+
+Now, find the ingredients. The first step is `lapply()` which needs
+`food` and `stegen$ill`, which are a data frame of predictors and a
+vector of outcomes, resepectively, so we will add these as *arguments*
+called `predictors` and `outcome`:
+
+``` r
+multi_risk_ratio <- function(predictors, outcome) {
+  all_rr <- lapply(predictors, FUN = single_risk_ratio, outcome = outcome)
+  all_food_df <- bind_rows(all_rr, .id = "predictor")
+  all_food_df <- arrange(all_food_df, desc(estimate))
+  all_food_df$predictor <- factor(all_food_df$predictor, unique(all_food_df$predictor))
+  return(all_food_df)
+}
+```
+
+And we can call the function like so:
+
+``` r
+multi_risk_ratio(predictors = food, outcome = stegen$ill)
+##      predictor   estimate     lower     upper      p.value
+## 1     tiramisu 18.3116883 8.8142022 38.042913 1.794084e-41
+## 2       mousse  4.9689579 3.2994031  7.483336 1.257341e-20
+## 3      dmousse  4.5010211 3.0869446  6.562862 1.167009e-19
+## 4      wmousse  2.8472222 2.1282671  3.809049 5.825494e-11
+## 5  fruit_salad  2.5006177 1.8867735  3.314171 9.998203e-09
+## 6     redjelly  2.0820602 1.5559166  2.786123 4.415074e-06
+## 7       tomato  1.2898653 0.9379601  1.773799 1.368934e-01
+## 8  horseradish  1.2557870 0.9008457  1.750578 2.026013e-01
+## 9         pork  1.2518519 0.9176849  1.707703 1.708777e-01
+## 10  chickenwin  1.1617347 0.8376217  1.611261 4.176598e-01
+## 11       mince  1.0568237 0.7571858  1.475036 7.893882e-01
+## 12      salmon  1.0334249 0.7452531  1.433026 8.976422e-01
+## 13   roastbeef  0.7607985 0.4129094  1.401795 4.172932e-01
+## 14        beer  0.6767842 0.4757688  0.962730 2.806394e-02
+```
+
+Note that we have defined arguments for `predictors` and `outcome`, but
+we didn’t define an agrument for the `single_risk_ratio()` function.
+This is because we know that we’ve defined it above, but this also means
+that if we want to use the `multi_risk_ratio()` function in other
+scripts, we have to also define `single_risk_ratio()` as well. One way
+of keeping these organised is to always write the functions
+together:
+
+``` r
+single_risk_ratio <- function(predictor, outcome) { # ingredients defined here
+  et  <- epitools::epitable(predictor, outcome) # ingredients used here
+  rr  <- epitools::riskratio(et)
+  estimate <- rr$measure[2, ]
+  res <- data.frame(estimate = estimate["estimate"],
+                    lower    = estimate["lower"],
+                    upper    = estimate["upper"],
+                    p.value  = rr$p.value[2, "fisher.exact"]
+                   )
+  return(res) # return the data frame
+}
+
+multi_risk_ratio <- function(predictors, outcome) {
+  all_rr <- lapply(predictors, FUN = single_risk_ratio, outcome = outcome)
+  all_food_df <- dplyr::bind_rows(all_rr, .id = "predictor")
+  all_food_df <- dplyr::arrange(all_food_df, dplyr::desc(estimate))
+  all_food_df$predictor <- factor(all_food_df$predictor, unique(all_food_df$predictor))
+  return(all_food_df)
+}
+```
+
+You might notice, however that these functions look a bit different. The
+`epitable()` function is now written as `epitools::epitable()`. This is
+no accident. This is a way for us to tell R to use a function *even if
+the package hasn’t been loaded*, which makes it easier to share these
+functions.
+
+</details>
 
 # Plotting a very basic spatial overview of cases
 

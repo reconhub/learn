@@ -93,10 +93,6 @@ analysis using **R**, including:
 - how to test if specific food items are linked to the disease
 - how to plot a very basic spatial overview of cases
 
-
-
-
-
 # Initial data processing
 
 ## Loading required packages
@@ -110,7 +106,8 @@ The following packages will be used in the case study:
 - dplyr: to help with factors
 - *ggplot2*: to create custom visualisations
 - *epitools*: to calculate risk ratios
-- *ggmap*: to plot googlemaps
+- *sf*: To read in shape files
+- *leaflet*: to demonstrate interactive maps
 
 If we have these packages installed, we can tell R to load these packages from
 our R library:
@@ -123,8 +120,8 @@ library("epitrix")   # clean labels and variables
 library("dplyr")     # general data handling
 library("ggplot2")   # advanced graphics
 library("epitools")  # statistics for epi data
-library("sf")
-library("leaflet")
+library("sf")        # shapefile handling
+library("leaflet")   # interactive maps
 ```
 
 <details>
@@ -141,6 +138,8 @@ install.packages("epitrix")
 install.packages("dplyr")
 install.packages("ggplot2")
 install.packages("epitools")
+install.packages("sf")
+install.packages("leaflet")
 ```
 
 </details>
@@ -610,80 +609,6 @@ tables for each predictor (food item) against the defined cases, calculate their
 risk ratio with confidence intervals and p-values, and plot them as points and
 errorbars using *ggplot2*.
 
-<details>
-
-<summary> Going Further: Different types of Univariate tests </summary>
-
-## Univariate tests
-
-Methods for testing the association between two variables can be broken down in 3 types,
-depending on which types these variables are:
-
-1. **2 categorical variables**: Chi-squared test on the 2x2 table
-  (a.k.a. *contingency* table) and similar methods (e.g. Fisher's exact test)
-2. **1 quantitative, 1 categorical**: ANOVA types of approaches; particular case with
-  2 groups: Student's $t$-test
-3. **2 quantitative variables**: Pearson's correlation coefficient ($r$) and similar
-  methods
-
-
-We can use these approaches to test if the disease is linked to any of the other
-recorded variables. As illness itself is a categorical variable, only approaches
-of type 2 and 3 are illustrated in this case study.
-
-
-### Is illness linked to age?
-
-We can use the function `t.test()` to test if the average age is different
-across illness status. As this test assumes that the two categories exhibit
-similar variation, we first ensure that the variances are comparable using
-Bartlett's test. The syntax `variable ~ group` is used to indicate the variable
-of interest (left hand-side), and the group (right hand-side):
-
-```{r stegen_bartlett_test}
-bartlett.test(stegen$age ~ stegen$ill)
-```
-
-The resulting p-value (`r round(bartlett.test(stegen$age ~ stegen$ill)[["p.value"]], 3)`) suggests the variances are indeed comparable. Wecan thus proceed to a $t$-test:
-
-
-```{r stegen_t_test}
-t.test(stegen$age ~ stegen$ill, var.equal = TRUE)
-```
-
-The p-value of `r round(t.test(stegen$age ~ stegen$ill, var.equal = TRUE)[["p.value"]], 3)` confirms the previous graphics: the illness does not seem to be linked to age.
-
-
-
-### Is illness linked to gender?
-
-To test the association between gender and illness (2 categorical variables), we
-first build a 2-by-2 (contingency) table, using:
-
-```{r stegen_2by2}
-tab_ill_sex <- table(stegen$ill, stegen$sex)
-tab_ill_sex
-```
-
-Note that proportions can be obtained using `prop.table`:
-
-```{r stegen_prop_table}
-## basic proportions
-prop.table(tab_ill_sex)
-
-## expressed in %, rounded:
-round(100 * prop.table(tab_ill_sex))
-```
-
-Once a contingency table has been built, the Chi-square test can be run using `chisq.test`:
-
-```{r stegen_chisq}
-chisq.test(tab_ill_sex)
-```
-
-Here, the p-value of `r round(chisq.test(tab_ill_sex)[["p.value"]], 3)` suggests illness is not related to gender either.
-
-</details>
 
 
 ### Isolating the variables to test
@@ -826,7 +751,82 @@ Now we have a table that tells us that pork has a risk ratio of
 `r round(res$estimate, 3)` CI: (`r round(res$lower, 3)`, 
 `r round (res$upper, 3)`), P = `r round(res$p.value, 3)`. 
 
-### Consolidating several steps into one
+<details>
+
+<summary> Going Further: Different types of Univariate tests </summary>
+
+## Univariate tests
+
+Methods for testing the association between two variables can be broken down in 3 types,
+depending on which types these variables are:
+
+1. **2 categorical variables**: Chi-squared test on the 2x2 table
+  (a.k.a. *contingency* table) and similar methods (e.g. Fisher's exact test)
+2. **1 quantitative, 1 categorical**: ANOVA types of approaches; particular case with
+  2 groups: Student's $t$-test
+3. **2 quantitative variables**: Pearson's correlation coefficient ($r$) and similar
+  methods
+
+
+We can use these approaches to test if the disease is linked to any of the other
+recorded variables. As illness itself is a categorical variable, only approaches
+of type 2 and 3 are illustrated in this case study.
+
+
+### Is illness linked to age?
+
+We can use the function `t.test()` to test if the average age is different
+across illness status. As this test assumes that the two categories exhibit
+similar variation, we first ensure that the variances are comparable using
+Bartlett's test. The syntax `variable ~ group` is used to indicate the variable
+of interest (left hand-side), and the group (right hand-side):
+
+```{r stegen_bartlett_test}
+bartlett.test(stegen$age ~ stegen$ill)
+```
+
+The resulting p-value (`r round(bartlett.test(stegen$age ~ stegen$ill)[["p.value"]], 3)`) suggests the variances are indeed comparable. We can thus proceed to a $t$-test:
+
+
+```{r stegen_t_test}
+t.test(stegen$age ~ stegen$ill, var.equal = TRUE)
+```
+
+The p-value of `r round(t.test(stegen$age ~ stegen$ill, var.equal = TRUE)[["p.value"]], 3)` confirms the previous graphics: the illness does not seem to be linked to age.
+
+
+
+### Is illness linked to gender?
+
+To test the association between gender and illness (2 categorical variables), we
+first build a 2-by-2 (contingency) table, using:
+
+```{r stegen_2by2}
+tab_ill_sex <- table(stegen$ill, stegen$sex)
+tab_ill_sex
+```
+
+Note that proportions can be obtained using `prop.table`:
+
+```{r stegen_prop_table}
+## basic proportions
+prop.table(tab_ill_sex)
+
+## expressed in %, rounded:
+round(100 * prop.table(tab_ill_sex))
+```
+
+Once a contingency table has been built, the Chi-square test can be run using `chisq.test`:
+
+```{r stegen_chisq}
+chisq.test(tab_ill_sex)
+```
+
+Here, the p-value of `r round(chisq.test(tab_ill_sex)[["p.value"]], 3)` suggests illness is not related to gender either.
+
+</details>
+
+### Consolidating several steps into one (writing functions)
 
 To recap, to get a risk ratio we've done the following:
 
@@ -943,20 +943,104 @@ Now we can use this data frame to plot the results using *ggplot2*:
 # first, make sure the predictors are factored in the right order
 all_food_df$predictor <- factor(all_food_df$predictor, unique(all_food_df$predictor))
 # plot
-ggplot(all_food_df, aes(x = estimate, y = predictor, color = p.value)) +
+p <- ggplot(all_food_df, aes(x = estimate, y = predictor, color = p.value)) +
   geom_point() +
   geom_errorbarh(aes(xmin = lower, xmax = upper)) +
   geom_vline(xintercept = 1, linetype = 2) + 
+  scale_x_log10() + 
   scale_color_viridis_c()
+p
 ```
 
 The results are a lot clearer now: the tiramisu has by far the highest risk
 ratio in this outbreak, but it's wide confidence interval suggests that there
-may be confounding factors involved (i.e. the food items were not independent or in this case, were potentially sharing contaminated ingredients).
+may be confounding factors involved (i.e. the food items were not independent
+or in this case, were potentially sharing contaminated ingredients).
+
+<details>
+
+<summary> <b>Going Further:</b> Creating a function for multiple risk ratios </summary>
+
+Just like we created the function `single_risk_ratio()` to calculate the risk
+ratio of a single variable, we can create another function that will calculcate
+the risk ratio for all variables in a data frame. We can do it the same way we
+did above. First, define the recipe:
+
+```{r multi-risk-recipe}
+all_rr <- lapply(food, FUN = single_risk_ratio, outcome = stegen$ill)
+all_food_df <- bind_rows(all_rr, .id = "predictor")
+all_food_df <- arrange(all_food_df, desc(estimate))
+all_food_df$predictor <- factor(all_food_df$predictor, unique(all_food_df$predictor))
+```
+
+Now, find the ingredients. The first step is `lapply()` which needs `food` and 
+`stegen$ill`, which are a data frame of predictors and a vector of outcomes,
+resepectively, so we will add these as *arguments* called `predictors` and
+`outcome`:
+
+```{r multi-risk-df}
+multi_risk_ratio <- function(predictors, outcome) {
+  all_rr <- lapply(predictors, FUN = single_risk_ratio, outcome = outcome)
+  all_food_df <- bind_rows(all_rr, .id = "predictor")
+  all_food_df <- arrange(all_food_df, desc(estimate))
+  all_food_df$predictor <- factor(all_food_df$predictor, unique(all_food_df$predictor))
+  return(all_food_df)
+}
+```
+
+And we can call the function like so:
+
+```{r multi-risk-run}
+multi_risk_ratio(predictors = food, outcome = stegen$ill)
+```
+
+
+Note that we have defined arguments for `predictors` and `outcome`, but we
+didn't define an agrument for the `single_risk_ratio()` function. This is
+because we know that we've defined it above, but this also means that if we
+want to use the `multi_risk_ratio()` function in other scripts, we have to also
+define `single_risk_ratio()` as well. One way of keeping these organised is to
+always write the functions together:
+
+```{r funwrite}
+single_risk_ratio <- function(predictor, outcome) { # ingredients defined here
+  et  <- epitools::epitable(predictor, outcome) # ingredients used here
+  rr  <- epitools::riskratio(et)
+  estimate <- rr$measure[2, ]
+  res <- data.frame(estimate = estimate["estimate"],
+                    lower    = estimate["lower"],
+                    upper    = estimate["upper"],
+                    p.value  = rr$p.value[2, "fisher.exact"]
+                   )
+  return(res) # return the data frame
+}
+
+multi_risk_ratio <- function(predictors, outcome) {
+  all_rr <- lapply(predictors, FUN = single_risk_ratio, outcome = outcome)
+  all_food_df <- dplyr::bind_rows(all_rr, .id = "predictor")
+  all_food_df <- dplyr::arrange(all_food_df, dplyr::desc(estimate))
+  all_food_df$predictor <- factor(all_food_df$predictor, unique(all_food_df$predictor))
+  return(all_food_df)
+}
+```
+
+You might notice, however that these functions look a bit different. The
+`epitable()` function is now written as `epitools::epitable()`. This is no
+accident. This is a way for us to tell R to use a function *even if the package
+hasn't been loaded*, which makes it easier to share these functions. 
+
+
+</details>
 
 # Plotting a very basic spatial overview of cases
 
-To complete your report, you would like to include a very basic spatial overview of cases. Based on the postal codes of all individuals with a date of symptom onset spatial coordinates were generated providing everyone with a latitude and longitude which corresponds with their household (in relation to their postal code). The variables `latitude` and `longitude` include the longitude and latitude which we will use to plot the cases using *ggplot2*. Here, we want to plot the data to see if
+To complete your report, you would like to include a very basic spatial
+overview of cases. Based on the postal codes of all individuals with a date of
+symptom onset spatial coordinates were generated providing everyone with a
+latitude and longitude which corresponds with their household (in relation to
+their postal code). The variables `latitude` and `longitude` include the
+longitude and latitude which we will use to plot the cases using *ggplot2*.
+Here, we want to plot the data to see if
 there is any spatial component to the outbreak. Since we have the coordinates
 for each household, it becomes straightforward to plot them with *ggplot2*. Here
 we will use points and color them based on whether or not the person was ill:
@@ -1042,7 +1126,9 @@ generate graphics using *ggplot2*, and how to detect associations between
 several potential risk factors and the occurrence of illness. One major caveat
 here is that we are not accounting for potential confounding factors. These will
 be treated in a separate case study, which will focus on the use of logistic
-regression in epidemic studies. Lastly we plotted a basic overview of the cases in this outbreak in relative distance to each other. More suffisticated mapping and spatial mathodologies will be covered in other case studies. 
+regression in epidemic studies. Lastly we plotted a basic overview of the cases
+in this outbreak in relative distance to each other. More suffisticated mapping
+and spatial mathodologies will be covered in other case studies. 
 
 
 
