@@ -867,23 +867,24 @@ stegen data set. If you are starting here, you will want to read this
 file in with `readRDS()`
 
 ``` r
-## stegen_clean_rds <- here("data", "cleaned", "stegen_clean.rds")
-## stegen <- readRDS(stegen_clean_rds)
+stegen_clean_rds <- here("data", "cleaned", "stegen_clean.rds")
+stegen <- readRDS(stegen_clean_rds)
 head(stegen)
-## # A tibble: 6 x 23
-##   unique_key ill   date_onset sex     age tiramisu tportion wmousse dmousse
-##   <chr>      <fct> <date>     <fct> <dbl>    <dbl>    <dbl>   <dbl>   <dbl>
-## 1 210        case  1998-06-27 fema…    18        1        3       0       1
-## 2 12         case  1998-06-27 male     57        1        1       0       1
-## 3 288        case  1998-06-27 fema…    56        0        0       0       0
-## 4 186        case  1998-06-27 male     17        1        1       1       0
-## 5 20         case  1998-06-27 fema…    19        1        2       0       0
-## 6 148        case  1998-06-27 male     16        1        2       1       1
-## # ... with 14 more variables: mousse <dbl>, mportion <dbl>, beer <dbl>,
-## #   redjelly <dbl>, fruit_salad <dbl>, tomato <dbl>, mince <dbl>,
-## #   salmon <dbl>, horseradish <dbl>, chickenwin <dbl>, roastbeef <dbl>,
-## #   pork <dbl>, latitude <dbl>, longitude <dbl>
 ```
+
+    ## # A tibble: 6 x 23
+    ##   unique_key ill   date_onset sex     age tiramisu tportion wmousse dmousse
+    ##   <chr>      <fct> <date>     <fct> <dbl>    <dbl>    <dbl>   <dbl>   <dbl>
+    ## 1 210        case  1998-06-27 fema…    18        1        3       0       1
+    ## 2 12         case  1998-06-27 male     57        1        1       0       1
+    ## 3 288        case  1998-06-27 fema…    56        0        0       0       0
+    ## 4 186        case  1998-06-27 male     17        1        1       1       0
+    ## 5 20         case  1998-06-27 fema…    19        1        2       0       0
+    ## 6 148        case  1998-06-27 male     16        1        2       1       1
+    ## # ... with 14 more variables: mousse <dbl>, mportion <dbl>, beer <dbl>,
+    ## #   redjelly <dbl>, fruit_salad <dbl>, tomato <dbl>, mince <dbl>,
+    ## #   salmon <dbl>, horseradish <dbl>, chickenwin <dbl>, roastbeef <dbl>,
+    ## #   pork <dbl>, latitude <dbl>, longitude <dbl>
 
 ### Isolating the variables to test
 

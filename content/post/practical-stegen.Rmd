@@ -634,11 +634,15 @@ In the section on saving clean data, we saved a binary file with our stegen
 data set. If you are starting here, you will want to read this file in with
 `readRDS()`
 
-```{r read-clean-data, eval = 3}
+```{r read-clean-data, eval = FALSE}
 stegen_clean_rds <- here("data", "cleaned", "stegen_clean.rds")
 stegen <- readRDS(stegen_clean_rds)
 head(stegen)
 ```
+```{r read-clean-data-show, echo = FALSE}
+head(stegen)
+```
+
 
 ### Isolating the variables to test
 
