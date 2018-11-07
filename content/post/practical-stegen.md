@@ -1,10 +1,9 @@
 ---
 title: "An outbreak of gastroenteritis in Stegen, Germany, June 1998"
-author: "Janetta Skarp, Zhian N. Kamvar, Alexander Spina, Patrick Keating and Thibaut Jombart"
-authors: ["Thibaut Jombart", "Janetta Skarp", "Zhian N. Kamvar", "Alexander Spina", "Patrick Keating"]
+authors: ["Amrish Baidjoe", "Thibaut Jombart", "Janetta Skarp", "Zhian N. Kamvar", "Alexander Spina", "Patrick Keating"]
 categories: "case studies"
 tags: ["level: beginner", "epicurve", "single variable analysis", "2x2 tables", "gastroenteritis", "plotting cases"]
-date: 2018-10-24
+date: 2018-11-07
 slug: stegen
 licenses: CC-BY
 image: img/highres/graduation-1965.jpg
@@ -511,12 +510,35 @@ dir.create(clean_dir)
 > STOP: open your file browser and confirm that file called
 > “data/cleaned” has been created
 
-After this, we can save our cleaned data into a new file called
-`stegen_clean.csv`:
+We will store two different files in this directory that represent the
+same data:
+
+1.  a flat text file (spreadsheet) that can be read by any program
+2.  a binary file that can only be accessed from R
+
+### Saving as a flat file
+
+A flat file is a text file that can be read by any program. The most
+common type of flat file is a called a **csv** (comma separated values)
+file. This is a text version of a spreadsheet with commas denoting the
+columns.
 
 ``` r
 stegen_clean_file <- here("data", "cleaned", "stegen_clean.csv")
 write.csv(stegen, file = stegen_clean_file, rownames = FALSE, sep = ",")
+```
+
+### Saving as a binary file
+
+When you save as a flat file, you will have to re-define which varaibles
+are dates and which are factors when you re-read in the clean data. One
+way to avoid doing this is to save your data into a file called an
+**RDS** file, which is a data file that only R can read. This will
+preserve your column definitions.
+
+``` r
+stegen_clean_rds <- here("data", "cleaned", "stegen_clean.rds")
+saveRDS(stegen, file = stegen_clean_rds)
 ```
 
 # Data exploration
@@ -837,6 +859,31 @@ tables (commonly known as 2x2 tables). In this part, we will compute
 contingency tables for each predictor (food item) against the defined
 cases, calculate their risk ratio with confidence intervals and
 p-values, and plot them as points and errorbars using *ggplot2*.
+
+## Reading in clean data
+
+In the section on saving clean data, we saved a binary file with our
+stegen data set. If you are starting here, you will want to read this
+file in with `readRDS()`
+
+``` r
+## stegen_clean_rds <- here("data", "cleaned", "stegen_clean.rds")
+## stegen <- readRDS(stegen_clean_rds)
+head(stegen)
+## # A tibble: 6 x 23
+##   unique_key ill   date_onset sex     age tiramisu tportion wmousse dmousse
+##   <chr>      <fct> <date>     <fct> <dbl>    <dbl>    <dbl>   <dbl>   <dbl>
+## 1 210        case  1998-06-27 fema…    18        1        3       0       1
+## 2 12         case  1998-06-27 male     57        1        1       0       1
+## 3 288        case  1998-06-27 fema…    56        0        0       0       0
+## 4 186        case  1998-06-27 male     17        1        1       1       0
+## 5 20         case  1998-06-27 fema…    19        1        2       0       0
+## 6 148        case  1998-06-27 male     16        1        2       1       1
+## # ... with 14 more variables: mousse <dbl>, mportion <dbl>, beer <dbl>,
+## #   redjelly <dbl>, fruit_salad <dbl>, tomato <dbl>, mince <dbl>,
+## #   salmon <dbl>, horseradish <dbl>, chickenwin <dbl>, roastbeef <dbl>,
+## #   pork <dbl>, latitude <dbl>, longitude <dbl>
+```
 
 ### Isolating the variables to test
 
@@ -1802,7 +1849,6 @@ non-missing coordinates with the command `!is.na()` where the `!` means
 ``` r
 stegen_sub <- stegen[!is.na(stegen$longitude), ]
 ```
-
 
 ``` r
 # create the map

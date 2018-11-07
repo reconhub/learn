@@ -1,10 +1,9 @@
 ---
 title: "An outbreak of gastroenteritis in Stegen, Germany, June 1998"
-author: "Janetta Skarp, Zhian N. Kamvar, Alexander Spina, Patrick Keating and Thibaut Jombart"
-authors: ["Thibaut Jombart", "Janetta Skarp", "Zhian N. Kamvar", "Alexander Spina", "Patrick Keating"]
+authors: ["Amrish Baidjoe", "Thibaut Jombart", "Janetta Skarp", "Zhian N. Kamvar", "Alexander Spina", "Patrick Keating"]
 categories: "case studies"
 tags: ["level: beginner", "epicurve", "single variable analysis", "2x2 tables", "gastroenteritis", "plotting cases"]
-date: 2018-10-24
+date: 2018-11-07
 slug: stegen
 licenses: CC-BY
 image: img/highres/graduation-1965.jpg
@@ -364,7 +363,7 @@ toy_vector # check outcome
 
 </details>
 
-## Saving clean data
+## Saving clean data {#clean-data}
 
 Now that we've cleaned our data, we will probably want to re-use it in further
 analyses, but we probably don't want to go through the steps of cleaning it
@@ -379,14 +378,34 @@ dir.create(clean_dir)
 
 > STOP: open your file browser and confirm that file called "data/cleaned" has been created
 
-After this, we can save our cleaned data into a new file called 
-`stegen_clean.csv`:
+We will store two different files in this directory that represent the same data:
+
+1. a flat text file (spreadsheet) that can be read by any program
+2. a binary file that can only be accessed from R
+
+### Saving as a flat file
+
+A flat file is a text file that can be read by any program. The most common type
+of flat file is a called a **csv** (comma separated values) file. This is a
+text version of a spreadsheet with commas denoting the columns.
 
 ```{r save-clean-data, eval = FALSE}
 stegen_clean_file <- here("data", "cleaned", "stegen_clean.csv")
 write.csv(stegen, file = stegen_clean_file, rownames = FALSE, sep = ",")
 ```
 
+### Saving as a binary file
+
+When you save as a flat file, you will have to re-define which varaibles are 
+dates and which are factors when you re-read in the clean data. One way to
+avoid doing this is to save your data into a file called an **RDS** file, which
+is a data file that only R can read. This will preserve your column
+definitions. 
+
+```{r save-clean-rds, eval = FALSE}
+stegen_clean_rds <- here("data", "cleaned", "stegen_clean.rds")
+saveRDS(stegen, file = stegen_clean_rds)
+```
 
 # Data exploration
 
@@ -609,7 +628,17 @@ tables for each predictor (food item) against the defined cases, calculate their
 risk ratio with confidence intervals and p-values, and plot them as points and
 errorbars using *ggplot2*.
 
+## Reading in clean data
 
+In the section on saving clean data, we saved a binary file with our stegen
+data set. If you are starting here, you will want to read this file in with
+`readRDS()`
+
+```{r read-clean-data, eval = 3}
+stegen_clean_rds <- here("data", "cleaned", "stegen_clean.rds")
+stegen <- readRDS(stegen_clean_rds)
+head(stegen)
+```
 
 ### Isolating the variables to test
 
