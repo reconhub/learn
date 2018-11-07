@@ -948,7 +948,10 @@ p <- ggplot(all_food_df, aes(x = estimate, y = predictor, color = p.value)) +
   geom_errorbarh(aes(xmin = lower, xmax = upper)) +
   geom_vline(xintercept = 1, linetype = 2) + 
   scale_x_log10() + 
-  scale_color_viridis_c()
+  scale_color_viridis_c() +
+  labs(x = "Risk Ratio (log scale)", 
+       y = "Predictor",
+       title = "Risk Ratio for gastroenteritis in Stegen, Germany")
 p
 ```
 
