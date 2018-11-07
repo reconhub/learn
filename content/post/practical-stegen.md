@@ -1803,8 +1803,6 @@ non-missing coordinates with the command `!is.na()` where the `!` means
 stegen_sub <- stegen[!is.na(stegen$longitude), ]
 ```
 
-> **If you are currently in a workshop: PLEASE DO NOT RUN THIS CODE**.
-> It may overload the servers
 
 ``` r
 # create the map
