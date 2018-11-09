@@ -44,14 +44,14 @@ render_new_rmds_to_md <- function(dir = "content/post",
   if(build == "new"){
     to_build <- unbuilt
   }
-  
+  pv <- rmarkdown::pandoc_version() >= package_version("2.0.0")
+  variant <- if(pv) "gfm" else "markdown_github"
   # build only the ones to be built
   if(length(to_build) > 0){
-
     for (b in to_build) {
       rmd <- b
       rmarkdown::render(rmd,
-                        rmarkdown::md_document(variant = "markdown_github",
+                        rmarkdown::md_document(variant = variant,
                                                preserve_yaml = TRUE ))
     }
   }else{
