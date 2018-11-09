@@ -4,7 +4,6 @@ author: "Thibaut Jombart"
 authors: ["Thibaut Jombart"]
 date: 2918-10-24
 licenses: CC-BY
-categories: "case study"
 slug: button-test
 image: img/highres/graduation-1965.jpg
 showonlyimage: true

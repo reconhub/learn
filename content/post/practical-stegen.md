@@ -106,6 +106,65 @@ useful practices for data analysis using **R**, including:
 
 # Initial data processing
 
+## Project setup
+
+When using R, it’s a very good idea to keep your data and scripts
+organised together. One way of doing this is to keep them in a single
+folder that hosts and RStudio project file. For this project, your
+folder structure will start out looking like this:
+
+    .
+    ├── 01-stegen-analysis.R
+    ├── data/
+    │   ├── stegen-map/
+    │   │   ├── stegen_households.cpg
+    │   │   ├── stegen_households.prj
+    │   │   ├── stegen_households.qpj
+    │   │   ├── stegen_households.shp
+    │   │   └── stegen_households.shx
+    │   └── stegen_raw.xlsx
+    ├── LICENSE
+    ├── README.md
+    └── stegen.Rproj
+
+To create this, do the following steps:
+
+1.  Open RStudio and [create a new RStudio project in a new directory
+    called
+    “stegen”](https://support.rstudio.com/hc/en-us/articles/200526207-Using-Projects)
+2.  Once you have your Project set up, make a new folder called “data/”
+    and [download `stegen_raw.xlsx` and save it to that
+    folder](../../data/stegen_raw.xlsx)
+3.  [Download `stegen-map.zip`](../../data/stegen-map.zip) and extract
+    it to the “data/” folder
+4.  In RStudio, click on the following menu path: <kbd>File \> New File
+    \> R Script</kbd> and save it as `01-stegen-analysis.R`. This will
+    be the R script where you will save the code of the analysis.
+
+<details>
+
+<summary><b>Going Further:</b> What are the `LICENSE` and `README.md`
+files?</summary>
+
+Both of these files are plain text files (edited via programs such as
+notepad or textedit) that tell people how they can use the data and
+code.
+
+The `README.md` file is a text file that describes in plain language
+what this project is about and what the components are. It’s called
+README with the idea that anyone who comes across this project should be
+able to read this file first and understand how to work with the
+project.
+
+The `LICENSE` file describes how the data and code are to be used. For
+example, this case study is licensed under the [Creative Commons
+Attribution 4.0 International
+license](https://creativecommons.org/licenses/by/4.0/) which gives
+people the freedom to reuse this in any way as long as they attribute
+the original authors.
+
+</details>
+
 ## Loading required packages
 
 The following packages will be used in the case study:
@@ -1900,7 +1959,7 @@ studies. Lastly we plotted a basic overview of the cases in this
 outbreak in relative distance to each other. More suffisticated mapping
 and spatial mathodologies will be covered in other case studies.
 
-<br> <br> <br>
+-----
 
 # About this document
 
@@ -1919,7 +1978,7 @@ Hauri, RKI, Berlin, 1998.
   - adaptation for EPIET module: Alicia Barrasa, Ioannis Karagiannis
 
   - rewriting for R: Alexander Spina, Patrick Keating, Janetta Skarp,
-    Zhian N. Kamvar, Thibaut Jombart
+    Zhian N. Kamvar, Thibaut Jombart, Amrish Baidjoe
 
 Contributions are welcome via [pull
 requests](https://github.com/reconhub/learn/pulls). The [source file for
@@ -1928,7 +1987,7 @@ here](https://github.com/reconhub/learn/blob/master/content/post/practical-stege
 
 ## Legal stuff
 
-**License**: [CC-BY](https://creativecommons.org/licenses/by/3.0/)
+**License**: [CC-BY](https://creativecommons.org/licenses/by/4.0/)
 **Copyright**: 2018
 
-<br> <br>
+-----
