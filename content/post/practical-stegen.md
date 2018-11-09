@@ -112,6 +112,7 @@ The following packages will be used in the case study:
 
   - *here*: to find the path to data or script files
   - *readxl*: to read Excel spreadsheets into **R**
+  - *readr*: to write (and read) spreadsheets as text files
   - *incidence*: to build epicurves
   - *epitrix*: to clean labels from our spreadsheet
   - dplyr: to help with factors
@@ -126,6 +127,7 @@ packages from our R library:
 ``` r
 library("here")      # find data/script files
 library("readxl")    # read xlsx files
+library("readr")     # read and write text spreadsheets
 library("incidence") # make epicurves
 library("epitrix")   # clean labels and variables
 library("dplyr")     # general data handling
@@ -146,6 +148,7 @@ on your system. To install them (you only need to do this once\!), type:
 ``` r
 install.packages("here")
 install.packages("readxl")
+install.packages("readr")
 install.packages("incidence")
 install.packages("epitrix")
 install.packages("dplyr")
@@ -176,7 +179,7 @@ Here we decompose the steps to read data in:
 
 1.  finding the path to the data (`path_to_data`) with the *here*
     package
-2.  using the function `read_xlsx()` from the *readxl* package to read
+2.  using the function `read_excel()` from the *readxl* package to read
     data in, and saving the output in a new object `stegen`.
 
 <!-- end list -->
@@ -195,7 +198,7 @@ computer.
 -->
 
 ``` r
-stegen <- read_xlsx(path_to_data)
+stegen <- read_excel(path_to_data)
 ```
 
 To look at the content of the dataset, we can use either of these
@@ -221,7 +224,10 @@ stegen
 ## #   salad` <dbl>, tomato <dbl>, mince <dbl>, salmon <dbl>,
 ## #   horseradish <dbl>, chickenwin <dbl>, roastbeef <dbl>, PORK <dbl>,
 ## #   latitude <dbl>, longitude <dbl>
-## View(stegen)
+```
+
+``` r
+View(stegen)
 ```
 
 <details>
@@ -521,12 +527,16 @@ same data:
 A flat file is a text file that can be read by any program. The most
 common type of flat file is a called a **csv** (comma separated values)
 file. This is a text version of a spreadsheet with commas denoting the
-columns.
+columns. We can use the `write_csv()` function from the *readr* package
+to do this:
 
 ``` r
 stegen_clean_file <- here("data", "cleaned", "stegen_clean.csv")
-write.csv(stegen, file = stegen_clean_file, rownames = FALSE, sep = ",")
+write_csv(stegen, path = stegen_clean_file)
 ```
+
+When you want to read in the file later, you can use the `read_csv()`
+function.
 
 ### Saving as a binary file
 
@@ -540,6 +550,9 @@ preserve your column definitions.
 stegen_clean_rds <- here("data", "cleaned", "stegen_clean.rds")
 saveRDS(stegen, file = stegen_clean_rds)
 ```
+
+To read in the clean data for later use, we would use the `readRDS()`
+function.
 
 # Data exploration
 
