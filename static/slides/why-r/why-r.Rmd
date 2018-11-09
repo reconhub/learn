@@ -89,7 +89,7 @@ p
 <img src="../../img/slides/r-communities.jpg" width="100%">
 </center>
 
-## Network Analysis
+---------------
 
 <center>
 <img src="../../img/slides/r-gephi-graph.PNG" width="50%">
@@ -101,7 +101,14 @@ source: https://www.r-bloggers.com/social-network-analysis-using-r-and-gephis/
 <center>
 <img src="../../img/slides/accidental-art.jpg" width="75%">
 </center>
+source: https://accidental-art.tumblr.com/
 
+---------------
+
+<center>
+<img src="../../img/slides/heart-mend.jpg" width="50%">
+</center>
+source: https://twitter.com/ZKamvar/status/800487683923415040
 
 ---------------
 
