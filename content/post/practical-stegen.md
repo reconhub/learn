@@ -3,7 +3,7 @@ title: "An outbreak of gastroenteritis in Stegen, Germany, June 1998"
 authors: ["Amrish Baidjoe", "Thibaut Jombart", "Janetta Skarp", "Zhian N. Kamvar", "Alexander Spina", "Patrick Keating"]
 categories: "case studies"
 tags: ["level: beginner", "epicurve", "single variable analysis", "2x2 tables", "gastroenteritis", "plotting cases"]
-date: 2018-11-07
+date: 2018-11-12
 slug: stegen
 licenses: CC-BY
 image: img/highres/graduation-1965.jpg
@@ -27,12 +27,6 @@ the nearby city of Freiburg. Food was prepared on the day of the party
 and transported in a refrigerated van to the school. Relative locations
 of the two schools and Freiburg can be seen
 below:
-
-<!-- ![Image 1: Map of Stegen, with annoted school A and B](../../img/screenshots/map_stegen.png) -->
-
-<!--
-Please find the HTML for the iframe of the embedded interactive map: <iframe src="https://www.google.com/maps/d/u/0/embed?mid=1xYZh1AyB3h_mG4QihrO9LhFT3g5tjOv_" width="640" height="480"></iframe>
--->
 
 <!--html_preserve-->
 
@@ -265,24 +259,24 @@ commands:
 
 ``` r
 stegen
-## # A tibble: 291 x 23
-##    `Unique key`   ill `Date-onset`   SEX   Age tiramisu tportion wmousse
-##           <dbl> <dbl> <chr>        <dbl> <dbl>    <dbl>    <dbl>   <dbl>
-##  1          210     1 1998-06-27       1    18        1        3       0
-##  2           12     1 1998-06-27       0    57        1        1       0
-##  3          288     1 1998-06-27       1    56        0        0       0
-##  4          186     1 1998-06-27       0    17        1        1       1
-##  5           20     1 1998-06-27       1    19        1        2       0
-##  6          148     1 1998-06-27       0    16        1        2       1
-##  7          201     1 1998-06-27       0    19        1        3       0
-##  8          106     1 1998-06-27       0    19        1        2       1
-##  9          272     1 1998-06-27       1    40        1        2       1
-## 10           50     1 1998-06-27       0    53        1        1       1
-## # ... with 281 more rows, and 15 more variables: dmousse <dbl>,
-## #   mousse <dbl>, mportion <dbl>, Beer <dbl>, redjelly <dbl>, `Fruit
-## #   salad` <dbl>, tomato <dbl>, mince <dbl>, salmon <dbl>,
-## #   horseradish <dbl>, chickenwin <dbl>, roastbeef <dbl>, PORK <dbl>,
-## #   latitude <dbl>, longitude <dbl>
+## # A tibble: 291 x 24
+##       no `Unique key`   ill `Date-onset`   SEX   Age tiramisu tportion
+##    <dbl>        <dbl> <dbl> <chr>        <dbl> <dbl>    <dbl>    <dbl>
+##  1   211          229     0 1998-06-26       0    20        0        0
+##  2     1          210     1 1998-06-27       1    18        1        3
+##  3     2           12     1 1998-06-27       0    57        1        1
+##  4     3          288     1 1998-06-27       1    56        0        0
+##  5     4          186     1 1998-06-27       0    17        1        1
+##  6     5           20     1 1998-06-27       1    19        1        2
+##  7     6          148     1 1998-06-27       0    16        1        2
+##  8     7          201     1 1998-06-27       0    19        1        3
+##  9     8          106     1 1998-06-27       0    19        1        2
+## 10     9          272     1 1998-06-27       1    40        1        2
+## # ... with 281 more rows, and 16 more variables: wmousse <dbl>,
+## #   dmousse <dbl>, mousse <dbl>, mportion <dbl>, Beer <dbl>,
+## #   redjelly <dbl>, `Fruit salad` <dbl>, tomato <dbl>, mince <dbl>,
+## #   salmon <dbl>, horseradish <dbl>, chickenwin <dbl>, roastbeef <dbl>,
+## #   PORK <dbl>, latitude <dbl>, longitude <dbl>
 ```
 
 ``` r
@@ -323,67 +317,67 @@ the variables:
 
 ``` r
 dim(stegen) # rows x columns
-## [1] 291  23
+## [1] 291  24
 names(stegen) # column labels
-##  [1] "Unique key"  "ill"         "Date-onset"  "SEX"         "Age"        
-##  [6] "tiramisu"    "tportion"    "wmousse"     "dmousse"     "mousse"     
-## [11] "mportion"    "Beer"        "redjelly"    "Fruit salad" "tomato"     
-## [16] "mince"       "salmon"      "horseradish" "chickenwin"  "roastbeef"  
-## [21] "PORK"        "latitude"    "longitude"
+##  [1] "no"          "Unique key"  "ill"         "Date-onset"  "SEX"        
+##  [6] "Age"         "tiramisu"    "tportion"    "wmousse"     "dmousse"    
+## [11] "mousse"      "mportion"    "Beer"        "redjelly"    "Fruit salad"
+## [16] "tomato"      "mince"       "salmon"      "horseradish" "chickenwin" 
+## [21] "roastbeef"   "PORK"        "latitude"    "longitude"
 ```
 
 We can now try and summarise the dataset using:
 
 ``` r
 summary(stegen)
-##    Unique key         ill         Date-onset             SEX        
-##  Min.   :  1.0   Min.   :0.000   Length:291         Min.   :0.0000  
-##  1st Qu.: 73.5   1st Qu.:0.000   Class :character   1st Qu.:0.0000  
-##  Median :146.0   Median :0.000   Mode  :character   Median :1.0000  
-##  Mean   :146.0   Mean   :0.354                      Mean   :0.5223  
-##  3rd Qu.:218.5   3rd Qu.:1.000                      3rd Qu.:1.0000  
-##  Max.   :291.0   Max.   :1.000                      Max.   :1.0000  
-##                                                                     
-##       Age           tiramisu         tportion         wmousse      
-##  Min.   :12.00   Min.   :0.0000   Min.   :0.0000   Min.   :0.0000  
-##  1st Qu.:18.00   1st Qu.:0.0000   1st Qu.:0.0000   1st Qu.:0.0000  
-##  Median :20.00   Median :0.0000   Median :0.0000   Median :0.0000  
-##  Mean   :26.66   Mean   :0.4231   Mean   :0.6678   Mean   :0.2599  
-##  3rd Qu.:27.00   3rd Qu.:1.0000   3rd Qu.:1.0000   3rd Qu.:1.0000  
-##  Max.   :80.00   Max.   :1.0000   Max.   :3.0000   Max.   :1.0000  
-##  NA's   :8       NA's   :5        NA's   :5        NA's   :14      
-##     dmousse           mousse          mportion           Beer       
+##        no          Unique key         ill         Date-onset       
+##  Min.   :  1.0   Min.   :  1.0   Min.   :0.000   Length:291        
+##  1st Qu.: 73.5   1st Qu.: 73.5   1st Qu.:0.000   Class :character  
+##  Median :146.0   Median :146.0   Median :0.000   Mode  :character  
+##  Mean   :146.0   Mean   :146.0   Mean   :0.354                     
+##  3rd Qu.:218.5   3rd Qu.:218.5   3rd Qu.:1.000                     
+##  Max.   :291.0   Max.   :291.0   Max.   :1.000                     
+##                                                                    
+##       SEX              Age           tiramisu         tportion     
+##  Min.   :0.0000   Min.   :12.00   Min.   :0.0000   Min.   :0.0000  
+##  1st Qu.:0.0000   1st Qu.:18.00   1st Qu.:0.0000   1st Qu.:0.0000  
+##  Median :1.0000   Median :20.00   Median :0.0000   Median :0.0000  
+##  Mean   :0.5223   Mean   :26.66   Mean   :0.4231   Mean   :0.6678  
+##  3rd Qu.:1.0000   3rd Qu.:27.00   3rd Qu.:1.0000   3rd Qu.:1.0000  
+##  Max.   :1.0000   Max.   :80.00   Max.   :1.0000   Max.   :3.0000  
+##                   NA's   :8       NA's   :5        NA's   :5       
+##     wmousse          dmousse           mousse          mportion     
 ##  Min.   :0.0000   Min.   :0.0000   Min.   :0.0000   Min.   :0.0000  
 ##  1st Qu.:0.0000   1st Qu.:0.0000   1st Qu.:0.0000   1st Qu.:0.0000  
 ##  Median :0.0000   Median :0.0000   Median :0.0000   Median :0.0000  
-##  Mean   :0.3937   Mean   :0.4256   Mean   :0.6523   Mean   :0.3911  
+##  Mean   :0.2599   Mean   :0.3937   Mean   :0.4256   Mean   :0.6523  
 ##  3rd Qu.:1.0000   3rd Qu.:1.0000   3rd Qu.:1.0000   3rd Qu.:1.0000  
-##  Max.   :1.0000   Max.   :1.0000   Max.   :3.0000   Max.   :1.0000  
-##  NA's   :4        NA's   :2        NA's   :12       NA's   :20      
-##     redjelly       Fruit salad        tomato           mince      
-##  Min.   :0.0000   Min.   :0.000   Min.   :0.0000   Min.   :0.000  
-##  1st Qu.:0.0000   1st Qu.:0.000   1st Qu.:0.0000   1st Qu.:0.000  
-##  Median :0.0000   Median :0.000   Median :0.0000   Median :0.000  
-##  Mean   :0.2715   Mean   :0.244   Mean   :0.2852   Mean   :0.299  
-##  3rd Qu.:1.0000   3rd Qu.:0.000   3rd Qu.:1.0000   3rd Qu.:1.000  
-##  Max.   :1.0000   Max.   :1.000   Max.   :1.0000   Max.   :1.000  
-##                                                                   
-##      salmon        horseradish       chickenwin       roastbeef      
-##  Min.   :0.0000   Min.   :0.0000   Min.   :0.0000   Min.   :0.00000  
-##  1st Qu.:0.0000   1st Qu.:0.0000   1st Qu.:0.0000   1st Qu.:0.00000  
-##  Median :0.0000   Median :0.0000   Median :0.0000   Median :0.00000  
-##  Mean   :0.4811   Mean   :0.3093   Mean   :0.2887   Mean   :0.09966  
-##  3rd Qu.:1.0000   3rd Qu.:1.0000   3rd Qu.:1.0000   3rd Qu.:0.00000  
-##  Max.   :9.0000   Max.   :9.0000   Max.   :1.0000   Max.   :1.00000  
-##                                                                      
-##       PORK           latitude       longitude    
-##  Min.   :0.0000   Min.   :47.98   Min.   :7.952  
-##  1st Qu.:0.0000   1st Qu.:47.98   1st Qu.:7.959  
-##  Median :0.0000   Median :47.98   Median :7.962  
-##  Mean   :0.4742   Mean   :47.98   Mean   :7.962  
-##  3rd Qu.:1.0000   3rd Qu.:47.98   3rd Qu.:7.965  
-##  Max.   :9.0000   Max.   :47.99   Max.   :7.974  
-##                   NA's   :160     NA's   :160
+##  Max.   :1.0000   Max.   :1.0000   Max.   :1.0000   Max.   :3.0000  
+##  NA's   :14       NA's   :4        NA's   :2        NA's   :12      
+##       Beer           redjelly       Fruit salad        tomato      
+##  Min.   :0.0000   Min.   :0.0000   Min.   :0.000   Min.   :0.0000  
+##  1st Qu.:0.0000   1st Qu.:0.0000   1st Qu.:0.000   1st Qu.:0.0000  
+##  Median :0.0000   Median :0.0000   Median :0.000   Median :0.0000  
+##  Mean   :0.3911   Mean   :0.2715   Mean   :0.244   Mean   :0.2852  
+##  3rd Qu.:1.0000   3rd Qu.:1.0000   3rd Qu.:0.000   3rd Qu.:1.0000  
+##  Max.   :1.0000   Max.   :1.0000   Max.   :1.000   Max.   :1.0000  
+##  NA's   :20                                                        
+##      mince           salmon        horseradish       chickenwin    
+##  Min.   :0.000   Min.   :0.0000   Min.   :0.0000   Min.   :0.0000  
+##  1st Qu.:0.000   1st Qu.:0.0000   1st Qu.:0.0000   1st Qu.:0.0000  
+##  Median :0.000   Median :0.0000   Median :0.0000   Median :0.0000  
+##  Mean   :0.299   Mean   :0.4811   Mean   :0.3093   Mean   :0.2887  
+##  3rd Qu.:1.000   3rd Qu.:1.0000   3rd Qu.:1.0000   3rd Qu.:1.0000  
+##  Max.   :1.000   Max.   :9.0000   Max.   :9.0000   Max.   :1.0000  
+##                                                                    
+##    roastbeef            PORK           latitude       longitude    
+##  Min.   :0.00000   Min.   :0.0000   Min.   :47.98   Min.   :7.952  
+##  1st Qu.:0.00000   1st Qu.:0.0000   1st Qu.:47.98   1st Qu.:7.959  
+##  Median :0.00000   Median :0.0000   Median :47.98   Median :7.961  
+##  Mean   :0.09966   Mean   :0.4742   Mean   :47.98   Mean   :7.962  
+##  3rd Qu.:0.00000   3rd Qu.:1.0000   3rd Qu.:47.98   3rd Qu.:7.965  
+##  Max.   :1.00000   Max.   :9.0000   Max.   :47.99   Max.   :7.974  
+##                                     NA's   :160     NA's   :160
 ```
 
 Note that binary variables, when treated as numeric values (0/1), are
@@ -394,18 +388,18 @@ compare the `summary()` and `table()` for consumption of `tiramisu`:
 
 ``` r
 stegen$tiramisu # all values
-##   [1]  1  1  0  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1
+##   [1]  0  1  1  0  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1
 ##  [24]  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1
-##  [47]  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  0  1  1  1 NA  1
-##  [70]  0  1  1 NA  1  1  1  1  1  1  1  1  1  1  1  0  1  1  0  1  1  1  1
-##  [93]  1  0  1  1  1  1  0  0  0  0  0  0  0  0  1  0  1  0  0  1  0  0  0
-## [116]  0  0  0 NA  1  0  0  1  0  0  0  0  0  1  0  0  0  0  1  0  0  0  0
-## [139]  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  1
-## [162]  0  0  1  0  0  0  0  0  0  0  0  0  0  1  1  0  0  0  0  0  0  0  0
-## [185]  0  0  0 NA  0  0  0  0  0  1  0  0  1  0  1  1  0  0  0  0  1  0  0
-## [208]  0  0  0  0  0  1  0  0  1  0  0  0  0  1  0  0  1  0  0  0  1  1  0
-## [231]  0  0  0  0  0  1  0  0  0  0  0  0  0  1  0  1  0  0  0  0  0  0  0
-## [254]  0  0  1  0  0  0  1  0  0  0  1  0  0  0  0  0  0 NA  0  1  0  0  0
+##  [47]  1  1  0  0  0  0  0  0  0  0  0  1  1  1  1  1  1  1  1  1  1  1  1
+##  [70]  1  1  1  1  0  1  1  1 NA  1  0  1  1 NA  1  1  1  1  1  1  1  1  1
+##  [93]  1  1  0  1  1  0  1  1  1  1  1  0  1  1  1  0  1  1  1  0  1  1  1
+## [116]  1  1  1  1  0  0  1  1  0  0  0  0  0  0  1  0  0  0  0  0  0  0  1
+## [139]  1  0  0  0  0  0  0  0  0 NA  0  0  0  0  0  0  0  0  0  0  0  0  0
+## [162]  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
+## [185]  1  0  0  0  0  0  0  0  0  0  1  1  0  0  0  0  0  0  0  0  0 NA  0
+## [208]  0  0  0  1  0  1  0  1  0  0  0  0  1  0  0  0  0  0  0  0  1  0  0
+## [231]  0  1  0  0  0  0  1  1  0  0  0  0  0  0  1  0  0  0  0  0  0  0  1
+## [254]  0  0  0  0  0  0  0  0  1  0  0  0  1  0  0  0  0  0  0 NA  1  0  0
 ## [277]  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1
 summary(stegen$tiramisu) # summary
 ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
@@ -453,11 +447,11 @@ names:
 ``` r
 new_labels <- clean_labels(names(stegen)) # generate standardised labels
 new_labels # check the result
-##  [1] "unique_key"  "ill"         "date_onset"  "sex"         "age"        
-##  [6] "tiramisu"    "tportion"    "wmousse"     "dmousse"     "mousse"     
-## [11] "mportion"    "beer"        "redjelly"    "fruit_salad" "tomato"     
-## [16] "mince"       "salmon"      "horseradish" "chickenwin"  "roastbeef"  
-## [21] "pork"        "latitude"    "longitude"
+##  [1] "no"          "unique_key"  "ill"         "date_onset"  "sex"        
+##  [6] "age"         "tiramisu"    "tportion"    "wmousse"     "dmousse"    
+## [11] "mousse"      "mportion"    "beer"        "redjelly"    "fruit_salad"
+## [16] "tomato"      "mince"       "salmon"      "horseradish" "chickenwin" 
+## [21] "roastbeef"   "pork"        "latitude"    "longitude"
 names(stegen) <- new_labels
 ```
 
@@ -531,8 +525,8 @@ let us break them down from the inside out.
     doesn’t.
 3.  The square brackets (`[ ]`) subset the vector `stegen$pork`
     according to whatever is between them; In this case, it’s the test
-    `stegen$pork == 9`, which evaluates to FALSE, FALSE, FALSE, TRUE,
-    FALSE, FALSE… This will return only the cases in `stegen$pork` that
+    `stegen$pork == 9`, which evaluates to FALSE, FALSE, FALSE, FALSE,
+    TRUE, FALSE… This will return only the cases in `stegen$pork` that
     have `9`s recorded.
 4.  The replacement: `... <- NA` replace `...` with `NA` (missing value)
 
@@ -944,19 +938,19 @@ stegen <- readRDS(stegen_clean_rds)
 head(stegen)
 ```
 
-    ## # A tibble: 6 x 23
-    ##   unique_key ill   date_onset sex     age tiramisu tportion wmousse dmousse
-    ##   <chr>      <fct> <date>     <fct> <dbl>    <dbl>    <dbl>   <dbl>   <dbl>
-    ## 1 210        case  1998-06-27 fema…    18        1        3       0       1
-    ## 2 12         case  1998-06-27 male     57        1        1       0       1
-    ## 3 288        case  1998-06-27 fema…    56        0        0       0       0
-    ## 4 186        case  1998-06-27 male     17        1        1       1       0
-    ## 5 20         case  1998-06-27 fema…    19        1        2       0       0
-    ## 6 148        case  1998-06-27 male     16        1        2       1       1
-    ## # ... with 14 more variables: mousse <dbl>, mportion <dbl>, beer <dbl>,
-    ## #   redjelly <dbl>, fruit_salad <dbl>, tomato <dbl>, mince <dbl>,
-    ## #   salmon <dbl>, horseradish <dbl>, chickenwin <dbl>, roastbeef <dbl>,
-    ## #   pork <dbl>, latitude <dbl>, longitude <dbl>
+    ## # A tibble: 6 x 24
+    ##      no unique_key ill   date_onset sex     age tiramisu tportion wmousse
+    ##   <dbl> <chr>      <fct> <date>     <fct> <dbl>    <dbl>    <dbl>   <dbl>
+    ## 1   211 229        non … 1998-06-26 male     20        0        0       0
+    ## 2     1 210        case  1998-06-27 fema…    18        1        3       0
+    ## 3     2 12         case  1998-06-27 male     57        1        1       0
+    ## 4     3 288        case  1998-06-27 fema…    56        0        0       0
+    ## 5     4 186        case  1998-06-27 male     17        1        1       1
+    ## 6     5 20         case  1998-06-27 fema…    19        1        2       0
+    ## # ... with 15 more variables: dmousse <dbl>, mousse <dbl>, mportion <dbl>,
+    ## #   beer <dbl>, redjelly <dbl>, fruit_salad <dbl>, tomato <dbl>,
+    ## #   mince <dbl>, salmon <dbl>, horseradish <dbl>, chickenwin <dbl>,
+    ## #   roastbeef <dbl>, pork <dbl>, latitude <dbl>, longitude <dbl>
 
 ### Isolating the variables to test
 
@@ -966,11 +960,11 @@ food items for our analysis.
 
 ``` r
 names(stegen)
-##  [1] "unique_key"  "ill"         "date_onset"  "sex"         "age"        
-##  [6] "tiramisu"    "tportion"    "wmousse"     "dmousse"     "mousse"     
-## [11] "mportion"    "beer"        "redjelly"    "fruit_salad" "tomato"     
-## [16] "mince"       "salmon"      "horseradish" "chickenwin"  "roastbeef"  
-## [21] "pork"        "latitude"    "longitude"
+##  [1] "no"          "unique_key"  "ill"         "date_onset"  "sex"        
+##  [6] "age"         "tiramisu"    "tportion"    "wmousse"     "dmousse"    
+## [11] "mousse"      "mportion"    "beer"        "redjelly"    "fruit_salad"
+## [16] "tomato"      "mince"       "salmon"      "horseradish" "chickenwin" 
+## [21] "roastbeef"   "pork"        "latitude"    "longitude"
 ```
 
 In this case, we need to retain columns 6 to 21, excluding `tportion`
@@ -992,16 +986,16 @@ food
 ## # A tibble: 291 x 14
 ##    tiramisu wmousse dmousse mousse  beer redjelly fruit_salad tomato mince
 ##       <dbl>   <dbl>   <dbl>  <dbl> <dbl>    <dbl>       <dbl>  <dbl> <dbl>
-##  1        1       0       1      1     0        0           0      0     0
-##  2        1       0       1      1     0        0           1      0     1
-##  3        0       0       0      0     0        0           0      1     1
-##  4        1       1       0      1     0        1           0      0     0
-##  5        1       0       0      0     1        0           0      0     0
-##  6        1       1       1      1     0        0           1      0     1
-##  7        1       0       1      1     0        0           1      0     0
-##  8        1       1       1      1     0        1           1      0     0
-##  9        1       1       1      1     1        0           0      1     0
-## 10        1       1       1      1     0        1           0      0     0
+##  1        0       0       0      0     0        0           0      1     0
+##  2        1       0       1      1     0        0           0      0     0
+##  3        1       0       1      1     0        0           1      0     1
+##  4        0       0       0      0     0        0           0      1     1
+##  5        1       1       0      1     0        1           0      0     0
+##  6        1       0       0      0     1        0           0      0     0
+##  7        1       1       1      1     0        0           1      0     1
+##  8        1       0       1      1     0        0           1      0     0
+##  9        1       1       1      1     0        1           1      0     0
+## 10        1       1       1      1     1        0           0      1     0
 ## # ... with 281 more rows, and 5 more variables: salmon <dbl>,
 ## #   horseradish <dbl>, chickenwin <dbl>, roastbeef <dbl>, pork <dbl>
 ```
@@ -1099,54 +1093,74 @@ list just as we would the columns of a data frame:
 ``` r
 stegen_list <- as.list(stegen)
 head(stegen_list)
+## $no
+##   [1] 211   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16
+##  [18]  17  18  19  20  21  22  23  24  25  26  27  28  29  30  31  32  33
+##  [35]  34  35  36  37  38  39  40  41  42  43  44  45  46  47 103 173 179
+##  [52] 196 214 219 223 252 266  48  49  50  51  52  53  54  55  56  57  58
+##  [69]  59  60  61  62  63  64  65  66  67  68  69  70  71  72  73  74  75
+##  [86]  76  77  78  79  80  81  82  83  84  85  86  87  88  89  90 112 123
+## [103] 134 184 199 213 246 268  91  92  93  94  95  96  97  98 153 264 129
+## [120] 190 288 120 224 265 108 155 247 272 101 161 150  99 100 102 104 105
+## [137] 106 107 109 110 111 113 114 115 116 117 118 119 121 122 124 125 126
+## [154] 127 128 130 131 132 133 135 136 137 138 139 140 141 142 143 144 145
+## [171] 146 147 148 149 151 152 154 156 157 158 159 160 162 163 164 165 166
+## [188] 167 168 169 170 171 172 174 175 176 177 178 180 181 182 183 185 186
+## [205] 187 188 189 191 192 193 194 195 197 198 200 201 202 203 204 205 206
+## [222] 207 208 209 210 212 215 216 217 218 220 221 222 225 226 227 228 229
+## [239] 230 231 232 233 234 235 236 237 238 239 240 241 242 243 244 245 248
+## [256] 249 250 251 253 254 255 256 257 258 259 260 261 262 263 267 269 270
+## [273] 271 273 274 275 276 277 278 279 280 281 282 283 284 285 286 287 289
+## [290] 290 291
+## 
 ## $unique_key
-##   [1] "210" "12"  "288" "186" "20"  "148" "201" "106" "272" "50"  "216"
-##  [12] "141" "91"  "98"  "200" "109" "117" "281" "269" "77"  "196" "16" 
-##  [23] "168" "102" "204" "205" "271" "48"  "287" "25"  "15"  "45"  "125"
-##  [34] "113" "284" "121" "52"  "207" "63"  "43"  "175" "214" "251" "213"
-##  [45] "65"  "159" "29"  "14"  "165" "145" "202" "255" "169" "274" "254"
-##  [56] "61"  "2"   "86"  "59"  "74"  "133" "115" "103" "138" "70"  "173"
-##  [67] "144" "212" "234" "156" "146" "152" "31"  "279" "36"  "75"  "286"
-##  [78] "215" "56"  "199" "154" "27"  "42"  "49"  "96"  "66"  "104" "13" 
-##  [89] "221" "51"  "177" "111" "242" "143" "278" "62"  "176" "134" "256"
-## [100] "55"  "235" "58"  "194" "282" "137" "118" "220" "24"  "187" "190"
-## [111] "189" "195" "231" "239" "289" "184" "126" "209" "290" "67"  "170"
-## [122] "230" "151" "283" "211" "69"  "35"  "233" "208" "155" "198" "40" 
-## [133] "119" "139" "180" "188" "157" "80"  "203" "280" "37"  "193" "53" 
-## [144] "22"  "85"  "232" "258" "265" "54"  "237" "266" "236" "88"  "10" 
-## [155] "11"  "174" "185" "161" "226" "273" "227" "260" "223" "107" "183"
-## [166] "250" "253" "44"  "182" "228" "285" "83"  "248" "136" "172" "46" 
-## [177] "114" "166" "164" "101" "21"  "158" "108" "34"  "276" "222" "130"
-## [188] "275" "72"  "218" "267" "76"  "241" "171" "142" "89"  "105" "39" 
-## [199] "167" "140" "124" "131" "17"  "73"  "97"  "5"   "123" "9"   "99" 
-## [210] "84"  "229" "116" "238" "217" "122" "240" "95"  "110" "41"  "206"
-## [221] "23"  "257" "163" "64"  "100" "120" "160" "224" "94"  "60"  "263"
-## [232] "191" "147" "179" "93"  "57"  "112" "268" "243" "219" "247" "38" 
-## [243] "33"  "68"  "4"   "150" "79"  "178" "127" "153" "261" "92"  "90" 
-## [254] "264" "277" "181" "197" "225" "18"  "1"   "252" "47"  "245" "78" 
-## [265] "162" "81"  "3"   "82"  "32"  "71"  "30"  "28"  "135" "246" "149"
-## [276] "7"   "19"  "249" "128" "6"   "192" "270" "262" "259" "87"  "8"  
-## [287] "129" "26"  "132" "244" "291"
+##   [1] "229" "210" "12"  "288" "186" "20"  "148" "201" "106" "272" "50" 
+##  [12] "216" "141" "91"  "98"  "200" "109" "117" "281" "269" "77"  "196"
+##  [23] "16"  "168" "102" "204" "205" "271" "48"  "287" "25"  "15"  "45" 
+##  [34] "125" "113" "284" "121" "52"  "207" "63"  "43"  "175" "214" "251"
+##  [45] "213" "65"  "159" "29"  "194" "248" "164" "89"  "217" "41"  "163"
+##  [56] "92"  "81"  "14"  "165" "145" "202" "255" "169" "274" "254" "61" 
+##  [67] "2"   "86"  "59"  "74"  "133" "115" "103" "138" "70"  "173" "144"
+##  [78] "212" "234" "156" "146" "152" "31"  "279" "36"  "75"  "286" "215"
+##  [89] "56"  "199" "154" "27"  "42"  "49"  "96"  "66"  "104" "13"  "221"
+## [100] "51"  "195" "151" "139" "34"  "167" "238" "150" "82"  "177" "111"
+## [111] "242" "143" "278" "62"  "176" "134" "88"  "78"  "208" "218" "26" 
+## [122] "67"  "64"  "162" "24"  "11"  "79"  "28"  "235" "227" "237" "256"
+## [133] "55"  "58"  "282" "137" "118" "220" "187" "190" "189" "231" "239"
+## [144] "289" "184" "126" "209" "290" "170" "230" "283" "211" "69"  "35" 
+## [155] "233" "155" "198" "40"  "119" "180" "188" "157" "80"  "203" "280"
+## [166] "37"  "193" "53"  "22"  "85"  "232" "258" "265" "54"  "266" "236"
+## [177] "10"  "174" "185" "161" "226" "273" "260" "223" "107" "183" "250"
+## [188] "253" "44"  "182" "228" "285" "83"  "136" "172" "46"  "114" "166"
+## [199] "101" "21"  "158" "108" "276" "222" "130" "275" "72"  "267" "76" 
+## [210] "241" "171" "142" "105" "39"  "140" "124" "131" "17"  "73"  "97" 
+## [221] "5"   "123" "9"   "99"  "84"  "116" "122" "240" "95"  "110" "206"
+## [232] "23"  "257" "100" "120" "160" "224" "94"  "60"  "263" "191" "147"
+## [243] "179" "93"  "57"  "112" "268" "243" "219" "247" "38"  "33"  "68" 
+## [254] "4"   "178" "127" "153" "261" "90"  "264" "277" "181" "197" "225"
+## [265] "18"  "1"   "252" "47"  "245" "3"   "32"  "71"  "30"  "135" "246"
+## [276] "149" "7"   "19"  "249" "128" "6"   "192" "270" "262" "259" "87" 
+## [287] "8"   "129" "132" "244" "291"
 ## 
 ## $ill
-##   [1] case     case     case     case     case     case     case    
+##   [1] non case case     case     case     case     case     case    
 ##   [8] case     case     case     case     case     case     case    
 ##  [15] case     case     case     case     case     case     case    
 ##  [22] case     case     case     case     case     case     case    
 ##  [29] case     case     case     case     case     case     case    
 ##  [36] case     case     case     case     case     case     case    
 ##  [43] case     case     case     case     case     case     case    
-##  [50] case     case     case     case     case     case     case    
-##  [57] case     case     case     case     case     case     case    
+##  [50] non case non case non case non case non case non case non case
+##  [57] non case case     case     case     case     case     case    
 ##  [64] case     case     case     case     case     case     case    
 ##  [71] case     case     case     case     case     case     case    
 ##  [78] case     case     case     case     case     case     case    
 ##  [85] case     case     case     case     case     case     case    
 ##  [92] case     case     case     case     case     case     case    
-##  [99] non case non case non case non case case     non case non case
-## [106] non case non case non case non case non case non case non case
-## [113] non case non case non case non case non case non case non case
-## [120] non case non case non case case     non case non case non case
+##  [99] case     case     non case case     non case non case non case
+## [106] case     case     non case case     case     case     case    
+## [113] case     case     case     case     non case non case non case
+## [120] non case non case non case non case non case non case non case
 ## [127] non case non case non case non case non case non case non case
 ## [134] non case non case non case non case non case non case non case
 ## [141] non case non case non case non case non case non case non case
@@ -1159,13 +1173,13 @@ head(stegen_list)
 ## [190] non case non case non case non case non case non case non case
 ## [197] non case non case non case non case non case non case non case
 ## [204] non case non case non case non case non case non case non case
-## [211] non case non case case     non case non case non case non case
+## [211] non case non case non case non case non case non case non case
 ## [218] non case non case non case non case non case non case non case
 ## [225] non case non case non case non case non case non case non case
 ## [232] non case non case non case non case non case non case non case
-## [239] non case non case non case non case non case case     non case
-## [246] case     non case non case non case non case non case non case
-## [253] non case non case non case non case non case non case non case
+## [239] non case non case non case non case non case non case non case
+## [246] non case non case non case non case non case non case non case
+## [253] case     non case non case non case non case non case non case
 ## [260] non case non case non case non case non case non case non case
 ## [267] non case non case non case non case non case non case non case
 ## [274] non case non case non case non case non case non case non case
@@ -1174,7 +1188,7 @@ head(stegen_list)
 ## Levels: non case case
 ## 
 ## $date_onset
-##   [1] "1998-06-27" "1998-06-27" "1998-06-27" "1998-06-27" "1998-06-27"
+##   [1] "1998-06-26" "1998-06-27" "1998-06-27" "1998-06-27" "1998-06-27"
 ##   [6] "1998-06-27" "1998-06-27" "1998-06-27" "1998-06-27" "1998-06-27"
 ##  [11] "1998-06-27" "1998-06-27" "1998-06-27" "1998-06-27" "1998-06-27"
 ##  [16] "1998-06-27" "1998-06-27" "1998-06-27" "1998-06-27" "1998-06-27"
@@ -1183,138 +1197,123 @@ head(stegen_list)
 ##  [31] "1998-06-27" "1998-06-27" "1998-06-27" "1998-06-27" "1998-06-27"
 ##  [36] "1998-06-27" "1998-06-27" "1998-06-27" "1998-06-27" "1998-06-27"
 ##  [41] "1998-06-27" "1998-06-27" "1998-06-27" "1998-06-27" "1998-06-27"
-##  [46] "1998-06-27" "1998-06-27" "1998-06-28" "1998-06-28" "1998-06-28"
-##  [51] "1998-06-28" "1998-06-28" "1998-06-28" "1998-06-28" "1998-06-28"
-##  [56] "1998-06-28" "1998-06-28" "1998-06-28" "1998-06-28" "1998-06-28"
+##  [46] "1998-06-27" "1998-06-27" "1998-06-27" "1998-06-27" "1998-06-27"
+##  [51] "1998-06-27" "1998-06-27" "1998-06-27" "1998-06-27" "1998-06-27"
+##  [56] "1998-06-27" "1998-06-27" "1998-06-28" "1998-06-28" "1998-06-28"
 ##  [61] "1998-06-28" "1998-06-28" "1998-06-28" "1998-06-28" "1998-06-28"
 ##  [66] "1998-06-28" "1998-06-28" "1998-06-28" "1998-06-28" "1998-06-28"
 ##  [71] "1998-06-28" "1998-06-28" "1998-06-28" "1998-06-28" "1998-06-28"
 ##  [76] "1998-06-28" "1998-06-28" "1998-06-28" "1998-06-28" "1998-06-28"
 ##  [81] "1998-06-28" "1998-06-28" "1998-06-28" "1998-06-28" "1998-06-28"
 ##  [86] "1998-06-28" "1998-06-28" "1998-06-28" "1998-06-28" "1998-06-28"
-##  [91] "1998-06-29" "1998-06-29" "1998-06-29" "1998-06-29" "1998-06-29"
-##  [96] "1998-06-29" "1998-06-29" "1998-06-29" NA           NA          
-## [101] "1998-07-05" NA           "1998-06-27" NA           NA          
-## [106] NA           NA           "1998-07-02" NA           NA          
-## [111] NA           "1998-06-28" NA           NA           NA          
-## [116] NA           NA           NA           NA           "1998-07-01"
-## [121] NA           NA           "1998-06-28" NA           NA          
-## [126] NA           NA           NA           "1998-06-30" NA          
-## [131] NA           NA           NA           "1998-06-28" NA          
+##  [91] "1998-06-28" "1998-06-28" "1998-06-28" "1998-06-28" "1998-06-28"
+##  [96] "1998-06-28" "1998-06-28" "1998-06-28" "1998-06-28" "1998-06-28"
+## [101] "1998-06-28" "1998-06-28" "1998-06-28" "1998-06-28" "1998-06-28"
+## [106] "1998-06-28" "1998-06-28" "1998-06-28" "1998-06-29" "1998-06-29"
+## [111] "1998-06-29" "1998-06-29" "1998-06-29" "1998-06-29" "1998-06-29"
+## [116] "1998-06-29" "1998-06-29" "1998-06-29" "1998-06-30" "1998-06-30"
+## [121] "1998-06-30" "1998-07-01" "1998-07-01" "1998-07-01" "1998-07-02"
+## [126] "1998-07-02" "1998-07-02" "1998-07-04" "1998-07-05" "1998-07-06"
+## [131] "1998-07-09" NA           NA           NA           NA          
 ## [136] NA           NA           NA           NA           NA          
 ## [141] NA           NA           NA           NA           NA          
-## [146] NA           NA           NA           NA           "1998-07-09"
-## [151] NA           NA           "1998-06-29" NA           "1998-07-02"
+## [146] NA           NA           NA           NA           NA          
+## [151] NA           NA           NA           NA           NA          
 ## [156] NA           NA           NA           NA           NA          
-## [161] "1998-07-06" NA           NA           NA           NA          
+## [161] NA           NA           NA           NA           NA          
 ## [166] NA           NA           NA           NA           NA          
-## [171] NA           NA           "1998-06-27" NA           NA          
-## [176] NA           NA           NA           "1998-06-27" NA          
-## [181] NA           NA           NA           "1998-06-28" NA          
-## [186] NA           NA           NA           NA           "1998-06-30"
+## [171] NA           NA           NA           NA           NA          
+## [176] NA           NA           NA           NA           NA          
+## [181] NA           NA           NA           NA           NA          
+## [186] NA           NA           NA           NA           NA          
 ## [191] NA           NA           NA           NA           NA          
-## [196] "1998-06-27" NA           NA           "1998-06-28" NA          
+## [196] NA           NA           NA           NA           NA          
 ## [201] NA           NA           NA           NA           NA          
 ## [206] NA           NA           NA           NA           NA          
-## [211] "1998-06-26" NA           "1998-06-28" "1998-06-27" NA          
-## [216] NA           NA           NA           "1998-06-27" NA          
-## [221] NA           NA           "1998-06-27" "1998-07-01" NA          
+## [211] NA           NA           NA           NA           NA          
+## [216] NA           NA           NA           NA           NA          
+## [221] NA           NA           NA           NA           NA          
 ## [226] NA           NA           NA           NA           NA          
 ## [231] NA           NA           NA           NA           NA          
 ## [236] NA           NA           NA           NA           NA          
 ## [241] NA           NA           NA           NA           NA          
-## [246] "1998-06-28" "1998-07-02" NA           NA           NA          
-## [251] NA           "1998-06-27" NA           NA           NA          
+## [246] NA           NA           NA           NA           NA          
+## [251] NA           NA           NA           NA           NA          
 ## [256] NA           NA           NA           NA           NA          
-## [261] NA           NA           NA           "1998-06-29" "1998-07-01"
-## [266] "1998-06-27" NA           "1998-06-28" NA           NA          
-## [271] NA           "1998-07-04" NA           NA           NA          
+## [261] NA           NA           NA           NA           NA          
+## [266] NA           NA           NA           NA           NA          
+## [271] NA           NA           NA           NA           NA          
 ## [276] NA           NA           NA           NA           NA          
 ## [281] NA           NA           NA           NA           NA          
-## [286] NA           NA           "1998-06-30" NA           NA          
+## [286] NA           NA           NA           NA           NA          
 ## [291] NA          
 ## 
 ## $sex
-##   [1] female male   female male   female male   male   male   female male  
-##  [11] female male   male   female male   male   male   male   female female
-##  [21] male   female male   male   male   female male   female male   male  
-##  [31] female female female male   female female male   male   female male  
-##  [41] male   female male   male   female female male   female female female
-##  [51] male   male   male   female female female male   male   female male  
-##  [61] male   male   male   female female female female male   female female
-##  [71] female female male   female male   male   male   female male   female
-##  [81] female female male   male   female male   female male   female male  
-##  [91] female female male   female male   male   female male   female male  
-## [101] male   female male   male   male   female male   female female female
-## [111] female male   female male   male   male   male   male   female male  
-## [121] male   female female female female male   female female male   female
-## [131] male   female male   male   female female female female male   male  
-## [141] female male   female male   male   female male   female female female
-## [151] female female female female female female female male   male   male  
-## [161] male   female female male   female female female male   male   male  
-## [171] female male   male   male   female male   male   female male   female
-## [181] male   male   male   male   female female male   male   female male  
-## [191] male   female female male   female female male   female female female
-## [201] male   male   male   female female male   female female female male  
-## [211] male   female male   female male   female male   male   male   male  
-## [221] male   male   female male   male   male   female female male   female
-## [231] female female male   male   male   male   female male   female female
-## [241] female female female female female female male   female female female
-## [251] female female male   female female female female male   female male  
-## [261] female male   female male   male   female male   female female female
-## [271] female male   female female male   male   female male   male   female
-## [281] female female female male   female female female female male   female
+##   [1] male   female male   female male   female male   male   male   female
+##  [11] male   female male   male   female male   male   male   male   female
+##  [21] female male   female male   male   male   female male   female male  
+##  [31] male   female female female male   female female male   male   female
+##  [41] male   male   female male   male   female female male   male   male  
+##  [51] male   female female male   female female female female female female
+##  [61] male   male   male   female female female male   male   female male  
+##  [71] male   male   male   female female female female male   female female
+##  [81] female female male   female male   male   male   female male   female
+##  [91] female female male   male   female male   female male   female male  
+## [101] male   female male   male   female male   female female female female
+## [111] male   female male   male   female male   female male   male   male  
+## [121] female male   male   male   female female male   male   male   male  
+## [131] female female male   female male   male   female male   female female
+## [141] female female male   male   male   male   male   female male   female
+## [151] female female male   female female female male   female male   female
+## [161] female female female male   male   female male   female male   male  
+## [171] female male   female female female female female female female male  
+## [181] male   male   female female male   female female female male   male  
+## [191] male   female male   male   female male   male   female female male  
+## [201] male   male   female female male   male   female male   female female
+## [211] male   female male   female female male   male   male   female female
+## [221] male   female female female male   female male   female male   male  
+## [231] male   male   male   male   male   female female male   female female
+## [241] female male   male   male   male   female male   female female female
+## [251] female female female female female female female female male   female
+## [261] female female female male   female male   female male   female male  
+## [271] female female female female female male   male   female male   male  
+## [281] female female female female male   female female female male   female
 ## [291] male  
 ## Levels: male female
 ## 
 ## $age
-##   [1] 18 57 56 17 19 16 19 19 40 53 20 23 17 19 15 19 57 17 47 16 17 19 17
-##  [24] 17 18 18 29 14 13 21 19 20 57 38 18 64 57 27 23 21 21 20 20 18 24 24
-##  [47] 19 58 19 18 27 20 19 54 23 18 16 26 16 14 20 56 46 18 19 21 18 80 23
-##  [70] 20 50 18 48 21 47 18 47 17 NA 52 20 32 17 16 17 20 19 19 NA 19 19 19
-##  [93] 19 48 19 52 19 NA 21 18 20 19 39 17 22 13 20 18 17 17 62 17 21 54 20
-## [116] 16 17 18 22 18 18 NA 19 17 20 57 20 20 48 19 44 19 46 51 17 16 22 18
-## [139] 19 20 47 15 19 20 13 20 21 20 18 20 45 20 44 18 22 58 17 14 NA 20 20
-## [162] NA 19 19 16 26 20 19 17 19 57 18 19 17 18 18 23 19 45 15 20 19 25 20
-## [185] 20 20 48 23 17 17 46 19 21 18 24 18 52 50 23 55 19 16 18 19 50 49 65
-## [208] 19 43 43 20 59 21 19 20 56 14 55 47 19 42 22 49 45 42 60 16 20 18 18
-## [231] 21 19 19 17 17 18 45 58 20 24 57 19 20 56 46 18 17 37 44 19 21 19 18
-## [254] 28 53 17 19 19 19 17 20 18 24 15 12 16 48 18 21 59 57 15 NA 20 18 18
-## [277] 18 NA 16 20 16 51 18 21 22 18 18 21 17 21 22
-## 
-## $tiramisu
-##   [1]  1  1  0  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1
-##  [24]  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1
-##  [47]  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  0  1  1  1 NA  1
-##  [70]  0  1  1 NA  1  1  1  1  1  1  1  1  1  1  1  0  1  1  0  1  1  1  1
-##  [93]  1  0  1  1  1  1  0  0  0  0  0  0  0  0  1  0  1  0  0  1  0  0  0
-## [116]  0  0  0 NA  1  0  0  1  0  0  0  0  0  1  0  0  0  0  1  0  0  0  0
-## [139]  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  1
-## [162]  0  0  1  0  0  0  0  0  0  0  0  0  0  1  1  0  0  0  0  0  0  0  0
-## [185]  0  0  0 NA  0  0  0  0  0  1  0  0  1  0  1  1  0  0  0  0  1  0  0
-## [208]  0  0  0  0  0  1  0  0  1  0  0  0  0  1  0  0  1  0  0  0  1  1  0
-## [231]  0  0  0  0  0  1  0  0  0  0  0  0  0  1  0  1  0  0  0  0  0  0  0
-## [254]  0  0  1  0  0  0  1  0  0  0  1  0  0  0  0  0  0 NA  0  1  0  0  0
-## [277]  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1
+##   [1] 20 18 57 56 17 19 16 19 19 40 53 20 23 17 19 15 19 57 17 47 16 17 19
+##  [24] 17 17 18 18 29 14 13 21 19 20 57 38 18 64 57 27 23 21 21 20 20 18 24
+##  [47] 24 19 39 19 45 18 19 47 49 19 16 58 19 18 27 20 19 54 23 18 16 26 16
+##  [70] 14 20 56 46 18 19 21 18 80 23 20 50 18 48 21 47 18 47 17 NA 52 20 32
+##  [93] 17 16 17 20 19 19 NA 19 17 19 51 20 23 21 18 18 19 19 19 48 19 52 19
+## [116] NA 44 15 48 17 21 18 45 12 18 22 17 15 20 20 20 21 18 19 17 22 13 20
+## [139] 17 17 62 21 54 20 16 17 18 22 18 NA 17 20 57 20 20 19 44 19 46 17 16
+## [162] 22 18 19 20 47 15 19 20 13 20 21 20 18 45 20 18 58 17 14 NA 20 NA 19
+## [185] 19 16 26 20 19 17 19 57 18 17 18 18 23 19 15 20 19 25 20 20 48 23 17
+## [208] 46 19 21 18 24 52 50 55 19 16 18 19 50 49 65 19 43 43 59 20 56 14 55
+## [231] 19 42 22 42 60 16 20 18 18 21 19 19 17 17 18 45 58 20 24 57 19 20 56
+## [254] 46 37 44 19 21 18 28 53 17 19 19 19 17 20 18 24 48 21 59 57 NA 20 18
+## [277] 18 18 NA 16 20 16 51 18 21 22 18 18 17 21 22
 stegen_list$ill
-##   [1] case     case     case     case     case     case     case    
+##   [1] non case case     case     case     case     case     case    
 ##   [8] case     case     case     case     case     case     case    
 ##  [15] case     case     case     case     case     case     case    
 ##  [22] case     case     case     case     case     case     case    
 ##  [29] case     case     case     case     case     case     case    
 ##  [36] case     case     case     case     case     case     case    
 ##  [43] case     case     case     case     case     case     case    
-##  [50] case     case     case     case     case     case     case    
-##  [57] case     case     case     case     case     case     case    
+##  [50] non case non case non case non case non case non case non case
+##  [57] non case case     case     case     case     case     case    
 ##  [64] case     case     case     case     case     case     case    
 ##  [71] case     case     case     case     case     case     case    
 ##  [78] case     case     case     case     case     case     case    
 ##  [85] case     case     case     case     case     case     case    
 ##  [92] case     case     case     case     case     case     case    
-##  [99] non case non case non case non case case     non case non case
-## [106] non case non case non case non case non case non case non case
-## [113] non case non case non case non case non case non case non case
-## [120] non case non case non case case     non case non case non case
+##  [99] case     case     non case case     non case non case non case
+## [106] case     case     non case case     case     case     case    
+## [113] case     case     case     case     non case non case non case
+## [120] non case non case non case non case non case non case non case
 ## [127] non case non case non case non case non case non case non case
 ## [134] non case non case non case non case non case non case non case
 ## [141] non case non case non case non case non case non case non case
@@ -1327,13 +1326,13 @@ stegen_list$ill
 ## [190] non case non case non case non case non case non case non case
 ## [197] non case non case non case non case non case non case non case
 ## [204] non case non case non case non case non case non case non case
-## [211] non case non case case     non case non case non case non case
+## [211] non case non case non case non case non case non case non case
 ## [218] non case non case non case non case non case non case non case
 ## [225] non case non case non case non case non case non case non case
 ## [232] non case non case non case non case non case non case non case
-## [239] non case non case non case non case non case case     non case
-## [246] case     non case non case non case non case non case non case
-## [253] non case non case non case non case non case non case non case
+## [239] non case non case non case non case non case non case non case
+## [246] non case non case non case non case non case non case non case
+## [253] case     non case non case non case non case non case non case
 ## [260] non case non case non case non case non case non case non case
 ## [267] non case non case non case non case non case non case non case
 ## [274] non case non case non case non case non case non case non case
@@ -1341,24 +1340,24 @@ stegen_list$ill
 ## [288] non case non case non case non case
 ## Levels: non case case
 stegen$ill
-##   [1] case     case     case     case     case     case     case    
+##   [1] non case case     case     case     case     case     case    
 ##   [8] case     case     case     case     case     case     case    
 ##  [15] case     case     case     case     case     case     case    
 ##  [22] case     case     case     case     case     case     case    
 ##  [29] case     case     case     case     case     case     case    
 ##  [36] case     case     case     case     case     case     case    
 ##  [43] case     case     case     case     case     case     case    
-##  [50] case     case     case     case     case     case     case    
-##  [57] case     case     case     case     case     case     case    
+##  [50] non case non case non case non case non case non case non case
+##  [57] non case case     case     case     case     case     case    
 ##  [64] case     case     case     case     case     case     case    
 ##  [71] case     case     case     case     case     case     case    
 ##  [78] case     case     case     case     case     case     case    
 ##  [85] case     case     case     case     case     case     case    
 ##  [92] case     case     case     case     case     case     case    
-##  [99] non case non case non case non case case     non case non case
-## [106] non case non case non case non case non case non case non case
-## [113] non case non case non case non case non case non case non case
-## [120] non case non case non case case     non case non case non case
+##  [99] case     case     non case case     non case non case non case
+## [106] case     case     non case case     case     case     case    
+## [113] case     case     case     case     non case non case non case
+## [120] non case non case non case non case non case non case non case
 ## [127] non case non case non case non case non case non case non case
 ## [134] non case non case non case non case non case non case non case
 ## [141] non case non case non case non case non case non case non case
@@ -1371,13 +1370,13 @@ stegen$ill
 ## [190] non case non case non case non case non case non case non case
 ## [197] non case non case non case non case non case non case non case
 ## [204] non case non case non case non case non case non case non case
-## [211] non case non case case     non case non case non case non case
+## [211] non case non case non case non case non case non case non case
 ## [218] non case non case non case non case non case non case non case
 ## [225] non case non case non case non case non case non case non case
 ## [232] non case non case non case non case non case non case non case
-## [239] non case non case non case non case non case case     non case
-## [246] case     non case non case non case non case non case non case
-## [253] non case non case non case non case non case non case non case
+## [239] non case non case non case non case non case non case non case
+## [246] non case non case non case non case non case non case non case
+## [253] case     non case non case non case non case non case non case
 ## [260] non case non case non case non case non case non case non case
 ## [267] non case non case non case non case non case non case non case
 ## [274] non case non case non case non case non case non case non case
