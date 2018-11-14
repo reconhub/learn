@@ -332,7 +332,7 @@ new_labels # check the result
 names(stegen) <- new_labels
 ```
 
-We set convert the unique identifiers to character strings (`character`), dates
+We convert the unique identifiers to character strings (`character`), dates
 of onset to actual `Date` objects, and sex and illness are set to categorical variables (`factor`):
 
 ```{r stegen_unique_ids}
@@ -494,7 +494,7 @@ tapply(stegen$age, INDEX = stegen$sex, FUN = summary)
 ```
 
 this literally means: select the age variable in the dataset `stegen`
-(`stegen$age`), stratify it by sex (`stegen$sex`), and summaries each strata
+(`stegen$age`), stratify it by sex (`stegen$sex`), and summarise each stratum
 (`summary()`). So for instance, to get the average age by sex (function `mean()`), one could use:
 
 ```{r stegen_age_per_sex}
@@ -690,7 +690,7 @@ errorbars using *ggplot2*.
 
 In the section on saving clean data, we saved a binary file with our stegen
 data set. If you are starting here, you will want to read this file in with
-`readRDS()`
+`readRDS()`.
 
 ```{r read-clean-data, eval = FALSE}
 stegen_clean_rds <- here("data", "cleaned", "stegen_clean.rds")
@@ -743,7 +743,7 @@ pork_table
 
 We can get the risk ratio by using the `riskratio()` function from the *epitools*
 package. Here, we want to use Yates' continuity correction and calculate Wald
-confidence intervals (more inforamtion about this can be found on the help page
+confidence intervals (more information about this can be found on the help page
 for `riskratio()` by typing `?riskratio` in your R console).
 
 ```{r stegen_pork_rr}
@@ -1056,7 +1056,7 @@ or in this case, were potentially sharing contaminated ingredients).
 <summary> <b>Going Further:</b> Creating a function for multiple risk ratios </summary>
 
 Just like we created the function `single_risk_ratio()` to calculate the risk
-ratio of a single variable, we can create another function that will calculcate
+ratio of a single variable, we can create another function that will calculate
 the risk ratio for all variables in a data frame. We can do it the same way we
 did above. First, define the recipe:
 
@@ -1090,7 +1090,7 @@ multi_risk_ratio(predictors = food, outcome = stegen$ill)
 
 
 Note that we have defined arguments for `predictors` and `outcome`, but we
-didn't define an agrument for the `single_risk_ratio()` function. This is
+didn't define an argument for the `single_risk_ratio()` function. This is
 because we know that we've defined it above, but this also means that if we
 want to use the `multi_risk_ratio()` function in other scripts, we have to also
 define `single_risk_ratio()` as well. One way of keeping these organised is to
@@ -1219,8 +1219,8 @@ several potential risk factors and the occurrence of illness. One major caveat
 here is that we are not accounting for potential confounding factors. These will
 be treated in a separate case study, which will focus on the use of logistic
 regression in epidemic studies. Lastly we plotted a basic overview of the cases
-in this outbreak in relative distance to each other. More suffisticated mapping
-and spatial mathodologies will be covered in other case studies. 
+in this outbreak in relative distance to each other. More sophisticated mapping
+and spatial methodologies will be covered in other case studies. 
 
 
 --------------------------------------------------------------------------------

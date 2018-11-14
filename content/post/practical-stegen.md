@@ -455,9 +455,9 @@ new_labels # check the result
 names(stegen) <- new_labels
 ```
 
-We set convert the unique identifiers to character strings
-(`character`), dates of onset to actual `Date` objects, and sex and
-illness are set to categorical variables (`factor`):
+We convert the unique identifiers to character strings (`character`),
+dates of onset to actual `Date` objects, and sex and illness are set to
+categorical variables (`factor`):
 
 ``` r
 stegen$unique_key <- as.character(stegen$unique_key)
@@ -649,8 +649,8 @@ tapply(stegen$age, INDEX = stegen$sex, FUN = summary)
 ```
 
 this literally means: select the age variable in the dataset `stegen`
-(`stegen$age`), stratify it by sex (`stegen$sex`), and summaries each
-strata (`summary()`). So for instance, to get the average age by sex
+(`stegen$age`), stratify it by sex (`stegen$sex`), and summarise each
+stratum (`summary()`). So for instance, to get the average age by sex
 (function `mean()`), one could use:
 
 ``` r
@@ -825,7 +825,7 @@ i_ill <- incidence(stegen$date_onset, group = stegen$ill)
 i_ill
 ## <incidence object>
 ## [131 cases from days 1998-06-26 to 1998-07-09]
-## [2 groups: case, non case]
+## [2 groups: non case, case]
 ## 
 ## $counts: matrix with 14 rows and 2 columns
 ## $n: 131 cases in total
@@ -834,21 +834,21 @@ i_ill
 ## $timespan: 14 days
 ## $cumulative: FALSE
 as.data.frame(i_ill)
-##         dates case non case
-## 1  1998-06-26    0        1
-## 2  1998-06-27   48        8
-## 3  1998-06-28   46        5
-## 4  1998-06-29    8        2
-## 5  1998-06-30    0        3
-## 6  1998-07-01    0        3
-## 7  1998-07-02    0        3
-## 8  1998-07-03    0        0
-## 9  1998-07-04    0        1
-## 10 1998-07-05    0        1
-## 11 1998-07-06    0        1
-## 12 1998-07-07    0        0
-## 13 1998-07-08    0        0
-## 14 1998-07-09    0        1
+##         dates non case case
+## 1  1998-06-26        1    0
+## 2  1998-06-27        8   48
+## 3  1998-06-28        5   46
+## 4  1998-06-29        2    8
+## 5  1998-06-30        3    0
+## 6  1998-07-01        3    0
+## 7  1998-07-02        3    0
+## 8  1998-07-03        0    0
+## 9  1998-07-04        1    0
+## 10 1998-07-05        1    0
+## 11 1998-07-06        1    0
+## 12 1998-07-07        0    0
+## 13 1998-07-08        0    0
+## 14 1998-07-09        1    0
 plot(i_ill, color = c("non case" = "#66cc99", "case" = "#990033"))
 ```
 
@@ -930,7 +930,7 @@ p-values, and plot them as points and errorbars using *ggplot2*.
 
 In the section on saving clean data, we saved a binary file with our
 stegen data set. If you are starting here, you will want to read this
-file in with `readRDS()`
+file in with `readRDS()`.
 
 ``` r
 stegen_clean_rds <- here("data", "cleaned", "stegen_clean.rds")
@@ -1022,7 +1022,7 @@ pork_table
 
 We can get the risk ratio by using the `riskratio()` function from the
 *epitools* package. Here, we want to use Yates’ continuity correction
-and calculate Wald confidence intervals (more inforamtion about this can
+and calculate Wald confidence intervals (more information about this can
 be found on the help page for `riskratio()` by typing `?riskratio` in
 your R console).
 
@@ -1766,7 +1766,7 @@ ratios </summary>
 
 Just like we created the function `single_risk_ratio()` to calculate the
 risk ratio of a single variable, we can create another function that
-will calculcate the risk ratio for all variables in a data frame. We can
+will calculate the risk ratio for all variables in a data frame. We can
 do it the same way we did above. First, define the recipe:
 
 ``` r
@@ -1813,7 +1813,7 @@ multi_risk_ratio(predictors = food, outcome = stegen$ill)
 ```
 
 Note that we have defined arguments for `predictors` and `outcome`, but
-we didn’t define an agrument for the `single_risk_ratio()` function.
+we didn’t define an argument for the `single_risk_ratio()` function.
 This is because we know that we’ve defined it above, but this also means
 that if we want to use the `multi_risk_ratio()` function in other
 scripts, we have to also define `single_risk_ratio()` as well. One way
@@ -1950,8 +1950,8 @@ of illness. One major caveat here is that we are not accounting for
 potential confounding factors. These will be treated in a separate case
 study, which will focus on the use of logistic regression in epidemic
 studies. Lastly we plotted a basic overview of the cases in this
-outbreak in relative distance to each other. More suffisticated mapping
-and spatial mathodologies will be covered in other case studies.
+outbreak in relative distance to each other. More sophisticated mapping
+and spatial methodologies will be covered in other case studies.
 
 -----
 
