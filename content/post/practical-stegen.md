@@ -163,16 +163,24 @@ the original authors.
 
 The following packages will be used in the case study:
 
-  - *here*: to find the path to data or script files
-  - *readxl*: to read Excel spreadsheets into **R**
-  - *readr*: to write (and read) spreadsheets as text files
-  - *incidence*: to build epicurves
-  - *epitrix*: to clean labels from our spreadsheet
-  - dplyr: to help with factors
-  - *ggplot2*: to create custom visualisations
-  - *epitools*: to calculate risk ratios
-  - *sf*: To read in shape files
-  - *leaflet*: to demonstrate interactive maps
+  - [*here*](https://github.com/jennybc/here_here): to find the path to
+    data or script files
+  - [*readxl*](https://readxl.tidyverse.org/): to read Excel
+    spreadsheets into R
+  - [*readr*](https://readr.tidyverse.org/): to write (and read)
+    spreadsheets as text files
+  - [*incidence*](https://www.repidemicsconsortium.org/incidence/): to
+    build epicurves
+  - [*epitrix*](https://www.repidemicsconsortium.org/epitrix/): to clean
+    labels from our spreadsheet
+  - [*dplyr*](https://dplyr.tidyverse.org/): to help with factors
+  - [*ggplot2*](https://ggplot2.tidyverse.org/): to create custom
+    visualisations
+  - [*epitools*](https://cran.r-project.org/web/packages/epitools/index.html):
+    to calculate risk ratios
+  - [*sf*](https://github.com/r-spatial/sf/): To read in shape files
+  - [*leaflet*](https://rstudio.github.io/leaflet/): to demonstrate
+    interactive maps
 
 If we have these packages installed, we can tell R to load these
 packages from our R library:
@@ -849,7 +857,7 @@ as.data.frame(i_ill)
 ## 12 1998-07-07    0        0
 ## 13 1998-07-08    0        0
 ## 14 1998-07-09    0        1
-plot(i_ill, color = c("non case" = "#66cc99", "case" = "#990033"))
+plot(i_ill, color = c("non case" = "#66cc99", "case" = "#993333"))
 ```
 
 ![](practical-stegen_files/figure-gfm/incidence_stratified-1.png)<!-- -->
@@ -878,7 +886,7 @@ for
 more):
 
 ``` r
-plot(i_ill, border = "white", color = c("non case" = "#66cc99", "case" = "#990033")) + 
+plot(i_ill, border = "white", color = c("non case" = "#66cc99", "case" = "#993333")) + 
   geom_hline(yintercept = 1:55, color = "white") +
   labs(title = "Epicurve by case", x = "Date of onset", y = "Number of cases") +
   theme_light(base_family = "Times", base_size = 16) +
@@ -900,7 +908,7 @@ according to `sex`, we use `facet_grid()` (see previous extra info on
 ``` r
 ggplot(stegen) + 
   geom_histogram(aes(x = age, fill = ill), binwidth = 1) +
-  scale_fill_manual("Illness", values = c("non case" = "#66cc99", "case" = "#990033")) +
+  scale_fill_manual("Illness", values = c("non case" = "#66cc99", "case" = "#993333")) +
   facet_grid(sex ~ .) + 
   labs(title = "Cases by age and gender") + 
   theme_light()
@@ -1744,7 +1752,7 @@ p <- ggplot(all_food_df, aes(x = estimate, y = predictor, color = p.value)) +
   geom_errorbarh(aes(xmin = lower, xmax = upper)) +
   geom_vline(xintercept = 1, linetype = 2) + 
   scale_x_log10() + 
-  scale_color_viridis_c() +
+  scale_color_viridis_c(trans = "log10") + 
   labs(x = "Risk Ratio (log scale)", 
        y = "Predictor",
        title = "Risk Ratio for gastroenteritis in Stegen, Germany")
@@ -1867,6 +1875,7 @@ or not the person was ill:
 ``` r
 ggplot(stegen) +
   geom_point(aes(x = longitude, y = latitude, color = ill)) +
+  scale_color_manual("Illness", values = c("non case" = "#66cc99", "case" = "#993333")) +
   coord_map()
 ```
 
@@ -1896,7 +1905,8 @@ shapefile ensures that the projection is correct.
 ``` r
 ggplot(stegen) +
   geom_sf(data = stegen_shp) +
-  geom_point(aes(x = longitude, y = latitude, color = ill))
+  geom_point(aes(x = longitude, y = latitude, color = ill)) + 
+  scale_color_manual("Illness", values = c("non case" = "#66cc99", "case" = "#993333")) 
 ```
 
 ![](practical-stegen_files/figure-gfm/sf_map-1.png)<!-- -->
