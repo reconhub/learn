@@ -6,7 +6,7 @@ categories: ["lectures"]
 topics: ["rmarkdown", "data science", "reproducibility"]
 date: 2018-11-15
 image: img/highres/suitcase.jpg
-slug: reproducibility
+slug: bag_of_slides
 showonlyimage: true
 css: css/custom.css
 licenses: CC-BY
@@ -14,6 +14,8 @@ licenses: CC-BY
 
 Collection of miscellaneous slides
 ==================================
+
+This is a collection of short slide decks on various topics, too short to form a lecture, but useful every now and then.
 
 Importing data into R
 ---------------------
@@ -33,9 +35,9 @@ Contributors
 
 Contributions are welcome via [pull requests](https://github.com/reconhub/learn/pulls). The source files include:
 
--   [**the slides**](https://raw.githubusercontent.com/reconhub/learn/master/static/slides/slides_bag/import_data..Rmd)
+-   [**import data slides**](https://raw.githubusercontent.com/reconhub/learn/master/static/slides/slides_bag/import_data.Rmd)
 
--   [**this document**](https://raw.githubusercontent.com/reconhub/learn/master/content/post/lecture-bag-of-slides.Rmd)
+-   [**this post**](https://raw.githubusercontent.com/reconhub/learn/master/content/post/bag_of_slides.Rmd)
 
 Legal stuff
 -----------
