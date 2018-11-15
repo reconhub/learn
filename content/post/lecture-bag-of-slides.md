@@ -3,7 +3,7 @@ title: A bag of slides
 author: Thibaut Jombart
 authors: ["Thibaut Jombart"]
 categories: ["lectures"]
-topics: ["rmarkdown", "data science", "reproducibility"]
+topics: ["rmarkdown", "data science", "reproducibility", "ggplot2"]
 date: 2018-11-15
 image: img/highres/suitcase.jpg
 slug: bag_of_slides
@@ -24,6 +24,14 @@ Importing data into R
 
 <center>
 <a href="../../slides/slides_bag/import_data.html"><img class="gateway" src="../../img/highres/old_photographs.jpg" width="50%" alt="click there for slides" align="middle"></a>
+</center>
+Graphics using *ggplot2*
+------------------------
+
+**Click on the image below to access the slides:**
+
+<center>
+<a href="../../slides/slides_bag/ggplot2.html"><img class="gateway" src="../../img/highres/old_photographs.jpg" width="50%" alt="click there for slides" align="middle"></a>
 </center>
 About this document
 ===================

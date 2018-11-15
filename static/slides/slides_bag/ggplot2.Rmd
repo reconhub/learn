@@ -1,0 +1,102 @@
+---
+title: "Making graphics using *ggplot2*"
+author: "Thibaut Jombart"
+date: "2018-11-15"
+output:
+  ioslides_presentation:
+    incremental: false
+---
+
+<style>
+img {
+    border-radius: 8px;
+	box-shadow: 5px 5px 5px #999;
+}
+</style>
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, out.width = "60%",
+                      warning = FALSE, message = FALSE,
+                      tidy = FALSE)
+```
+
+
+## A simple example: Fisher's Iris
+
+<center>
+<img src="../../img/slides/iris.jpg" width="35%"></a>
+</center>
+
+<br>
+
+```{r fisher}
+head(iris)
+```
+
+
+## The basic graphics system
+
+Functions create graphics, example with Fisher's Iris:
+
+```{r basic-plot}
+hist(iris$Petal.Length, col = "grey", border = "white",
+     main = "Example of a histogram", xlab = "Fisher's Iris: petal length")
+```
+
+
+
+## *ggplot2*: treating graphics as objects
+
+Functions create a graphical object:
+
+```{r ggplot2-plot, echo = -1}
+library(ggplot2)
+my_plot <- ggplot(iris) + geom_histogram(aes(Petal.Length)) +
+  labs(title = "Example of a histogram",
+       x = "Fisher's Iris: petal length")
+my_plot
+```
+
+
+
+## A grammar for graphics
+
+*ggplot2* builds graphics one component at a time. The grammar includes:
+
+- `ggplot()`: to provide the data
+- `geom_...`: to define the type of graph
+- `aes()`: to map features of data into *aesthetic* properties (e.g. shapes, colors)
+
+
+```{r eval = FALSE}
+my_plot <- ggplot(iris) + # use 'iris' data.frame
+  geom_histogram(aes(Petal.Length)) + # hist using petal length
+  labs(title = "Example of a histogram", # add title
+       x = "Fisher's Iris: petal length") # add x label
+```
+
+
+
+## Making customisation easy
+
+For instance, to color histograms by species:
+
+```{r iris_colors}
+my_plot + aes(fill = Species)
+```
+
+
+
+
+## Making customisation easy: scatterplot
+
+
+```{r iris_scatterplot}
+my_plot <- ggplot(iris, aes(x = Petal.Length, y = Sepal.Length)) +
+  geom_point(aes(color = Species, shape = Species),
+             size = 5, alpha = .75) +
+  geom_smooth() +
+  labs(title = "Example of a scatterplot")
+my_plot
+```
