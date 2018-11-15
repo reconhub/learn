@@ -21,7 +21,6 @@ rerender <- function(rmd = NULL, dir = "content/post") {
     md <- the_file
     rmd  <- gsub("\\.md", "\\.Rmd", the_file) 
   }
-  file.remove(md)
   pv <- rmarkdown::pandoc_version() >= package_version("2.0.0")
   variant <- if (pv) "gfm" else "markdown_github"
   figfile <- if (pv) "figure-gfm" else "figure-markdown_github"
