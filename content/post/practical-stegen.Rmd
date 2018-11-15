@@ -1203,7 +1203,12 @@ lmap <- setView(lmap, lng = 7.963, lat = 47.982, zoom = 15)
 # Add the shapefile
 lmap <- addPolygons(lmap, data = st_transform(stegen_shp, '+proj=longlat +ellps=GRS80'))
 # Add the cases
-lmap <- addMarkers(lmap, label = ~ill, data = stegen_sub)
+lmap <- addCircleMarkers(lmap, 
+                         label = ~ill, 
+                         color = ~ifelse(ill == "case", "#993333", "#66cc99"), 
+                         stroke = FALSE,
+                         fillOpacity = 0.8,
+                         data = stegen_sub)
 # show the map
 lmap
 ```
