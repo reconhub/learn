@@ -163,16 +163,24 @@ the original authors.
 
 The following packages will be used in the case study:
 
-  - *here*: to find the path to data or script files
-  - *readxl*: to read Excel spreadsheets into **R**
-  - *readr*: to write (and read) spreadsheets as text files
-  - *incidence*: to build epicurves
-  - *epitrix*: to clean labels from our spreadsheet
-  - dplyr: to help with factors
-  - *ggplot2*: to create custom visualisations
-  - *epitools*: to calculate risk ratios
-  - *sf*: To read in shape files
-  - *leaflet*: to demonstrate interactive maps
+  - [*here*](https://github.com/jennybc/here_here): to find the path to
+    data or script files
+  - [*readxl*](https://readxl.tidyverse.org/): to read Excel
+    spreadsheets into R
+  - [*readr*](https://readr.tidyverse.org/): to write (and read)
+    spreadsheets as text files
+  - [*incidence*](https://www.repidemicsconsortium.org/incidence/): to
+    build epicurves
+  - [*epitrix*](https://www.repidemicsconsortium.org/epitrix/): to clean
+    labels from our spreadsheet
+  - [*dplyr*](https://dplyr.tidyverse.org/): to help with factors
+  - [*ggplot2*](https://ggplot2.tidyverse.org/): to create custom
+    visualisations
+  - [*epitools*](https://cran.r-project.org/web/packages/epitools/index.html):
+    to calculate risk ratios
+  - [*sf*](https://github.com/r-spatial/sf/): To read in shape files
+  - [*leaflet*](https://rstudio.github.io/leaflet/): to demonstrate
+    interactive maps
 
 If we have these packages installed, we can tell R to load these
 packages from our R library:
@@ -455,9 +463,9 @@ new_labels # check the result
 names(stegen) <- new_labels
 ```
 
-We set convert the unique identifiers to character strings
-(`character`), dates of onset to actual `Date` objects, and sex and
-illness are set to categorical variables (`factor`):
+We convert the unique identifiers to character strings (`character`),
+dates of onset to actual `Date` objects, and sex and illness are set to
+categorical variables (`factor`):
 
 ``` r
 stegen$unique_key <- as.character(stegen$unique_key)
@@ -649,8 +657,8 @@ tapply(stegen$age, INDEX = stegen$sex, FUN = summary)
 ```
 
 this literally means: select the age variable in the dataset `stegen`
-(`stegen$age`), stratify it by sex (`stegen$sex`), and summaries each
-strata (`summary()`). So for instance, to get the average age by sex
+(`stegen$age`), stratify it by sex (`stegen$sex`), and summarise each
+stratum (`summary()`). So for instance, to get the average age by sex
 (function `mean()`), one could use:
 
 ``` r
@@ -849,7 +857,7 @@ as.data.frame(i_ill)
 ## 12 1998-07-07    0        0
 ## 13 1998-07-08    0        0
 ## 14 1998-07-09    0        1
-plot(i_ill, color = c("non case" = "#66cc99", "case" = "#990033"))
+plot(i_ill, color = c("non case" = "#66cc99", "case" = "#993333"))
 ```
 
 ![](practical-stegen_files/figure-gfm/incidence_stratified-1.png)<!-- -->
@@ -878,7 +886,7 @@ for
 more):
 
 ``` r
-plot(i_ill, border = "white", color = c("non case" = "#66cc99", "case" = "#990033")) + 
+plot(i_ill, border = "white", color = c("non case" = "#66cc99", "case" = "#993333")) + 
   geom_hline(yintercept = 1:55, color = "white") +
   labs(title = "Epicurve by case", x = "Date of onset", y = "Number of cases") +
   theme_light(base_family = "Times", base_size = 16) +
@@ -900,7 +908,7 @@ according to `sex`, we use `facet_grid()` (see previous extra info on
 ``` r
 ggplot(stegen) + 
   geom_histogram(aes(x = age, fill = ill), binwidth = 1) +
-  scale_fill_manual("Illness", values = c("non case" = "#66cc99", "case" = "#990033")) +
+  scale_fill_manual("Illness", values = c("non case" = "#66cc99", "case" = "#993333")) +
   facet_grid(sex ~ .) + 
   labs(title = "Cases by age and gender") + 
   theme_light()
@@ -930,7 +938,7 @@ p-values, and plot them as points and errorbars using *ggplot2*.
 
 In the section on saving clean data, we saved a binary file with our
 stegen data set. If you are starting here, you will want to read this
-file in with `readRDS()`
+file in with `readRDS()`.
 
 ``` r
 stegen_clean_rds <- here("data", "cleaned", "stegen_clean.rds")
@@ -1022,7 +1030,7 @@ pork_table
 
 We can get the risk ratio by using the `riskratio()` function from the
 *epitools* package. Here, we want to use Yates’ continuity correction
-and calculate Wald confidence intervals (more inforamtion about this can
+and calculate Wald confidence intervals (more information about this can
 be found on the help page for `riskratio()` by typing `?riskratio` in
 your R console).
 
@@ -1744,7 +1752,7 @@ p <- ggplot(all_food_df, aes(x = estimate, y = predictor, color = p.value)) +
   geom_errorbarh(aes(xmin = lower, xmax = upper)) +
   geom_vline(xintercept = 1, linetype = 2) + 
   scale_x_log10() + 
-  scale_color_viridis_c() +
+  scale_color_viridis_c(trans = "log10") + 
   labs(x = "Risk Ratio (log scale)", 
        y = "Predictor",
        title = "Risk Ratio for gastroenteritis in Stegen, Germany")
@@ -1766,7 +1774,7 @@ ratios </summary>
 
 Just like we created the function `single_risk_ratio()` to calculate the
 risk ratio of a single variable, we can create another function that
-will calculcate the risk ratio for all variables in a data frame. We can
+will calculate the risk ratio for all variables in a data frame. We can
 do it the same way we did above. First, define the recipe:
 
 ``` r
@@ -1813,7 +1821,7 @@ multi_risk_ratio(predictors = food, outcome = stegen$ill)
 ```
 
 Note that we have defined arguments for `predictors` and `outcome`, but
-we didn’t define an agrument for the `single_risk_ratio()` function.
+we didn’t define an argument for the `single_risk_ratio()` function.
 This is because we know that we’ve defined it above, but this also means
 that if we want to use the `multi_risk_ratio()` function in other
 scripts, we have to also define `single_risk_ratio()` as well. One way
@@ -1867,6 +1875,7 @@ or not the person was ill:
 ``` r
 ggplot(stegen) +
   geom_point(aes(x = longitude, y = latitude, color = ill)) +
+  scale_color_manual("Illness", values = c("non case" = "#66cc99", "case" = "#993333")) +
   coord_map()
 ```
 
@@ -1896,7 +1905,8 @@ shapefile ensures that the projection is correct.
 ``` r
 ggplot(stegen) +
   geom_sf(data = stegen_shp) +
-  geom_point(aes(x = longitude, y = latitude, color = ill))
+  geom_point(aes(x = longitude, y = latitude, color = ill)) + 
+  scale_color_manual("Illness", values = c("non case" = "#66cc99", "case" = "#993333")) 
 ```
 
 ![](practical-stegen_files/figure-gfm/sf_map-1.png)<!-- -->
@@ -1927,7 +1937,12 @@ lmap <- setView(lmap, lng = 7.963, lat = 47.982, zoom = 15)
 # Add the shapefile
 lmap <- addPolygons(lmap, data = st_transform(stegen_shp, '+proj=longlat +ellps=GRS80'))
 # Add the cases
-lmap <- addMarkers(lmap, label = ~ill, data = stegen_sub)
+lmap <- addCircleMarkers(lmap, 
+                         label = ~ill, 
+                         color = ~ifelse(ill == "case", "#993333", "#66cc99"), 
+                         stroke = FALSE,
+                         fillOpacity = 0.8,
+                         data = stegen_sub)
 # show the map
 lmap
 ```
@@ -1950,8 +1965,8 @@ of illness. One major caveat here is that we are not accounting for
 potential confounding factors. These will be treated in a separate case
 study, which will focus on the use of logistic regression in epidemic
 studies. Lastly we plotted a basic overview of the cases in this
-outbreak in relative distance to each other. More suffisticated mapping
-and spatial mathodologies will be covered in other case studies.
+outbreak in relative distance to each other. More sophisticated mapping
+and spatial methodologies will be covered in other case studies.
 
 -----
 
