@@ -1,0 +1,59 @@
+---
+title: "Importing data into R"
+author: "Thibaut Jombart"
+date: "2018-11-15"
+output:
+  ioslides_presentation:
+    incremental: false
+---
+
+<style>
+img {
+    border-radius: 8px;
+	box-shadow: 5px 5px 5px #999;
+}
+</style>
+
+
+## What data usually look like
+
+<center> 
+<img src="../../img/slides/shot_spreadsheet.png" width="75%">
+</center> 
+
+<br>
+Typical spreadsheet:
+
+- <font color="#99004d">rows</font>: observations (typically individuals)
+- <font color="#99004d">columns</font>: variables
+
+
+## What data look like in R
+ 
+<center> 
+<img src="../../img/slides/shot_imported_data.png" width="70%">
+</center> 
+
+<br>
+A <font color="#99004d">`data.frame`</font> is the R equivalent of a
+spreadsheet.
+ 
+
+## How does the magic happen
+
+<center> 
+<img src="../../img/slides/magic.png" width="35%">
+</center> 
+
+> <font color="#99004d">Basic R:</font>
+
+- `read.table("some_data.txt")` for general text files
+- `read.csv("some_data.csv")` for csv files
+
+> <font color="#99004d">In packages:</font>
+
+- `readr::read_csv("some_data.csv")` for csv files
+- `readxl::read_xlsx("some_data.xlsx")` for Excel format
+- `haven::read_dta("some_data.dta")` for Stata 
+- ...
+
