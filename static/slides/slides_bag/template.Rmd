@@ -1,0 +1,38 @@
+---
+title: "This is a title"
+author: "Jane Doe, John Smith"
+date: "2017-12-12"
+output:
+  ioslides_presentation:
+    incremental: false
+---
+
+
+
+
+# Inferring who infected whom
+
+## Transmission tree, transmission chain
+
+<center> 
+<img src="../../img/slides/transmission-chain.jpg" width="50%">
+</center> 
+
+
+> - <font color="#99004d">transmission tree</font>: directed acyclic graph
+representing transmission events of an outbreak
+
+> - <font color="#99004d">transmission chain</font>: path from a case to a
+descending case
+
+
+
+## Why does it matter?
+ 
+<center> 
+<img src="../../img/slides/transmission-contexts.jpg" width="100%">
+</center> 
+
+Different <font color="#99004d">transmission contexts</font> need different
+<font color="#99004d">responses</font>.
+ 
