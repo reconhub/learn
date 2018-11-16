@@ -25,6 +25,13 @@ This is a collection of short slide decks on various topics, too short to form a
 lecture, but useful every now and then.
 
 
+## Why use R
+
+Click on the image below to access the slides:
+
+<center>
+<a href="../../slides/why-r/why-r.html"><img class="gateway" src="../../img/highres/old_photographs.jpg" width="50%" alt="click there for slides" align="middle"></a>
+</center>
 
 ## Importing data into R
 
@@ -54,6 +61,7 @@ lecture, but useful every now and then.
 ## Contributors
 
 - Thibaut Jombart: initial version
+- Zhian N. Kamvar: abinitial version
 
 Contributions are welcome via [pull requests](https://github.com/reconhub/learn/pulls). The source files include:
 

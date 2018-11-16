@@ -1,0 +1,492 @@
+---
+title: "<br>Why you should use ![Rlogo](../../img/slides/Rlogo-small.png)<br><br>"
+author: Zhian Kamvar
+date: "2018-10-05"
+output:
+  ioslides_presentation:
+    widescreen: true
+
+---
+
+
+
+```{r setup, include=FALSE}
+## This code defines the 'verbatim' option for chunks
+## which will include the chunk with its header and the
+## trailing "```".
+
+require(knitr)
+hook_source_def = knit_hooks$get('source')
+knit_hooks$set(source = function(x, options){
+  if (!is.null(options$verbatim) && options$verbatim){
+    opts = gsub(",\\s*verbatim\\s*=\\s*TRUE\\s*.*$", "", options$params.src)
+    bef = sprintf('\n\n    ```{r %s}\n', opts, "\n")
+    stringr::str_c(bef, paste(knitr:::indent_block(x, "    "), collapse = '\n'), "\n    ```\n")
+  } else {
+     hook_source_def(x, options)
+  }
+})
+```
+
+
+# Why ![Rlogo](../../img/slides/Rlogo-small.png) is awesome!
+
+
+## What is R? {.columns-2}
+
+ - functional programming language
+ - ideal for statistics and graphs
+ - open source
+   - transparent
+   - freely available
+ - over 10,000 R packages
+   - Easy to install `install.packages("incidence")`
+   - Easy to use `library("incidence")`
+<br>
+<br>
+<br>
+<br>
+
+```{r echo = FALSE, fig.width = 5}
+results <- c(44,  35,  26,  37,  38,  36,  33,  35,  40,  31,  33,  23,  
+             32,  32,  55,  42,  34,  65,  43,  39,  68,  51,  63,  41,
+             46,  57,  62,  50,  70,  55,  41,  54,  61,  56,  48,  47,  
+             85,  70,  76,  71,  58,  73,  76,  72,  68,  76,  98,  89,  
+             81,  70, 104,  92, 104,  93, 109, 107,  85, 103, 111,  91, 
+             108, 105, 121, 121, 119, 102, 110, 114, 102, 127,  99, 102, 
+             136, 117, 152, 131, 131, 126, 126, 143, 145, 125, 142, 130, 
+             129, 148, 133, 127, 133, 149, 186, 151, 157, 204, 152, 163,
+             156, 183, 190, 161, 184, 195, 190, 214, 205, 174, 189,  217)
+# Build a vector of dates. It is convenient to use the first of the month
+time <- seq(as.Date("2008/1/1"),as.Date("2016/12/1"),by="month")
+
+# Build a data frame to plot
+pkg_data <- data.frame(time,results)
+names(pkg_data) <- c("Month", "New_Pkg")
+#head(pkg_data)
+
+p <- ggplot2::ggplot(pkg_data, ggplot2::aes(x=Month, y=New_Pkg)) +
+     ggplot2::geom_line() +
+     ggplot2::geom_smooth(method="loess") +
+     ggplot2::theme_bw(base_size = 16) + 
+     ggplot2::labs(list(
+                        title = "New packages per month",
+                        y = "Number of packages"
+     ))
+p
+```
+
+## R is versatile 
+
+<center>
+<img src="../../img/slides/r-food-chain.jpg" width="75%">
+</center>
+
+
+## R has many large and vibrant user communities
+
+<center>
+<img src="../../img/slides/r-communities.jpg" width="100%">
+</center>
+
+---------------
+
+<center>
+<img src="../../img/slides/r-gephi-graph.PNG" width="50%">
+</center>
+source: https://www.r-bloggers.com/social-network-analysis-using-r-and-gephis/
+
+---------------
+
+<center>
+<img src="../../img/slides/accidental-art.jpg" width="75%">
+</center>
+source: https://accidental-art.tumblr.com/
+
+---------------
+
+<center>
+<img src="../../img/slides/heart-mend.jpg" width="50%">
+</center>
+source: https://twitter.com/ZKamvar/status/800487683923415040
+
+---------------
+
+<center>
+<img src="../../img/slides/swiss-map.png" width="70%">
+</center>
+
+source: https://timogrossenbacher.ch/2016/12/beautiful-thematic-maps-with-ggplot2-only/
+
+---------------
+
+<center>
+<img src="../../img/slides/metacoder-microbiome.png" width="50%">
+</center>
+
+source: Foster *et al.* 2017 https://doi.org/10.1371/journal.pcbi.1005404
+
+
+## R can automate analyses
+
+<center>
+<img src="../../img/slides/automation-win.png" width="75%">
+<center>
+source: http://blog.yhat.com/posts/R-for-excel-users.html
+
+## Interactive analyses and automated reports
+
+<center>
+<img src="https://paula-moraga.github.io/img/imagespaula/animation.gif" width="100%">
+</center>
+
+source: https://paula-moraga.github.io/software/
+
+# Great! How do I use it?
+
+
+<!-- 
+
+## What is reproducibility in science?
+
+<center>
+<img src="../../img/slides/printing-press.jpg" width="60%">
+</center>
+<br>
+
+> - ability to reproduce results by a peer
+> - requires <font color="#99004d">data</font>, <font color="#99004d">methods</font>, and <font color="#99004d">procedures</font>
+> - increasingly, science is supposed to be reproducible
+
+
+
+
+
+
+## Why does it not happen, in practice?
+
+  Some opinions on whether reproducibility is needed:
+  
+> - *Ideally, yes but we don't have time for this.*
+> - *If it gets published, yes.*
+> - *If it gets published, yes; unless it is in PLoS One...*
+> - *No need: I work on my own.*
+> - *For others to copy us? You crazy?!*
+> - *No way! We rigged the data, the method does not work, and we ran the analyses in Excel.*
+
+
+
+
+
+## Main obstacles to reproducibility {.columns-2}
+
+<center><img src="../../img/slides/wecandoit.jpg" width="65%"></center>
+
+> - lack of time: ultimately, reproducibility is faster
+> - fear of plagiarism: low risks in practice
+> - internal work, no need to share: almost never true
+<br>
+> - one good reason: <font color="#99004d">lack of tools to facilitate reproducibility</font>
+
+
+
+
+
+## You never work alone
+
+<center>
+<img src="../../img/slides/looper.jpg" width="85%">
+<br>
+
+Be nice to your future selves!
+
+</center>
+
+
+
+
+
+## Two aspects of reproducibility using <img src="../../img/slides/Rlogo-small.png" width="50px">
+
+
+<center>
+<img src="../../img/slides/2pills.jpg" width="85%">
+</center>
+
+<br>
+
+> - implementing methods as <img src="../../img/slides/Rlogo-small.png" width="30px"> packages
+> - making <font color="#99004d">transparent</font> and <font color="#99004d">reproducible</font> analyses
+
+
+
+
+
+# <img src="../../img/slides/Rlogo.png" width="50px">eproducibility in practice
+
+## Literate programming
+
+<center>
+<img src="../../img/slides/knuth.jpg" width="55%">
+</center>
+
+> *Let us change our traditional attitude to the construction of programs: instead
+of imagining that our main task is to instruct a computer what to do, let us
+concentrate rather on <font color="#99004d">explaining to humans what we want
+the computer to do</font>.* </center> (Donald E. Knuth, Literate Programming,
+1984)
+
+
+
+
+## A data-centred approach to programming
+
+<center>
+<img src="../../img/slides/literate-prog.png" width="85%">
+</center>
+
+
+
+
+## Literate programming in <img src="../../img/slides/Rlogo.png" width="50px">
+
+Current workflows use the following equation: 
+
+**markdown** (`.md`)   +   <img src="../../img/slides/Rlogo.png" width="40px"> = 
+<font color="#99004d"> **Rmarkdown** </font> (`.Rmd`)
+
+<br><br>Example:<br>
+`knitr::knit2html("foo.Rmd")`  $\rightarrow$  `foo.html`<br>
+`rmarkdown::render("foo.Rmd")`  $\rightarrow$  `foo.pdf`<br>
+`rmarkdown::render("foo.Rmd")`  $\rightarrow$  `foo.doc`<br>
+`...`
+
+
+
+
+
+## **Rmarkdown**: <img src="../../img/slides/Rlogo.png" width="50px"> chunks in markdown {.smaller}
+
+```{r chunk-title, ..., verbatim = TRUE, eval = FALSE}
+a <- rnorm(1000)
+hist(a, col = terrain.colors(15), border = "white", main = "Normal distribution")
+```
+
+results in:
+```{r rmarkdown, out.width = "80%", fig.width = 12, echo = c(2,3)}
+set.seed(1)
+a <- rnorm(1000)
+hist(a, col = terrain.colors(15), border = "white", main = "Normal distribution")
+```
+
+
+
+
+## Formatting outputs
+
+```{r another-chunk-title, ..., verbatim = TRUE, eval = FALSE}
+[some R code here]
+```
+
+where `...` are options for processing and formatting, e.g:
+
+- `eval` (`TRUE`/`FALSE`): evaluate code?
+- `echo` (`TRUE`/`FALSE`): show code input?
+- `results` (`"markup"/"hide"/"asis"`): show/format code output
+- `message/warning/error`: show messages, warnings, errors?
+- `cache` (`TRUE`/`FALSE`): cache analyses?
+<br>
+
+See [http://yihui.name/knitr/options](http://yihui.name/knitr/options) for details on all options.
+
+
+
+
+## One format, several outputs
+
+**`rmarkdown`** can generate different types of documents:
+
+- standardised reports (`html`, `pdf`) 
+- journal articles. using the `rticles` package (`.pdf`)
+- Tufte handouts (`.pdf`)
+- word documents (`.doc`)
+- slides for presentations (`html`, `pdf`)
+- ...
+
+See: [http://rmarkdown.rstudio.com/gallery.html](http://rmarkdown.rstudio.com/gallery.html).
+
+
+
+
+## **`rmarkdown`**: toy example 1/2 {.smaller}
+
+Let us consider the file \texttt{foo.Rmd}:
+<pre><code>
+---
+title: "A toy example of rmarkdown"
+author: "John Snow"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+This is some nice R code:
+</pre></code>
+
+```{r rnorm-example, verbatim = TRUE, eval = FALSE, echo = 2:4}
+set.seed(1)
+x <- rnorm(100)
+x[1:6]
+hist(x, col = "grey", border = "white")
+```
+
+
+
+
+## **`rmarkdown`**: toy example 1/2 {.smaller}
+
+```{r toy-rmd, eval = FALSE}
+rmarkdown::render("foo.Rmd")
+```
+
+<center>
+<img src="../../img/slides/rmarkdown-toy.png" width="70%">
+</center>
+
+
+
+
+
+
+# Good practices
+
+## **`rmarkdown`** is just the beginning {.columns-2}
+
+<center>
+<img src="../../img/slides/tablets.png" width="90%">
+</center>
+
+<br>
+
+> - alter your original data
+
+> - have a messy project
+
+> - write non-portable code
+
+> - write horrible code
+
+> - lose work permanently
+
+
+
+
+## How to treat your original data
+
+<center>
+<img src="../../img/slides/gold.jpg" width="50%">
+</center>
+
+> - **do not touch your original data**
+> - save it as <font color="#99004d">read-only</font>
+> - <font color="#99004d">make copies</font> - you can play with these
+> - <font color="#99004d">track the changes</font> made to the original data
+
+
+
+
+## How to avoid messy projects
+
+<center>
+<img src="../../img/slides/messy-office.jpg" width="50%">
+</center>
+
+> - **1 project = 1 folder**
+> - subfolders for: data, analyses, figures, manuscripts, ...
+> - document the project using a `README` file
+> - use the Rstudio projects (if you use Rstudio)
+
+
+
+
+## How to write portable code?
+
+<center>
+<img src="../../img/slides/communication.png" width="50%">
+</center>
+
+> - avoid absolute paths e.g.:<br>
+`my_file <- "C:\project1\data\data.csv"`<br>
+> - use the package <font color="#99004d">`here`</font> for portable paths e.g.:<br>
+`my_file <- here("data/data.csv")`
+> - avoid special characters and spaces in all names e.g.:<br> `éèçêäÏ*%~!?&`
+> - assume case sensitivity: <br>`FooBar` $\neq$ `foobar` $\neq$ `FOOBAR`
+
+
+
+
+
+## How to write better code?
+
+<center>
+<img src="../../img/slides/readable.jpg" width="50%">
+</center>
+
+> - name things explicitly
+    
+> - settle for one <font color="#99004d">naming convention</font>; `snake_case` is currently recommended for <img src="../../img/slides/Rlogo.png" width="40px"> packages
+   
+> - document your code using <font color="#99004d">comments</font> (`##`)
+    
+> - write <font color="#99004d">simple code</font>, in short sections
+   
+> - use current coding standards -- see the <font color="#99004d">`lintr`</font> package
+
+
+
+
+
+## Example of `lintr`
+
+<center>
+<img src="../../img/slides/lintr.png" width="80%"><br>
+<small>source: [https://github.com/jimhester/lintr](https://github.com/jimhester/lintr)</small>
+</center>
+
+
+
+
+## Do not lose your work!
+
+Because you never know what can happen..
+
+<center>
+<img src="../../img/slides/smashing-panda.gif" width="50%">
+</center>
+
+
+
+
+## How to avoid losing work?
+
+<center>
+<img src="../../img/slides/lost.jpg" width="40%">
+</center>
+
+<br>
+
+> - **never rely on a single computer** to store your work
+> - <font color="#99004d">backups</font> are good, <font color="#99004d">syncing</font> with a server is better (e.g. Dropbox)
+> - use <font color="#99004d">version numbers</font> to track progress
+> - use <font color="#99004d">version control systems</font> (e.g. GIT) for serious
+    coding projects
+
+
+## 
+
+<br>
+
+<center>
+<img src="../../img/slides/the-end.jpg" width="100%">
+</center>
+
+-->
