@@ -24,7 +24,7 @@ slides:
 
 <center>
 
-<a href="../../slides/whyr/whyr.html"><img class="gateway" src="../../img/highres/old_photographs.jpg" width="50%" alt="click there for slides" align="middle"></a>
+<a href="../../slides/why-r/why-r.html"><img class="gateway" src="../../img/highres/old_photographs.jpg" width="50%" alt="click there for slides" align="middle"></a>
 
 </center>
 
