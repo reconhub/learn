@@ -16,12 +16,12 @@ ByteCompile: true
 Imports: 
     knitr,
     rmarkdown,
-    automagic,
+    checkpoint,
     htmltools,
     htmlwidgets,
     snakecase,
     yaml,
-    usethis (>= 1.3.0.9000),
+    usethis (>= 1.4.0),
     stringr,
     glue,
     jsonlite,
@@ -34,5 +34,3 @@ License: MIT + file LICENSE
 Suggests: 
     testthat,
     covr
-Remotes:
-    r-lib/usethis

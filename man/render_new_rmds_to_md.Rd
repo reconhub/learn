@@ -4,15 +4,18 @@
 \alias{render_new_rmds_to_md}
 \title{Prep Hugo pages by converting Rmds to Md's}
 \usage{
-render_new_rmds_to_md(dir = "content/post", build = "new")
+render_new_rmds_to_md(dir = "content/post", build = "new", tol = 1,
+  dry_run = FALSE)
 }
 \arguments{
 \item{dir}{Directory to search for new Rmds in. Defaults to the blog post location of Hugo.}
 
 \item{build}{Selection criteria for which Rmds to convert to md, options are c("all", "old and new", "old", "new")}
+
+\item{dry_run}{When `TRUE`, targets are printed, but not rendered. Defaults to `FALSE`.}
 }
 \value{
-Used for pure side effect
+Used for pure side effect. If `dry_run = TRUE`, then the list of targets to be rendered will be printed.
 }
 \description{
 Assumes anything without a corresponding markdown file

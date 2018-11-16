@@ -13,7 +13,7 @@
 #' @export
 render_new_rmds_to_md <- function(dir = "content/post", 
                                   build = "new",
-                                  tol = 
+                                  tol = 1,
                                   dry_run = FALSE) {
   match.arg(build, c("all", "old and new", "old", "new"))
   content = dir
@@ -32,7 +32,7 @@ render_new_rmds_to_md <- function(dir = "content/post",
   # Rmd with a too old md
   dplyr::left_join(rmds, mds, by = "slug",
                    suffix = c("_rmd", "_md")) %>%
-    dplyr::filter(.data$change_time_md < .data$change_time_rmd) %>%
+    dplyr::filter((.data$change_time_rmd - .data$change_time_md) > tol) %>%
     dplyr::pull(.data$path_rmd) -> too_old
     
   if(build == "all"){
