@@ -18,7 +18,7 @@ img {
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(collapse = TRUE, out.width = "60%",
                       warning = FALSE, message = FALSE,
-                      tidy = FALSE)
+                      tidy = FALSE, fig.align = "center")
 ```
 
 
@@ -139,7 +139,7 @@ Note that you will need to use `scale_fill_manual` for colors specified through 
 
 ## Useful tips: using panels
 
-You can use `facet_grid(rows ~ columns)` to specify panels, e.g.:
+You can use `facet_grid(rows ~ columns)` to specify panels:
 ```{r ggplot2_panels}
 new_plot <- ggplot(iris) +
   geom_histogram(aes(x = Petal.Length, fill = Species)) +
@@ -149,4 +149,20 @@ new_plot
 
 
 
+## Useful tips: moving the legend
 
+Use `theme(legend.position = c(x_coord, y_coord))` to move the legend:
+
+```{r ggplot2_legend_position}
+new_plot + theme(legend.position = c(.9, .8))
+```
+
+
+
+## Useful tips: changing the theme
+
+Other *themes* are available and can be customised:
+
+```{r ggplot2_themes}
+new_plot + theme_light(base_family = "Times", base_size = 20)
+```
