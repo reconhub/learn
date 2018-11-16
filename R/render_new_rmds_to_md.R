@@ -17,7 +17,8 @@ render_new_rmds_to_md <- function(dir = "content/post",
                                   tol = 1,
                                   dry_run = FALSE) {
   match.arg(build, c("all", "old and new", "old", "new"))
-  content = dir
+  root    <- rprojroot::has_file("DESCRIPTION")
+  content <- root$find_file(dir)
   
   # get info about all files
   info <- fs::dir_info(content)
