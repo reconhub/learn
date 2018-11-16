@@ -13,6 +13,8 @@ render_new_rmds_to_md(dir = "content/post", build = "new", tol = 1,
 \item{build}{Selection criteria for which Rmds to convert to md, options are c("all", "old and new", "old", "new")}
 
 \item{dry_run}{When `TRUE`, targets are printed, but not rendered. Defaults to `FALSE`.}
+
+\item{when}{`build = "old"` or `build = "old and new"`, this number will avoid re-building md files that are fewer than `tol` seconds old.}
 }
 \value{
 Used for pure side effect. If `dry_run = TRUE`, then the list of targets to be rendered will be printed.
