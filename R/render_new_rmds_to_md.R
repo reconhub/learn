@@ -7,11 +7,14 @@
 #'
 #' @param dir Directory to search for new Rmds in. Defaults to the blog post location of Hugo.
 #' @param build Selection criteria for which Rmds to convert to md, options are c("all", "old and new", "old", "new")
+#' @param dry_run When `TRUE`, targets are printed, but not rendered. Defaults to `FALSE`.
 #'
-#' @return Used for pure side effect
+#' @return Used for pure side effect. If `dry_run = TRUE`, then the list of targets to be rendered will be printed.
 #' @export
 render_new_rmds_to_md <- function(dir = "content/post", 
-                                  build = "new") {
+                                  build = "new",
+                                  tol = 
+                                  dry_run = FALSE) {
   match.arg(build, c("all", "old and new", "old", "new"))
   content = dir
   
@@ -46,13 +49,23 @@ render_new_rmds_to_md <- function(dir = "content/post",
   }
   pv <- rmarkdown::pandoc_version() >= package_version("2.0.0")
   variant <- if(pv) "gfm" else "markdown_github"
+  figfile <- if (pv) "figure-gfm" else "figure-markdown_github"
   # build only the ones to be built
   if(length(to_build) > 0){
+    if (dry_run) {
+      return(to_build)
+    }
     for (b in to_build) {
       rmd <- b
       rmarkdown::render(rmd,
                         rmarkdown::md_document(variant = variant,
                                                preserve_yaml = TRUE ))
+      cpath <- gsub("\\.Rmd", "_files", rmd)
+      spath <- gsub("content", "static", cpath)
+      fs::file_move(fs::dir_ls(file.path(cpath, figfile)), 
+                    file.path(spath, figfile)
+                   )
+
     }
   }else{
     message("Nothing to build, all .md up-to-date")
