@@ -100,3 +100,53 @@ my_plot <- ggplot(iris, aes(x = Petal.Length, y = Sepal.Length)) +
   labs(title = "Example of a scatterplot")
 my_plot
 ```
+
+
+
+## Going further
+
+<center>
+<img src="../../img/slides/palette.jpg" width="35%"></a>
+</center>
+
+<br>
+
+Learn more about *ggplot2*:
+
+- check the package's [website](https://ggplot2.tidyverse.org/)
+- a list of [all available `geoms_`](https://ggplot2.tidyverse.org/reference/index.html#section-layer-geoms) (types of plot)
+- a list of [`aes()` specifications](https://ggplot2.tidyverse.org/articles/ggplot2-specs.html) (colors / shapes / etc.)
+- a [gallery of extensions](http://www.ggplot2-exts.org/gallery/) to *ggplot2*
+
+
+
+
+## Useful tips: specifying your colors
+
+- select your favourite colors, e.g. using a [color picker](https://www.w3schools.com/colors/colors_picker.asp)
+- make a named vector storing these colors as `character`
+- specify your colors using e.g.:
+
+```{r custom_colors}
+col <- c(setosa = "#666699", versicolor = "#99cc00", virginica = "#b30059")
+my_plot + scale_color_manual(values = col)
+```
+
+Note that you will need to use `scale_fill_manual` for colors specified through `fill = ...`. 
+
+
+
+
+## Useful tips: using panels
+
+You can use `facet_grid(rows ~ columns)` to specify panels, e.g.:
+```{r ggplot2_panels}
+new_plot <- ggplot(iris) +
+  geom_histogram(aes(x = Petal.Length, fill = Species)) +
+  scale_fill_manual(values = col) + facet_grid(Species ~  .)
+new_plot
+```
+
+
+
+
