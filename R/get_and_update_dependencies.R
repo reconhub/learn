@@ -8,6 +8,6 @@
 #' @return Used for pure side effect
 #' @export
 get_and_update_dependencies <- function(dir = "content/post/") {
-  automagic::make_deps_file(dir)
-  automagic::automagic(dir)
+  pkgs <- checkpoint::scanForPackages("content/post", use.knitr = TRUE)$pkgs
+  install.packages(pkgs)
 }
