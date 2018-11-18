@@ -33,12 +33,14 @@ Click on the image below to access the slides:
 <a href="../../slides/why-r/why-r.html"><img class="gateway" src="../../img/highres/old_photographs.jpg" width="50%" alt="click there for slides" align="middle"></a>
 </center>
 
+
+
 ## Importing data into R
 
 **Click on the image below to access the slides:**
 
 <center>
-<a href="../../slides/slides_bag/import_data.html"><img class="gateway" src="../../img/highres/old_photographs.jpg" width="50%" alt="click there for slides" align="middle"></a>
+<a href="../../slides/slides_bag/data_import/data_import_short.html"><img class="gateway" src="../../img/highres/old_photographs.jpg" width="50%" alt="click there for slides" align="middle"></a>
 </center>
 
 
@@ -61,7 +63,8 @@ Click on the image below to access the slides:
 ## Contributors
 
 - Thibaut Jombart: initial version
-- Zhian N. Kamvar: abinitial version
+- Zhian N. Kamvar: initial version
+- Jonathan Polonsky: slides on data import 
 
 Contributions are welcome via [pull requests](https://github.com/reconhub/learn/pulls). The source files include:
 
