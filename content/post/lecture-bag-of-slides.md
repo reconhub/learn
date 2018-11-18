@@ -46,7 +46,7 @@ Graphics using *ggplot2*
 **Click on the image below to access the slides:**
 
 <center>
-<a href="../../slides/slides_bag/ggplot2.html"><img class="gateway" src="../../img/highres/old_photographs.jpg" width="50%" alt="click there for slides" align="middle"></a>
+<a href="../../slides/slides_bag/ggplot2/ggplot2_short.html"><img class="gateway" src="../../img/highres/old_photographs.jpg" width="50%" alt="click there for slides" align="middle"></a>
 </center>
 About this document
 ===================
@@ -56,7 +56,7 @@ Contributors
 
 -   Thibaut Jombart: initial version
 -   Zhian N. Kamvar: initial version
--   Jonathan Polonsky: slides on data import
+-   Jonathan Polonsky: slides on data import and *ggplot2*
 
 Contributions are welcome via [pull
 requests](https://github.com/reconhub/learn/pulls). The source files
