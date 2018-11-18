@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>     Importing data into</title>
+    <meta charset="utf-8">
+    <meta name="date" content="2018-11-18" />
+    <link rel="stylesheet" href="extra.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# <br><br><br><br><svg style="height:0.8em;top:.04em;position:relative;fill:steelblue;" viewBox="0 0 640 512"><path d="M537.6 226.6c4.1-10.7 6.4-22.4 6.4-34.6 0-53-43-96-96-96-19.7 0-38.1 6-53.3 16.2C367 64.2 315.3 32 256 32c-88.4 0-160 71.6-160 160 0 2.7.1 5.4.2 8.1C40.2 219.8 0 273.2 0 336c0 79.5 64.5 144 144 144h368c70.7 0 128-57.3 128-128 0-61.9-44-113.6-102.4-125.4zm-132.9 88.7L299.3 420.7c-6.2 6.2-16.4 6.2-22.6 0L171.3 315.3c-10.1-10.1-2.9-27.3 11.3-27.3H248V176c0-8.8 7.2-16 16-16h48c8.8 0 16 7.2 16 16v112h65.4c14.2 0 21.4 17.2 11.3 27.3z"/></svg> Importing data into <svg style="height:0.8em;top:.04em;position:relative;fill:steelblue;" viewBox="0 0 581 512"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg>
+### <div style="white-space: pre-line;">Jonathan Polonsky
+Epidemiologist <br>
+World Health Organization Emergencies Programme</div>
+### 18 Nov 2018
+
+---
+
+layout: true
+class: inverse
+
+&lt;style type="text/css"&gt;
+@import url(https://fonts.googleapis.com/css?family=Roboto+Condensed);
+h1, h2, h3 { font-family: 'Roboto Condensed'; }
+body { font-family: 'Roboto Condensed'; serif: 'Roboto Slab'; font-size: 1em; }
+p { font-size: 1em }
+li { font-size: 1em; }
+.quote{ color: #dca3a3 }
+code.r{ font-size: 18px; }
+.remark-inline-code{
+  &lt;!-- color: #dca3a3; --&gt;
+  color: #7f9f7f;
+}
+.title-slide {
+  &lt;!-- background-image: url(http://www.repidemicsconsortium.org/img/logo.png); --&gt;
+  background-image: url("logo_recon.png");
+  background-size: 80%;
+  background-position: top center;
+}
+.title-slide .remark-slide-number { display: none; }
+.title-slide h1:nth-of-type(1) { 
+    font-size: 48px;
+    color: #dca3a3; 
+}
+.title-slide h3:nth-of-type(1) { 
+    font-size: 32px;
+    color: #7f9f7f; 
+}
+.title-slide h3:nth-of-type(2) { 
+    font-size: 32px;
+    color: gray; 
+}
+.title-slide p:nth-of-type(1) {
+    font-size: 32px;
+    color: #7f9f7f;
+}
+.inverse {
+  font-size: 24px;
+}
+.hex-col-l{
+  width: 24%;
+  float: left;
+}
+.hex-col-r{
+  width: 74%;
+  float: right;
+}
+
+&lt;!-- @page { --&gt;
+&lt;!--   size: 908px 681px; --&gt;
+&lt;!--   margin: 0; --&gt;
+&lt;!-- } --&gt;
+&lt;!-- @media print { --&gt;
+&lt;!--   .remark-slide-scaler { --&gt;
+&lt;!--     width: 100% !important; --&gt;
+&lt;!--     height: 100% !important; --&gt;
+&lt;!--     transform: scale(1) !important; --&gt;
+&lt;!--     top: 0 !important; --&gt;
+&lt;!--     left: 0 !important; --&gt;
+&lt;!--   } --&gt;
+&lt;!-- } --&gt;
+&lt;/style&gt;
+
+---
+
+
+
+## Data import
+
+### Learning objectives
+
+- Use `readxl` to import your data into &lt;svg style="height:0.8em;top:.04em;position:relative;fill:steelblue;" viewBox="0 0 581 512"&gt;&lt;path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/&gt;&lt;/svg&gt;
+
+- Be aware of various other 📦 used for importing a multitude of data formats into &lt;svg style="height:0.8em;top:.04em;position:relative;fill:steelblue;" viewBox="0 0 581 512"&gt;&lt;path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/&gt;&lt;/svg&gt;
+
+--
+
+### Prerequisites
+
+- Load `readxl`
+
+
+```r
+library(readxl)
+```
+
+---
+
+## Data import
+
+- Almost always the first step of your work
+
+--
+
+- R can handle multiple data types
+
+--
+
+  - Flat files (`.csv`, `.tsv`, ...)
+  
+--
+
+  - Excel files (`.xls`, `.xlsx`)
+  
+--
+
+  - Foreign statistical formats 
+      - `.sas` (SAS)
+      - `.sav` (SPSS)
+      - `.dta` (Stata)
+      - `.rec` (EpiInfo)...
+      
+--
+
+  - Databases (SQL, SQLite, ...)
+  
+--
+
+  - Ill-advised formats (`.pdf`, `.docx`, ...) 😢 &lt;svg style="height:0.8em;top:.04em;position:relative;fill:steelblue;" viewBox="0 0 512 512"&gt;&lt;path d="M0 56v240c0 13.255 10.745 24 24 24h80c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24H24C10.745 32 0 42.745 0 56zm40 200c0-13.255 10.745-24 24-24s24 10.745 24 24-10.745 24-24 24-24-10.745-24-24zm272 256c-20.183 0-29.485-39.293-33.931-57.795-5.206-21.666-10.589-44.07-25.393-58.902-32.469-32.524-49.503-73.967-89.117-113.111a11.98 11.98 0 0 1-3.558-8.521V59.901c0-6.541 5.243-11.878 11.783-11.998 15.831-.29 36.694-9.079 52.651-16.178C256.189 17.598 295.709.017 343.995 0h2.844c42.777 0 93.363.413 113.774 29.737 8.392 12.057 10.446 27.034 6.148 44.632 16.312 17.053 25.063 48.863 16.382 74.757 17.544 23.432 19.143 56.132 9.308 79.469l.11.11c11.893 11.949 19.523 31.259 19.439 49.197-.156 30.352-26.157 58.098-59.553 58.098H350.723C358.03 364.34 384 388.132 384 430.548 384 504 336 512 312 512z"/&gt;&lt;/svg&gt;
+
+---
+class: center middle
+
+## Importing MS Excel files with `readxl`
+
+.pull-left[
+&lt;img src="readxl_hi-res.png" width="50%" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+&lt;img src="01_excel_icon.png" width="50%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## What data look like in Excel vs. &lt;svg style="height:0.8em;top:.04em;position:relative;fill:steelblue;" viewBox="0 0 581 512"&gt;&lt;path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/&gt;&lt;/svg&gt;
+
+&lt;img src="01_readr_office_supplies.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+
+```r
+read_excel('office_supplies.xlsx')
+## # A tibble: 43 x 6
+##   OrderDate           Region  Rep     Item    Units `Unit Price`
+##   &lt;dttm&gt;              &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;   &lt;dbl&gt;        &lt;dbl&gt;
+## 1 2014-07-04 00:00:00 East    Richard Pen Set    62         4.99
+## 2 2014-07-12 00:00:00 East    Nick    Binder     29         1.99
+## 3 2014-07-21 00:00:00 Central Morgan  Pen Set    55        12.5 
+## 4 2014-07-29 00:00:00 East    Susan   Binder     81        20.0 
+## 5 2014-08-07 00:00:00 Central Matthew Pen Set    42        24.0 
+## # ... with 38 more rows
+```
+
+---
+
+## `readxl` functions
+
+.hex-col-l[
+&lt;img src="readxl_hi-res.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+.hex-col-r[
+- `excel_sheets()`: lists all sheets in Excel file
+
+- `read_excel()`: imports `.xls` and `.xlsx` files
+]
+
+---
+
+## `readxl` functions
+
+- Explore sheet names with `excel_sheets()`
+
+
+```r
+excel_sheets(path = 'sales_data.xlsx')
+## [1] "Orders"     "Users"      "Returns"    "Sheet1"     "Sheet5"    
+## [6] "Sheet3 (2)"
+```
+
+--
+
+- Import data with `read_excel()` (default sheet to read is 1st)
+
+--
+
+
+```r
+read_excel(path = 'sales_data.xlsx')
+## # A tibble: 1,952 x 7
+##   `Order Priority` `Unit Price` `Customer ID` `Ship Mode` `Customer Segme…
+##   &lt;chr&gt;                   &lt;dbl&gt;         &lt;dbl&gt; &lt;chr&gt;       &lt;chr&gt;           
+## 1 High                     2.84             3 Express Air Corporate       
+## 2 Not Specified          501.               5 Delivery T… Home Office     
+## 3 Critical                 9.48            11 Regular Air Home Office     
+## 4 Medium                  78.7             14 Regular Air Small Business  
+## 5 Medium                   3.28            14 Regular Air Small Business  
+## # ... with 1,947 more rows, and 2 more variables: `Product
+## #   Category` &lt;chr&gt;, `Order Date` &lt;dttm&gt;
+```
+
+---
+
+## `readxl` functions
+
+- Override default page by specifying **name** or **position**
+
+--
+
+
+```r
+excel_sheets(path = 'sales_data.xlsx')
+## [1] "Orders"     "Users"      "Returns"    "Sheet1"     "Sheet5"    
+## [6] "Sheet3 (2)"
+```
+
+--
+
+.pull-left[
+
+```r
+read_excel(
+  path = 'sales_data.xlsx',
+  sheet = 'Returns'
+)
+## # A tibble: 1,634 x 2
+##   `Order ID` Status  
+##        &lt;dbl&gt; &lt;chr&gt;   
+## 1         65 Returned
+## 2        612 Returned
+## 3        614 Returned
+## 4        678 Returned
+## 5        710 Returned
+## # ... with 1,629 more rows
+```
+]
+--
+.pull-right[
+
+```r
+read_excel(
+  path = 'sales_data.xlsx',
+  sheet = 2
+)
+## # A tibble: 4 x 2
+##   Region  Manager
+##   &lt;chr&gt;   &lt;chr&gt;  
+## 1 Central Chris  
+## 2 East    Erin   
+## 3 South   Sam    
+## 4 West    William
+```
+]
+---
+
+## Messy datasets
+
+.pull-left[
+
+- What are some of the problems with this dataset?
+
+&lt;img src="01_readxl_deaths.jpg" width="100%" style="display: block; margin: auto;" /&gt;
+
+]
+
+--
+
+.pull-right[
+
+- Specify range to import when working with untidy datasets
+
+
+```r
+read_excel(
+  'deaths.xlsx', 
+  sheet = 1, range = "A5:F15"
+)
+## # A tibble: 10 x 6
+##   Name Profession   Age `Has kids` `Date of birth`     `Date of death`    
+##   &lt;ch&gt; &lt;chr&gt;      &lt;dbl&gt; &lt;lgl&gt;      &lt;dttm&gt;              &lt;dttm&gt;             
+## 1 Dav… musician      69 TRUE       1947-01-08 00:00:00 2016-01-10 00:00:00
+## 2 Car… actor         60 TRUE       1956-10-21 00:00:00 2016-12-27 00:00:00
+## 3 Chu… musician      90 TRUE       1926-10-18 00:00:00 2017-03-18 00:00:00
+## 4 Bil… actor         61 TRUE       1955-05-17 00:00:00 2017-02-25 00:00:00
+## 5 Pri… musician      57 TRUE       1958-06-07 00:00:00 2016-04-21 00:00:00
+## # ... with 5 more rows
+```
+
+]
+
+---
+
+## Recap
+
+.footnote[Material adapted from [__R for Data Science__](http://r4ds.had.co.nz/) by Garrett Grolemund &amp; Hadley Wickham]
+
+Today, you learned to:
+
+--
+
+- Use `readxl` to __import__ data into &lt;svg style="height:0.8em;top:.04em;position:relative;fill:steelblue;" viewBox="0 0 581 512"&gt;&lt;path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/&gt;&lt;/svg&gt;
+
+--
+
+- Import selected data of interest from __untidy__ excel files
+
+--
+
+&lt;!-- - use `readr` and `readxl` to *export* data from _R_  --&gt;
+
+&lt;!-- -- --&gt;
+
+- Be aware of a range of other 📦 to import data of different formats
+
+---
+
+## Further reading:
+
+.footnote[Material adapted from [__R for Data Science__](http://r4ds.had.co.nz/) by Garrett Grolemund &amp; Hadley Wickham]
+
+.pull-left[
+&lt;img src="data-import.png" width="1956" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+__N.B.__ [__StackOverflow.com__](https://stackoverflow.com) is your best friend while learning how to programme
+
+  - Most questions you can possibly imagine have already been asked and answered here
+
+  - And, if not, ask them yourself!
+]
+
+---
+class: middle center
+
+## Questions?
+    </textarea>
+<script src="remark-latest.min.js"></script>
+<script src="macros.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"navigation": "list(click = TRUE, touch = FALSE)",
+"highlightStyle": "zenburn",
+"slideNumberFormat": "%current%",
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script>
+(function() {
+  var i, text, code, codes = document.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+})();
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
