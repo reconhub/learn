@@ -643,7 +643,7 @@ More information on the *incidence* package can be found from the
 We can also customise this graphic like other *ggplot2* plots (see [this tutorial](https://www.repidemicsconsortium.org/incidence/articles/customize_plot.html) for more):
 
 ```{r incidence_stratified_custom}
-plot(i_ill, border = "white", count_cases = TRUE, color = c("non case" = "#66cc99", "case" = "#993333")) + 
+plot(i_ill, border = "white", show_cases = TRUE, color = c("non case" = "#66cc99", "case" = "#993333")) + 
   labs(title = "Epicurve by case", x = "Date of onset", y = "Number of cases") +
   theme_light(base_family = "Times", base_size = 16) +
   theme(legend.position = c(0.8, 0.8)) +
