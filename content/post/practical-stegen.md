@@ -1469,7 +1469,7 @@ down in 3 types, depending on which types these variables are:
 
 We can use these approaches to test if the disease is linked to any of
 the other recorded variables. As illness itself is a categorical
-variable, only approaches of type 2 and 3 are illustrated in this case
+variable, only approaches of type 1 and 2 are illustrated in this case
 study.
 
 ### Is illness linked to age?
@@ -1517,41 +1517,41 @@ To test the association between gender and illness (2 categorical
 variables), we first build a 2-by-2 (contingency) table, using:
 
 ``` r
-tab_ill_sex <- table(stegen$ill, stegen$sex)
-tab_ill_sex
-##           
-##            male female
-##   non case   86    102
-##   case       53     50
+tab_sex_ill <- table(stegen$sex, stegen$ill)
+tab_sex_ill
+##         
+##          non case case
+##   male         86   53
+##   female      102   50
 ```
 
 Note that proportions can be obtained using `prop.table`:
 
 ``` r
 ## basic proportions
-prop.table(tab_ill_sex)
-##           
-##                 male    female
-##   non case 0.2955326 0.3505155
-##   case     0.1821306 0.1718213
+prop.table(tab_sex_ill)
+##         
+##           non case      case
+##   male   0.2955326 0.1821306
+##   female 0.3505155 0.1718213
 
 ## expressed in %, rounded:
-round(100 * prop.table(tab_ill_sex))
-##           
-##            male female
-##   non case   30     35
-##   case       18     17
+round(100 * prop.table(tab_sex_ill))
+##         
+##          non case case
+##   male         30   18
+##   female       35   17
 ```
 
 Once a contingency table has been built, the Chi-square test can be run
 using `chisq.test`:
 
 ``` r
-chisq.test(tab_ill_sex)
+chisq.test(tab_sex_ill)
 ## 
 ##  Pearson's Chi-squared test with Yates' continuity correction
 ## 
-## data:  tab_ill_sex
+## data:  tab_sex_ill
 ## X-squared = 0.6562, df = 1, p-value = 0.4179
 ```
 

@@ -862,7 +862,7 @@ depending on which types these variables are:
 
 We can use these approaches to test if the disease is linked to any of the other
 recorded variables. As illness itself is a categorical variable, only approaches
-of type 2 and 3 are illustrated in this case study.
+of type 1 and 2 are illustrated in this case study.
 
 
 ### Is illness linked to age?
@@ -894,27 +894,27 @@ To test the association between gender and illness (2 categorical variables), we
 first build a 2-by-2 (contingency) table, using:
 
 ```{r stegen_2by2}
-tab_ill_sex <- table(stegen$ill, stegen$sex)
-tab_ill_sex
+tab_sex_ill <- table(stegen$sex, stegen$ill)
+tab_sex_ill
 ```
 
 Note that proportions can be obtained using `prop.table`:
 
 ```{r stegen_prop_table}
 ## basic proportions
-prop.table(tab_ill_sex)
+prop.table(tab_sex_ill)
 
 ## expressed in %, rounded:
-round(100 * prop.table(tab_ill_sex))
+round(100 * prop.table(tab_sex_ill))
 ```
 
 Once a contingency table has been built, the Chi-square test can be run using `chisq.test`:
 
 ```{r stegen_chisq}
-chisq.test(tab_ill_sex)
+chisq.test(tab_sex_ill)
 ```
 
-Here, the p-value of `r round(chisq.test(tab_ill_sex)[["p.value"]], 3)` suggests illness is not related to gender either.
+Here, the p-value of `r round(chisq.test(tab_sex_ill)[["p.value"]], 3)` suggests illness is not related to gender either.
 
 </details>
 
