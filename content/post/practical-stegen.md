@@ -886,8 +886,7 @@ for
 more):
 
 ``` r
-plot(i_ill, border = "white", color = c("non case" = "#66cc99", "case" = "#993333")) + 
-  geom_hline(yintercept = 1:55, color = "white") +
+plot(i_ill, border = "white", count_cases = TRUE, color = c("non case" = "#66cc99", "case" = "#993333")) + 
   labs(title = "Epicurve by case", x = "Date of onset", y = "Number of cases") +
   theme_light(base_family = "Times", base_size = 16) +
   theme(legend.position = c(0.8, 0.8)) +
@@ -982,15 +981,14 @@ indicating the columns we want to
 keep.
 
 ``` r
-to_keep <- c('tiramisu', 'wmousse', 'dmousse', 'mousse', 'beer', 'redjelly',
-             'fruit_salad', 'tomato', 'mince', 'salmon', 'horseradish',
-             'chickenwin', 'roastbeef', 'pork') 
-to_keep
+food <- c('tiramisu', 'wmousse', 'dmousse', 'mousse', 'beer', 'redjelly',
+          'fruit_salad', 'tomato', 'mince', 'salmon', 'horseradish',
+          'chickenwin', 'roastbeef', 'pork') 
+food
 ##  [1] "tiramisu"    "wmousse"     "dmousse"     "mousse"      "beer"       
 ##  [6] "redjelly"    "fruit_salad" "tomato"      "mince"       "salmon"     
 ## [11] "horseradish" "chickenwin"  "roastbeef"   "pork"
-food <- stegen[to_keep]
-food
+stegen[food]
 ## # A tibble: 291 x 14
 ##    tiramisu wmousse dmousse mousse  beer redjelly fruit_salad tomato mince
 ##       <dbl>   <dbl>   <dbl>  <dbl> <dbl>    <dbl>       <dbl>  <dbl> <dbl>
@@ -1020,7 +1018,7 @@ calcuate a contingency table is using the `epitable()` function from the
 *epitools* package:
 
 ``` r
-pork_table <- epitable(food$pork, stegen$ill)
+pork_table <- epitable(stegen$pork, stegen$ill)
 pork_table
 ##          Outcome
 ## Predictor non case case
@@ -1568,14 +1566,14 @@ To recap, to get a risk ratio we’ve done the following:
 2.  estimated the risk ratio
 3.  extracted estimate into a data frame
 
-However, we have 14 potential predictors to sort through and we don’t
-want to have to repeat these procedures manually over and over. One
-strategy to help with this is to create our own *function*, which we can
-think of as a miniature recipe for a computer to read. If we take the
-steps above and place them into individual steps we would get:
+However, we have potential predictors to sort through and we don’t want
+to have to repeat these procedures manually over and over. One strategy
+to help with this is to create our own *function*, which we can think of
+as a miniature recipe for a computer to read. If we take the steps above
+and place them into individual steps we would get:
 
 ``` r
-et  <- epitable(food$pork, stegen$ill)
+et  <- epitable(stegen$pork, stegen$ill)
 rr  <- riskratio(et)
 estimate <- rr$measure[2, ]
 res <- data.frame(estimate = estimate["estimate"],
@@ -1591,7 +1589,7 @@ res
 Just like a recipe, a function needs both ingredients and instructions.
 What we have above are instructions, but we still need to say what our
 ingredients are. If we look at the above code, we can see that we need
-to define our predictor (`food$pork`) and outcome (`stegen$ill`);
+to define our predictor (`stegen$pork`) and outcome (`stegen$ill`);
 everything else flows from that. We can then write our function (which
 we will call `single_risk_ratio()`) like
 this:
@@ -1614,7 +1612,7 @@ Now, we can use this `single_risk_ratio()` like any other
 function:
 
 ``` r
-pork_rr <- single_risk_ratio(predictor = food$pork, outcome = stegen$ill)
+pork_rr <- single_risk_ratio(predictor = stegen$pork, outcome = stegen$ill)
 pork_rr
 ##          estimate     lower    upper   p.value
 ## estimate 1.251852 0.9176849 1.707703 0.1708777
@@ -1624,7 +1622,7 @@ If we change the variable, we’ll get a different
 answer:
 
 ``` r
-fruit_rr <- single_risk_ratio(predictor = food$fruit_salad, outcome = stegen$ill)
+fruit_rr <- single_risk_ratio(predictor = stegen$fruit_salad, outcome = stegen$ill)
 fruit_rr
 ##          estimate    lower    upper      p.value
 ## estimate 2.500618 1.886773 3.314171 9.998203e-09
@@ -1644,8 +1642,9 @@ Here we can see that the fruit salad has a higher risk ratio with a
 lower P-value, but we want to compare all of the variables and still,
 copying and pasting all this code would be a nightmare and potentially
 lead to errors. We will see in the next section how we can use R to
-apply the function `single_risk_ratio()` to each column of our `food`
-data frame to give us a table of risk ratios for all the food items.
+apply the function `single_risk_ratio()` to each column of `stegen` that
+we have listed in `food` to give us the risk ratios for all the food
+items.
 
 ### Multiple variables
 
@@ -1658,16 +1657,17 @@ recipe:
 
 We placed this recipe in a function called `single_risk_ratio()` and we
 know we can use it to calcuate the risk ratio for individual variables,
-but we need to be able to calculate it over all the variables in our
-`food` data frame. The solution is to use an R function called
-`lapply()`, which takes each element of a list (or column of a data
-frame) and uses it as the first ingredient (also known as argument) of a
-function. Like `tapply()`, the function can be anything and additional
-arguments are placed behind the function. It will then return the output
-as a list:
+but we need to be able to calculate it over all the variables from
+`stegen` that we have listed in our `food` vector. The solution is to
+use an R function called `lapply()`, which takes each element of a list
+(or column of a data frame) and uses it as the first ingredient (also
+known as argument) of a function. Like `tapply()`, the function can be
+anything and additional arguments are placed behind the function. It
+will then return the output as a
+list:
 
 ``` r
-all_rr <- lapply(food, FUN = single_risk_ratio, outcome = stegen$ill)
+all_rr <- lapply(stegen[food], FUN = single_risk_ratio, outcome = stegen$ill)
 head(all_rr)
 ## $tiramisu
 ##          estimate    lower    upper      p.value
@@ -1775,19 +1775,20 @@ ratios </summary>
 Just like we created the function `single_risk_ratio()` to calculate the
 risk ratio of a single variable, we can create another function that
 will calculate the risk ratio for all variables in a data frame. We can
-do it the same way we did above. First, define the recipe:
+do it the same way we did above. First, define the
+recipe:
 
 ``` r
-all_rr <- lapply(food, FUN = single_risk_ratio, outcome = stegen$ill)
+all_rr <- lapply(stegen[food], FUN = single_risk_ratio, outcome = stegen$ill)
 all_food_df <- bind_rows(all_rr, .id = "predictor")
 all_food_df <- arrange(all_food_df, desc(estimate))
 all_food_df$predictor <- factor(all_food_df$predictor, unique(all_food_df$predictor))
 ```
 
 Now, find the ingredients. The first step is `lapply()` which needs
-`food` and `stegen$ill`, which are a data frame of predictors and a
-vector of outcomes, resepectively, so we will add these as *arguments*
-called `predictors` and `outcome`:
+`stegen[food]` and `stegen$ill`, which are a data frame of predictors
+and a vector of outcomes, resepectively, so we will add these as
+*arguments* called `predictors` and `outcome`:
 
 ``` r
 multi_risk_ratio <- function(predictors, outcome) {
@@ -1802,7 +1803,7 @@ multi_risk_ratio <- function(predictors, outcome) {
 And we can call the function like so:
 
 ``` r
-multi_risk_ratio(predictors = food, outcome = stegen$ill)
+multi_risk_ratio(predictors = stegen[food], outcome = stegen$ill)
 ##      predictor   estimate     lower     upper      p.value
 ## 1     tiramisu 18.3116883 8.8142022 38.042913 1.794084e-41
 ## 2       mousse  4.9689579 3.2994031  7.483336 1.257341e-20
