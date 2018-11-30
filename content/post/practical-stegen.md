@@ -886,7 +886,7 @@ for
 more):
 
 ``` r
-plot(i_ill, border = "white", show_cases = TRUE, color = c("non case" = "#66cc99", "case" = "#993333")) + 
+plot(i_ill, border = "grey40", show_cases = TRUE, color = c("non case" = "#66cc99", "case" = "#993333")) + 
   labs(title = "Epicurve by case", x = "Date of onset", y = "Number of cases") +
   theme_light(base_family = "Times", base_size = 16) +
   theme(legend.position = c(0.8, 0.8)) +
