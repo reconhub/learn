@@ -929,7 +929,7 @@ we need to test the [Risk
 Ratio](https://en.wikipedia.org/wiki/Risk_ratio) for all of the food
 items recorded. Risk ratios are normally computed on *contingency*
 tables (commonly known as 2x2 tables). In this part, we will compute
-contingency tables for each predictor (food item) against the defined
+contingency tables for each exposure (food item) against the defined
 cases, calculate their risk ratio with confidence intervals and
 p-values, and plot them as points and errorbars using *ggplot2*.
 
@@ -1566,11 +1566,11 @@ To recap, to get a risk ratio we’ve done the following:
 2.  estimated the risk ratio
 3.  extracted estimate into a data frame
 
-However, we have potential predictors to sort through and we don’t want
-to have to repeat these procedures manually over and over. One strategy
-to help with this is to create our own *function*, which we can think of
-as a miniature recipe for a computer to read. If we take the steps above
-and place them into individual steps we would get:
+However, we have exposures to sort through and we don’t want to have to
+repeat these procedures manually over and over. One strategy to help
+with this is to create our own *function*, which we can think of as a
+miniature recipe for a computer to read. If we take the steps above and
+place them into individual steps we would get:
 
 ``` r
 et  <- epitable(stegen$pork, stegen$ill)
@@ -1589,14 +1589,14 @@ res
 Just like a recipe, a function needs both ingredients and instructions.
 What we have above are instructions, but we still need to say what our
 ingredients are. If we look at the above code, we can see that we need
-to define our predictor (`stegen$pork`) and outcome (`stegen$ill`);
-everything else flows from that. We can then write our function (which
-we will call `single_risk_ratio()`) like
+to define our exposure variable (`stegen$pork`) and outcome
+(`stegen$ill`); everything else flows from that. We can then write our
+function (which we will call `single_risk_ratio()`) like
 this:
 
 ``` r
-single_risk_ratio <- function(predictor, outcome) { # ingredients defined here
-  et  <- epitable(predictor, outcome) # ingredients used here
+single_risk_ratio <- function(exposure, outcome) { # ingredients defined here
+  et  <- epitable(exposure, outcome) # ingredients used here
   rr  <- riskratio(et)
   estimate <- rr$measure[2, ]
   res <- data.frame(estimate = estimate["estimate"],
@@ -1612,7 +1612,7 @@ Now, we can use this `single_risk_ratio()` like any other
 function:
 
 ``` r
-pork_rr <- single_risk_ratio(predictor = stegen$pork, outcome = stegen$ill)
+pork_rr <- single_risk_ratio(exposure = stegen$pork, outcome = stegen$ill)
 pork_rr
 ##          estimate     lower    upper   p.value
 ## estimate 1.251852 0.9176849 1.707703 0.1708777
@@ -1622,7 +1622,7 @@ If we change the variable, we’ll get a different
 answer:
 
 ``` r
-fruit_rr <- single_risk_ratio(predictor = stegen$fruit_salad, outcome = stegen$ill)
+fruit_rr <- single_risk_ratio(exposure = stegen$fruit_salad, outcome = stegen$ill)
 fruit_rr
 ##          estimate    lower    upper      p.value
 ## estimate 2.500618 1.886773 3.314171 9.998203e-09
@@ -1632,10 +1632,10 @@ We can combine the two using a function from *dplyr* called
 `bind_rows()`:
 
 ``` r
-bind_rows(pork = pork_rr, fruit = fruit_rr, .id = "predictor")
-##   predictor estimate     lower    upper      p.value
-## 1      pork 1.251852 0.9176849 1.707703 1.708777e-01
-## 2     fruit 2.500618 1.8867735 3.314171 9.998203e-09
+bind_rows(pork = pork_rr, fruit = fruit_rr, .id = "exposure")
+##   exposure estimate     lower    upper      p.value
+## 1     pork 1.251852 0.9176849 1.707703 1.708777e-01
+## 2    fruit 2.500618 1.8867735 3.314171 9.998203e-09
 ```
 
 Here we can see that the fruit salad has a higher risk ratio with a
@@ -1697,9 +1697,9 @@ head(all_rr)
 Finally, like we did above, we re-shape these results into a data frame
 
 ``` r
-all_food_df <- bind_rows(all_rr, .id = "predictor")
+all_food_df <- bind_rows(all_rr, .id = "exposure")
 all_food_df
-##      predictor   estimate     lower     upper      p.value
+##       exposure   estimate     lower     upper      p.value
 ## 1     tiramisu 18.3116883 8.8142022 38.042913 1.794084e-41
 ## 2      wmousse  2.8472222 2.1282671  3.809049 5.825494e-11
 ## 3      dmousse  4.5010211 3.0869446  6.562862 1.167009e-19
@@ -1724,7 +1724,7 @@ in descending order:
 ``` r
 all_food_df <- arrange(all_food_df, desc(estimate))
 all_food_df
-##      predictor   estimate     lower     upper      p.value
+##       exposure   estimate     lower     upper      p.value
 ## 1     tiramisu 18.3116883 8.8142022 38.042913 1.794084e-41
 ## 2       mousse  4.9689579 3.2994031  7.483336 1.257341e-20
 ## 3      dmousse  4.5010211 3.0869446  6.562862 1.167009e-19
@@ -1744,17 +1744,17 @@ all_food_df
 Now we can use this data frame to plot the results using *ggplot2*:
 
 ``` r
-# first, make sure the predictors are factored in the right order
-all_food_df$predictor <- factor(all_food_df$predictor, unique(all_food_df$predictor))
+# first, make sure the exposures are factored in the right order
+all_food_df$exposure <- factor(all_food_df$exposure, unique(all_food_df$exposure))
 # plot
-p <- ggplot(all_food_df, aes(x = estimate, y = predictor, color = p.value)) +
+p <- ggplot(all_food_df, aes(x = estimate, y = exposure, color = p.value)) +
   geom_point() +
   geom_errorbarh(aes(xmin = lower, xmax = upper)) +
   geom_vline(xintercept = 1, linetype = 2) + 
   scale_x_log10() + 
   scale_color_viridis_c(trans = "log10") + 
   labs(x = "Risk Ratio (log scale)", 
-       y = "Predictor",
+       y = "Exposure",
        title = "Risk Ratio for gastroenteritis in Stegen, Germany")
 p
 ```
@@ -1780,22 +1780,22 @@ recipe:
 
 ``` r
 all_rr <- lapply(stegen[food], FUN = single_risk_ratio, outcome = stegen$ill)
-all_food_df <- bind_rows(all_rr, .id = "predictor")
+all_food_df <- bind_rows(all_rr, .id = "exposure")
 all_food_df <- arrange(all_food_df, desc(estimate))
-all_food_df$predictor <- factor(all_food_df$predictor, unique(all_food_df$predictor))
+all_food_df$exposure <- factor(all_food_df$exposure, unique(all_food_df$exposure))
 ```
 
 Now, find the ingredients. The first step is `lapply()` which needs
-`stegen[food]` and `stegen$ill`, which are a data frame of predictors
-and a vector of outcomes, resepectively, so we will add these as
-*arguments* called `predictors` and `outcome`:
+`stegen[food]` and `stegen$ill`, which are a data frame of exposures and
+a vector of outcomes, resepectively, so we will add these as *arguments*
+called `exposures` and `outcome`:
 
 ``` r
-multi_risk_ratio <- function(predictors, outcome) {
-  all_rr <- lapply(predictors, FUN = single_risk_ratio, outcome = outcome)
-  all_food_df <- bind_rows(all_rr, .id = "predictor")
+multi_risk_ratio <- function(exposures, outcome) {
+  all_rr <- lapply(exposures, FUN = single_risk_ratio, outcome = outcome)
+  all_food_df <- bind_rows(all_rr, .id = "exposure")
   all_food_df <- arrange(all_food_df, desc(estimate))
-  all_food_df$predictor <- factor(all_food_df$predictor, unique(all_food_df$predictor))
+  all_food_df$exposure <- factor(all_food_df$exposure, unique(all_food_df$exposure))
   return(all_food_df)
 }
 ```
@@ -1803,8 +1803,8 @@ multi_risk_ratio <- function(predictors, outcome) {
 And we can call the function like so:
 
 ``` r
-multi_risk_ratio(predictors = stegen[food], outcome = stegen$ill)
-##      predictor   estimate     lower     upper      p.value
+multi_risk_ratio(exposures = stegen[food], outcome = stegen$ill)
+##       exposure   estimate     lower     upper      p.value
 ## 1     tiramisu 18.3116883 8.8142022 38.042913 1.794084e-41
 ## 2       mousse  4.9689579 3.2994031  7.483336 1.257341e-20
 ## 3      dmousse  4.5010211 3.0869446  6.562862 1.167009e-19
@@ -1821,7 +1821,7 @@ multi_risk_ratio(predictors = stegen[food], outcome = stegen$ill)
 ## 14        beer  0.6767842 0.4757688  0.962730 2.806394e-02
 ```
 
-Note that we have defined arguments for `predictors` and `outcome`, but
+Note that we have defined arguments for `exposures` and `outcome`, but
 we didn’t define an argument for the `single_risk_ratio()` function.
 This is because we know that we’ve defined it above, but this also means
 that if we want to use the `multi_risk_ratio()` function in other
@@ -1830,8 +1830,8 @@ of keeping these organised is to always write the functions
 together:
 
 ``` r
-single_risk_ratio <- function(predictor, outcome) { # ingredients defined here
-  et  <- epitools::epitable(predictor, outcome) # ingredients used here
+single_risk_ratio <- function(exposure, outcome) { # ingredients defined here
+  et  <- epitools::epitable(exposure, outcome) # ingredients used here
   rr  <- epitools::riskratio(et)
   estimate <- rr$measure[2, ]
   res <- data.frame(estimate = estimate["estimate"],
@@ -1842,11 +1842,11 @@ single_risk_ratio <- function(predictor, outcome) { # ingredients defined here
   return(res) # return the data frame
 }
 
-multi_risk_ratio <- function(predictors, outcome) {
-  all_rr <- lapply(predictors, FUN = single_risk_ratio, outcome = outcome)
-  all_food_df <- dplyr::bind_rows(all_rr, .id = "predictor")
+multi_risk_ratio <- function(exposures, outcome) {
+  all_rr <- lapply(exposures, FUN = single_risk_ratio, outcome = outcome)
+  all_food_df <- dplyr::bind_rows(all_rr, .id = "exposure")
   all_food_df <- dplyr::arrange(all_food_df, dplyr::desc(estimate))
-  all_food_df$predictor <- factor(all_food_df$predictor, unique(all_food_df$predictor))
+  all_food_df$exposure <- factor(all_food_df$exposure, unique(all_food_df$exposure))
   return(all_food_df)
 }
 ```
