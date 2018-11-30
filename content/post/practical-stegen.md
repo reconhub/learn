@@ -890,7 +890,8 @@ plot(i_ill, border = "white", show_cases = TRUE, color = c("non case" = "#66cc99
   labs(title = "Epicurve by case", x = "Date of onset", y = "Number of cases") +
   theme_light(base_family = "Times", base_size = 16) +
   theme(legend.position = c(0.8, 0.8)) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+  coord_equal()
 ```
 
 ![](practical-stegen_files/figure-gfm/incidence_stratified_custom-1.png)<!-- -->
