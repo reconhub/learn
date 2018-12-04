@@ -1166,6 +1166,9 @@ ratio in this outbreak, but there are a couple of things to note:
    factors were involved (i.e. the food items were not independent or in this 
    case, were potentially sharing contaminated ingredients).
 
+
+<!--
+
 <details>
 
 <summary> <b>Going Further:</b> Creating a function for multiple risk ratios </summary>
@@ -1239,6 +1242,8 @@ hasn't been loaded*, which makes it easier to share these functions.
 
 
 </details>
+
+-->
 
 # Plotting a very basic spatial overview of cases
 

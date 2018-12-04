@@ -1913,18 +1913,19 @@ risk ratio in this outbreak, but there are a couple of things to note:
     independent or in this case, were potentially sharing contaminated
     ingredients).
 
+<!--
+
 <details>
 
-<summary> <b>Going Further:</b> Creating a function for multiple risk
-ratios </summary>
+<summary> <b>Going Further:</b> Creating a function for multiple risk ratios </summary>
 
-Just like we created the function `single_risk_ratio()` to calculate the
-risk ratio of a single variable, we can create another function that
-will calculate the risk ratio for all variables in a data frame. We can
-do it the same way we did above. First, define the
-recipe:
+Just like we created the function `single_risk_ratio()` to calculate the risk
+ratio of a single variable, we can create another function that will calculate
+the risk ratio for all variables in a data frame. We can do it the same way we
+did above. First, define the recipe:
 
-``` r
+
+```r
 all_rr <- lapply(stegen[food], FUN = single_risk_ratio, outcome = stegen$ill)
 all_food_df <- bind_rows(all_rr, .id = "exposure")
 all_food_df <- arrange(all_food_df, desc(estimate))
@@ -1932,11 +1933,12 @@ all_food_df$exposure <- factor(all_food_df$exposure, unique(all_food_df$exposure
 ```
 
 Now, find the ingredients. The first step is `lapply()` which needs
-`stegen[food]` and `stegen$ill`, which are a data frame of exposures and
-a vector of outcomes, resepectively, so we will add these as *arguments*
-called `exposures` and `outcome`:
+`stegen[food]` and `stegen$ill`, which are a data frame of exposures and a
+vector of outcomes, resepectively, so we will add these as *arguments* called
+`exposures` and `outcome`:
 
-``` r
+
+```r
 multi_risk_ratio <- function(exposures, outcome) {
   all_rr <- lapply(exposures, FUN = single_risk_ratio, outcome = outcome)
   all_food_df <- bind_rows(all_rr, .id = "exposure")
@@ -1948,7 +1950,8 @@ multi_risk_ratio <- function(exposures, outcome) {
 
 And we can call the function like so:
 
-``` r
+
+```r
 multi_risk_ratio(exposures = stegen[food], outcome = stegen$ill)
 ##       exposure   estimate     lower     upper      p.value
 ## 1     tiramisu 18.3116883 8.8142022 38.042913 1.794084e-41
@@ -1967,15 +1970,15 @@ multi_risk_ratio(exposures = stegen[food], outcome = stegen$ill)
 ## 14        beer  0.6767842 0.4757688  0.962730 2.806394e-02
 ```
 
-Note that we have defined arguments for `exposures` and `outcome`, but
-we didn’t define an argument for the `single_risk_ratio()` function.
-This is because we know that we’ve defined it above, but this also means
-that if we want to use the `multi_risk_ratio()` function in other
-scripts, we have to also define `single_risk_ratio()` as well. One way
-of keeping these organised is to always write the functions
-together:
+Note that we have defined arguments for `exposures` and `outcome`, but we
+didn't define an argument for the `single_risk_ratio()` function. This is
+because we know that we've defined it above, but this also means that if we
+want to use the `multi_risk_ratio()` function in other scripts, we have to also
+define `single_risk_ratio()` as well. One way of keeping these organised is to
+always write the functions together:
 
-``` r
+
+```r
 single_risk_ratio <- function(exposure, outcome) { # ingredients defined here
   et  <- epitools::epitable(exposure, outcome) # ingredients used here
   rr  <- epitools::riskratio(et)
@@ -1998,12 +2001,14 @@ multi_risk_ratio <- function(exposures, outcome) {
 ```
 
 You might notice, however that these functions look a bit different. The
-`epitable()` function is now written as `epitools::epitable()`. This is
-no accident. This is a way for us to tell R to use a function *even if
-the package hasn’t been loaded*, which makes it easier to share these
-functions.
+`epitable()` function is now written as `epitools::epitable()`. This is no
+accident. This is a way for us to tell R to use a function *even if the package
+hasn't been loaded*, which makes it easier to share these functions. 
+
 
 </details>
+
+-->
 
 # Plotting a very basic spatial overview of cases
 
