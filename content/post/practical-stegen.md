@@ -1115,7 +1115,7 @@ In this case, we need to test columns 6 to 21, excluding `tportion` and
 `mportion`, which are not binary; this can be done using the subsetting
 brackets `[ ]`, where we will place character vector indicating the
 columns we want to
-keep.
+test.
 
 ``` r
 food <- c('tiramisu', 'wmousse', 'dmousse', 'mousse', 'beer', 'redjelly',
