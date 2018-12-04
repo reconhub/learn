@@ -46,12 +46,12 @@ remembered.
 
 On 2nd July 1998, the Freiburg local health office reported to the
 Robert Koch Institute (RKI) in Berlin a significant increase of cases of
-gastroenteritis in the munipality of Stegen following the graduation
+gastroenteritis in the municipality of Stegen following the graduation
 party described above. More than 100 cases were suspected among
 participants and some of them were so ill that they were admitted to
 nearby hospitals. Sick people showed symptoms like; *fever, nausea,
 diarrhoea and vomiting* lasting for several days. Stool samples were
-collected from several ill cases and send to the laboratory in Freiburg
+collected from several ill cases and sent to the laboratory in Freiburg
 for microbiological identification. *Salmonella enteritidis* was
 identified in 19 stool samples.
 
@@ -66,18 +66,17 @@ sauce, yoghurt dill sauce, and 10 raw eggs. Unfortunately no tiramisu
 was left over after the dinner so no samples were tested of this
 specific food item.
 
-The Freiburg health office requested help from the RKI in the
-investigation to assess the magnitude of the outbreak and identify
-potential vehicle(s) and risk factors for transmission in order to
-better control the outbreak.
+The Freiburg health office requested help from the RKI to assess the
+magnitude of the outbreak and identify potential vehicle(s) and risk
+factors for transmission in order to better control the outbreak.
 
 ## The epidemiological study
 
 **Case definition**: cases were defined as any person who had attended
 the party at St Sebastian High School and who suffered from *diarrhoea*
-(min. 3 loose stool for 24 hours) between 27 June and 29 June 1998, or
-from at least three of the following symptoms: *vomiting*, *fever over
-38.5° C*, *nausea*, *abdominal pain*, *headache*.
+(min. 3 loose stool for 24 hours) with the onset between 27 June and 29
+June 1998, or from at least three of the following symptoms: *vomiting*,
+*fever over 38.5° C*, *nausea*, *abdominal pain*, *headache*.
 
 Students from both schools attending the party were asked through phone
 interviews to provide names of persons who attended the party.
@@ -89,14 +88,14 @@ linelist analysed in this case study was built from these 291 responses.
 
 In this case study, we will take you through the analysis of this
 epidemic using R. This will be the occasion to illustrate more generally
-useful practices for data analysis using **R**, including:
+useful practices for data analysis using **R**, including how to:
 
-  - how to read and import data from Excel
-  - how to explore data using tables and summaries
-  - how to clean data
-  - how to make graphics to describe the data
-  - how to test if specific food items are linked to the disease
-  - how to plot a very basic spatial overview of cases
+  - read and import data from Excel
+  - explore data using tables and summaries
+  - clean data
+  - make graphics to describe the data
+  - test which food items were associated with disease
+  - plot a very basic spatial overview of cases
 
 # Initial data processing
 
@@ -123,17 +122,31 @@ folder structure will start out looking like this:
 
 To create this, do the following steps:
 
-1.  Open RStudio and [create a new RStudio project in a new directory
+1)  Open RStudio and [create a new RStudio project in a new directory
     called
     “stegen”](https://support.rstudio.com/hc/en-us/articles/200526207-Using-Projects)
-2.  Once you have your Project set up, make a new folder called “data/”
+
+After you create your RStudio project, look at the top right corner of
+the RStudio window and make sure that the project is set to “stegen” and
+not “Project: (None)”:
+
+![Screenshot of RStudio project set to
+stegen](../../img/screenshots/stegen-project-initial.png)
+
+2)  Once you have your Project set up, make a new folder called “data/”
     and [download `stegen_raw.xlsx` and save it to that
     folder](../../data/stegen_raw.xlsx)
-3.  [Download `stegen-map.zip`](../../data/stegen-map.zip) and extract
+
+3)  [Download `stegen-map.zip`](../../data/stegen-map.zip) and extract
     it to the “data/” folder
-4.  In RStudio, click on the following menu path: <kbd>File \> New File
+
+4)  In RStudio, click on the following menu path: <kbd>File \> New File
     \> R Script</kbd> and save it as `01-stegen-analysis.R`. This will
-    be the R script where you will save the code of the analysis.
+    be the R script where you will save the code of the analysis. Your
+    RStudio window should look like this when you are done:
+
+![Screenshot of RStudio project set to stegen with all the data
+files](../img/screenshots/stegen-project-final.png)
 
 <details>
 
@@ -161,7 +174,9 @@ the original authors.
 
 ## Loading required packages
 
-The following packages will be used in the case study:
+The following packages will be used in the case study. You can use the
+`install.packages()` command to install them; this will save and install
+them to your computer’s R library, so you only have to do this once.:
 
   - [*here*](https://github.com/jennybc/here_here): to find the path to
     data or script files
@@ -182,8 +197,9 @@ The following packages will be used in the case study:
   - [*leaflet*](https://rstudio.github.io/leaflet/): to demonstrate
     interactive maps
 
-If we have these packages installed, we can tell R to load these
-packages from our R library:
+Once we have these packages installed, we can tell R to load these
+packages from our R library. This needs to be done once at the top of
+every R script:
 
 ``` r
 library("here")      # find data/script files
@@ -238,25 +254,35 @@ the root of the project.
 
 Here we decompose the steps to read data in:
 
-1.  finding the path to the data (`path_to_data`) with the *here*
+1.  defining the path to the data (`path_to_data`) with the *here*
     package
 2.  using the function `read_excel()` from the *readxl* package to read
-    data in, and saving the output in a new object `stegen`.
+    data in, and save the data within R as a new object called `stegen`.
 
 <!-- end list -->
 
 ``` r
 path_to_data <- here("data", "stegen_raw.xlsx")
-path_to_data
-## [1] "/home/zkamvar/Documents/Websites/recon-learn/data/stegen_raw.xlsx"
 ```
 
-> n.b. the value of `path_to_data` will not be the what you see in this
-> tutorial. It will be the location of this data set on your
-computer.
+The `here()` function combines the path to the current R project on your
+computer and the path to your data. If you look at what is in the
+`path_to_data` object, you will notice that it will end with
+`data/stegen_raw.xlsx`, but *it will look different than what I have
+here*:
 
-<!-- !Should we add an e.g. here, change 'path to data' to .../../stegencasestudy/data/.. ? 
--->
+``` r
+path_to_data
+## [1] "/home/zkamvar/Documents/Projects/stegen/data/stegen_raw.xlsx"
+```
+
+This is because my project is stored in the folder on my computer called
+“/home/zkamvar/Documents/Projects/stegen-analysis”. On your computer, it
+will be in a different place, but the important part is that *this code
+will work on any computer that has this R project*.
+
+Now that we have the address of the data saved in the `path_to_data`
+variable, we can read it in with the `read_excel()` function:
 
 ``` r
 stegen <- read_excel(path_to_data)
