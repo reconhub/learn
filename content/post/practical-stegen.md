@@ -444,6 +444,51 @@ table(stegen$tiramisu) # table
 ## 165 121
 ```
 
+<details>
+
+<summary><b>Going Further:</b> Showing missing values in
+<code>table()</code></summary>
+
+You may notice that the `tiramisu` column has missing data, but
+`table()` does not show how many missing values there are. By studying
+the documentation for `table()` (type `?table` in your R console), we
+find that there is an option called `useNA` with three options: “no”,
+“ifany”, and “always”. Let’s take a look at what happens when we use
+these three options:
+
+``` r
+table(stegen$tiramisu, useNA = "no")
+## 
+##   0   1 
+## 165 121
+table(stegen$tiramisu, useNA = "ifany")
+## 
+##    0    1 <NA> 
+##  165  121    5
+table(stegen$tiramisu, useNA = "always")
+## 
+##    0    1 <NA> 
+##  165  121    5
+```
+
+We can see that both “ifany” and “always” show us that there are 5
+missing values in our data set. What, then is the difference between the
+two options? What happens if we have no missing values? We can try it
+with a dummy data set:
+
+``` r
+table(c(1, 1, 0), useNA = "ifany")
+## 
+## 0 1 
+## 1 2
+table(c(1, 1, 0), useNA = "always")
+## 
+##    0    1 <NA> 
+##    1    2    0
+```
+
+</details>
+
 **Good news**: the dataset has the expected dimensions, and all the
 relevant variables seem to be present. There are, however, **a few often
 observed issues**:
@@ -491,7 +536,9 @@ names(stegen) <- new_labels
 
 We convert the unique identifiers to character strings (`character`),
 dates of onset to actual `Date` objects, and sex and illness are set to
-categorical variables (`factor`):
+categorical variables (`factor`), which allows us to represent the
+variables as numbers so that we can do modelling, but allows us to add
+meaningful labels to them:
 
 ``` r
 stegen$unique_key <- as.character(stegen$unique_key)
@@ -501,11 +548,21 @@ stegen$date_onset <- as.Date(stegen$date_onset)
 ```
 
 We use the function `recode()` from the *dplyr* package to recode `sex`
-more explicitely:
+and `ill` more explicitely.
 
 ``` r
 stegen$sex <- recode_factor(stegen$sex, "0" = "male", "1" = "female")
 stegen$ill <- recode_factor(stegen$ill, "0" = "non case", "1" = "case")
+```
+
+if we look at the structure of the data, they are still represented as
+numbers:
+
+``` r
+str(stegen$sex)
+##  Factor w/ 2 levels "male","female": 2 1 2 1 2 1 1 1 2 1 ...
+str(stegen$ill)
+##  Factor w/ 2 levels "non case","case": 2 2 2 2 2 2 2 2 2 2 ...
 ```
 
 Finally we look in more depth into these variables having maximum values
@@ -514,18 +571,18 @@ by a variable, and listing their frequencies:
 
 ``` r
 
-table(stegen$pork)
+table(stegen$pork, useNA = "always")
 ## 
-##   0   1   9 
-## 169 120   2
-table(stegen$salmon)
+##    0    1    9 <NA> 
+##  169  120    2    0
+table(stegen$salmon, useNA = "always")
 ## 
-##   0   1   9 
-## 183 104   4
-table(stegen$horseradish)
+##    0    1    9 <NA> 
+##  183  104    4    0
+table(stegen$horseradish, useNA = "always")
 ## 
-##   0   1   9 
-## 217  72   2
+##    0    1    9 <NA> 
+##  217   72    2    0
 ```
 
 The only rogue values are `9`; they are likely either data entry issues,
@@ -536,6 +593,24 @@ available”). We can replace these values using:
 stegen$pork[stegen$pork == 9] <- NA
 stegen$salmon[stegen$salmon == 9] <- NA
 stegen$horseradish[stegen$horseradish == 9] <- NA
+```
+
+Now we can confirm that the `9`’s have been replaced by `NA`.
+
+``` r
+
+table(stegen$pork, useNA = "always")
+## 
+##    0    1 <NA> 
+##  169  120    2
+table(stegen$salmon, useNA = "always")
+## 
+##    0    1 <NA> 
+##  183  104    4
+table(stegen$horseradish, useNA = "always")
+## 
+##    0    1 <NA> 
+##  217   72    2
 ```
 
 <details>
@@ -553,35 +628,35 @@ let us break them down from the inside out.
 
 1.  `stegen$pork` means “get the variable called `pork` in the dataset
     `stegen`”
-2.  The `==` is a logical test for equality. `stegen$pork == 9` tests
+2.  The `==` is a logical check for equality. `stegen$pork == 9` checks
     each element in `stegen$pork` if it’s equal to `9`, returning `TRUE`
     if an element of `stegen$pork` is equal to `9` and `FALSE` if it
     doesn’t.
 3.  The square brackets (`[ ]`) subset the vector `stegen$pork`
-    according to whatever is between them; In this case, it’s the test
+    according to whatever is between them; In this case, it’s checking
     `stegen$pork == 9`, which evaluates to FALSE, FALSE, FALSE, TRUE,
     FALSE, FALSE… This will return only the cases in `stegen$pork` that
     have `9`s recorded.
 4.  The replacement: `... <- NA` replace `...` with `NA` (missing value)
 
 in other words: "isolate the entries of `stegen$pork` which equal `9`,
-and replace them with `NA`; here is another toy example to illustrate
-the procedure:
+and replace them with `NA`; here is another example to illustrate the
+procedure:
 
 ``` r
-## make toy input vector
-toy_vector <- 1:5
-toy_vector
+## make example input vector
+example_vector <- 1:5
+example_vector
 ## [1] 1 2 3 4 5
 
-## make toy logical vector for subsetting
-toy_logical <- c(FALSE, TRUE, TRUE, FALSE, TRUE)
-toy_logical
+## make example logical vector for subsetting
+example_logical <- c(FALSE, TRUE, TRUE, FALSE, TRUE)
+example_logical
 ## [1] FALSE  TRUE  TRUE FALSE  TRUE
-toy_vector[toy_logical] # subset values
+example_vector[example_logical]      # subset values
 ## [1] 2 3 5
-toy_vector[toy_logical] <- 0 # replace subset values
-toy_vector # check outcome
+example_vector[example_logical] <- 0 # replace subset values
+example_vector # check outcome
 ## [1] 1 0 0 4 0
 ```
 
@@ -675,17 +750,22 @@ tapply(stegen$age, INDEX = stegen$sex, FUN = summary) # age stats by gender
 `tapply()` is a very handy function to stratify any kind of analyses.
 You will find more details by reading the documentation of the function
 `?tapply()`, but briefly, the syntax to be used is `tapply(input_data,
-stratification, function_to_use, further_arguments)`. In the command
-used above:
+INDEX = stratification, FUN = function_to_use, further_arguments)`. In
+the command used above:
 
 ``` r
 tapply(stegen$age, INDEX = stegen$sex, FUN = summary)
 ```
 
+<!-- 
+L499 [TEXT]: maybe specify that FUN is just where you choose your function (and that this can be any function), couple people were confused about what FUN is...
+-->
+
 this literally means: select the age variable in the dataset `stegen`
-(`stegen$age`), stratify it by sex (`stegen$sex`), and summarise each
-stratum (`summary()`). So for instance, to get the average age by sex
-(function `mean()`), one could use:
+(`stegen$age`), stratify it by sex (`INDEX = stegen$sex`), and apply the
+`summary()` function `FUN = summary` to summarise each stratum. So for
+instance, to get the average age by sex (function `mean()`), one could
+use:
 
 ``` r
 tapply(stegen$age, INDEX = stegen$sex, FUN = mean, na.rm = TRUE)
@@ -804,10 +884,11 @@ ggplot(stegen) +
 
 ## Epidemic curve
 
-Incidence curves can be built using the package *incidence*, which will
-compute the number of new cases given a vector of dates (here, onset)
-and a time interval (1 day by default). We use the function
-`incidence()` to achieve this, and then visualise the results:
+Epicurves (counts of incident cases) can be built using the package
+*incidence*, which will compute the number of new cases given a vector
+of dates (here, onset) and a time interval (1 day by default). We use
+the function `incidence()` to achieve this, and then visualise the
+results:
 
 ``` r
 i <- incidence(stegen$date_onset)
@@ -887,6 +968,18 @@ plot(i_ill, color = c("non case" = "#66cc99", "case" = "#993333"))
 ```
 
 ![](practical-stegen_files/figure-gfm/incidence_stratified-1.png)<!-- -->
+
+> n.b. Above, we defined the colors of the groups by specifying `color =
+> c("non case" = "#66cc99", "case" = "#993333")` in our plot command.
+> Here we are saying “The non case group should have the color \#66cc99
+> and the case group should have the color \#993333”. These six digit
+> codes are hexadecimal color codes widely used in web design. It’s not
+> expected that anyone should be able to memorize what hex codes
+> represent what colors, so there are websites that can help you pick a
+> pleasing color palette such as <https://www.color-hex.com>. For
+> example, this page shows information about how the color \#66cc99
+> looks and what its complements are:
+> <https://www.color-hex.com/color/66cc99>
 
 The outbreak really only happened over 3 days: onsets reported after did
 not match the epi case definition. This is compatible with a food-borne
