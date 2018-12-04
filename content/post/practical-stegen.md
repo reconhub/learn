@@ -14,6 +14,10 @@ always_allow_html: yes
 
 
 
+<!--[if IE ]>
+You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+<![endif]-->
+
 # Context
 
 On 26 June 1998, the St Sebastian High School in Stegen (school A),
@@ -1095,7 +1099,7 @@ dataset - just use the food names vector in the functions below?
 -->
 
 Because not all of the columns in our data set are food items (i.e.
-“age”, and “tportion”), we only want to keep the columns that are
+“age”, and “tportion”), we only want to test the columns that are
 food items for our analysis.
 
 ``` r
@@ -1107,10 +1111,10 @@ names(stegen)
 ## [21] "pork"        "latitude"    "longitude"
 ```
 
-In this case, we need to retain columns 6 to 21, excluding `tportion`
-and `mportion`, which are not binary; this can be done using the
-subsetting brackets `[ ]`, where we will place character vector
-indicating the columns we want to
+In this case, we need to test columns 6 to 21, excluding `tportion` and
+`mportion`, which are not binary; this can be done using the subsetting
+brackets `[ ]`, where we will place character vector indicating the
+columns we want to
 keep.
 
 ``` r
@@ -1543,7 +1547,8 @@ We can see that this is present as a “matrix”. A matrix has rows and
 columns and we can access them like we do a vector with square brackets
 (`[ ]`), but we separate the rows and columns with a comma like so:
 `[rows, columns]`. For example, if we wanted the risk ratio for pork
-consumed, we would take the second row in the first column:
+consumed, we would take the second row in the first column using the row
+and column numbers:
 
 ``` r
 pork_rr$measure[2, 1]
@@ -1561,8 +1566,10 @@ pork_est_ci
 ```
 
 We also want to get the P-value, of which, we have three choices. In our
-case, we will choose the P-value from Fisher’s exact test and combine
-the result into a vector that we will turn into a data frame:
+case, we will choose the P-value from Fisher’s exact test of the
+exposure (by selecting the second row and the column called
+`"fisher.exact"`) and combine the result into a vector that we will turn
+into a data frame:
 
 ``` r
 pork_p <- pork_rr$p.value[2, "fisher.exact"]
@@ -1598,12 +1605,12 @@ down in 3 types, depending on which types these variables are:
 3.  **2 quantitative variables**: Pearson’s correlation coefficient
     (\(r\)) and similar methods
 
-We can use these approaches to test if the disease is linked to any of
-the other recorded variables. As illness itself is a categorical
+We can use these approaches to test if the disease is associated with
+any other variables of interest. As illness itself is a categorical
 variable, only approaches of type 1 and 2 are illustrated in this case
 study.
 
-### Is illness linked to age?
+### Is illness associated with age?
 
 We can use the function `t.test()` to test if the average age is
 different across illness status. As this test assumes that the two
@@ -1640,9 +1647,9 @@ t.test(stegen$age ~ stegen$ill, var.equal = TRUE)
 ```
 
 The p-value of 0.576 confirms the previous graphics: the illness does
-not seem to be linked to age.
+not appear to be associated with age.
 
-### Is illness linked to gender?
+### Is illness associated with gender?
 
 To test the association between gender and illness (2 categorical
 variables), we first build a 2-by-2 (contingency) table, using:
@@ -1686,8 +1693,8 @@ chisq.test(tab_sex_ill)
 ## X-squared = 0.6562, df = 1, p-value = 0.4179
 ```
 
-Here, the p-value of 0.418 suggests illness is not related to gender
-either.
+Here, the p-value of 0.418 suggests illness is not associated with
+gender either.
 
 </details>
 
@@ -1791,12 +1798,13 @@ recipe:
 We placed this recipe in a function called `single_risk_ratio()` and we
 know we can use it to calcuate the risk ratio for individual variables,
 but we need to be able to calculate it over all the variables from
-`stegen` that we have listed in our `food` vector. The solution is to
-use an R function called `lapply()`, which takes each element of a list
-(or column of a data frame) and uses it as the first ingredient (also
-known as argument) of a function. Like `tapply()`, the function can be
-anything and additional arguments are placed behind the function. It
-will then return the output as a
+`stegen` that we have listed in our `food` vector by subetting with the
+square brackets (`[ ]`). The solution is to use an R function called
+`lapply()`, which takes each element of a list (or column of a data
+frame) and uses it as the first ingredient (also known as argument) of a
+function. Like `tapply()`, the function can be anything and additional
+arguments are placed behind the function. It will then return the output
+as a
 list:
 
 ``` r
@@ -1895,10 +1903,15 @@ p
 ![](practical-stegen_files/figure-gfm/plot-arrange-1.png)<!-- -->
 
 The results are a lot clearer now: the tiramisu has by far the highest
-risk ratio in this outbreak, but it’s wide confidence interval suggests
-that there may be confounding factors involved (i.e. the food items were
-not independent or in this case, were potentially sharing contaminated
-ingredients).
+risk ratio in this outbreak, but there are a couple of things to note:
+
+1.  its wide confidence interval suggests that the sample size is a bit
+    small.
+2.  The other variables that have risk ratios significantly different
+    from zero have overlapping confidence intervals, which may suggest
+    that confounding factors were involved (i.e. the food items were not
+    independent or in this case, were potentially sharing contaminated
+    ingredients).
 
 <details>
 
