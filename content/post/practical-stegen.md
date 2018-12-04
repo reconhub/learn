@@ -1007,10 +1007,10 @@ more):
 ``` r
 plot(i_ill, border = "grey40", show_cases = TRUE, color = c("non case" = "#66cc99", "case" = "#993333")) + 
   labs(title = "Epicurve by case", x = "Date of onset", y = "Number of cases") +
-  theme_light(base_family = "Times", base_size = 16) +
-  theme(legend.position = c(0.8, 0.8)) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
-  coord_equal()
+  theme_light(base_family = "Times", base_size = 16) + # changes the overal theme
+  theme(legend.position = c(x = 0.7, y = 0.8)) + # places the legend inside the plot
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) + # sets the dates along the x axis at a 45 degree angle
+  coord_equal() # makes each case appear as a box
 ```
 
 ![](practical-stegen_files/figure-gfm/incidence_stratified_custom-1.png)<!-- -->
@@ -1021,14 +1021,14 @@ plot(i_ill, border = "grey40", show_cases = TRUE, color = c("non case" = "#66cc9
 
 We use the same principles as before to visualise the distribution of
 illness by age and gender. To split the plot into different panels
-according to `sex`, we use `facet_grid()` (see previous extra info on
+according to `sex`, we use `facet_wrap()` (see previous extra info on
 *ggplot2* customisation for further details otions):
 
 ``` r
 ggplot(stegen) + 
   geom_histogram(aes(x = age, fill = ill), binwidth = 1) +
   scale_fill_manual("Illness", values = c("non case" = "#66cc99", "case" = "#993333")) +
-  facet_grid(sex ~ .) + 
+  facet_wrap(~sex, ncol = 1) + # stratify the sex into a single column of panels
   labs(title = "Cases by age and gender") + 
   theme_light()
 ```
@@ -1044,8 +1044,8 @@ analysis in the next section.
 
 # Looking for the culprits
 
-In order to figure out which food item was responsible for the outbreak,
-we need to test the [Risk
+In order to figure out which food item was most strongly associated with
+the illness, we need to test the [Risk
 Ratio](https://en.wikipedia.org/wiki/Risk_ratio) for all of the food
 items recorded. Risk ratios are normally computed on *contingency*
 tables (commonly known as 2x2 tables). In this part, we will compute
@@ -1080,6 +1080,19 @@ head(stegen)
     ## #   pork <dbl>, latitude <dbl>, longitude <dbl>
 
 ### Isolating the variables to test
+
+<!--
+You need to update the two paragraphs describing the exposure variables here
+(sorry came back to this after reading the code updates lower down - code fine,
+description wrong). So this whole only keeping the variables (unless theres a
+good data practice and/or a rational for using it within apply) - I dont think
+is necessary. From an epi standpoint you generally would always keep the data
+that you have collected (because if its not useful you shouldnt collect it).
+Furthermore when transitioning to multivariable analysis, we would want to
+include all variables of interest not just food. So, I would suggest: keep the
+food vector with the names of variables of interest, but dont subset the
+dataset - just use the food names vector in the functions below?
+-->
 
 Because not all of the columns in our data set are food items (i.e.
 “age”, and “tportion”), we only want to keep the columns that are
