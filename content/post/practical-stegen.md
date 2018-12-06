@@ -14,6 +14,10 @@ always_allow_html: yes
 
 
 
+<!--[if IE]>
+<p class="chromeframe"> You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+<![endif]-->
+
 # Context
 
 On 26 June 1998, the St Sebastian High School in Stegen (school A),
@@ -46,12 +50,12 @@ remembered.
 
 On 2nd July 1998, the Freiburg local health office reported to the
 Robert Koch Institute (RKI) in Berlin a significant increase of cases of
-gastroenteritis in the munipality of Stegen following the graduation
+gastroenteritis in the municipality of Stegen following the graduation
 party described above. More than 100 cases were suspected among
 participants and some of them were so ill that they were admitted to
 nearby hospitals. Sick people showed symptoms like; *fever, nausea,
 diarrhoea and vomiting* lasting for several days. Stool samples were
-collected from several ill cases and send to the laboratory in Freiburg
+collected from several ill cases and sent to the laboratory in Freiburg
 for microbiological identification. *Salmonella enteritidis* was
 identified in 19 stool samples.
 
@@ -66,18 +70,17 @@ sauce, yoghurt dill sauce, and 10 raw eggs. Unfortunately no tiramisu
 was left over after the dinner so no samples were tested of this
 specific food item.
 
-The Freiburg health office requested help from the RKI in the
-investigation to assess the magnitude of the outbreak and identify
-potential vehicle(s) and risk factors for transmission in order to
-better control the outbreak.
+The Freiburg health office requested help from the RKI to assess the
+magnitude of the outbreak and identify potential vehicle(s) and risk
+factors for transmission in order to better control the outbreak.
 
 ## The epidemiological study
 
 **Case definition**: cases were defined as any person who had attended
 the party at St Sebastian High School and who suffered from *diarrhoea*
-(min. 3 loose stool for 24 hours) between 27 June and 29 June 1998, or
-from at least three of the following symptoms: *vomiting*, *fever over
-38.5° C*, *nausea*, *abdominal pain*, *headache*.
+(min. 3 loose stool for 24 hours) with the onset between 27 June and 29
+June 1998, or from at least three of the following symptoms: *vomiting*,
+*fever over 38.5° C*, *nausea*, *abdominal pain*, *headache*.
 
 Students from both schools attending the party were asked through phone
 interviews to provide names of persons who attended the party.
@@ -89,14 +92,14 @@ linelist analysed in this case study was built from these 291 responses.
 
 In this case study, we will take you through the analysis of this
 epidemic using R. This will be the occasion to illustrate more generally
-useful practices for data analysis using **R**, including:
+useful practices for data analysis using **R**, including how to:
 
-  - how to read and import data from Excel
-  - how to explore data using tables and summaries
-  - how to clean data
-  - how to make graphics to describe the data
-  - how to test if specific food items are linked to the disease
-  - how to plot a very basic spatial overview of cases
+  - read and import data from Excel
+  - explore data using tables and summaries
+  - clean data
+  - make graphics to describe the data
+  - test which food items were associated with disease
+  - plot a very basic spatial overview of cases
 
 # Initial data processing
 
@@ -123,17 +126,31 @@ folder structure will start out looking like this:
 
 To create this, do the following steps:
 
-1.  Open RStudio and [create a new RStudio project in a new directory
+1)  Open RStudio and [create a new RStudio project in a new directory
     called
     “stegen”](https://support.rstudio.com/hc/en-us/articles/200526207-Using-Projects)
-2.  Once you have your Project set up, make a new folder called “data/”
+
+After you create your RStudio project, look at the top right corner of
+the RStudio window and make sure that the project is set to “stegen” and
+not “Project: (None)”:
+
+![Screenshot of RStudio project set to
+stegen](../../img/screenshots/stegen-project-initial.png)
+
+2)  Once you have your Project set up, make a new folder called “data/”
     and [download `stegen_raw.xlsx` and save it to that
     folder](../../data/stegen_raw.xlsx)
-3.  [Download `stegen-map.zip`](../../data/stegen-map.zip) and extract
+
+3)  [Download `stegen-map.zip`](../../data/stegen-map.zip) and extract
     it to the “data/” folder
-4.  In RStudio, click on the following menu path: <kbd>File \> New File
+
+4)  In RStudio, click on the following menu path: <kbd>File \> New File
     \> R Script</kbd> and save it as `01-stegen-analysis.R`. This will
-    be the R script where you will save the code of the analysis.
+    be the R script where you will save the code of the analysis. Your
+    RStudio window should look like this when you are done:
+
+![Screenshot of RStudio project set to stegen with all the data
+files](../img/screenshots/stegen-project-final.png)
 
 <details>
 
@@ -161,7 +178,9 @@ the original authors.
 
 ## Loading required packages
 
-The following packages will be used in the case study:
+The following packages will be used in the case study. You can use the
+`install.packages()` command to install them; this will save and install
+them to your computer’s R library, so you only have to do this once.:
 
   - [*here*](https://github.com/jennybc/here_here): to find the path to
     data or script files
@@ -182,8 +201,9 @@ The following packages will be used in the case study:
   - [*leaflet*](https://rstudio.github.io/leaflet/): to demonstrate
     interactive maps
 
-If we have these packages installed, we can tell R to load these
-packages from our R library:
+Once we have these packages installed, we can tell R to load these
+packages from our R library. This needs to be done once at the top of
+every R script:
 
 ``` r
 library("here")      # find data/script files
@@ -238,25 +258,35 @@ the root of the project.
 
 Here we decompose the steps to read data in:
 
-1.  finding the path to the data (`path_to_data`) with the *here*
+1.  defining the path to the data (`path_to_data`) with the *here*
     package
 2.  using the function `read_excel()` from the *readxl* package to read
-    data in, and saving the output in a new object `stegen`.
+    data in, and save the data within R as a new object called `stegen`.
 
 <!-- end list -->
 
 ``` r
 path_to_data <- here("data", "stegen_raw.xlsx")
-path_to_data
-## [1] "/home/zkamvar/Documents/Websites/recon-learn/data/stegen_raw.xlsx"
 ```
 
-> n.b. the value of `path_to_data` will not be the what you see in this
-> tutorial. It will be the location of this data set on your
-computer.
+The `here()` function combines the path to the current R project on your
+computer and the path to your data. If you look at what is in the
+`path_to_data` object, you will notice that it will end with
+`data/stegen_raw.xlsx`, but *it will look different than what I have
+here*:
 
-<!-- !Should we add an e.g. here, change 'path to data' to .../../stegencasestudy/data/.. ? 
--->
+``` r
+path_to_data
+## [1] "/home/zkamvar/Documents/Projects/stegen/data/stegen_raw.xlsx"
+```
+
+This is because my project is stored in the folder on my computer called
+“/home/zkamvar/Documents/Projects/stegen-analysis”. On your computer, it
+will be in a different place, but the important part is that *this code
+will work on any computer that has this R project*.
+
+Now that we have the address of the data saved in the `path_to_data`
+variable, we can read it in with the `read_excel()` function:
 
 ``` r
 stegen <- read_excel(path_to_data)
@@ -418,6 +448,51 @@ table(stegen$tiramisu) # table
 ## 165 121
 ```
 
+<details>
+
+<summary><b>Going Further:</b> Showing missing values in
+<code>table()</code></summary>
+
+You may notice that the `tiramisu` column has missing data, but
+`table()` does not show how many missing values there are. By studying
+the documentation for `table()` (type `?table` in your R console), we
+find that there is an option called `useNA` with three options: “no”,
+“ifany”, and “always”. Let’s take a look at what happens when we use
+these three options:
+
+``` r
+table(stegen$tiramisu, useNA = "no")
+## 
+##   0   1 
+## 165 121
+table(stegen$tiramisu, useNA = "ifany")
+## 
+##    0    1 <NA> 
+##  165  121    5
+table(stegen$tiramisu, useNA = "always")
+## 
+##    0    1 <NA> 
+##  165  121    5
+```
+
+We can see that both “ifany” and “always” show us that there are 5
+missing values in our data set. What, then is the difference between the
+two options? What happens if we have no missing values? We can try it
+with a dummy data set:
+
+``` r
+table(c(1, 1, 0), useNA = "ifany")
+## 
+## 0 1 
+## 1 2
+table(c(1, 1, 0), useNA = "always")
+## 
+##    0    1 <NA> 
+##    1    2    0
+```
+
+</details>
+
 **Good news**: the dataset has the expected dimensions, and all the
 relevant variables seem to be present. There are, however, **a few often
 observed issues**:
@@ -465,7 +540,9 @@ names(stegen) <- new_labels
 
 We convert the unique identifiers to character strings (`character`),
 dates of onset to actual `Date` objects, and sex and illness are set to
-categorical variables (`factor`):
+categorical variables (`factor`), which allows us to represent the
+variables as numbers so that we can do modelling, but allows us to add
+meaningful labels to them:
 
 ``` r
 stegen$unique_key <- as.character(stegen$unique_key)
@@ -475,11 +552,21 @@ stegen$date_onset <- as.Date(stegen$date_onset)
 ```
 
 We use the function `recode()` from the *dplyr* package to recode `sex`
-more explicitely:
+and `ill` more explicitely.
 
 ``` r
 stegen$sex <- recode_factor(stegen$sex, "0" = "male", "1" = "female")
 stegen$ill <- recode_factor(stegen$ill, "0" = "non case", "1" = "case")
+```
+
+if we look at the structure of the data, they are still represented as
+numbers:
+
+``` r
+str(stegen$sex)
+##  Factor w/ 2 levels "male","female": 2 1 2 1 2 1 1 1 2 1 ...
+str(stegen$ill)
+##  Factor w/ 2 levels "non case","case": 2 2 2 2 2 2 2 2 2 2 ...
 ```
 
 Finally we look in more depth into these variables having maximum values
@@ -488,18 +575,18 @@ by a variable, and listing their frequencies:
 
 ``` r
 
-table(stegen$pork)
+table(stegen$pork, useNA = "always")
 ## 
-##   0   1   9 
-## 169 120   2
-table(stegen$salmon)
+##    0    1    9 <NA> 
+##  169  120    2    0
+table(stegen$salmon, useNA = "always")
 ## 
-##   0   1   9 
-## 183 104   4
-table(stegen$horseradish)
+##    0    1    9 <NA> 
+##  183  104    4    0
+table(stegen$horseradish, useNA = "always")
 ## 
-##   0   1   9 
-## 217  72   2
+##    0    1    9 <NA> 
+##  217   72    2    0
 ```
 
 The only rogue values are `9`; they are likely either data entry issues,
@@ -510,6 +597,24 @@ available”). We can replace these values using:
 stegen$pork[stegen$pork == 9] <- NA
 stegen$salmon[stegen$salmon == 9] <- NA
 stegen$horseradish[stegen$horseradish == 9] <- NA
+```
+
+Now we can confirm that the `9`’s have been replaced by `NA`.
+
+``` r
+
+table(stegen$pork, useNA = "always")
+## 
+##    0    1 <NA> 
+##  169  120    2
+table(stegen$salmon, useNA = "always")
+## 
+##    0    1 <NA> 
+##  183  104    4
+table(stegen$horseradish, useNA = "always")
+## 
+##    0    1 <NA> 
+##  217   72    2
 ```
 
 <details>
@@ -527,35 +632,35 @@ let us break them down from the inside out.
 
 1.  `stegen$pork` means “get the variable called `pork` in the dataset
     `stegen`”
-2.  The `==` is a logical test for equality. `stegen$pork == 9` tests
+2.  The `==` is a logical check for equality. `stegen$pork == 9` checks
     each element in `stegen$pork` if it’s equal to `9`, returning `TRUE`
     if an element of `stegen$pork` is equal to `9` and `FALSE` if it
     doesn’t.
 3.  The square brackets (`[ ]`) subset the vector `stegen$pork`
-    according to whatever is between them; In this case, it’s the test
+    according to whatever is between them; In this case, it’s checking
     `stegen$pork == 9`, which evaluates to FALSE, FALSE, FALSE, TRUE,
     FALSE, FALSE… This will return only the cases in `stegen$pork` that
     have `9`s recorded.
 4.  The replacement: `... <- NA` replace `...` with `NA` (missing value)
 
 in other words: "isolate the entries of `stegen$pork` which equal `9`,
-and replace them with `NA`; here is another toy example to illustrate
-the procedure:
+and replace them with `NA`; here is another example to illustrate the
+procedure:
 
 ``` r
-## make toy input vector
-toy_vector <- 1:5
-toy_vector
+## make example input vector
+example_vector <- 1:5
+example_vector
 ## [1] 1 2 3 4 5
 
-## make toy logical vector for subsetting
-toy_logical <- c(FALSE, TRUE, TRUE, FALSE, TRUE)
-toy_logical
+## make example logical vector for subsetting
+example_logical <- c(FALSE, TRUE, TRUE, FALSE, TRUE)
+example_logical
 ## [1] FALSE  TRUE  TRUE FALSE  TRUE
-toy_vector[toy_logical] # subset values
+example_vector[example_logical]      # subset values
 ## [1] 2 3 5
-toy_vector[toy_logical] <- 0 # replace subset values
-toy_vector # check outcome
+example_vector[example_logical] <- 0 # replace subset values
+example_vector # check outcome
 ## [1] 1 0 0 4 0
 ```
 
@@ -649,17 +754,22 @@ tapply(stegen$age, INDEX = stegen$sex, FUN = summary) # age stats by gender
 `tapply()` is a very handy function to stratify any kind of analyses.
 You will find more details by reading the documentation of the function
 `?tapply()`, but briefly, the syntax to be used is `tapply(input_data,
-stratification, function_to_use, further_arguments)`. In the command
-used above:
+INDEX = stratification, FUN = function_to_use, further_arguments)`. In
+the command used above:
 
 ``` r
 tapply(stegen$age, INDEX = stegen$sex, FUN = summary)
 ```
 
+<!-- 
+L499 [TEXT]: maybe specify that FUN is just where you choose your function (and that this can be any function), couple people were confused about what FUN is...
+-->
+
 this literally means: select the age variable in the dataset `stegen`
-(`stegen$age`), stratify it by sex (`stegen$sex`), and summarise each
-stratum (`summary()`). So for instance, to get the average age by sex
-(function `mean()`), one could use:
+(`stegen$age`), stratify it by sex (`INDEX = stegen$sex`), and apply the
+`summary()` function `FUN = summary` to summarise each stratum. So for
+instance, to get the average age by sex (function `mean()`), one could
+use:
 
 ``` r
 tapply(stegen$age, INDEX = stegen$sex, FUN = mean, na.rm = TRUE)
@@ -778,10 +888,11 @@ ggplot(stegen) +
 
 ## Epidemic curve
 
-Incidence curves can be built using the package *incidence*, which will
-compute the number of new cases given a vector of dates (here, onset)
-and a time interval (1 day by default). We use the function
-`incidence()` to achieve this, and then visualise the results:
+Epicurves (counts of incident cases) can be built using the package
+*incidence*, which will compute the number of new cases given a vector
+of dates (here, onset) and a time interval (1 day by default). We use
+the function `incidence()` to achieve this, and then visualise the
+results:
 
 ``` r
 i <- incidence(stegen$date_onset)
@@ -833,7 +944,7 @@ i_ill <- incidence(stegen$date_onset, group = stegen$ill)
 i_ill
 ## <incidence object>
 ## [131 cases from days 1998-06-26 to 1998-07-09]
-## [2 groups: case, non case]
+## [2 groups: non case, case]
 ## 
 ## $counts: matrix with 14 rows and 2 columns
 ## $n: 131 cases in total
@@ -842,25 +953,37 @@ i_ill
 ## $timespan: 14 days
 ## $cumulative: FALSE
 as.data.frame(i_ill)
-##         dates case non case
-## 1  1998-06-26    0        1
-## 2  1998-06-27   48        8
-## 3  1998-06-28   46        5
-## 4  1998-06-29    8        2
-## 5  1998-06-30    0        3
-## 6  1998-07-01    0        3
-## 7  1998-07-02    0        3
-## 8  1998-07-03    0        0
-## 9  1998-07-04    0        1
-## 10 1998-07-05    0        1
-## 11 1998-07-06    0        1
-## 12 1998-07-07    0        0
-## 13 1998-07-08    0        0
-## 14 1998-07-09    0        1
+##         dates non case case
+## 1  1998-06-26        1    0
+## 2  1998-06-27        8   48
+## 3  1998-06-28        5   46
+## 4  1998-06-29        2    8
+## 5  1998-06-30        3    0
+## 6  1998-07-01        3    0
+## 7  1998-07-02        3    0
+## 8  1998-07-03        0    0
+## 9  1998-07-04        1    0
+## 10 1998-07-05        1    0
+## 11 1998-07-06        1    0
+## 12 1998-07-07        0    0
+## 13 1998-07-08        0    0
+## 14 1998-07-09        1    0
 plot(i_ill, color = c("non case" = "#66cc99", "case" = "#993333"))
 ```
 
 ![](practical-stegen_files/figure-gfm/incidence_stratified-1.png)<!-- -->
+
+> n.b. Above, we defined the colors of the groups by specifying `color =
+> c("non case" = "#66cc99", "case" = "#993333")` in our plot command.
+> Here we are saying “The non case group should have the color \#66cc99
+> and the case group should have the color \#993333”. These six digit
+> codes are hexadecimal color codes widely used in web design. It’s not
+> expected that anyone should be able to memorize what hex codes
+> represent what colors, so there are websites that can help you pick a
+> pleasing color palette such as <https://www.color-hex.com>. For
+> example, this page shows information about how the color \#66cc99
+> looks and what its complements are:
+> <https://www.color-hex.com/color/66cc99>
 
 The outbreak really only happened over 3 days: onsets reported after did
 not match the epi case definition. This is compatible with a food-borne
@@ -886,12 +1009,12 @@ for
 more):
 
 ``` r
-plot(i_ill, border = "white", color = c("non case" = "#66cc99", "case" = "#993333")) + 
-  geom_hline(yintercept = 1:55, color = "white") +
+plot(i_ill, border = "grey40", show_cases = TRUE, color = c("non case" = "#66cc99", "case" = "#993333")) + 
   labs(title = "Epicurve by case", x = "Date of onset", y = "Number of cases") +
-  theme_light(base_family = "Times", base_size = 16) +
-  theme(legend.position = c(0.8, 0.8)) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+  theme_light(base_family = "Times", base_size = 16) + # changes the overal theme
+  theme(legend.position = c(x = 0.7, y = 0.8)) + # places the legend inside the plot
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) + # sets the dates along the x axis at a 45 degree angle
+  coord_equal() # makes each case appear as a box
 ```
 
 ![](practical-stegen_files/figure-gfm/incidence_stratified_custom-1.png)<!-- -->
@@ -902,14 +1025,14 @@ plot(i_ill, border = "white", color = c("non case" = "#66cc99", "case" = "#99333
 
 We use the same principles as before to visualise the distribution of
 illness by age and gender. To split the plot into different panels
-according to `sex`, we use `facet_grid()` (see previous extra info on
+according to `sex`, we use `facet_wrap()` (see previous extra info on
 *ggplot2* customisation for further details otions):
 
 ``` r
 ggplot(stegen) + 
   geom_histogram(aes(x = age, fill = ill), binwidth = 1) +
   scale_fill_manual("Illness", values = c("non case" = "#66cc99", "case" = "#993333")) +
-  facet_grid(sex ~ .) + 
+  facet_wrap(~sex, ncol = 1) + # stratify the sex into a single column of panels
   labs(title = "Cases by age and gender") + 
   theme_light()
 ```
@@ -925,12 +1048,12 @@ analysis in the next section.
 
 # Looking for the culprits
 
-In order to figure out which food item was responsible for the outbreak,
-we need to test the [Risk
+In order to figure out which food item was most strongly associated with
+the illness, we need to test the [Risk
 Ratio](https://en.wikipedia.org/wiki/Risk_ratio) for all of the food
 items recorded. Risk ratios are normally computed on *contingency*
 tables (commonly known as 2x2 tables). In this part, we will compute
-contingency tables for each predictor (food item) against the defined
+contingency tables for each exposure (food item) against the defined
 cases, calculate their risk ratio with confidence intervals and
 p-values, and plot them as points and errorbars using *ggplot2*.
 
@@ -962,8 +1085,21 @@ head(stegen)
 
 ### Isolating the variables to test
 
+<!--
+You need to update the two paragraphs describing the exposure variables here
+(sorry came back to this after reading the code updates lower down - code fine,
+description wrong). So this whole only keeping the variables (unless theres a
+good data practice and/or a rational for using it within apply) - I dont think
+is necessary. From an epi standpoint you generally would always keep the data
+that you have collected (because if its not useful you shouldnt collect it).
+Furthermore when transitioning to multivariable analysis, we would want to
+include all variables of interest not just food. So, I would suggest: keep the
+food vector with the names of variables of interest, but dont subset the
+dataset - just use the food names vector in the functions below?
+-->
+
 Because not all of the columns in our data set are food items (i.e.
-“age”, and “tportion”), we only want to keep the columns that are
+“age”, and “tportion”), we only want to test the columns that are
 food items for our analysis.
 
 ``` r
@@ -975,22 +1111,21 @@ names(stegen)
 ## [21] "pork"        "latitude"    "longitude"
 ```
 
-In this case, we need to retain columns 6 to 21, excluding `tportion`
-and `mportion`, which are not binary; this can be done using the
-subsetting brackets `[ ]`, where we will place character vector
-indicating the columns we want to
-keep.
+In this case, we need to test columns 6 to 21, excluding `tportion` and
+`mportion`, which are not binary; this can be done using the subsetting
+brackets `[ ]`, where we will place character vector indicating the
+columns we want to
+test.
 
 ``` r
-to_keep <- c('tiramisu', 'wmousse', 'dmousse', 'mousse', 'beer', 'redjelly',
-             'fruit_salad', 'tomato', 'mince', 'salmon', 'horseradish',
-             'chickenwin', 'roastbeef', 'pork') 
-to_keep
+food <- c('tiramisu', 'wmousse', 'dmousse', 'mousse', 'beer', 'redjelly',
+          'fruit_salad', 'tomato', 'mince', 'salmon', 'horseradish',
+          'chickenwin', 'roastbeef', 'pork') 
+food
 ##  [1] "tiramisu"    "wmousse"     "dmousse"     "mousse"      "beer"       
 ##  [6] "redjelly"    "fruit_salad" "tomato"      "mince"       "salmon"     
 ## [11] "horseradish" "chickenwin"  "roastbeef"   "pork"
-food <- stegen[to_keep]
-food
+stegen[food]
 ## # A tibble: 291 x 14
 ##    tiramisu wmousse dmousse mousse  beer redjelly fruit_salad tomato mince
 ##       <dbl>   <dbl>   <dbl>  <dbl> <dbl>    <dbl>       <dbl>  <dbl> <dbl>
@@ -1020,7 +1155,7 @@ calcuate a contingency table is using the `epitable()` function from the
 *epitools* package:
 
 ``` r
-pork_table <- epitable(food$pork, stegen$ill)
+pork_table <- epitable(stegen$pork, stegen$ill)
 pork_table
 ##          Outcome
 ## Predictor non case case
@@ -1412,7 +1547,8 @@ We can see that this is present as a “matrix”. A matrix has rows and
 columns and we can access them like we do a vector with square brackets
 (`[ ]`), but we separate the rows and columns with a comma like so:
 `[rows, columns]`. For example, if we wanted the risk ratio for pork
-consumed, we would take the second row in the first column:
+consumed, we would take the second row in the first column using the row
+and column numbers:
 
 ``` r
 pork_rr$measure[2, 1]
@@ -1430,8 +1566,10 @@ pork_est_ci
 ```
 
 We also want to get the P-value, of which, we have three choices. In our
-case, we will choose the P-value from Fisher’s exact test and combine
-the result into a vector that we will turn into a data frame:
+case, we will choose the P-value from Fisher’s exact test of the
+exposure (by selecting the second row and the column called
+`"fisher.exact"`) and combine the result into a vector that we will turn
+into a data frame:
 
 ``` r
 pork_p <- pork_rr$p.value[2, "fisher.exact"]
@@ -1467,12 +1605,12 @@ down in 3 types, depending on which types these variables are:
 3.  **2 quantitative variables**: Pearson’s correlation coefficient
     (\(r\)) and similar methods
 
-We can use these approaches to test if the disease is linked to any of
-the other recorded variables. As illness itself is a categorical
-variable, only approaches of type 2 and 3 are illustrated in this case
+We can use these approaches to test if the disease is associated with
+any other variables of interest. As illness itself is a categorical
+variable, only approaches of type 1 and 2 are illustrated in this case
 study.
 
-### Is illness linked to age?
+### Is illness associated with age?
 
 We can use the function `t.test()` to test if the average age is
 different across illness status. As this test assumes that the two
@@ -1509,54 +1647,54 @@ t.test(stegen$age ~ stegen$ill, var.equal = TRUE)
 ```
 
 The p-value of 0.576 confirms the previous graphics: the illness does
-not seem to be linked to age.
+not appear to be associated with age.
 
-### Is illness linked to gender?
+### Is illness associated with gender?
 
 To test the association between gender and illness (2 categorical
 variables), we first build a 2-by-2 (contingency) table, using:
 
 ``` r
-tab_ill_sex <- table(stegen$ill, stegen$sex)
-tab_ill_sex
-##           
-##            male female
-##   non case   86    102
-##   case       53     50
+tab_sex_ill <- table(stegen$sex, stegen$ill)
+tab_sex_ill
+##         
+##          non case case
+##   male         86   53
+##   female      102   50
 ```
 
 Note that proportions can be obtained using `prop.table`:
 
 ``` r
 ## basic proportions
-prop.table(tab_ill_sex)
-##           
-##                 male    female
-##   non case 0.2955326 0.3505155
-##   case     0.1821306 0.1718213
+prop.table(tab_sex_ill)
+##         
+##           non case      case
+##   male   0.2955326 0.1821306
+##   female 0.3505155 0.1718213
 
 ## expressed in %, rounded:
-round(100 * prop.table(tab_ill_sex))
-##           
-##            male female
-##   non case   30     35
-##   case       18     17
+round(100 * prop.table(tab_sex_ill))
+##         
+##          non case case
+##   male         30   18
+##   female       35   17
 ```
 
 Once a contingency table has been built, the Chi-square test can be run
 using `chisq.test`:
 
 ``` r
-chisq.test(tab_ill_sex)
+chisq.test(tab_sex_ill)
 ## 
 ##  Pearson's Chi-squared test with Yates' continuity correction
 ## 
-## data:  tab_ill_sex
+## data:  tab_sex_ill
 ## X-squared = 0.6562, df = 1, p-value = 0.4179
 ```
 
-Here, the p-value of 0.418 suggests illness is not related to gender
-either.
+Here, the p-value of 0.418 suggests illness is not associated with
+gender either.
 
 </details>
 
@@ -1568,14 +1706,14 @@ To recap, to get a risk ratio we’ve done the following:
 2.  estimated the risk ratio
 3.  extracted estimate into a data frame
 
-However, we have 14 potential predictors to sort through and we don’t
-want to have to repeat these procedures manually over and over. One
-strategy to help with this is to create our own *function*, which we can
-think of as a miniature recipe for a computer to read. If we take the
-steps above and place them into individual steps we would get:
+However, we have exposures to sort through and we don’t want to have to
+repeat these procedures manually over and over. One strategy to help
+with this is to create our own *function*, which we can think of as a
+miniature recipe for a computer to read. If we take the steps above and
+place them into individual steps we would get:
 
 ``` r
-et  <- epitable(food$pork, stegen$ill)
+et  <- epitable(stegen$pork, stegen$ill)
 rr  <- riskratio(et)
 estimate <- rr$measure[2, ]
 res <- data.frame(estimate = estimate["estimate"],
@@ -1591,14 +1729,14 @@ res
 Just like a recipe, a function needs both ingredients and instructions.
 What we have above are instructions, but we still need to say what our
 ingredients are. If we look at the above code, we can see that we need
-to define our predictor (`food$pork`) and outcome (`stegen$ill`);
-everything else flows from that. We can then write our function (which
-we will call `single_risk_ratio()`) like
+to define our exposure variable (`stegen$pork`) and outcome
+(`stegen$ill`); everything else flows from that. We can then write our
+function (which we will call `single_risk_ratio()`) like
 this:
 
 ``` r
-single_risk_ratio <- function(predictor, outcome) { # ingredients defined here
-  et  <- epitable(predictor, outcome) # ingredients used here
+single_risk_ratio <- function(exposure, outcome) { # ingredients defined here
+  et  <- epitable(exposure, outcome) # ingredients used here
   rr  <- riskratio(et)
   estimate <- rr$measure[2, ]
   res <- data.frame(estimate = estimate["estimate"],
@@ -1614,7 +1752,7 @@ Now, we can use this `single_risk_ratio()` like any other
 function:
 
 ``` r
-pork_rr <- single_risk_ratio(predictor = food$pork, outcome = stegen$ill)
+pork_rr <- single_risk_ratio(exposure = stegen$pork, outcome = stegen$ill)
 pork_rr
 ##          estimate     lower    upper   p.value
 ## estimate 1.251852 0.9176849 1.707703 0.1708777
@@ -1624,7 +1762,7 @@ If we change the variable, we’ll get a different
 answer:
 
 ``` r
-fruit_rr <- single_risk_ratio(predictor = food$fruit_salad, outcome = stegen$ill)
+fruit_rr <- single_risk_ratio(exposure = stegen$fruit_salad, outcome = stegen$ill)
 fruit_rr
 ##          estimate    lower    upper      p.value
 ## estimate 2.500618 1.886773 3.314171 9.998203e-09
@@ -1634,18 +1772,19 @@ We can combine the two using a function from *dplyr* called
 `bind_rows()`:
 
 ``` r
-bind_rows(pork = pork_rr, fruit = fruit_rr, .id = "predictor")
-##   predictor estimate     lower    upper      p.value
-## 1      pork 1.251852 0.9176849 1.707703 1.708777e-01
-## 2     fruit 2.500618 1.8867735 3.314171 9.998203e-09
+bind_rows(pork = pork_rr, fruit = fruit_rr, .id = "exposure")
+##   exposure estimate     lower    upper      p.value
+## 1     pork 1.251852 0.9176849 1.707703 1.708777e-01
+## 2    fruit 2.500618 1.8867735 3.314171 9.998203e-09
 ```
 
 Here we can see that the fruit salad has a higher risk ratio with a
 lower P-value, but we want to compare all of the variables and still,
 copying and pasting all this code would be a nightmare and potentially
 lead to errors. We will see in the next section how we can use R to
-apply the function `single_risk_ratio()` to each column of our `food`
-data frame to give us a table of risk ratios for all the food items.
+apply the function `single_risk_ratio()` to each column of `stegen` that
+we have listed in `food` to give us the risk ratios for all the food
+items.
 
 ### Multiple variables
 
@@ -1658,16 +1797,18 @@ recipe:
 
 We placed this recipe in a function called `single_risk_ratio()` and we
 know we can use it to calcuate the risk ratio for individual variables,
-but we need to be able to calculate it over all the variables in our
-`food` data frame. The solution is to use an R function called
+but we need to be able to calculate it over all the variables from
+`stegen` that we have listed in our `food` vector by subetting with the
+square brackets (`[ ]`). The solution is to use an R function called
 `lapply()`, which takes each element of a list (or column of a data
 frame) and uses it as the first ingredient (also known as argument) of a
 function. Like `tapply()`, the function can be anything and additional
 arguments are placed behind the function. It will then return the output
-as a list:
+as a
+list:
 
 ``` r
-all_rr <- lapply(food, FUN = single_risk_ratio, outcome = stegen$ill)
+all_rr <- lapply(stegen[food], FUN = single_risk_ratio, outcome = stegen$ill)
 head(all_rr)
 ## $tiramisu
 ##          estimate    lower    upper      p.value
@@ -1697,9 +1838,9 @@ head(all_rr)
 Finally, like we did above, we re-shape these results into a data frame
 
 ``` r
-all_food_df <- bind_rows(all_rr, .id = "predictor")
+all_food_df <- bind_rows(all_rr, .id = "exposure")
 all_food_df
-##      predictor   estimate     lower     upper      p.value
+##       exposure   estimate     lower     upper      p.value
 ## 1     tiramisu 18.3116883 8.8142022 38.042913 1.794084e-41
 ## 2      wmousse  2.8472222 2.1282671  3.809049 5.825494e-11
 ## 3      dmousse  4.5010211 3.0869446  6.562862 1.167009e-19
@@ -1724,7 +1865,7 @@ in descending order:
 ``` r
 all_food_df <- arrange(all_food_df, desc(estimate))
 all_food_df
-##      predictor   estimate     lower     upper      p.value
+##       exposure   estimate     lower     upper      p.value
 ## 1     tiramisu 18.3116883 8.8142022 38.042913 1.794084e-41
 ## 2       mousse  4.9689579 3.2994031  7.483336 1.257341e-20
 ## 3      dmousse  4.5010211 3.0869446  6.562862 1.167009e-19
@@ -1744,17 +1885,17 @@ all_food_df
 Now we can use this data frame to plot the results using *ggplot2*:
 
 ``` r
-# first, make sure the predictors are factored in the right order
-all_food_df$predictor <- factor(all_food_df$predictor, unique(all_food_df$predictor))
+# first, make sure the exposures are factored in the right order
+all_food_df$exposure <- factor(all_food_df$exposure, unique(all_food_df$exposure))
 # plot
-p <- ggplot(all_food_df, aes(x = estimate, y = predictor, color = p.value)) +
+p <- ggplot(all_food_df, aes(x = estimate, y = exposure, color = p.value)) +
   geom_point() +
   geom_errorbarh(aes(xmin = lower, xmax = upper)) +
   geom_vline(xintercept = 1, linetype = 2) + 
   scale_x_log10() + 
   scale_color_viridis_c(trans = "log10") + 
   labs(x = "Risk Ratio (log scale)", 
-       y = "Predictor",
+       y = "Exposure",
        title = "Risk Ratio for gastroenteritis in Stegen, Germany")
 p
 ```
@@ -1762,48 +1903,57 @@ p
 ![](practical-stegen_files/figure-gfm/plot-arrange-1.png)<!-- -->
 
 The results are a lot clearer now: the tiramisu has by far the highest
-risk ratio in this outbreak, but it’s wide confidence interval suggests
-that there may be confounding factors involved (i.e. the food items were
-not independent or in this case, were potentially sharing contaminated
-ingredients).
+risk ratio in this outbreak, but there are a couple of things to note:
+
+1.  its wide confidence interval suggests that the sample size is a bit
+    small.
+2.  The other variables that have risk ratios significantly different
+    from zero have overlapping confidence intervals, which may suggest
+    that confounding factors were involved (i.e. the food items were not
+    independent or in this case, were potentially sharing contaminated
+    ingredients).
+
+<!--
 
 <details>
 
-<summary> <b>Going Further:</b> Creating a function for multiple risk
-ratios </summary>
+<summary> <b>Going Further:</b> Creating a function for multiple risk ratios </summary>
 
-Just like we created the function `single_risk_ratio()` to calculate the
-risk ratio of a single variable, we can create another function that
-will calculate the risk ratio for all variables in a data frame. We can
-do it the same way we did above. First, define the recipe:
+Just like we created the function `single_risk_ratio()` to calculate the risk
+ratio of a single variable, we can create another function that will calculate
+the risk ratio for all variables in a data frame. We can do it the same way we
+did above. First, define the recipe:
 
-``` r
-all_rr <- lapply(food, FUN = single_risk_ratio, outcome = stegen$ill)
-all_food_df <- bind_rows(all_rr, .id = "predictor")
+
+```r
+all_rr <- lapply(stegen[food], FUN = single_risk_ratio, outcome = stegen$ill)
+all_food_df <- bind_rows(all_rr, .id = "exposure")
 all_food_df <- arrange(all_food_df, desc(estimate))
-all_food_df$predictor <- factor(all_food_df$predictor, unique(all_food_df$predictor))
+all_food_df$exposure <- factor(all_food_df$exposure, unique(all_food_df$exposure))
 ```
 
 Now, find the ingredients. The first step is `lapply()` which needs
-`food` and `stegen$ill`, which are a data frame of predictors and a
-vector of outcomes, resepectively, so we will add these as *arguments*
-called `predictors` and `outcome`:
+`stegen[food]` and `stegen$ill`, which are a data frame of exposures and a
+vector of outcomes, resepectively, so we will add these as *arguments* called
+`exposures` and `outcome`:
 
-``` r
-multi_risk_ratio <- function(predictors, outcome) {
-  all_rr <- lapply(predictors, FUN = single_risk_ratio, outcome = outcome)
-  all_food_df <- bind_rows(all_rr, .id = "predictor")
+
+```r
+multi_risk_ratio <- function(exposures, outcome) {
+  all_rr <- lapply(exposures, FUN = single_risk_ratio, outcome = outcome)
+  all_food_df <- bind_rows(all_rr, .id = "exposure")
   all_food_df <- arrange(all_food_df, desc(estimate))
-  all_food_df$predictor <- factor(all_food_df$predictor, unique(all_food_df$predictor))
+  all_food_df$exposure <- factor(all_food_df$exposure, unique(all_food_df$exposure))
   return(all_food_df)
 }
 ```
 
 And we can call the function like so:
 
-``` r
-multi_risk_ratio(predictors = food, outcome = stegen$ill)
-##      predictor   estimate     lower     upper      p.value
+
+```r
+multi_risk_ratio(exposures = stegen[food], outcome = stegen$ill)
+##       exposure   estimate     lower     upper      p.value
 ## 1     tiramisu 18.3116883 8.8142022 38.042913 1.794084e-41
 ## 2       mousse  4.9689579 3.2994031  7.483336 1.257341e-20
 ## 3      dmousse  4.5010211 3.0869446  6.562862 1.167009e-19
@@ -1820,17 +1970,17 @@ multi_risk_ratio(predictors = food, outcome = stegen$ill)
 ## 14        beer  0.6767842 0.4757688  0.962730 2.806394e-02
 ```
 
-Note that we have defined arguments for `predictors` and `outcome`, but
-we didn’t define an argument for the `single_risk_ratio()` function.
-This is because we know that we’ve defined it above, but this also means
-that if we want to use the `multi_risk_ratio()` function in other
-scripts, we have to also define `single_risk_ratio()` as well. One way
-of keeping these organised is to always write the functions
-together:
+Note that we have defined arguments for `exposures` and `outcome`, but we
+didn't define an argument for the `single_risk_ratio()` function. This is
+because we know that we've defined it above, but this also means that if we
+want to use the `multi_risk_ratio()` function in other scripts, we have to also
+define `single_risk_ratio()` as well. One way of keeping these organised is to
+always write the functions together:
 
-``` r
-single_risk_ratio <- function(predictor, outcome) { # ingredients defined here
-  et  <- epitools::epitable(predictor, outcome) # ingredients used here
+
+```r
+single_risk_ratio <- function(exposure, outcome) { # ingredients defined here
+  et  <- epitools::epitable(exposure, outcome) # ingredients used here
   rr  <- epitools::riskratio(et)
   estimate <- rr$measure[2, ]
   res <- data.frame(estimate = estimate["estimate"],
@@ -1841,22 +1991,24 @@ single_risk_ratio <- function(predictor, outcome) { # ingredients defined here
   return(res) # return the data frame
 }
 
-multi_risk_ratio <- function(predictors, outcome) {
-  all_rr <- lapply(predictors, FUN = single_risk_ratio, outcome = outcome)
-  all_food_df <- dplyr::bind_rows(all_rr, .id = "predictor")
+multi_risk_ratio <- function(exposures, outcome) {
+  all_rr <- lapply(exposures, FUN = single_risk_ratio, outcome = outcome)
+  all_food_df <- dplyr::bind_rows(all_rr, .id = "exposure")
   all_food_df <- dplyr::arrange(all_food_df, dplyr::desc(estimate))
-  all_food_df$predictor <- factor(all_food_df$predictor, unique(all_food_df$predictor))
+  all_food_df$exposure <- factor(all_food_df$exposure, unique(all_food_df$exposure))
   return(all_food_df)
 }
 ```
 
 You might notice, however that these functions look a bit different. The
-`epitable()` function is now written as `epitools::epitable()`. This is
-no accident. This is a way for us to tell R to use a function *even if
-the package hasn’t been loaded*, which makes it easier to share these
-functions.
+`epitable()` function is now written as `epitools::epitable()`. This is no
+accident. This is a way for us to tell R to use a function *even if the package
+hasn't been loaded*, which makes it easier to share these functions. 
+
 
 </details>
+
+-->
 
 # Plotting a very basic spatial overview of cases
 
