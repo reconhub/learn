@@ -64,9 +64,11 @@ render_new_rmds_to_md <- function(dir = "content/post",
                                                preserve_yaml = TRUE ))
       cpath <- gsub("\\.Rmd", "_files", rmd)
       spath <- gsub("content", "static", cpath)
-      fs::file_move(fs::dir_ls(file.path(cpath, figfile)), 
-                    file.path(spath, figfile)
-                   )
+      if (file.exists(file.path(cpath, figfile))) {
+        fs::file_move(fs::dir_ls(file.path(cpath, figfile)), 
+                      file.path(spath, figfile)
+                     )
+      }
 
     }
   }else{
