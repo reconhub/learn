@@ -1,0 +1,496 @@
+---
+title: "A short introduction to R"
+author: "Thibaut Jombart"
+date: "2018-12-07"
+output:
+  ioslides_presentation:
+    incremental: false
+---
+
+
+
+```{r setup, include = FALSE}
+## This code defines the 'verbatim' option for chunks
+## which will include the chunk with its header and the
+## trailing "```".
+
+require(knitr)
+hook_source_def = knit_hooks$get('source')
+knit_hooks$set(source = function(x, options){
+  if (!is.null(options$verbatim) && options$verbatim){
+    opts = gsub(",\\s*verbatim\\s*=\\s*TRUE\\s*.*$", "", options$params.src)
+    bef = sprintf('\n\n    ```{r %s}\n', opts, "\n")
+    stringr::str_c(bef, paste(knitr:::indent_block(x, "    "), collapse = '\n'), "\n    ```\n")
+  } else {
+    hook_source_def(x, options)
+  }
+})
+```
+
+
+
+
+
+
+# Introduction
+
+## What is **R**?
+
+- a free software for data analysis
+- an interpreted programming language, derived from `S-plus'
+- initially developed by R. Ihaka and R. Gentleman (1996)
+- currently developed by the R Core Team ($\sim$20 people)
+- largest collection of tools for statistics and data analysis (1,000s of contributors)
+
+
+
+
+
+## Where can you get it?
+
+- google `R'
+- The **R**~ project: [www.r-project.org](www.r-project.org)
+- distribution on CRAN: [cran.r-project.org/mirrors.html](cran.r-project.org/mirrors.html)
+- available on Windows, MacOSX, Linux
+
+
+
+
+
+
+
+## What does it do?  {.columns-2}
+
+<center><img src="../../img/slides/swiss-army-knife.jpg" width="65%"></center>
+
+
+Base **R**, core packages (30), and regular packages ($>$10,000):
+
+- statistical tests
+- linear/non-linear modelling
+- multivariate analysis
+- time series
+- mapping, GIS, spatial statistics
+- graph theory
+- genetics
+- epidemiology
+- ...
+
+See *task views*: [cran.r-project.org/web/views/](cran.r-project.org/web/views/)
+
+
+
+
+
+
+
+
+
+## How much is it free?
+
+<center><img src="../../img/slides/money.jpg" width="65%"></center>
+
+**R** is free in the sense of *free software*:
+
+- you don't pay for it
+- the sources are freely accessible
+- anyone can re-use, modify and distribute the code
+
+
+
+
+
+
+## Getting started
+
+All you need is:
+
+- **R** for your system (download from CRAN)
+- a text editor to write code: notepad++, emacs, vi, Tinn-R, ...
+- a Graphical User Interface (GUI): RStudio, Tinn-R, ESS
+
+
+
+
+
+
+## And then...
+
+<center><img src="../../img/slides/rstudio_shot.png" width="85%"></center>
+
+
+
+
+
+
+
+## Getting help
+
+<center><img src="../../img/slides/ubuntu.jpg" width="65%"></center>
+
+
+
+Different ways of getting help:
+
+- `?foo` or `help("foo")`: access the help page of `foo`
+- `??bar` or `help.search("foo")`: look for `foo` in help pages
+- `RSiteSearch("foo")`: search `foo` in help pages \& forum archives
+- dedicated mailing lists: [stat.ethz.ch/mailman/listinfo](stat.ethz.ch/mailman/listinfo)
+- the RECON forum: [http://www.repidemicsconsortium.org/forum/](http://www.repidemicsconsortium.org/forum/)
+
+
+
+
+
+
+
+# Storing data in **R**
+
+## How does **R** work?
+
+<center><img src="../../img/slides/mecanism.jpg" width="35%"></center>
+
+- code is not compiled, but \textit{interpreted}\pause
+- no file, all in the RAM\pause
+- content of a session can be saved using `save`/`save.image` (output: `.RData` file)\pause
+- `.RData` files can be loaded using `load`\pause
+- data, results, functions, etc. are all \textit{objects}\pause
+
+
+
+
+
+
+## Type of objects 1: numbers
+
+Numbers can be `integer` or `numeric`:
+
+```{r}
+a <- 1:10
+a
+class(a)
+b <- a + 0.1
+b
+class(b)
+```
+
+
+
+
+
+
+
+
+
+## Type of objects 2: characters
+
+Character strings are `character`:
+
+```{r}
+a <- "hello world"
+a
+class(a)
+```
+
+
+
+
+
+
+
+
+
+
+## Type of objects 3: categorical variables
+
+Categorical variables are `factor`:
+
+```{r}
+a <- factor(c("red","blue","green","red","green"))
+a
+class(a)
+levels(a)
+```
+
+
+
+
+
+
+
+
+
+
+## Type of objects 4: booleans
+
+Booleans (TRUE/FALSE) are `logical`:
+
+```{r}
+a <- c(TRUE, FALSE, TRUE, TRUE)
+a
+class(a)
+```
+
+
+
+
+## Vectors
+
+Vectors contain series of values of a given type:
+
+```{r}
+a <- c(1, 2, 10, -1, 1.123)
+a
+class(a)
+is.vector(a)
+length(a)
+```
+
+
+
+
+
+
+## Matrices
+
+Matrices contain series of values of a given type, in a table:
+
+```{r}
+a <- matrix(sample(1:12), ncol = 4)
+a
+class(a)
+is.matrix(a)
+dim(a)
+```
+
+
+
+
+
+
+## Data frames
+
+A `data.frame` is a table where different variables (columns) can have different
+types:
+
+```{r}
+a <- data.frame(age = c(10,54,3), sex = c("m", "f", "m"))
+a
+class(a)
+dim(a)
+```
+
+
+
+
+
+
+## Lists
+
+A `list` can store any collection of objects of any types in different `slots`:
+
+```{r size = "tiny"}
+a <- list(age=c(10,54,3), sex=c("m","f","m"),
+          swab=matrix(sample(c("+","-"),replace=TRUE, 10), nrow=2,
+                      dimnames=list(NULL, paste("t",1:5,sep=""))))
+a
+class(a)
+length(a)
+```
+
+
+
+
+
+
+
+## Summary: basic object types`
+
+- `integer`: integer numbers\pause
+- `numeric`: decimal numbers\pause
+- `character`: character strings\pause
+- `factor`: categorical variables\pause
+- `vector`: collection of values (same type)\pause
+- `matrix`: collection of values (table, same type)\pause
+- `data.frame`: table where columns can have different types, but same length\pause
+- `list`: collection of elements, no restriction of content\pause
+- `...`: classes for: DNA sequences, graphs, phylogenetic trees, etc.
+
+
+
+
+
+
+
+# Handling objects
+
+
+## Subsetting a vector: indices
+
+Objects can be subsetted by *index*, *name*, or *logical*, using `[]`
+or `[[]]`:
+
+```{r}
+x <- 10:1
+x
+x[c(1,2,5)]
+letters[2:10]
+letters[-(1:20)]
+```
+
+
+
+
+
+## Subsetting a vector: logicals
+
+`x[foo]` where `foo` is logical, returns the values of `x` where `foo`
+is `TRUE`:
+
+```{r}
+x <- 1:10
+x < 5
+x[x<5]
+x[x %% 3 == 0]
+```
+
+
+
+
+
+
+## Subsetting a vector: names
+
+`x[foo]` where `x` is named and `foo` is a vector of retained names:
+
+```{r}
+x <- sample(1:100, 10)
+names(x) <- letters[1:10]
+x
+x[c("c", "d", "a", "i")]
+```
+
+
+
+
+
+
+
+
+
+
+## Subsetting and replacing values
+
+`x[foo] <- new.value` where `x[foo]` are values to be replaced with `new.value`:
+
+```{r}
+x <- round(rnorm(14),2)
+x
+x.noNeg <- x
+x.noNeg[x.noNeg<0] <- 0
+x.noNeg
+```
+
+
+
+
+
+
+
+
+
+
+## Subsetting matrices and data frames
+
+Same principle, with `x[lines, columns]`:
+
+```{r size = "tiny"}
+x <- matrix(1:15, nrow = 3)
+x
+x[c(3,1), ]
+x[2, 4:5]
+x[3, 3]
+```
+
+
+
+
+
+## Subsetting lists
+
+`x[foo]` to return a list, `x[[foo]]` for a single element:
+
+```{r size = "tiny"}
+x <- list(a = rnorm(4), hi = "Hello", stuff = letters[1:10]); x
+x[c(1,3)]
+x[[3]]
+x$stuff
+```
+
+
+
+
+
+
+
+
+# Advanced object handling
+
+## Logical operations 1/4
+
+```{r}
+a <- c(TRUE, TRUE, FALSE, FALSE)
+b <- c(TRUE, FALSE, TRUE, FALSE)
+rbind(a,b)
+a & b # logical 'AND'
+a | b # logical 'OR'
+```
+
+
+
+
+
+## Logical operations 2/4
+```{r}
+!a # not A
+any(a) # at least one TRUE
+all(a) # all TRUE
+which(a) # indices of the TRUEs
+```
+
+
+
+
+
+## Logical operations 3/4
+`is.na` is useful to spot missing data (NAs)
+```{r}
+a <- c(3,NA,2,5,NA,10)
+is.na(a)
+a[!is.na(a)]
+```
+
+
+
+
+
+
+## Logical operations 4/4
+Logicals are numbers: `TRUE = 1`, `FALSE = 0`
+
+```{r}
+a <- -10:5
+sum(a > 0)
+mean(a > 0)
+a * (a > 0)
+```
+
+
+
+## 
+
+<br>
+
+<center>
+<img src="../../img/slides/the-end.jpg" width="100%">
+</center>
