@@ -32,15 +32,19 @@ knit_hooks$set(source = function(x, options){
 
 
 
-# Introduction
+# What is **R**?
 
-## What is **R**?
+## **R** in a nutshell
 
-- a free software for data analysis
-- an interpreted programming language, derived from `S-plus'
-- initially developed by R. Ihaka and R. Gentleman (1996)
-- currently developed by the R Core Team ($\sim$20 people)
-- largest collection of tools for statistics and data analysis (1,000s of contributors)
+<center><img src="../../img/slides/Rlogo.png" width="25%"></center>
+
+<br>
+
+> - a <font color="#99004d">free software</font> for <font color="#99004d">data analysis</font>
+> - an interpreted <font color="#99004d">programming language</font>, derived from `S-plus'
+> - initially developed by <font color="#99004d">R.</font> Ihaka and <font color="#99004d">R.</font> Gentleman (1996)
+> - currently developed by the <font color="#99004d">R Core Team</font> (20 people)
+> - <font color="#99004d">largest collection</font> of tools for data analysis (1,000s of contributors)
 
 
 
@@ -48,35 +52,28 @@ knit_hooks$set(source = function(x, options){
 
 ## Where can you get it?
 
-- google `R'
-- The **R**~ project: [www.r-project.org](www.r-project.org)
-- distribution on CRAN: [cran.r-project.org/mirrors.html](cran.r-project.org/mirrors.html)
-- available on Windows, MacOSX, Linux
+<center><img src="../../img/slides/google_R.png" width="70%"></center>
+
+> - The **R** project: [www.r-project.org](www.r-project.org)
+> - archiving / distribution network CRAN: <br>[cran.r-project.org/mirrors.html](cran.r-project.org/mirrors.html)
+> - available on Windows, MacOSX, Linux
 
 
 
 
 
 
+## What can you do with it?
 
-## What does it do?  {.columns-2}
-
-<center><img src="../../img/slides/swiss-army-knife.jpg" width="65%"></center>
+<center><img src="../../img/slides/swiss-army-knife.jpg" width="35%"></center>
 
 
-Base **R**, core packages (30), and regular packages ($>$10,000):
-
-- statistical tests
-- linear/non-linear modelling
-- multivariate analysis
-- time series
-- mapping, GIS, spatial statistics
-- graph theory
-- genetics
-- epidemiology
-- ...
-
-See *task views*: [cran.r-project.org/web/views/](cran.r-project.org/web/views/)
+> - <font color="#99004d">basic statistics</font>: statistical tests, linear modelling, multivariate analysis
+> - <font color="#99004d">spatial statistics</font>: GIS, mapping, clustering
+> - <font color="#99004d">graph theory</font>: social sciences, network analysis, graph algorithm
+> - <font color="#99004d">genetics</font>: phylogenetic trees, genetic markers, genomics
+> - <font color="#99004d">epidemiology!</font>
+> - <font color="#99004d">much more</font>: see *task views* [cran.r-project.org/web/views/](cran.r-project.org/web/views/)
 
 
 
@@ -86,15 +83,16 @@ See *task views*: [cran.r-project.org/web/views/](cran.r-project.org/web/views/)
 
 
 
-## How much is it free?
+## What does "free" mean?
 
 <center><img src="../../img/slides/money.jpg" width="65%"></center>
 
-**R** is free in the sense of *free software*:
+<br>
 
-- you don't pay for it
-- the sources are freely accessible
-- anyone can re-use, modify and distribute the code
+> - <font color="#99004d">Freedom</font> = *ability to make informed decisions*
+> - you don't pay for it
+> - the code is accessible by anyone
+> - anyone can use, modify and share the code
 
 
 
@@ -103,11 +101,16 @@ See *task views*: [cran.r-project.org/web/views/](cran.r-project.org/web/views/)
 
 ## Getting started
 
-All you need is:
+<center><img src="../../img/slides/getting_started.jpg" width="45%"></center>
 
-- **R** for your system (download from CRAN)
-- a text editor to write code: notepad++, emacs, vi, Tinn-R, ...
-- a Graphical User Interface (GUI): RStudio, Tinn-R, ESS
+<br>
+
+> - get **R** for your system (download from CRAN)
+
+> - get a Graphical User Interface (GUI): <font color="#99004d">RStudio</font>, emacs + ESS, Tinn-R
+
+> - (or at least) get a text editor to write code: notepad++, emacs, vi, Tinn-R, ...
+
 
 
 
@@ -116,7 +119,7 @@ All you need is:
 
 ## And then...
 
-<center><img src="../../img/slides/rstudio_shot.png" width="85%"></center>
+<center><img src="../../img/slides/rstudio_shot.png" width="65%"></center>
 
 
 
@@ -126,17 +129,15 @@ All you need is:
 
 ## Getting help
 
-<center><img src="../../img/slides/ubuntu.jpg" width="65%"></center>
+<center><img src="../../img/slides/ubuntu.jpg" width="30%"></center>
 
+<br>
 
-
-Different ways of getting help:
-
-- `?foo` or `help("foo")`: access the help page of `foo`
-- `??bar` or `help.search("foo")`: look for `foo` in help pages
-- `RSiteSearch("foo")`: search `foo` in help pages \& forum archives
-- dedicated mailing lists: [stat.ethz.ch/mailman/listinfo](stat.ethz.ch/mailman/listinfo)
-- the RECON forum: [http://www.repidemicsconsortium.org/forum/](http://www.repidemicsconsortium.org/forum/)
+> - `?foo` or `help("foo")`: access the help page of `foo`
+> - `??bar` or `help.search("foo")`: look for `foo` in help pages
+> - dedicated <font color="#99004d">mailing lists</font>: [stat.ethz.ch/mailman/listinfo](stat.ethz.ch/mailman/listinfo)
+> - the <font color="#99004d">RECON forum</font>: [http://www.repidemicsconsortium.org/forum/](http://www.repidemicsconsortium.org/forum/)
+> - <font color="#99004d">google</font>
 
 
 
@@ -148,13 +149,13 @@ Different ways of getting help:
 
 ## How does **R** store information?
 
-<center><img src="../../img/slides/mecanism.jpg" width="35%"></center>
+<center><img src="../../img/slides/mecanism.jpg" width="30%"></center>
 
-- <font color="#99004d">no files</font>, all in the <font color="#99004d">RAM</font> (i.e. temporary memory)
-- data, results, functions, etc. are all **R** <font color="#99004d">*objects*</font>
-- one *object* can be saved / loaded using `saveRDS`/`readRDS` (output: `.rds` files)
-- several *objects* can be saved / loaded using `save`/`load` (output: `.RData` files)
-- an entire session can be saved using `save.image`
+> - <font color="#99004d">no files</font>, all in the <font color="#99004d">RAM</font> (i.e. temporary memory)
+> - data, results, functions, etc. are all **R** <font color="#99004d">*objects*</font>
+> - <font color="#99004d">one *object*</font> can be saved / loaded using `saveRDS`/`readRDS` (output: `.rds` files)
+> - <font color="#99004d">several *objects*</font> can be saved / loaded using `save`/`load` (output: `.RData` files)
+> - an <font color="#99004d">entire session</font> can be saved using `save.image`
 
 
 
@@ -164,9 +165,8 @@ Different ways of getting help:
 
 <center><img src="../../img/slides/create.png" width="35%"></center>
 
-General syntax: `object_name <- content`
+General syntax: `object_name <- content`:
 
-For instance:
 ```{r}
 toto <- 1:8
 toto # check content: 1, 2, 3, ...
@@ -178,9 +178,7 @@ toto # content has changed
 
 
 
-## Type of objects 1: <font color="#99004d">numbers</font>
-
-Numbers can be `integer` or `numeric`:
+## <font color="#99004d">Numbers</font>: `integer` and `numeric`
 
 ```{r}
 a <- 1:10
@@ -196,9 +194,7 @@ class(b)
 
 
 
-## Type of objects 2: <font color="#99004d">characters</font>
-
-Character strings (i.e. text) are `character`:
+## <font color="#99004d">Text</font>: `character`
 
 ```{r}
 a <- "hello world"
@@ -210,9 +206,7 @@ class(a)
 
 
 
-## Type of objects 3: <font color="#99004d">categorical variables</font>
-
-Categorical variables are `factor`:
+## <font color="#99004d">Categorical variables</font>: `factor`
 
 ```{r}
 a <- factor(c("red", "blue", "green", "red", "green"))
@@ -225,9 +219,9 @@ levels(a)
 
 
 
-## Type of objects 4: <font color="#99004d">booleans</font>
+## <font color="#99004d">Booleans</font>: `logical`
 
-Booleans (TRUE/FALSE) are `logical`:
+The `logical` type can be `TRUE` or `FALSE`:
 
 ```{r}
 a <- c(TRUE, FALSE, TRUE, TRUE)
@@ -246,8 +240,6 @@ as a one-dimensional array:
 ```{r}
 a <- c(1, 2, 10, -1, 1.123)
 a
-class(a)
-is.vector(a)
 length(a)
 ```
 
@@ -264,7 +256,6 @@ as a table:
 ```{r}
 a <- matrix(sample(1:12), ncol = 4)
 a
-class(a)
 is.matrix(a)
 dim(a)
 ```
@@ -326,6 +317,68 @@ length(a)
 
 
 
+# Using functions
+
+
+## What is a function?
+
+<center><img src="../../img/slides/function.png" width="35%"></center>
+
+A set of <font color="#99004d">operations</font> made on a given input.
+
+Syntax: `function_name(argument1, argument2, ...)`
+
+Example:
+
+```{r}
+rnorm(8, mean = 5, sd = 3)
+```
+
+
+
+
+
+## How to use a function?
+
+Read the documentation by typing `?function_name`.
+
+Example:
+
+```{r}
+?rnorm
+```
+
+<center><img src="../../img/slides/help_rnorm.png" width="50%"></center>
+
+
+
+
+
+## Functions results need storing
+
+For example:
+
+```{r}
+rnorm(8, mean = 3, sd = 2) # this is not stored
+toto <- rnorm(8, mean = 3, sd = 2) # store output in toto
+toto
+```
+
+
+
+
+
+## Functions can be nested
+
+For example:
+
+```{r}
+hist(rnorm(1000, mean = 3, sd = 2), col = rainbow(15))
+```
+
+
+
+
 
 # Handling objects
 
@@ -337,7 +390,9 @@ Objects can be subsetted by *index*, *name*, or *logical*, using `[]`
 or `[[]]`
 
 
-## Subsetting a vector: integers
+## Subsetting a vector: by index
+
+`x[foo]` where `foo` is an `integer` vector
 
 - <font color="#99004d">positive integers</font>: position of retained entries
 - <font color="#99004d">negative integers</font>: position of discarded entries
@@ -357,14 +412,13 @@ letters[-(1:20)]
 
 ## Subsetting a vector: logicals
 
-`x[foo]` where `foo` is logical, returns the values of `x` where `foo`
+`x[foo]` where `foo` is a `logical` vector, returns the values of `x` where `foo`
 is `TRUE`:
 
 ```{r}
 x <- 1:10
 x < 5
-x[x<5]
-x[x %% 3 == 0]
+x[x < 5]
 ```
 
 
@@ -374,7 +428,7 @@ x[x %% 3 == 0]
 
 ## Subsetting a vector: names
 
-`x[foo]` where `x` is named and `foo` is a vector of retained names:
+`x[foo]` where `x` is named and `foo` is a `character` vector of retained names:
 
 ```{r}
 x <- sample(1:100, 10)
@@ -397,11 +451,10 @@ x[c("c", "d", "a", "i")]
 `x[foo] <- new.value` where `x[foo]` are values to be replaced with `new.value`:
 
 ```{r}
-x <- round(rnorm(14),2)
+x <- round(rnorm(14), 2)
 x
-x.noNeg <- x
-x.noNeg[x.noNeg<0] <- 0
-x.noNeg
+x[x< 0] <- 0
+x
 ```
 
 
@@ -422,7 +475,6 @@ x <- matrix(1:15, nrow = 3)
 x
 x[c(3,1), ]
 x[2, 4:5]
-x[3, 3]
 ```
 
 
@@ -447,7 +499,7 @@ x$stuff
 
 
 
-# Advanced object handling
+# Using logical operations
 
 ## Logical operations 1/4
 
