@@ -178,13 +178,23 @@ toto # content has changed
 
 
 
-## <font color="#99004d">Numbers</font>: `integer` and `numeric`
+## <font color="#99004d">Round numbers</font>: `integer`
 
 ```{r}
 a <- 1:10
 a
 class(a)
-b <- a + 0.1
+```
+
+
+
+
+
+
+## <font color="#99004d">Decimal numbers</font>: `numeric`
+
+```{r}
+b <- c(-0.1, 10.123, pi)
 b
 class(b)
 ```
@@ -193,11 +203,10 @@ class(b)
 
 
 
-
 ## <font color="#99004d">Text</font>: `character`
 
 ```{r}
-a <- "hello world"
+a <- c("hello world", "this is fun", "even more fun coming")
 a
 class(a)
 ```
@@ -256,7 +265,7 @@ as a table:
 ```{r}
 a <- matrix(sample(1:12), ncol = 4)
 a
-is.matrix(a)
+class(a)
 dim(a)
 ```
 
@@ -269,8 +278,8 @@ dim(a)
 A `data.frame` is a table where variables (columns) can have different types
 (equivalent to a <font color="#99004d">spreadsheet</font>):
 
-```{r}
-a <- data.frame(age = c(10,54,3), sex = c("m", "f", "m"))
+```{r, size = "tiny"}
+a <- data.frame(age = c(10, 54, 3), sex = c("m", "f", "m"))
 a
 class(a)
 dim(a)
@@ -287,14 +296,26 @@ A `list` is a collection of objects of <font color="#99004d">any types and
 sizes</font>, stored as different `slots`:
 
 ```{r size = "tiny"}
-a <- list(age = c(10,54,3),
-          sex = c("m", "f", "m"),
-          swab = matrix(sample(c("+", "-"), replace = TRUE, 10), nrow = 2,
-                        dimnames = list(NULL, paste("t", 1:5, sep = ""))))
-a
-class(a)
-length(a)
+age <- c(10, 54, 3)
+sex <- factor(c("m", "f", "m"))
+swab  <- matrix(
+  sample(c("+", "-"), replace = TRUE, 10), nrow = 2,
+  dimnames = list(NULL, paste("t", 1:5, sep = "")))
+x <- list(age = age, gender = sex, swab_results = swab)
 ```
+
+
+
+
+
+## Lists (continued)
+
+```{r size = "tiny"}
+x
+class(x)
+length(x)
+```
+
 
 
 
@@ -322,7 +343,7 @@ length(a)
 
 ## What is a function?
 
-<center><img src="../../img/slides/function.png" width="35%"></center>
+<center><img src="../../img/slides/function.png" width="45%"></center>
 
 A set of <font color="#99004d">operations</font> made on a given input.
 
@@ -359,8 +380,8 @@ Example:
 For example:
 
 ```{r}
-rnorm(8, mean = 3, sd = 2) # this is not stored
-toto <- rnorm(8, mean = 3, sd = 2) # store output in toto
+rnorm(5, mean = 3, sd = 2) # this result is not stored
+toto <- rnorm(5, mean = 3, sd = 2) # store output in toto
 toto
 ```
 
@@ -380,14 +401,22 @@ hist(rnorm(1000, mean = 3, sd = 2), col = rainbow(15))
 
 
 
-# Handling objects
 
+# Handling objects
 
 ## Subsetting objects
 
+<center><img src="../../img/slides/pick_apple.jpg" width="45%"></center>
 
-Objects can be subsetted by *index*, *name*, or *logical*, using `[]`
-or `[[]]`
+<br>
+
+Objects can be <font color="#99004d">subsetted</font> by *index*, *name*, or *logical*, using:
+
+> - `object_name[]` for a vector
+> - `object_name[rows, columns]` for a `matrix` / `data.frame`
+> - `object_name[[]]` for a `list`
+
+
 
 
 ## Subsetting a vector: by index
