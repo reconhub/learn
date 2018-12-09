@@ -146,22 +146,39 @@ Different ways of getting help:
 
 # Storing data in **R**
 
-## How does **R** work?
+## How does **R** store information?
 
 <center><img src="../../img/slides/mecanism.jpg" width="35%"></center>
 
-- code is not compiled, but \textit{interpreted}\pause
-- no file, all in the RAM\pause
-- content of a session can be saved using `save`/`save.image` (output: `.RData` file)\pause
-- `.RData` files can be loaded using `load`\pause
-- data, results, functions, etc. are all \textit{objects}\pause
+- <font color="#99004d">no files</font>, all in the <font color="#99004d">RAM</font> (i.e. temporary memory)
+- data, results, functions, etc. are all **R** <font color="#99004d">*objects*</font>
+- one *object* can be saved / loaded using `saveRDS`/`readRDS` (output: `.rds` files)
+- several *objects* can be saved / loaded using `save`/`load` (output: `.RData` files)
+- an entire session can be saved using `save.image`
 
 
 
 
 
+## How to create objects? 
 
-## Type of objects 1: numbers
+<center><img src="../../img/slides/create.png" width="35%"></center>
+
+General syntax: `object_name <- content`
+
+For instance:
+```{r}
+toto <- 1:8
+toto # check content: 1, 2, 3, ...
+toto <- "some text"
+toto # content has changed
+```
+
+
+
+
+
+## Type of objects 1: <font color="#99004d">numbers</font>
 
 Numbers can be `integer` or `numeric`:
 
@@ -179,12 +196,9 @@ class(b)
 
 
 
+## Type of objects 2: <font color="#99004d">characters</font>
 
-
-
-## Type of objects 2: characters
-
-Character strings are `character`:
+Character strings (i.e. text) are `character`:
 
 ```{r}
 a <- "hello world"
@@ -196,17 +210,12 @@ class(a)
 
 
 
-
-
-
-
-
-## Type of objects 3: categorical variables
+## Type of objects 3: <font color="#99004d">categorical variables</font>
 
 Categorical variables are `factor`:
 
 ```{r}
-a <- factor(c("red","blue","green","red","green"))
+a <- factor(c("red", "blue", "green", "red", "green"))
 a
 class(a)
 levels(a)
@@ -216,12 +225,7 @@ levels(a)
 
 
 
-
-
-
-
-
-## Type of objects 4: booleans
+## Type of objects 4: <font color="#99004d">booleans</font>
 
 Booleans (TRUE/FALSE) are `logical`:
 
@@ -236,7 +240,8 @@ class(a)
 
 ## Vectors
 
-Vectors contain series of values of a given type:
+A `vector` stores several values of the <font color="#99004d">same type</font>
+as a one-dimensional array:
 
 ```{r}
 a <- c(1, 2, 10, -1, 1.123)
@@ -253,7 +258,8 @@ length(a)
 
 ## Matrices
 
-Matrices contain series of values of a given type, in a table:
+A `matrix` stores several values of the <font color="#99004d">same type</font>
+as a table:
 
 ```{r}
 a <- matrix(sample(1:12), ncol = 4)
@@ -267,11 +273,10 @@ dim(a)
 
 
 
-
 ## Data frames
 
-A `data.frame` is a table where different variables (columns) can have different
-types:
+A `data.frame` is a table where variables (columns) can have different types
+(equivalent to a <font color="#99004d">spreadsheet</font>):
 
 ```{r}
 a <- data.frame(age = c(10,54,3), sex = c("m", "f", "m"))
@@ -287,12 +292,14 @@ dim(a)
 
 ## Lists
 
-A `list` can store any collection of objects of any types in different `slots`:
+A `list` is a collection of objects of <font color="#99004d">any types and
+sizes</font>, stored as different `slots`:
 
 ```{r size = "tiny"}
-a <- list(age=c(10,54,3), sex=c("m","f","m"),
-          swab=matrix(sample(c("+","-"),replace=TRUE, 10), nrow=2,
-                      dimnames=list(NULL, paste("t",1:5,sep=""))))
+a <- list(age = c(10,54,3),
+          sex = c("m", "f", "m"),
+          swab = matrix(sample(c("+", "-"), replace = TRUE, 10), nrow = 2,
+                        dimnames = list(NULL, paste("t", 1:5, sep = ""))))
 a
 class(a)
 length(a)
@@ -302,19 +309,17 @@ length(a)
 
 
 
-
-
 ## Summary: basic object types`
 
-- `integer`: integer numbers\pause
-- `numeric`: decimal numbers\pause
-- `character`: character strings\pause
-- `factor`: categorical variables\pause
-- `vector`: collection of values (same type)\pause
-- `matrix`: collection of values (table, same type)\pause
-- `data.frame`: table where columns can have different types, but same length\pause
-- `list`: collection of elements, no restriction of content\pause
-- `...`: classes for: DNA sequences, graphs, phylogenetic trees, etc.
+- `integer`: integer numbers
+- `numeric`: decimal numbers
+- `character`: character strings
+- `factor`: categorical variables
+- `vector`: collection of values (1 dimensional array, same type)
+- `matrix`: collection of values (table, same type)
+- `data.frame`: columns can have different types, but same length (spreadsheet)
+- `list`: collection of elements, no restriction of content
+- `...`: classes for: DNA sequences, maps, networks, etc.
 
 
 
@@ -325,15 +330,23 @@ length(a)
 # Handling objects
 
 
-## Subsetting a vector: indices
+## Subsetting objects
+
 
 Objects can be subsetted by *index*, *name*, or *logical*, using `[]`
-or `[[]]`:
+or `[[]]`
+
+
+## Subsetting a vector: integers
+
+- <font color="#99004d">positive integers</font>: position of retained entries
+- <font color="#99004d">negative integers</font>: position of discarded entries
+
 
 ```{r}
 x <- 10:1
 x
-x[c(1,2,5)]
+x[c(1, 2, 5)]
 letters[2:10]
 letters[-(1:20)]
 ```
