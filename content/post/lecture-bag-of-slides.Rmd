@@ -35,6 +35,21 @@ Click on the image below to access the slides:
 
 
 
+
+
+## Introduction to R
+
+Click on the image below to access the slides:
+
+<center>
+<a href="../../slides/intro_to_R/intro_to_R.html"><img class="gateway" src="../../img/highres/old_photographs.jpg" width="50%" alt="click there for slides" align="middle"></a>
+</center>
+
+
+
+
+
+
 ## Importing data into R
 
 **Click on the image below to access the slides:**
