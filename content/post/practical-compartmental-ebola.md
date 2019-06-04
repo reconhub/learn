@@ -16,19 +16,17 @@ We will start with a basic model for Ebola. We will then illustrate how
 to account for an evolving context, e.g. implementation of control
 measures. Finally, we will explore basic principle of model fitting.
 
-Core Concepts
-=============
+# Core Concepts
 
 From the previous lecture, we will further develop these concepts:
 
--   Compartmental models
--   Flow diagrams and writing down a model
--   Natural history of Ebola
--   Control strategies
--   Introduction to model fitting
+  - Compartmental models
+  - Flow diagrams and writing down a model
+  - Natural history of Ebola
+  - Control strategies
+  - Introduction to model fitting
 
-Required packages
------------------
+## Required packages
 
 ``` r
 install.packages("deSolve", dep=TRUE)
@@ -39,19 +37,16 @@ Then load the packages using:
 
 ``` r
 library(deSolve)
-## Warning: package 'deSolve' was built under R version 3.4.4
 ```
 
-The basic Ebola model
-=====================
+# The basic Ebola model
 
--   S : Susceptible humans
--   E : Exposed humans
--   I : Infected/Infectious humans
--   R : humans recovered from infection (with life lasting immunity)
+  - S : Susceptible humans
+  - E : Exposed humans
+  - I : Infected/Infectious humans
+  - R : humans recovered from infection (with life lasting immunity)
 
-The model
----------
+## The model
 
 The code below will allow you to simulate an Ebola outbreak. But, can
 you understand it?
@@ -94,9 +89,13 @@ Then write the down the equation that characterize this particular
 model:
 
 <!-- $$\ \frac{dS}{dt}  = - \beta \frac {S_t I_t}{N_t} $$ -->
+
 <!-- $$\ \frac{dE}{dt}  =  \beta \frac {S_t I_t}{N_t} - \sigma E_t $$ -->
+
 <!-- $$\ \frac{dI}{dt}  =  \sigma E_t + \gamma I_t  $$ -->
+
 <!-- $$\ \frac{dR}{dt}  =  (1-\mu) \gamma I_t  $$ -->
+
 ### The parameters
 
 ``` r
@@ -124,14 +123,13 @@ detailed studies. However, measurig the reproduction number may be
 easier.
 
 From knowledge of the reproduction number, we can work out what is the
-rate of transmission (*β*).
+rate of transmission (\(\beta\)).
 
-In this simple model, we have
-$$R\_0 = \\frac{\\beta}{\\gamma} $$
-. So given the value for *R*<sub>0</sub> above, what is the transmission
-rate?
+In this simple model, we have \[R_0 = \frac{\beta}{\gamma} \]. So given
+the value for \(R_0\) above, what is the transmission rate?
 
 <!-- $\beta = R_0* \gamma$. -->
+
 ### Numerically solve the system
 
 We then need to solve the system numerically, i.e. using parameters
@@ -179,7 +177,7 @@ lines(out$time, out$R, col='green')
 legend('topleft',c('??','??','??'),lwd=2,col=c('blue','red','green'))
 ```
 
-![](practical-compartmental-ebola_files/figure-markdown_github/unnamed-chunk-6-1.png)
+![](practical-compartmental-ebola_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
 ``` r
 
@@ -196,7 +194,7 @@ lines(time[-1], Weekly.death,type='p',col='red')
 legend('topleft',c('??','??'),pch=1,col=c('blue','red'))
 ```
 
-![](practical-compartmental-ebola_files/figure-markdown_github/unnamed-chunk-6-2.png)
+![](practical-compartmental-ebola_files/figure-gfm/unnamed-chunk-6-2.png)<!-- -->
 
 Fill the axis and legend for the plot. Interpret the results? Concept of
 exponential growth.
@@ -228,11 +226,15 @@ out2 <- as.data.frame(ode(y = xstart2, times = times2,
                          func = Dyn.Ebola.Basic, parms = params2))  # ??
 ```
 
-What is being done in the code above?
+What is being done in the code
+above?
 
 <!-- 1- The reproduction number takes its second value, therefore the rate of transmission is decreased. -->
+
 <!-- 2- The new initial conditions are set to the previous final state of the system. -->
+
 <!-- 3- The model is then run. -->
+
 Some results for the new output can be seen below. Try to comment the
 code and fill in relevant information in the graphs.
 
@@ -246,7 +248,7 @@ lines(out2$time, out2$R, col='green')
 legend('topleft',c('??','??','??'),lwd=2,col=c('blue','red','green'))
 ```
 
-![](practical-compartmental-ebola_files/figure-markdown_github/unnamed-chunk-8-1.png)
+![](practical-compartmental-ebola_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 ``` r
 
@@ -263,7 +265,7 @@ lines(time[-1], Weekly.death,type='p',col='red')
 legend('topleft',c('?','??'),pch=1,col=c('blue','red'))
 ```
 
-![](practical-compartmental-ebola_files/figure-markdown_github/unnamed-chunk-8-2.png)
+![](practical-compartmental-ebola_files/figure-gfm/unnamed-chunk-8-2.png)<!-- -->
 
 ### Merging both situations
 
@@ -284,7 +286,7 @@ lines(out3$time, out3$R, col='green')
 legend('topleft',c('??','??','??'),lwd=2,col=c('blue','red','green'))
 ```
 
-![](practical-compartmental-ebola_files/figure-markdown_github/unnamed-chunk-9-1.png)
+![](practical-compartmental-ebola_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 ``` r
 
@@ -301,10 +303,9 @@ lines(time[-1], Weekly.death,type='p',col='red')
 legend('topleft',c('??','??'),pch=c(1,1),col=c('blue','red'))
 ```
 
-![](practical-compartmental-ebola_files/figure-markdown_github/unnamed-chunk-9-2.png)
+![](practical-compartmental-ebola_files/figure-gfm/unnamed-chunk-9-2.png)<!-- -->
 
-Second model
-============
+# Second model
 
 We aim to reproduce the results above by calling the numerical solver
 only once. We also would like to compare our results to data.
@@ -391,7 +392,7 @@ lines(out$time, out$R, col='green')
 legend('topleft',c('??','??','??'),lwd=2,col=c('blue','red','green'))
 ```
 
-![](practical-compartmental-ebola_files/figure-markdown_github/unnamed-chunk-12-1.png)
+![](practical-compartmental-ebola_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 ``` r
 
@@ -420,13 +421,13 @@ lines(dat$date, dat$incidence, type='p',pch=3, col='blue')
 legend('topleft',c('??','??','??'),pch=c(1,3,1),col=c('blue','blue','red'))
 ```
 
-![](practical-compartmental-ebola_files/figure-markdown_github/read_files-1.png)
+![](practical-compartmental-ebola_files/figure-gfm/read_files-1.png)<!-- -->
 
 Now, try to modify:
 
--   the initial number in the exposed class, and
+  - the initial number in the exposed class, and
 
--   the reproduction post-intervention.
+  - the reproduction post-intervention.
 
 Re-run the model and observe the fit.
 
@@ -444,13 +445,10 @@ observations.
 
 Assuming that the incidence in a given week follows a Poisson
 distribution with mean given by our prediction:
-*P*(*I*<sub>*t*</sub><sup>*o**b**s*</sup>\|*θ*) ∝ *P**o**i**s**s*(*I*<sub>*t*</sub><sup>*p**r**e**d*</sup>)
-.
+\[P(I^{obs}_t|\theta) \propto  Poiss(I^{pred}_t) \].
 
 If each weekly incidences are assumed independent, the likelihood of the
-model could be written as:
-*L* = *Π*\[*P*(*I*<sub>*t*</sub><sup>*o**b**s*</sup>\|*θ*)\]
-.
+model could be written as: \[ L=\Pi [P(I^{obs}_t|\theta)]  \].
 
 in a very simple way, maximizing this likelihood will give us our best
 parameters.
@@ -490,14 +488,14 @@ L[L < (max(L)*1.2)] <- NA          # ??
 image(E_ini,R2,L, col = heat.colors(30), xlab = '??', ylab = '??')  # ??
 ```
 
-![](practical-compartmental-ebola_files/figure-markdown_github/unnamed-chunk-14-1.png)
+![](practical-compartmental-ebola_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
 
 Now, from visual inspection of the graph, you can choose your best fit
 values for:
 
--   the initial number in the exposed class, and
+  - the initial number in the exposed class, and
 
--   the reproduction post-intervention,
+  - the reproduction post-intervention,
 
 ### Plot the final fit
 
@@ -537,10 +535,9 @@ lines(dat$date, dat$incidence, type='p',pch=3, col='blue')
 legend('topleft',c('??','??','??'),pch=c(1,3,1),col=c('blue','blue','red'))
 ```
 
-![](practical-compartmental-ebola_files/figure-markdown_github/unnamed-chunk-15-1.png)
+![](practical-compartmental-ebola_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
-Final model
-===========
+# Final model
 
 In the previous model, the intervention was modelled as a change in the
 reproduction number. Often it is useful to know more specifically what
@@ -596,11 +593,11 @@ Dyn.Ebola.Basic3 <- function (t, state, parameters) {
 
 As before, try to:
 
--   understand the code and comment it,
+  - understand the code and comment it,
 
--   draw a flow diagram,
+  - draw a flow diagram,
 
--write dow the new equations of the system.
+\-write dow the new equations of the system.
 
 ### New parameters
 
@@ -677,7 +674,7 @@ lines(out$time, out$R, col='green')
 legend('topleft',c('??','??','??'),lwd=2,col=c('blue','red','green'))
 ```
 
-![](practical-compartmental-ebola_files/figure-markdown_github/plotSim2-1.png)
+![](practical-compartmental-ebola_files/figure-gfm/plotSim2-1.png)<!-- -->
 
 ``` r
 
@@ -697,13 +694,13 @@ lines(dat$date, dat$incidence, type='p',pch=3, col='blue')
 legend('topleft',c('??','??','??'),pch=c(1,3,1),col=c('blue','blue','red'))
 ```
 
-![](practical-compartmental-ebola_files/figure-markdown_github/plotSim2-2.png)
+![](practical-compartmental-ebola_files/figure-gfm/plotSim2-2.png)<!-- -->
 
 As before, try to modify:
 
--   the initial number in the exposed class, and
+  - the initial number in the exposed class, and
 
--   the time to hospitalisation post-intervention.
+  - the time to hospitalisation post-intervention.
 
 Re-run the model and observe the fit.
 
@@ -749,7 +746,7 @@ L[L < (max(L)*1.5)] <- NA
 image(E_ini,T2,L, col = heat.colors(30),xlab = '??', ylab='??')
 ```
 
-![](practical-compartmental-ebola_files/figure-markdown_github/unnamed-chunk-19-1.png)
+![](practical-compartmental-ebola_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
 
 We obtain best fit measure for the new time to hospitalisation.
 
@@ -788,29 +785,26 @@ lines(dat$date, dat$incidence, type='p',pch=3, col='blue')
 legend('topleft',c('??','??','??'),pch=c(1,3,1),col=c('blue','blue','red'))
 ```
 
-![](practical-compartmental-ebola_files/figure-markdown_github/unnamed-chunk-20-1.png)
+![](practical-compartmental-ebola_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
 ### Explore further
 
 you can explore further:
 
--   try compute the full outbreak size,
+  - try compute the full outbreak size,
 
--   how many live could you save by intervening earlier (perhaps draw
+  - how many live could you save by intervening earlier (perhaps draw
     graph)?
 
--   what is the influence of T.Hosp.2 on final size?
+  - what is the influence of T.Hosp.2 on final size?
 
-About this document
-===================
+# About this document
 
-Contributors
-------------
+## Contributors
 
--   Pierre Nouvellet & Zulma Cucunuba: initial version
+  - Pierre Nouvellet & Zulma Cucunuba: initial version
 
-Legal stuff
------------
+## Legal stuff
 
 **License**: [CC-BY](https://creativecommons.org/licenses/by/3.0/)
 **Copyright**: Pierre Nouvellet & Zulma Cucunuba, 2017

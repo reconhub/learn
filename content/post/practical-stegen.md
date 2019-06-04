@@ -310,7 +310,7 @@ stegen
 ##  8          106     1 1998-06-27       0    19        1        2       1
 ##  9          272     1 1998-06-27       1    40        1        2       1
 ## 10           50     1 1998-06-27       0    53        1        1       1
-## # ... with 281 more rows, and 15 more variables: dmousse <dbl>,
+## # … with 281 more rows, and 15 more variables: dmousse <dbl>,
 ## #   mousse <dbl>, mportion <dbl>, Beer <dbl>, redjelly <dbl>, `Fruit
 ## #   salad` <dbl>, tomato <dbl>, mince <dbl>, salmon <dbl>,
 ## #   horseradish <dbl>, chickenwin <dbl>, roastbeef <dbl>, PORK <dbl>,
@@ -1078,7 +1078,7 @@ head(stegen)
     ## 4 186        case  1998-06-27 male     17        1        1       1       0
     ## 5 20         case  1998-06-27 fema…    19        1        2       0       0
     ## 6 148        case  1998-06-27 male     16        1        2       1       1
-    ## # ... with 14 more variables: mousse <dbl>, mportion <dbl>, beer <dbl>,
+    ## # … with 14 more variables: mousse <dbl>, mportion <dbl>, beer <dbl>,
     ## #   redjelly <dbl>, fruit_salad <dbl>, tomato <dbl>, mince <dbl>,
     ## #   salmon <dbl>, horseradish <dbl>, chickenwin <dbl>, roastbeef <dbl>,
     ## #   pork <dbl>, latitude <dbl>, longitude <dbl>
@@ -1139,7 +1139,7 @@ stegen[food]
 ##  8        1       1       1      1     0        1           1      0     0
 ##  9        1       1       1      1     1        0           0      1     0
 ## 10        1       1       1      1     0        1           0      0     0
-## # ... with 281 more rows, and 5 more variables: salmon <dbl>,
+## # … with 281 more rows, and 5 more variables: salmon <dbl>,
 ## #   horseradish <dbl>, chickenwin <dbl>, roastbeef <dbl>, pork <dbl>
 ```
 

@@ -22,11 +22,9 @@ how a simple linear model can be used to estimate a molecular clock in
 rooted phylogenies. Methods are illustrated using a dataset of seasonal
 influenza isolates sampled in the US from 1993 to 2008.
 
-Introduction
-============
+# Introduction
 
-Phylogenetics in a nutshell
----------------------------
+## Phylogenetics in a nutshell
 
 The reconstruction of evolutionary relationships of a set of organisms
 can be a tricky task, and has led to the development of a variety of
@@ -34,17 +32,17 @@ methods over the last decades, implemented in an even larger number of
 software. However, these methods can be classified into three main
 categories:
 
--   **distance-based methods**: compute a matrix of pairwise genetic
+  - **distance-based methods**: compute a matrix of pairwise genetic
     distances between the studied taxa, and summarize it using a
     hierarchical clustering algorithm such as UPGMA or
     Neighbour-Joining. *Advantages*: fast (the fastest) and flexible
     (different genetic distances allow to account for different features
     of DNA sequence evolution). *Limitations*: no model comparison
-    (can’t test for the ‘best’ tree, or the ‘best’ model of evolution);
-    may be inaccurate and highly dependent on the distance and
-    clustering algorithm chosen.
+    (can’t test for the ‘best’ tree, or the ‘best’ model of
+    evolution); may be inaccurate and highly dependent on the distance
+    and clustering algorithm chosen.
 
--   **maximum parsimony**: seeks the tree with the smallest number of
+  - **maximum parsimony**: seeks the tree with the smallest number of
     overall genetic changes between the taxa. This is achieved by
     changing randomly the topology of the tree until parsimony is no
     longer improved. *Advantages*: intuitive interpretation (assumes
@@ -55,7 +53,7 @@ categories:
     when heterogeneous mutation rates exist in different parts of the
     tree.
 
--   **likelihood-based method**: based on a model of sequence evolution
+  - **likelihood-based method**: based on a model of sequence evolution
     which allows to compute a likelihood, that is, the probability of
     observing the data given the model and a set of parameters. There
     are two main branches of likelihood-based methods: maximum
@@ -71,8 +69,7 @@ categories:
 The R software implements one of the largest selections of phylogenetic
 methods, including all of the above except for Bayesian reconstruction.
 
-Required packages
------------------
+## Required packages
 
 This practical requires a working version of ~ (R Core Team 2017)
 greater than or equal to 2.15.2. It uses the following packages: *stats*
@@ -99,8 +96,7 @@ library(adegenet)
 library(phangorn)
 ```
 
-The data
---------
+## The data
 
 The data used in this practical are DNA sequences of seasonal influenza
 (H3N2) downloaded from Genbank <http://www.ncbi.nlm.nih.gov/genbank/>.
@@ -112,9 +108,10 @@ US from 1993 to 2008. The dataset consists of two files: i)
 sequences and ii) [`usflu.annot.csv`](../../data/usflu.annot.csv), a
 comma-separated file containing useful annotations of the sequences.
 
-First download these files (right-click → *Save Link As…*) and store
-them in a folder `data/` in your working directory. To read the DNA
-sequences into R, we use `fasta2DNAbin` from the *adegenet* package:
+First download these files (right-click \(\rightarrow\) *Save Link As…*)
+and store them in a folder `data/` in your working directory. To read
+the DNA sequences into R, we use `fasta2DNAbin` from the *adegenet*
+package:
 
 ``` r
 dna <- fasta2DNAbin(file = "data/usflu.fasta")
@@ -143,17 +140,18 @@ class(dna)
     ## All sequences of same length: 1701 
     ## 
     ## Labels:
-    ##  CY013200
-    ##  CY013781
-    ##  CY012128
-    ##  CY013613
-    ##  CY012160
-    ##  CY012272
+    ## CY013200
+    ## CY013781
+    ## CY012128
+    ## CY013613
+    ## CY012160
+    ## CY012272
     ## ...
     ## 
     ## Base composition:
     ##     a     c     g     t 
-    ## 0.335 0.200 0.225 0.239
+    ## 0.335 0.200 0.225 0.239 
+    ## (Total: 136.08 kb)
     ## [1] "DNAbin"
 
 Sequences are stored as `DNAbin` objects, an efficient representation of
@@ -198,7 +196,7 @@ dim(dna)
 dim(annot)
 ## [1] 80  3
 all(annot$accession == rownames(dna))
-## [1] FALSE
+## [1] TRUE
 table(annot$year)
 ## 
 ## 1993 1994 1995 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 
@@ -207,19 +205,17 @@ table(annot$year)
 ##    5
 ```
 
-Good! The data we will analyse are 80 isolates (5 per year) typed for
+Good\! The data we will analyse are 80 isolates (5 per year) typed for
 the same 1701 nucleotides.
 
-Distance-based phylogenies
-==========================
+# Distance-based phylogenies
 
 Distance-based phylogenetic reconstruction consists in i) computing
 pairwise genetic distances between individuals (here, isolates), ii)
 representing these distances using a tree, and iii) evaluating the
 relevance of this representation.
 
-Computing genetic distances
----------------------------
+## Computing genetic distances
 
 We first compute genetic distances using *ape*’s `dist.dna`, which
 proposes no less than 15 different genetic distances (see `?dist.dna`
@@ -242,17 +238,17 @@ every pairs of sequences.
 Now that genetic distances between isolates have been computed, we need
 to visualize this information. There are *n(n-1)/2* distances for *n*
 sequences; here, *n=80* so that the genetic relationships between the
-sampled isolates are described by *80 79 / 2 = 3160* pairwise distances.
-Most of the time, summarising such information is not entirely trivial.
-The simplest approach is plotting directly the matrix of pairwise
-distances:
+sampled isolates are described by \(80 \times 79 / 2 = 3160\) pairwise
+distances. Most of the time, summarising such information is not
+entirely trivial. The simplest approach is plotting directly the matrix
+of pairwise distances:
 
 ``` r
 temp <- as.data.frame(as.matrix(D))
 table.paint(temp, cleg = 0, clabel.row = .5, clabel.col = .5)
 ```
 
-![](practical-phylogenetics_files/figure-markdown_github/unnamed-chunk-10-1.png)
+![](practical-phylogenetics_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 Darker shades of grey represent greater distances. Note that to use
 `image` to produce similar plots, data need to be transformed first; for
@@ -271,7 +267,7 @@ axis(side = 2, at = 1:80, lab = rev(rownames(dna)), las = 2, cex.axis = .5)
 axis(side = 3, at = 1:80, lab = rownames(dna), las = 3, cex.axis = .5)
 ```
 
-![](practical-phylogenetics_files/figure-markdown_github/unnamed-chunk-12-1.png)
+![](practical-phylogenetics_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 (see `image.plot` in the package *fields* for similar plots with a
 legend).
@@ -281,8 +277,7 @@ genetic structure appearing, but this is admittedly not the most
 satisfying or informative approach, and tells us little about the
 evolutionary relationships between our isolates.
 
-Building trees
---------------
+## Building trees
 
 We use trees to get a better representation of the genetic distances
 between individuals. It is important, however, to bear in mind that the
@@ -293,11 +288,11 @@ process.
 A wide array of algorithms for constructing trees from a distance matrix
 are available in R, including:
 
--   `nj` (*ape* package): the classical Neighbor-Joining algorithm.
+  - `nj` (*ape* package): the classical Neighbor-Joining algorithm.
 
--   `bionj` (*ape*): an improved version of Neighbor-Joining.
+  - `bionj` (*ape*): an improved version of Neighbor-Joining.
 
--   `fastme.bal` and `fastme.ols` (*ape*): minimum evolution algorithms.
+  - `fastme.bal` and `fastme.ols` (*ape*): minimum evolution algorithms.
     `hclust` (*stats*): classical hierarchical clustering algorithms
     including single linkage, complete linkage, UPGMA, and others.
 
@@ -313,20 +308,19 @@ tre
 ## Phylogenetic tree with 80 tips and 78 internal nodes.
 ## 
 ## Tip labels:
-##   CY013200,  CY013781,  CY012128,  CY013613,  CY012160,  CY012272, ...
+##  CY013200, CY013781, CY012128, CY013613, CY012160, CY012272, ...
 ## 
 ## Unrooted; includes branch lengths.
 plot(tre, cex = .6)
 title("A simple NJ tree")
 ```
 
-![](practical-phylogenetics_files/figure-markdown_github/unnamed-chunk-13-1.png)
+![](practical-phylogenetics_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
 Trees created in the package *ape* are instances of the class `phylo`.
 See `?read.tree` for a description of this class.
 
-Plotting trees
---------------
+## Plotting trees
 
 The plotting method offers many possibilities for plotting trees; see
 `?plot.phylo` for more details. Functions such as `tiplabels`,
@@ -345,7 +339,7 @@ legend("bottomleft", fill = num2col(temp, col.pal = myPal),
        leg = temp, ncol = 2)
 ```
 
-![](practical-phylogenetics_files/figure-markdown_github/unnamed-chunk-14-1.png)
+![](practical-phylogenetics_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
 
 This illustrates a common mistake when interpreting phylogenetic trees.
 In the above figures, we tend to assume that the left-side of the
@@ -362,7 +356,7 @@ tiplabels(tre$tip.label, bg = num2col(annot$year, col.pal = myPal),
           cex = .5)
 ```
 
-![](practical-phylogenetics_files/figure-markdown_github/unnamed-chunk-15-1.png)
+![](practical-phylogenetics_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
 In the present case, a sensible rooting would be any of the most ancient
 isolates (from 1993). We can take the first one:
@@ -395,7 +389,7 @@ legend("topright",
        leg = temp, ncol = 2)
 ```
 
-![](practical-phylogenetics_files/figure-markdown_github/unnamed-chunk-17-1.png)
+![](practical-phylogenetics_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
 
 The phylogeny is now rooted. The shape of this tree is typical of
 influenza. What can you say about the evolution of influenza and the
@@ -403,8 +397,7 @@ fitness of different viral lineages, based on this tree? What does the
 ‘trunk’ of this tree represent? Would there be any interest in
 predicting the genome of the trunk?
 
-Estimating a molecular clock
-----------------------------
+## Estimating a molecular clock
 
 Rooted trees are also useful for assessing the rate of evolution of a
 given gene. We call **molecular clock** the accumulation of mutations
@@ -422,7 +415,7 @@ lm.clock <- lm(mutFromRoot ~ -1 + yearFromRoot)
 abline(lm.clock, col = "blue",lwd = 2)
 ```
 
-![](practical-phylogenetics_files/figure-markdown_github/molecular-clock-1.png)
+![](practical-phylogenetics_files/figure-gfm/molecular-clock-1.png)<!-- -->
 
 ``` r
 summary(lm.clock)
@@ -462,8 +455,7 @@ chain? Knowing that the generation time of influenza is roughly around
 transmission trees of influenza epidemics? What alternative would you
 suggest?
 
-Assessing the quality of a phylogeny
-------------------------------------
+## Assessing the quality of a phylogeny
 
 Many genetic distances and hierarchical clustering algorithms can be
 used to build trees; not all of them are appropriate for a given
@@ -474,7 +466,7 @@ in `dist.dna`) is easy to interprete, but only makes sense if all
 substitutions are equally frequent. In practice, simple yet flexible
 models such as that of Tamura and Nei (Tamura and Nei 1993) are probably
 fair choices. At the very least, the genetic distance used should allow
-different rates for transitions (*a &lt;-&gt; g*, *c &lt;-&gt; t*) and
+different rates for transitions (*a \<-\> g*, *c \<-\> t*) and
 transversions (other changes).
 
 <br>
@@ -495,7 +487,7 @@ plot(x, y, xlab = "original pairwise distances", ylab = "pairwise distances on t
 abline(lm(y~x), col = "red")
 ```
 
-![](practical-phylogenetics_files/figure-markdown_github/unnamed-chunk-18-1.png)
+![](practical-phylogenetics_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
 
 ``` r
 cor(x,y)^2
@@ -514,7 +506,7 @@ plot(x, y, xlab = "original pairwise distances", ylab = "pairwise distances on t
 abline(lm(y~x), col = "red")
 ```
 
-![](practical-phylogenetics_files/figure-markdown_github/unnamed-chunk-19-1.png)
+![](practical-phylogenetics_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
 
 ``` r
 cor(x,y)^2
@@ -530,7 +522,7 @@ plot(tre3, cex = .5)
 title("UPGMA tree")
 ```
 
-![](practical-phylogenetics_files/figure-markdown_github/unnamed-chunk-20-1.png)
+![](practical-phylogenetics_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
 The underlying assumption is that all lineages have undergone the same
 amount of evolution, which is obviously not the case in seasonal
@@ -574,13 +566,13 @@ legend("topright", fill = transp(num2col(temp, col.pal = myPal),.7),
 nodelabels(myBoots, cex = .6)
 ```
 
-![](practical-phylogenetics_files/figure-markdown_github/unnamed-chunk-22-1.png)
+![](practical-phylogenetics_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
 As we can see, some nodes are very poorly supported. One common practice
 is to collapse these nodes into multifurcations. There is no dedicated
 method for this in *ape*, but one simple workaround consists in setting
 the corresponding edges to a length of zero (here, with bootstrap
-&lt;70%), and then collapsing the small branches:
+\<70%), and then collapsing the small branches:
 
 ``` r
 temp <- tre2
@@ -604,13 +596,11 @@ legend("topright", fill = transp(num2col(temp, col.pal = myPal), .7),
        leg = temp, ncol = 2)
 ```
 
-![](practical-phylogenetics_files/figure-markdown_github/unnamed-chunk-24-1.png)
+![](practical-phylogenetics_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
-Maximum parsimony phylogenies
-=============================
+# Maximum parsimony phylogenies
 
-Introduction
-------------
+## Introduction
 
 Phylogenetic reconstruction based on parsimony seeks trees which
 minimize the total number of changes (substitutions) from ancestors to
@@ -626,8 +616,7 @@ strategy is fairly simple: i) initialize the algorithm using a tree and
 ii) make small changes to the tree and retain those leading to better
 parsimony, until the parsimony score stops improving.
 
-Implementation
---------------
+## Implementation
 
 Parsimony-based phylogenetic reconstruction is implemented in the
 package *phangorn*. It requires a tree (in *ape*’s format, i.e. a
@@ -648,7 +637,7 @@ tre.ini
 ## Phylogenetic tree with 80 tips and 78 internal nodes.
 ## 
 ## Tip labels:
-##   CY013200,  CY013781,  CY012128,  CY013613,  CY012160,  CY012272, ...
+##  CY013200, CY013781, CY012128, CY013613, CY012160, CY012272, ...
 ## 
 ## Unrooted; includes branch lengths.
 ```
@@ -667,10 +656,10 @@ tre.pars <- optim.parsimony(tre.ini, dna2)
 ## Final p-score 420 after  2 nni operations
 tre.pars
 ## 
-## Phylogenetic tree with 80 tips and 78 internal nodes.
+## Phylogenetic tree with 80 tips and 76 internal nodes.
 ## 
 ## Tip labels:
-##   CY013200,  CY013781,  CY012128,  CY013613,  CY012160,  CY012272, ...
+##  CY013200, CY013781, CY012128, CY013613, CY012160, CY012272, ...
 ## 
 ## Unrooted; no branch lengths.
 ```
@@ -689,18 +678,16 @@ legend("bottomright", fill = transp(num2col(temp, col.pal = myPal),.7),
        leg = temp, ncol = 2, bg = transp("white"))
 ```
 
-![](practical-phylogenetics_files/figure-markdown_github/unnamed-chunk-28-1.png)
+![](practical-phylogenetics_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
 
 In this case, parsimony gives fairly consistent results with other
 approaches, which is only to be expected whenever the amount of
 divergence between the sequences is fairly low, as is the case in our
 data.
 
-Maximum likelihood phylogenies
-==============================
+# Maximum likelihood phylogenies
 
-Introduction
-------------
+## Introduction
 
 Maximum likelihood phylogenetic reconstruction is somehow similar to
 parsimony methods in that it browses a space of possible tree topologies
@@ -714,12 +701,11 @@ As in distance-based methods, model-based phylogenetic reconstruction
 requires thinking about which parameters should be included in a model.
 Usually, all possible substitutions are allowed to have different rates,
 and the substitution rate is allowed to vary across sites according to a
-gamma distribution. We refer to this model as GTR + *Γ*(4) (GTR: global
-time reversible). More information about phylogenetic models can be
-found in (Kelchner and Thomas 2007).
+gamma distribution. We refer to this model as GTR + \(\Gamma(4)\) (GTR:
+global time reversible). More information about phylogenetic models can
+be found in (Kelchner and Thomas 2007).
 
-Getting a ML tree
------------------
+## Getting a ML tree
 
 Likelihood-based phylogenetic reconstruction is implemented in the
 package *phangorn*. As in the previous section, we use the data `dna2`,
@@ -738,7 +724,7 @@ tre.ini
 ## Phylogenetic tree with 80 tips and 78 internal nodes.
 ## 
 ## Tip labels:
-##   CY013200,  CY013781,  CY012128,  CY013613,  CY012160,  CY012272, ...
+##  CY013200, CY013781, CY012128, CY013613, CY012160, CY012272, ...
 ## 
 ## Unrooted; includes branch lengths.
 ```
@@ -790,7 +776,7 @@ fit
 ## unconstrained loglikelihood: -4736.539 
 ## Discrete gamma model
 ## Number of rate categories: 4 
-## Shape parameter: 0.2676999 
+## Shape parameter: 0.2676998 
 ## 
 ## Rate matrix:
 ##           a         c         g         t
@@ -812,15 +798,15 @@ names(fit)
 
 `fit` is a list with class `pml` storing various useful information
 about the model parameters and the optimal tree (stored in `fit$tree`).
-In this example, we can see from the output that transitions (*a
-&lt;-&gt; g* and *c &lt;-&gt; t*) are much more frequent than
-transversions (other changes), which is consistent with biological
-expectations (transversions induce more drastic changes of chemical
-properties of the DNA and are more prone to purifying selection). One
-advantage of using probabilistic models of evolution is that different
-models can be compared formally. For instance, here, we can verify that
-the optimized tree is indeed better than the original one using standard
-likelihood ratio tests and AIC:
+In this example, we can see from the output that transitions (*a \<-\>
+g* and *c \<-\> t*) are much more frequent than transversions (other
+changes), which is consistent with biological expectations
+(transversions induce more drastic changes of chemical properties of the
+DNA and are more prone to purifying selection). One advantage of using
+probabilistic models of evolution is that different models can be
+compared formally. For instance, here, we can verify that the optimized
+tree is indeed better than the original one using standard likelihood
+ratio tests and AIC:
 
 ``` r
 anova(fit.ini, fit)
@@ -856,7 +842,7 @@ legend("topright", fill = transp(num2col(temp, col.pal = myPal), .7),
        leg = temp, ncol = 2)
 ```
 
-![](practical-phylogenetics_files/figure-markdown_github/unnamed-chunk-34-1.png)
+![](practical-phylogenetics_files/figure-gfm/unnamed-chunk-34-1.png)<!-- -->
 
 This tree is statistically better than the original NJ tree based on
 Tamura and Nei’s distance (Tamura and Nei 1993). However, we can note
@@ -867,50 +853,83 @@ consistent results. In practice, different methods can lead to different
 interpretations, and it is often worth exploring different approaches
 before drawing conclusions on the data.
 
-About this document
-===================
+# About this document
 
-Contributors
-------------
+## Contributors
 
--   Thibaut Jombart: initial version
+  - Thibaut Jombart: initial version
 
 Contributions are welcome via [pull
 requests](https://github.com/reconhub/learn/pulls). The source file if
 this document can be found
 [**here**](https://raw.githubusercontent.com/reconhub/learn/master/content/post/2017-11-01-practical-phylogenetics.Rmd).
 
-Legal stuff
------------
+## Legal stuff
 
 **License**: [CC-BY](https://creativecommons.org/licenses/by/3.0/)
 **Copyright**: Thibaut Jombart, 2017
 
-References
-==========
+# References
+
+<div id="refs" class="references">
+
+<div id="ref-Dray2007-nv">
 
 Dray, Stéphane, Anne B Dufour, and Daniel Chessel. 2007. “The Ade4
-package-II: Two-Table and K-Table Methods.” *R News* 7 (2):47–52.
+package-II: Two-Table and K-Table Methods.” *R News* 7 (2): 47–52.
+
+</div>
+
+<div id="ref-Jombart2008-xi">
 
 Jombart, Thibaut. 2008. “Adegenet: A R Package for the Multivariate
-Analysis of Genetic Markers.” *Bioinformatics* 24 (11):1403–5.
+Analysis of Genetic Markers.” *Bioinformatics* 24 (11): 1403–5.
 
-Jombart, Thibaut, and Ismaïl Ahmed. 2011. “Adegenet 1.3-1: New Tools for
-the Analysis of Genome-Wide SNP Data.” *Bioinformatics* 27 (21):3070–1.
+</div>
+
+<div id="ref-Jombart2011-fb">
+
+Jombart, Thibaut, and Ismaı̈l Ahmed. 2011. “Adegenet 1.3-1: New Tools
+for the Analysis of Genome-Wide SNP Data.” *Bioinformatics* 27 (21):
+3070–1.
+
+</div>
+
+<div id="ref-Kelchner2007-oy">
 
 Kelchner, Scot A, and Michael A Thomas. 2007. “Model Use in
-Phylogenetics: Nine Key Questions.” *Trends Ecol. Evol.* 22 (2):87–94.
+Phylogenetics: Nine Key Questions.” *Trends Ecol. Evol.* 22 (2): 87–94.
+
+</div>
+
+<div id="ref-Paradis2004-rj">
 
 Paradis, Emmanuel, Julien Claude, and Korbinian Strimmer. 2004. “APE:
 Analyses of Phylogenetics and Evolution in R Language.” *Bioinformatics*
-20 (2):289–90.
+20 (2): 289–90.
+
+</div>
+
+<div id="ref-R_Core_Team2017-dg">
 
 R Core Team. 2017. “R: A Language and Environment for Statistical
 Computing.” Vienna, Austria: R Foundation for Statistical Computing.
 
+</div>
+
+<div id="ref-Schliep2011-hf">
+
 Schliep, Klaus Peter. 2011. “Phangorn: Phylogenetic Analysis in R.”
-*Bioinformatics* 27 (4):592–93.
+*Bioinformatics* 27 (4): 592–93.
+
+</div>
+
+<div id="ref-Tamura1993-ob">
 
 Tamura, K, and M Nei. 1993. “Estimation of the Number of Nucleotide
 Substitutions in the Control Region of Mitochondrial DNA in Humans and
-Chimpanzees.” *Mol. Biol. Evol.* 10 (3):512–26.
+Chimpanzees.” *Mol. Biol. Evol.* 10 (3): 512–26.
+
+</div>
+
+</div>

@@ -1,20 +1,15 @@
 ---
-author: Thibaut Jombart
-authors:
-- Thibaut Jombart
-categories:
-- lectures
-css: 'css/custom.css'
-date: '2018-10-23'
-image: 'img/highres/printing-press.jpg'
-licenses: 'CC-BY'
-showonlyimage: True
-slug: reproducibility
 title: Reproducibility using R
-topics:
-- rmarkdown
-- data science
-- reproducibility
+author: Thibaut Jombart
+authors: ["Thibaut Jombart"]
+categories: ["lectures"]
+topics: ["rmarkdown", "data science", "reproducibility"]
+date: 2018-10-23
+image: img/highres/printing-press.jpg
+slug: reproducibility
+showonlyimage: true
+css: css/custom.css
+licenses: CC-BY
 ---
 
 Beyond the availability of data and methods, reproducible science
@@ -23,19 +18,20 @@ collaborators, as series of tools and good practices can facilitate your
 work flow, simplify analyses, and prevent the loss of data and results.
 This lecture provides an introduction to reproducibility using **R**.
 
-Slides
-======
+# Slides
 
-**Click on the image below to access the slides:**
+**Click on the image below to access the
+slides:**
 
 <center>
-<a href="../../slides/reproducibility/reproducibility.html"><img class="gateway" src="../../img/highres/printing-press.jpg" width="50%" alt="click there for slides" align="middle"></a>
-</center>
-Related packages
-================
 
-`knitr`
--------
+<a href="../../slides/reproducibility/reproducibility.html"><img class="gateway" src="../../img/highres/printing-press.jpg" width="50%" alt="click there for slides" align="middle"></a>
+
+</center>
+
+# Related packages
+
+## `knitr`
 
 `knitr` provides excellent resources for literate programming mixing
 **R** with [*LaTeX*](https://en.wikipedia.org/wiki/LaTeX) or
@@ -45,20 +41,19 @@ It is extensively documented at: <https://yihui.name/knitr/>
 
 To install the current stable, CRAN version of the package, type:
 
-``` {.r}
+``` r
 install.packages("knitr")
 ```
 
 To benefit from the latest features and bug fixes, install the
 development version of the package using:
 
-``` {.r}
+``` r
 update.packages(ask = FALSE, repos = 'https://cran.rstudio.org')
 install.packages('knitr', repos = c('https://xran.yihui.name', 'https://cran.rstudio.org'))
 ```
 
-`rmarkdown`
------------
+## `rmarkdown`
 
 `rmarkdown` extends the capabilities of `knitr` with a more diverse set
 of outputs generated from `Rmd` files, including pdf documents, article
@@ -69,18 +64,17 @@ More information on `rmarkdown` is available from:
 
 To install this package, type:
 
-``` {.r}
+``` r
 install.packages("rmarkdown")
 ```
 
 For the devel version, type (uses `devtools`):
 
-``` {.r}
+``` r
 devtools::install_github("rstudio/rmarkdown")
 ```
 
-`lintr`
--------
+## `lintr`
 
 `lintr` will analyse your code and point out deviations from current
 good coding practices. It can be ran on a `.R` file, but also can be
@@ -92,30 +86,27 @@ For more information on this package, go to:
 
 To install this package, type:
 
-``` {.r}
+``` r
 install.packages("lintr")
 ```
 
-About this document
-===================
+# About this document
 
-Contributors
-------------
+## Contributors
 
--   Thibaut Jombart: initial version
+  - Thibaut Jombart: initial version
 
 Contributions are welcome via [pull
 requests](https://github.com/reconhub/learn/pulls). The source files
 include:
 
--   [**the
+  - [**the
     slides**](https://raw.githubusercontent.com/reconhub/learn/master/static/slides/reproducibility/reproducibility.Rmd)
 
--   [**this
+  - [**this
     document**](https://raw.githubusercontent.com/reconhub/learn/master/content/post/reproducibility.Rmd)
 
-Legal stuff
------------
+## Legal stuff
 
 **License**: [CC-BY](https://creativecommons.org/licenses/by/3.0/)
 **Copyright**: Thibaut Jombart, 2017

@@ -11,11 +11,9 @@ showonlyimage: true
 licenses: CC-BY
 ---
 
-
 <img src="../img/under-review.png" alt="Under Review: this practical is currently being revised and may change in the future">
 
-The Alert
-=========
+# The Alert
 
 On November 14th 2006 the director of a high school in Greater
 Copenhagen, Denmark, contacted the regional public health authorities to
@@ -57,11 +55,9 @@ November 11th to 5:59pm on November 13th was included as a case. Anyone
 with symptoms outside this time window is defined as a control as this
 person probably didn’t become sick at the party.
 
-An introduction to the *R* companion
-====================================
+# An introduction to the *R* companion
 
-Your *R* Workflow
------------------
+## Your *R* Workflow
 
 We will be using RStudio projects to separate our sessions into distinct
 workflows. For each session, you will open R by double-clicking on the
@@ -71,9 +67,9 @@ upper-right-hand dropdown menu.
 > You can set a folder to be your working directory (using the setwd
 > command), but we will not be using this because it makes transferring
 > between computers difficult (see
-> <a href="https://www.tidyverse.org/articles/2017/12/workflow-vs-script/" class="uri">https://www.tidyverse.org/articles/2017/12/workflow-vs-script/</a>
-> for details). Instead, we will be using the RStudio project files and
-> the ‘here’ package to keep track of files.
+> <https://www.tidyverse.org/articles/2017/12/workflow-vs-script/> for
+> details). Instead, we will be using the RStudio project files and the
+> ‘here’ package to keep track of files.
 
 This tutorial is designed to be followed along in the context of an R
 project folder structure:
@@ -100,12 +96,12 @@ above structure (containing a “data”, “reports”, and “scripts”
 directory). Once you have done that you can download the following data
 sets and place them in the `data/` directory:
 
--   Part 1: [`copenhagen_raw.csv`](../../data/copenhagen_raw.csv)
--   Part 2:
+  - Part 1: [`copenhagen_raw.csv`](../../data/copenhagen_raw.csv)
+  - Part 2:
     [`copenhagen_descriptive.csv`](../../data/copenhagen_descriptive.csv)
--   Part 3:
+  - Part 3:
     [`copenhagen_univaraible.csv`](../../data/copenhagen_univariable.csv)
--   Part 4:
+  - Part 4:
     [`copenhagen_stratified.csv`](../../data/copenhagen_stratified.csv)
 
 You should additionally download the
@@ -113,8 +109,7 @@ You should additionally download the
 script written by Daniel Gardiner (PHE) and place it in the `scripts/`
 directory.
 
-Installing packages and functions
----------------------------------
+## Installing packages and functions
 
 R packages are bundles of functions which extend the capability of R.
 Thousands of add-on packages are available in the main online repository
@@ -164,8 +159,7 @@ on the right of the R Studio window.
 usually no need to save intermediate files or close and re-open
 datasets.
 
-Data management and *R* scripts
-===============================
+# Data management and *R* scripts
 
 ### Reading in datasets
 
@@ -205,158 +199,33 @@ below)
 Studio](../../img/screenshots/copenhagen-screenshot1.png)
 
 Most of the variables are coded as numeric variables. Here is the key to
-what the values in each varaiable means:
+what the values in each varaiable
+means:
 
-<table>
-<colgroup>
-<col style="width: 33%" />
-<col style="width: 13%" />
-<col style="width: 26%" />
-<col style="width: 26%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th>Variable name</th>
-<th>Type</th>
-<th>Categories</th>
-<th>Definition</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>sex</td>
-<td>Dichotomous</td>
-<td>male, female</td>
-<td>Gender</td>
-</tr>
-<tr class="even">
-<td>age</td>
-<td>Continuous (can be transformed to a categorical one)</td>
-<td>NA</td>
-<td>Age in years</td>
-</tr>
-<tr class="odd">
-<td>diarrhoea</td>
-<td>Dichotomous</td>
-<td>1=Yes, 0=No</td>
-<td>Had diarrhoea Y/N</td>
-</tr>
-<tr class="even">
-<td>vomiting</td>
-<td>Dichotomous</td>
-<td>1=Yes, 0=No</td>
-<td>Had vomiting Y/N</td>
-</tr>
-<tr class="odd">
-<td>start</td>
-<td>Numeric</td>
-<td>1=11th,</td>
-<td>Date diarrhoea or vomiting started</td>
-</tr>
-<tr class="even">
-<td></td>
-<td></td>
-<td>2=12th,</td>
-<td></td>
-</tr>
-<tr class="odd">
-<td></td>
-<td></td>
-<td>3=13th,</td>
-<td></td>
-</tr>
-<tr class="even">
-<td></td>
-<td></td>
-<td>4=14th,</td>
-<td></td>
-</tr>
-<tr class="odd">
-<td></td>
-<td></td>
-<td>5=15th,</td>
-<td></td>
-</tr>
-<tr class="even">
-<td></td>
-<td></td>
-<td>6=16th</td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>starthour</td>
-<td>Categorical</td>
-<td>1=00:00-05:59,</td>
-<td>6 hour time frame when symptoms started</td>
-</tr>
-<tr class="even">
-<td></td>
-<td></td>
-<td>2=06:00-11:59,</td>
-<td></td>
-</tr>
-<tr class="odd">
-<td></td>
-<td></td>
-<td>3=12:00-17:59,</td>
-<td></td>
-</tr>
-<tr class="even">
-<td></td>
-<td></td>
-<td>4=18:00-23:59</td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>shrimps</td>
-<td>Dichotomous</td>
-<td>1=Yes, 0=No</td>
-<td>Consumption of shrimp</td>
-</tr>
-<tr class="even">
-<td>shrimpsD</td>
-<td>Categorical</td>
-<td>0=None,</td>
-<td>Amount of portions of shrimp consumed</td>
-</tr>
-<tr class="odd">
-<td></td>
-<td></td>
-<td>1=less than 1 portion,</td>
-<td></td>
-</tr>
-<tr class="even">
-<td></td>
-<td></td>
-<td>2=1 portion,</td>
-<td></td>
-</tr>
-<tr class="odd">
-<td></td>
-<td></td>
-<td>3=more than 1 portion</td>
-<td></td>
-</tr>
-<tr class="even">
-<td>veal</td>
-<td>Dichotomous</td>
-<td>1=Yes, 0=No</td>
-<td>Consumption of veal</td>
-</tr>
-<tr class="odd">
-<td>beer</td>
-<td>Dichotomous</td>
-<td>1=Yes, 0=No</td>
-<td>Consumption of beer</td>
-</tr>
-<tr class="even">
-<td>sauce</td>
-<td>Dichotomous</td>
-<td>1=Yes, 0=No</td>
-<td>Consumption of sauce</td>
-</tr>
-</tbody>
-</table>
+| Variable name | Type                                                 | Categories             | Definition                              |
+| ------------- | ---------------------------------------------------- | ---------------------- | --------------------------------------- |
+| sex           | Dichotomous                                          | male, female           | Gender                                  |
+| age           | Continuous (can be transformed to a categorical one) | NA                     | Age in years                            |
+| diarrhoea     | Dichotomous                                          | 1=Yes, 0=No            | Had diarrhoea Y/N                       |
+| vomiting      | Dichotomous                                          | 1=Yes, 0=No            | Had vomiting Y/N                        |
+| start         | Numeric                                              | 1=11th,                | Date diarrhoea or vomiting started      |
+|               |                                                      | 2=12th,                |                                         |
+|               |                                                      | 3=13th,                |                                         |
+|               |                                                      | 4=14th,                |                                         |
+|               |                                                      | 5=15th,                |                                         |
+|               |                                                      | 6=16th                 |                                         |
+| starthour     | Categorical                                          | 1=00:00-05:59,         | 6 hour time frame when symptoms started |
+|               |                                                      | 2=06:00-11:59,         |                                         |
+|               |                                                      | 3=12:00-17:59,         |                                         |
+|               |                                                      | 4=18:00-23:59          |                                         |
+| shrimps       | Dichotomous                                          | 1=Yes, 0=No            | Consumption of shrimp                   |
+| shrimpsD      | Categorical                                          | 0=None,                | Amount of portions of shrimp consumed   |
+|               |                                                      | 1=less than 1 portion, |                                         |
+|               |                                                      | 2=1 portion,           |                                         |
+|               |                                                      | 3=more than 1 portion  |                                         |
+| veal          | Dichotomous                                          | 1=Yes, 0=No            | Consumption of veal                     |
+| beer          | Dichotomous                                          | 1=Yes, 0=No            | Consumption of beer                     |
+| sauce         | Dichotomous                                          | 1=Yes, 0=No            | Consumption of sauce                    |
 
 ### Saving your code in R Scripts
 
@@ -379,7 +248,8 @@ You can view the structure of your dataset using the following commands.
 Each of these commands can be run for individual variables also. You can
 refer to an individual variable of a dataset by using the `$`, for
 example, if you wanted to obtain a summary of the age variable, then you
-would write `summary(cph$age)`.
+would write
+`summary(cph$age)`.
 
 ``` r
 # str provides an overview of the number of observations and variable types
@@ -399,8 +269,7 @@ Hmisc::describe(cph)
 > package.  
 > \# Data cleaning and recoding in *R*
 
-Check the dataset “Copenhagen.csv”
-----------------------------------
+## Check the dataset “Copenhagen.csv”
 
 Using the “table” command, you can get information on how the counts of
 cases are split across a variable. Using the “summary” command, you can
@@ -435,27 +304,23 @@ defining what should go in that variable.
 # table will give a very basic frequency table (counts),
 # in this example the first line of the output is the age and the second is the frequency.
 table(cph$age)
-```
-
-    ## 
-    ##   8  15  16  17  18  19  20  26  29  30  31  32  33  34  39  43  54  56 
-    ##   1  11  99 115 112  39   3   1   1   1   1   1   1   1   1   1   1   1 
-    ##  58  59  61  65 180 
-    ##   2   1   1   1   1
-
-``` r
+## 
+##   8  15  16  17  18  19  20  26  29  30  31  32  33  34  39  43  54  56 
+##   1  11  99 115 112  39   3   1   1   1   1   1   1   1   1   1   1   1 
+##  58  59  61  65 180 
+##   2   1   1   1   1
 # summary gives you more detailed statistics
 summary(cph$age)
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##    8.00   16.00   17.00   18.68   18.00  180.00
 ```
-
-    ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-    ##    8.00   16.00   17.00   18.68   18.00  180.00
 
 Often, plotting the data can be much more informative. For example,
 instead of using table, we can plot a histogram of age to see if we have
 any outliers:
 
 ``` r
+
 hist(cph$age,
      main = "Distribution of Age", 
      xlab = "Age",
@@ -465,59 +330,43 @@ hist(cph$age,
 rug(cph$age)
 ```
 
-![](practical-copenhagen-intro_files/figure-markdown_github/density_of_age-1.png)
+![](practical-copenhagen-intro_files/figure-gfm/density_of_age-1.png)<!-- -->
 
 > Question: Is there anything weird about these data?
 
 ``` r
 # You can look at age among teachers using the group variable
 table(cph$age[cph$group == 0])
-```
+## 
+## 26 29 30 31 32 33 34 39 43 54 56 58 59 61 65 
+##  1  1  1  1  1  1  1  1  1  1  1  2  1  1  1
 
-    ## 
-    ## 26 29 30 31 32 33 34 39 43 54 56 58 59 61 65 
-    ##  1  1  1  1  1  1  1  1  1  1  1  2  1  1  1
-
-``` r
 ### Things you may have noticed:
 
 # an outlier in incubation
 summary(cph$incubation)
-```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+##     3.0    15.0    15.0    19.9    21.0   210.0     177
 
-    ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
-    ##     3.0    15.0    15.0    19.9    21.0   210.0     177
-
-``` r
 # people did not have dinner but ate tuna, bread or veal
   # you can label the table by adding labels
 table(meal = cph$meal, tuna = cph$tuna)
-```
+##     tuna
+## meal   0   1
+##    0   7   1
+##    1 102 271
 
-    ##     tuna
-    ## meal   0   1
-    ##    0   7   1
-    ##    1 102 271
-
-``` r
 table(meal = cph$meal, bread = cph$bread)
-```
-
-    ##     bread
-    ## meal   0   1
-    ##    0   5   3
-    ##    1  29 342
-
-``` r
+##     bread
+## meal   0   1
+##    0   5   3
+##    1  29 342
 table(meal = cph$meal, veal = cph$veal)
-```
+##     veal
+## meal   0   1
+##    0   6   2
+##    1  36 338
 
-    ##     veal
-    ## meal   0   1
-    ##    0   6   2
-    ##    1  36 338
-
-``` r
 # people with day of onset but no symptoms
   # is.na() returns True/False if value is missing
   # So this selects the participants that are either 0 or missing for all three symptoms
@@ -528,14 +377,12 @@ no_symptoms <- function(x){
 table(onset = cph$start[no_symptoms(cph$diarrhoea) &
                         no_symptoms(cph$vomiting)  &
                         no_symptoms(cph$bloody)    ])
+## onset
+## 1 2 
+## 2 2
 ```
 
-    ## onset
-    ## 1 2 
-    ## 2 2
-
-Data cleaning
--------------
+## Data cleaning
 
 ### Handling missing values, typos and recoding variables
 
@@ -561,13 +408,9 @@ cph$incubation[cph$incubation == 210] <- 21
   # We can use the no_symptoms function we defined above and place them into a vector
 symptomless_dvb <- no_symptoms(cph$diarrhoea) & no_symptoms(cph$vomiting) & no_symptoms(cph$bloody)
 table(symptomless_dvb) # how many were symptomless?
-```
-
-    ## symptomless_dvb
-    ## FALSE  TRUE 
-    ##   219   178
-
-``` r
+## symptomless_dvb
+## FALSE  TRUE 
+##   219   178
 cph$start[symptomless_dvb] <- NA
 ```
 
@@ -575,7 +418,8 @@ cph$start[symptomless_dvb] <- NA
 
 > Remember, in order to combine multiple filtering commands in to one
 > selection you can use the “`|`” (bar not capital i) or “&” symbols.
-> The **`|`** stands for **or** whereas the **`&`** stands for **and**.
+> The **`|`** stands for **or** whereas the **`&`** stands for
+**and**.
 
 ``` r
 # create new variable where people who have diarrhoea or vomiting get a 1 and all others a 0
@@ -594,37 +438,33 @@ cph$case[is.na(cph$meal) | cph$meal == 0] <- NA
 Do a plausibility check to see if everything worked
 
 ``` r
+
 # how many cases did you generate?
 table(cph$case)
+## 
+##   0   1 
+## 162 215
 ```
-
-    ## 
-    ##   0   1 
-    ## 162 215
 
 ``` r
 # check if people were assigned properly according to symptoms
 
 table(case = cph$case, vomiting = cph$vomiting)
-```
-
-    ##     vomiting
-    ## case   0   1
-    ##    0  42   0
-    ##    1 107  66
-
-``` r
+##     vomiting
+## case   0   1
+##    0  42   0
+##    1 107  66
 table(case = cph$case, diarrhoea = cph$diarrhoea)
+##     diarrhoea
+## case   0   1
+##    0  40   0
+##    1   6 206
 ```
-
-    ##     diarrhoea
-    ## case   0   1
-    ##    0  40   0
-    ##    1   6 206
 
 Drop cases that do not meet the case definition
 
 ``` r
+
 cph <- cph[!is.na(cph$case), ]
 ```
 
@@ -664,14 +504,12 @@ identical(cph, cph2)
 
 Throughout the tutorial, we have saved the clean data for each section.
 
-Part 2
-------
+## Part 2
 
 Now that the data have been cleaned and inspected, we can move on to
 [descriptive statistics in part 2](./copenhagen-descriptive.html).
 
-About this document
-===================
+# About this document
 
 This code has been adapted to *R* for learning purposes. The initial
 contributors and copyright license are listed below. All copyrights and
@@ -680,18 +518,16 @@ licenses of the original document apply here as well.
 **Contributors to *R* code:**  
 Zhian N. Kamvar, Daniel Gardiner (PHE), and Lukas Richter (AGES)
 
-Citation
---------
+## Citation
 
 Pakalniskiene, J., G. Falkenhorst, M. Lisby, S. B. Madsen, K. E. P.
 Olsen, E. M. Nielsen, A. Mygh, Jeppe Boel, and K. Mølbak. “A foodborne
 outbreak of enterotoxigenic E. coli and Salmonella Anatum infection
 after a high-school dinner in Denmark, November 2006.” Epidemiology &
-Infection 137, no. 3 (2009): 396-401. [doi:
-10.1017/S0950268808000484](https://doi.org/10.1017/S0950268808000484)
+Infection 137, no. 3 (2009): 396-401.
+[doi: 10.1017/S0950268808000484](https://doi.org/10.1017/S0950268808000484)
 
-Copyright and license
----------------------
+## Copyright and license
 
 This case study was designed under an ECDC service contract for the
 development of training material (2010). The data were slightly modified
@@ -714,33 +550,33 @@ Ioannis Karagiannis and Pawel Stefanoff
 
 **You are free:**
 
--   to Share - to copy, distribute and transmit the work
--   to Remix - to adapt the work Under the following conditions:
--   Attribution - You must attribute the work in the manner specified by
+  - to Share - to copy, distribute and transmit the work
+  - to Remix - to adapt the work Under the following conditions:
+  - Attribution - You must attribute the work in the manner specified by
     the author or licensor (but not in any way that suggests that they
     endorse you or your use of the work). The best way to do this is to
     keep as it is the list of contributors: sources, authors and
     reviewers.
--   Share Alike - If you alter, transform, or build upon this work, you
+  - Share Alike - If you alter, transform, or build upon this work, you
     may distribute the resulting work only under the same or similar
     license to this one. Your changes must be documented. Under that
     condition, you are allowed to add your name to the list of
     contributors.
--   You cannot sell this work alone but you can use it as part of a
+  - You cannot sell this work alone but you can use it as part of a
     teaching. With the understanding that:
--   Waiver - Any of the above conditions can be waived if you get
+  - Waiver - Any of the above conditions can be waived if you get
     permission from the copyright holder.
--   Public Domain - Where the work or any of its elements is in the
+  - Public Domain - Where the work or any of its elements is in the
     public domain under applicable law, that status is in no way
     affected by the license.
--   Other Rights - In no way are any of the following rights affected by
+  - Other Rights - In no way are any of the following rights affected by
     the license:
--   Your fair dealing or fair use rights, or other applicable copyright
+  - Your fair dealing or fair use rights, or other applicable copyright
     exceptions and limitations;
--   The author’s moral rights;
--   Rights other persons may have either in the work itself or in how
+  - The author’s moral rights;
+  - Rights other persons may have either in the work itself or in how
     the work is used, such as publicity or privacy rights.
--   Notice - For any reuse or distribution, you must make clear to
+  - Notice - For any reuse or distribution, you must make clear to
     others the license terms of this work by keeping together this work
     and the current license. This licence is based on
-    <a href="http://creativecommons.org/licenses/by-sa/3.0/" class="uri">http://creativecommons.org/licenses/by-sa/3.0/</a>
+    <http://creativecommons.org/licenses/by-sa/3.0/>

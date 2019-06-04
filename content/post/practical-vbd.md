@@ -17,22 +17,20 @@ which contribute to R0 and how potential interventions influence
 transmission. Later in the practical you will construct a model of Zika
 transmission to look at the effects of several parameters.
 
-Core Concepts
--------------
+## Core Concepts
 
 From the previous lecture, we will futher develop these concepts:
 
--   Herd effect
--   Biology of the mosquito
--   Natural history of the infection in humans
--   Contact rate
--   Density dependence
--   Immigration-death and age-structured models
--   Infection and morbidity control / elimination of infection
--   Control strategies (on vectors and on humans)
+  - Herd effect
+  - Biology of the mosquito
+  - Natural history of the infection in humans
+  - Contact rate
+  - Density dependence
+  - Immigration-death and age-structured models
+  - Infection and morbidity control / elimination of infection
+  - Control strategies (on vectors and on humans)
 
-Required packages
------------------
+## Required packages
 
 ``` r
 #install.packages("deSolve", dep=TRUE)
@@ -45,27 +43,23 @@ Then load the packages using:
 library(deSolve)
 library(ggplot2)
 library(gridExtra)
-## Warning: package 'gridExtra' was built under R version 3.4.4
 ```
 
-The basic Zika model
---------------------
+## The basic Zika model
 
--   Sh : Susceptible Humans
--   Ih : Ingected/Infectious humans
--   Rh : humans recovered from infection (with lifelasting immunity)
--   Sv : Susceptible vectors
--   Ev : Exposed vectors
--   Iv : Infected vectors
+  - Sh : Susceptible Humans
+  - Ih : Ingected/Infectious humans
+  - Rh : humans recovered from infection (with lifelasting immunity)
+  - Sv : Susceptible vectors
+  - Ev : Exposed vectors
+  - Iv : Infected vectors
 
-The flow diagram (part I)
--------------------------
+## The flow diagram (part I)
 
 In this section, please make a diagram to connect the different
 compartments of the model
 
-The parameters
---------------
+## The parameters
 
 We will need several parameters to connect the different compartments of
 our model.
@@ -100,36 +94,32 @@ b        <-        sqrt((R0 ^2 * muv*(muv+delta) * (muh+gamma)) /
 TIME     <-        # Number of years to run the simulation for 
 ```
 
-The model (Equations)
----------------------
+## The model (Equations)
 
 ### Humans
 
-$$\\ \\frac{dSh}{dt}  = \\mu\_h N\_h - \\frac {\\beta\_h b}{N\_h} S\_h  I\_v - \\mu\_h  S\_h $$
-$$\\ \\frac{dIh}{dt}  = \\frac {\\beta\_h b}{N\_h}S\_h I\_v - (\\gamma\_h + \\mu\_h) I\_h $$
-$$\\ \\frac{dRh}{dt}  = \\gamma\_h + I\_h  - \\mu\_v I\_v$$
+\[\ \frac{dSh}{dt}  = \mu_h N_h - \frac {\beta_h b}{N_h} S_h  I_v - \mu_h  S_h \]
+\[\ \frac{dIh}{dt}  = \frac {\beta_h b}{N_h}S_h I_v - (\gamma_h + \mu_h) I_h \]
+\[\ \frac{dRh}{dt}  = \gamma_h + I_h  - \mu_v I_v\]
 
 ### Vectors
 
-$$\\ \\frac{dSv}{dt}  = \\mu\_v N\_v  - \\frac{\\beta\_v b} {N\_h} I\_h S\_v - \\mu\_v Sv$$
-$$\\ \\frac{dE\_v}{dt}  = \\frac{\\beta\_v b} {N\_h} I\_h S\_v - (\\delta + \\mu\_v) Ev$$
-$$\\ \\frac{dI\_v}{dt}  = \\delta Ev - \\mu\_v I\_v$$
+\[\ \frac{dSv}{dt}  = \mu_v N_v  - \frac{\beta_v b} {N_h} I_h S_v - \mu_v Sv\]
+\[\ \frac{dE_v}{dt}  = \frac{\beta_v b} {N_h} I_h S_v - (\delta + \mu_v) Ev\]
+\[\ \frac{dI_v}{dt}  = \delta Ev - \mu_v I_v\]
 
-Estimating R0 (Reproductive number)
------------------------------------
+## Estimating R0 (Reproductive number)
 
 We need a formula to estimate R0:
-$$ R\_0^2 = \\frac{mb^2 \\beta\_h \\beta\_v \\delta}{\\mu\_v (\\mu\_v+\\delta)(\\mu\_h+\\gamma\_h)} $$
+\[ R_0^2 = \frac{mb^2 \beta_h \beta_v \delta}{\mu_v (\mu_v+\delta)(\mu_h+\gamma_h)} \]
 
-The flow diagram (part II)
---------------------------
+## The flow diagram (part II)
 
 Now that you know the equations, complete the flow diagram with the
 parameters and the correct connection between the different
 compartments.
 
-Finally, the model in R
------------------------
+## Finally, the model in R
 
 After having your flow diagram and equations, now please complete the
 model below witth the right parameters (PAR)
@@ -163,14 +153,15 @@ arbovmodel <- function (t, x, params) {
 }
 ```
 
-Solve the system
-----------------
+## Solve the system
 
 In this section, complete and comment that code for:
 
--   The VALUES for the initial conditions of the system
+  - The VALUES for the initial conditions of the system
 
--   The ARGUMENTS of the **ode** function in the **deSolve** package.
+  - The ARGUMENTS of the **ode** function in the **deSolve** package.
+
+<!-- end list -->
 
 ``` r
 # Time 
@@ -206,8 +197,7 @@ out <- as.data.frame(ode(y      = ARGUMENT?,   # meaning??
                          parms  = ARGUMENT?,   # meaning??   
 ```
 
-The results
------------
+## The results
 
 In order to have more meaningful display of the results, convert time
 units *days* into *years* and into *weeks*
@@ -248,7 +238,7 @@ p4h <- ggplot(data = out, aes(y = Rh/10000, x = years)) +
 grid.arrange(p1h, p2h, p3h, p4h, ncol=2)
 ```
 
-![](practical-vbd_files/figure-markdown_github/p1-1.png)
+![](practical-vbd_files/figure-gfm/p1-1.png)<!-- -->
 
 ### General Behavior (Vector Population)
 
@@ -278,7 +268,7 @@ p4v <- ggplot(data = out, aes(y = Iv, x = years)) +
 grid.arrange(p1v, p2v, p3v, p4v, ncol=2)
 ```
 
-![](practical-vbd_files/figure-markdown_github/p2-1.png)
+![](practical-vbd_files/figure-gfm/p2-1.png)<!-- -->
 
 ### Proportion
 
@@ -304,7 +294,7 @@ p3 <- ggplot(data = out, aes(y = Rh/(Sh+Ih+Rh), x = years)) +
 grid.arrange(p1, p2, p3, ncol=2)
 ```
 
-![](practical-vbd_files/figure-markdown_github/p3-1.png)
+![](practical-vbd_files/figure-gfm/p3-1.png)<!-- -->
 
 ### The First Epidemic
 
@@ -328,50 +318,46 @@ p2e<- ggplot(dat, aes(y=Rh/10000, x=weeks)) +
 grid.arrange(p1e, p2e)
 ```
 
-![](practical-vbd_files/figure-markdown_github/p4-1.png)
+![](practical-vbd_files/figure-gfm/p4-1.png)<!-- -->
 
 ### Lets’ discuss some aspects
 
--   Sensitivity of the model to change of the R0
--   Sensititity of the model to change of bitting rate
--   What are the reasons of the time lag between epidemics?
--   How we calculate the attack rate
--   What happen if we vaccinate 80% of the population?
--   What is the impact of a vector control programme?
+  - Sensitivity of the model to change of the R0
+  - Sensititity of the model to change of bitting rate
+  - What are the reasons of the time lag between epidemics?
+  - How we calculate the attack rate
+  - What happen if we vaccinate 80% of the population?
+  - What is the impact of a vector control programme?
 
 ### Modelling control interventions
 
 Now, using this basic model we are going to model the impact of three
 different types of interventions, all of them related to vector control.
 
--   1.  An intervention than reduces the life span of the mosquito
+  - 1.  An intervention than reduces the life span of the mosquito
 
--   1.  An intervention that reduces the carrying capacity
+  - 2.  An intervention that reduces the carrying capacity
 
--   1.  An intervention that reduces the probability of transmission
+  - 3.  An intervention that reduces the probability of transmission
 
 For these three inteventions, try to find literature that explain which
 specific interventions can do that and in that way you will parameterise
 the model.
 
-About this document
-===================
+# About this document
 
-Contributors
-------------
+## Contributors
 
--   Zulma Cucunuba & Pierre Nouvellet: initial version
+  - Zulma Cucunuba & Pierre Nouvellet: initial version
 
 Contributions are welcome via [pull
 requests](https://github.com/reconhub/learn/pulls). The source file if
 this document can be found
 [**here**](https://raw.githubusercontent.com/reconhub/learn/master/content/post/2017-12-04-practical-vbd.Rmd).
 
-Legal stuff
------------
+## Legal stuff
 
 **License**: [CC-BY](https://creativecommons.org/licenses/by/3.0/)
 **Copyright**: Zulma Cucunuba & Pierre Nouvellet, 2017
 
-References
-==========
+# References

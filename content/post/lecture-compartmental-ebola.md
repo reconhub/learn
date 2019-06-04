@@ -16,29 +16,29 @@ covers various aspects around epidemiological modelling such as flow
 diagrams, writing ordinary differential equations and reproduction
 number. The example of the dynamics of Ebola is used.
 
-Slides
-======
+# Slides
 
-**Click on the image below to access the slides:**
+**Click on the image below to access the
+slides:**
 
 <center>
+
 <a href="../../slides/compartmental-ebola/compartmental-ebola.pptx"><img class="gateway" src="../../img/highres/seismograph.jpg" width="50%" alt="click there for slides" align="middle"></a>
+
 </center>
-About this document
-===================
 
-Contributors
-------------
+# About this document
 
--   Pierre Nouvellet: initial version
+## Contributors
+
+  - Pierre Nouvellet: initial version
 
 Contributions are welcome via [pull
 requests](https://github.com/reconhub/learn/pulls). The source file can
 be found
 [here](https://github.com/reconhub/learn/blob/master/static/slides/compartmental-ebola/compartmental-ebola.pptx).
 
-Legal stuff
------------
+## Legal stuff
 
 **License**: [CC-BY](https://creativecommons.org/licenses/by/3.0/)
 **Copyright**: Pierre Nouvellet, 2017

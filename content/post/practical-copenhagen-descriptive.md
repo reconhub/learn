@@ -12,11 +12,9 @@ showonlyimage: true
 licenses: CC-BY
 ---
 
-
 <img src="../img/under-review.png" alt="Under Review: this practical is currently being revised and may change in the future">
 
-Descriptive analysis in *R*
-===========================
+# Descriptive analysis in *R*
 
 This practical is a continuation of the analysis concerning the outbreak
 of gastroenteritis after a high school dinner in Copenhagen, Denmark.
@@ -25,8 +23,7 @@ The [introduction to this case is presented in part
 inspection and cleaning. This practical will focus on descriptive stats
 including 2x2 tables and epicurves.
 
-Preparing packages and data
----------------------------
+## Preparing packages and data
 
 ``` r
 library("ggplot2")
@@ -49,8 +46,7 @@ cph <- read.csv(here::here("data", "copenhagen_descriptive.csv"),
                 stringsAsFactors = FALSE) 
 ```
 
-Dataset description and tabulation
-----------------------------------
+## Dataset description and tabulation
 
 ### Basic graphics
 
@@ -60,13 +56,14 @@ building a graphic by combining different items, tied together using the
 `+` operator: specifing the data (`ggplot()`), adding geometric elements
 (i.e. type of graph, using `geom_...`), and aesthetic properties mapping
 data into visual features (e.g. axis, color, shape, using `aes()`). Here
-is a basic example plotting the distribution of ages using a boxplot:
+is a basic example plotting the distribution of ages using a
+boxplot:
 
 ``` r
 ggplot(cph) + geom_boxplot(aes(x = sex, y = age))
 ```
 
-![](practical-copenhagen-descriptive_files/figure-markdown_github/age_boxplot-1.png)
+![](practical-copenhagen-descriptive_files/figure-gfm/age_boxplot-1.png)<!-- -->
 
 Other *geoms* can be used, several can be combined, and *aesthetics*
 common to all *geoms* can be input to *ggplot*. Here are a few examples:
@@ -77,15 +74,15 @@ ggplot(cph, aes(x = sex, y = age)) +
   geom_jitter(aes(color = sex), alpha = 0.4)
 ```
 
-![](practical-copenhagen-descriptive_files/figure-markdown_github/age_violin-1.png)
+![](practical-copenhagen-descriptive_files/figure-gfm/age_violin-1.png)<!-- -->
 
 ``` r
+
 ggplot(cph, aes(x = age, fill = sex)) + geom_histogram()
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 ```
 
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-
-![](practical-copenhagen-descriptive_files/figure-markdown_github/age_violin-2.png)
+![](practical-copenhagen-descriptive_files/figure-gfm/age_violin-2.png)<!-- -->
 
 Also note that the default theme can be customised, e.g.:
 
@@ -97,13 +94,13 @@ my_plot <- ggplot(cph, aes(x = sex, y = age)) +
 my_plot
 ```
 
-![](practical-copenhagen-descriptive_files/figure-markdown_github/custom_ggplot-1.png)
+![](practical-copenhagen-descriptive_files/figure-gfm/custom_ggplot-1.png)<!-- -->
 
 ``` r
 my_plot + theme_bw(base_size = 20, base_family = "times")
 ```
 
-![](practical-copenhagen-descriptive_files/figure-markdown_github/custom_ggplot-2.png)
+![](practical-copenhagen-descriptive_files/figure-gfm/custom_ggplot-2.png)<!-- -->
 
 For more information on how *ggplot2*, check the [dedicated
 website](https://ggplot2.tidyverse.org/).
@@ -126,11 +123,10 @@ props <- round(prop.table(a) * 100, digits = 1)
 # bind a column (cbind) to the above table with:
 b <- cbind(n = a, prop = props)
 b
+##     n prop
+## 0   6  2.8
+## 1 206 97.2
 ```
-
-    ##     n prop
-    ## 0   6  2.8
-    ## 1 206 97.2
 
 However, we have a lot of variables we want to do this over, it’s better
 to write a function that can do this for us over and over again. The key
@@ -162,19 +158,14 @@ line:
 
 ``` r
 twobytwo(cph$diarrhoea[cph$case == 1])
-```
-
-    ##     n prop
-    ## 0   6  2.8
-    ## 1 206 97.2
-
-``` r
+##     n prop
+## 0   6  2.8
+## 1 206 97.2
 twobytwo(cph$bloody[cph$case == 1])
+##     n prop
+## 0 147 97.4
+## 1   4  2.6
 ```
-
-    ##     n prop
-    ## 0 147 97.4
-    ## 1   4  2.6
 
 Of course, we have several variables, we don’t necessarily want to write
 this over and over, so we will use a function called `lapply()`. This
@@ -185,19 +176,19 @@ to use `lapply()` to get the results from above, we might do this:
 ``` r
 vars <- c("diarrhoea", "bloody")
 lapply(cph[cph$case == 1, vars, drop = FALSE], FUN = twobytwo)
+## $diarrhoea
+##     n prop
+## 0   6  2.8
+## 1 206 97.2
+## 
+## $bloody
+##     n prop
+## 0 147 97.4
+## 1   4  2.6
 ```
 
-    ## $diarrhoea
-    ##     n prop
-    ## 0   6  2.8
-    ## 1 206 97.2
-    ## 
-    ## $bloody
-    ##     n prop
-    ## 0 147 97.4
-    ## 1   4  2.6
-
-Now you try it with the following variables:
+Now you try it with the following
+variables:
 
 ``` r
 vars <- c("diarrhoea", "bloody", "vomiting", "abdo", "nausea", "fever", "headache", "jointpain")
@@ -247,31 +238,29 @@ vars <- c("diarrhoea", "bloody", "vomiting", "abdo", "nausea", "fever", "headach
 
 ``` r
 summary(cph$incubation[cph$case == 1])
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##    3.00   15.00   15.00   19.05   21.00   45.00
 ```
-
-    ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-    ##    3.00   15.00   15.00   19.05   21.00   45.00
 
 ### Describe the cohort in terms of person
 
 ``` r
 # look at age and other variables of interest
 Hmisc::describe(cph$age)
+## cph$age 
+##        n  missing distinct     Info     Mean      Gmd      .05      .10 
+##      377        0       20    0.935    18.32    3.247       16       16 
+##      .25      .50      .75      .90      .95 
+##       16       17       18       19       19 
+##                                                                       
+## Value         15    16    17    18    19    20    26    29    31    32
+## Frequency     11    95   106   111    36     3     1     1     1     1
+## Proportion 0.029 0.252 0.281 0.294 0.095 0.008 0.003 0.003 0.003 0.003
+##                                                                       
+## Value         33    34    39    43    54    56    58    59    61    65
+## Frequency      1     1     1     1     1     1     2     1     1     1
+## Proportion 0.003 0.003 0.003 0.003 0.003 0.003 0.005 0.003 0.003 0.003
 ```
-
-    ## cph$age 
-    ##        n  missing distinct     Info     Mean      Gmd      .05      .10 
-    ##      377        0       20    0.935    18.32    3.247       16       16 
-    ##      .25      .50      .75      .90      .95 
-    ##       16       17       18       19       19 
-    ##                                                                       
-    ## Value         15    16    17    18    19    20    26    29    31    32
-    ## Frequency     11    95   106   111    36     3     1     1     1     1
-    ## Proportion 0.029 0.252 0.281 0.294 0.095 0.008 0.003 0.003 0.003 0.003
-    ##                                                                       
-    ## Value         33    34    39    43    54    56    58    59    61    65
-    ## Frequency      1     1     1     1     1     1     2     1     1     1
-    ## Proportion 0.003 0.003 0.003 0.003 0.003 0.003 0.005 0.003 0.003 0.003
 
 ### Calculate the overall attack rates as well as the attack rates stratified by person characteristic
 
@@ -296,11 +285,10 @@ res  <- cbind(tab, prop[, 2, drop = TRUE])
 # rename your columns
 colnames(res) <- c("non case", "case", "AR%")
 res
+##   non case case  AR%
+## 0        9    6 40.0
+## 1      153  209 57.7
 ```
-
-    ##   non case case  AR%
-    ## 0        9    6 40.0
-    ## 1      153  209 57.7
 
 Much like the function we used above, only one thing changes: the
 variable of interest, but we also need to have a vector of cases to
@@ -327,11 +315,10 @@ We can see that it works for group:
 
 ``` r
 AR(cph$group, case = cph$case)
+##   non case case  AR%
+## 0        9    6 40.0
+## 1      153  209 57.7
 ```
-
-    ##   non case case  AR%
-    ## 0        9    6 40.0
-    ## 1      153  209 57.7
 
 Now we can use it with lapply, supplying our “case” argument after the
 function name. This is explained in the help documentation for “lapply”
@@ -340,29 +327,27 @@ function name. This is explained in the help documentation for “lapply”
 # students and sex
 vars <- c("group", "class", "sex")
 lapply(cph[vars], AR, case = cph$case)
+## $group
+##   non case case  AR%
+## 0        9    6 40.0
+## 1      153  209 57.7
+## 
+## $class
+##   non case case  AR%
+## 1       63   68 51.9
+## 2       45   56 55.4
+## 3       38   73 65.8
+## 
+## $sex
+##        non case case  AR%
+## female       97  116 54.5
+## male         65   99 60.4
 ```
-
-    ## $group
-    ##   non case case  AR%
-    ## 0        9    6 40.0
-    ## 1      153  209 57.7
-    ## 
-    ## $class
-    ##   non case case  AR%
-    ## 1       63   68 51.9
-    ## 2       45   56 55.4
-    ## 3       38   73 65.8
-    ## 
-    ## $sex
-    ##        non case case  AR%
-    ## female       97  116 54.5
-    ## male         65   99 60.4
 
 To see how to combine this code to create a ready-to-present table for
 exporting see the appendix.
 
-Describing temporal dynamics
-============================
+# Describing temporal dynamics
 
 ### Recoding for date compatability
 
@@ -392,6 +377,7 @@ cph$dayonset <- as.Date(refdate + cph$start)
 It is possible to create an epicurve manually using base-R code (see appendix), however for simplicity, there is a user written function (Daniel Gardener, PHE). 
 The epicurve function allows creation of easily formatted epicurves. To find out more about the function, first load it as above and then click on function in the Global Environment tab on the right of the R Studio window.
 -->
+
 Epicurves are often a great way of visualizing the dynamics of an
 epidemic, but can be easily mis-constructed if done by hand. To make
 things easier, the package *incidence* will automatically bin incidence
@@ -402,35 +388,34 @@ created.
 
 ``` r
 cph_incidence <- incidence::incidence(cph$dayonset, interval = 1)
+## 159 missing observations were removed.
 plot(cph_incidence)
 ```
 
-![](practical-copenhagen-descriptive_files/figure-markdown_github/epicurve-1.png)
+![](practical-copenhagen-descriptive_files/figure-gfm/epicurve-1.png)<!-- -->
 
-Conclusions from the descriptive analyses
-=========================================
+# Conclusions from the descriptive analyses
 
 We didn’t find anything surprising in the descriptive analysis of the
 cohort’s age given it consists of two groups, the students and the
 teachers.
 
 The distribution of the cohort regarding sex, group and class also
-didn’t reveal anything unusual. Students seem a bit more affected by the
-outbreak than teachers and the attack rate is higher for older students
-in higher classes. This, however, is a purely descriptive result.
+didn’t reveal anything unusual. Students seem a bit more affected by
+the outbreak than teachers and the attack rate is higher for older
+students in higher classes. This, however, is a purely descriptive
+result.
 
 The above results are in line with norovirus as the prime suspect, but
 the symptoms are not a textbook fit. There are too few people that
-experienced vomiting!
+experienced vomiting\!
 
-Part 3
-======
+# Part 3
 
 The analysis continues with [univariate analyses in part
 3](./copenhagen-univariate.html)
 
-About this document
-===================
+# About this document
 
 This code has been adapted to *R* for learning purposes. The initial
 contributors and copyright license are listed below. All copyrights and
@@ -439,18 +424,16 @@ licenses of the original document apply here as well.
 **Contributors to *R* code:**  
 Zhian N. Kamvar, Daniel Gardiner (PHE), and Lukas Richter (AGES)
 
-Citation
---------
+## Citation
 
 Pakalniskiene, J., G. Falkenhorst, M. Lisby, S. B. Madsen, K. E. P.
 Olsen, E. M. Nielsen, A. Mygh, Jeppe Boel, and K. Mølbak. “A foodborne
 outbreak of enterotoxigenic E. coli and Salmonella Anatum infection
 after a high-school dinner in Denmark, November 2006.” Epidemiology &
-Infection 137, no. 3 (2009): 396-401. [doi:
-10.1017/S0950268808000484](https://doi.org/10.1017/S0950268808000484)
+Infection 137, no. 3 (2009): 396-401.
+[doi: 10.1017/S0950268808000484](https://doi.org/10.1017/S0950268808000484)
 
-Copyright and license
----------------------
+## Copyright and license
 
 This case study was designed under an ECDC service contract for the
 development of training material (2010). The data were slightly modified
@@ -473,33 +456,33 @@ Ioannis Karagiannis and Pawel Stefanoff
 
 **You are free:**
 
--   to Share - to copy, distribute and transmit the work
--   to Remix - to adapt the work Under the following conditions:
--   Attribution - You must attribute the work in the manner specified by
+  - to Share - to copy, distribute and transmit the work
+  - to Remix - to adapt the work Under the following conditions:
+  - Attribution - You must attribute the work in the manner specified by
     the author or licensor (but not in any way that suggests that they
     endorse you or your use of the work). The best way to do this is to
     keep as it is the list of contributors: sources, authors and
     reviewers.
--   Share Alike - If you alter, transform, or build upon this work, you
+  - Share Alike - If you alter, transform, or build upon this work, you
     may distribute the resulting work only under the same or similar
     license to this one. Your changes must be documented. Under that
     condition, you are allowed to add your name to the list of
     contributors.
--   You cannot sell this work alone but you can use it as part of a
+  - You cannot sell this work alone but you can use it as part of a
     teaching. With the understanding that:
--   Waiver - Any of the above conditions can be waived if you get
+  - Waiver - Any of the above conditions can be waived if you get
     permission from the copyright holder.
--   Public Domain - Where the work or any of its elements is in the
+  - Public Domain - Where the work or any of its elements is in the
     public domain under applicable law, that status is in no way
     affected by the license.
--   Other Rights - In no way are any of the following rights affected by
+  - Other Rights - In no way are any of the following rights affected by
     the license:
--   Your fair dealing or fair use rights, or other applicable copyright
+  - Your fair dealing or fair use rights, or other applicable copyright
     exceptions and limitations;
--   The author’s moral rights;
--   Rights other persons may have either in the work itself or in how
+  - The author’s moral rights;
+  - Rights other persons may have either in the work itself or in how
     the work is used, such as publicity or privacy rights.
--   Notice - For any reuse or distribution, you must make clear to
+  - Notice - For any reuse or distribution, you must make clear to
     others the license terms of this work by keeping together this work
     and the current license. This licence is based on
-    <a href="http://creativecommons.org/licenses/by-sa/3.0/" class="uri">http://creativecommons.org/licenses/by-sa/3.0/</a>
+    <http://creativecommons.org/licenses/by-sa/3.0/>

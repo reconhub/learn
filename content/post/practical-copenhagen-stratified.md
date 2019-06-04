@@ -13,12 +13,9 @@ showonlyimage: true
 licenses: CC-BY
 ---
 
-
 <img src="../img/under-review.png" alt="Under Review: this practical is currently being revised and may change in the future">
 
-
-Stratified analysis
-===================
+# Stratified analysis
 
 This practical is a continuation of the analysis concerning the outbreak
 of gastroenteritis after a high school dinner in Copenhagen, Denmark.
@@ -33,8 +30,7 @@ an increased risk (even if not statistically significant). At this stage
 we cannot conclude anything, but need to check for effect modification
 and confounding. This should be done by stratification.
 
-Preparing packages and data
----------------------------
+## Preparing packages and data
 
 ``` r
 library("ggplot2")
@@ -74,7 +70,8 @@ for (var in vars) {
 ```
 
 The `epi.2by2()` function in the *epiR* package can be used to identify
-effect modifiers/confounders.
+effect
+modifiers/confounders.
 
 ``` r
 # Make a 3-way table with exposure of interest, the outcome and the stratifying variable, in that order
@@ -85,35 +82,35 @@ mhtable <- epiR::epi.2by2(a, method = "cohort.count")
 
 # view the output
 mhtable
+##              Outcome +    Outcome -      Total        Inc risk *
+## Exposed +          200          138        338              59.2
+## Exposed -           14           22         36              38.9
+## Total              214          160        374              57.2
+##                  Odds
+## Exposed +       1.449
+## Exposed -       0.636
+## Total           1.337
+## 
+## 
+## Point estimates and 95% CIs:
+## -------------------------------------------------------------------
+## Inc risk ratio (crude)                       1.52 (1.00, 2.31)
+## Inc risk ratio (M-H)                         1.14 (0.64, 2.03)
+## Inc risk ratio (crude:M-H)                   1.33
+## Odds ratio (crude)                           2.28 (1.13, 4.61)
+## Odds ratio (M-H)                             1.29 (0.45, 3.73)
+## Odds ratio (crude:M-H)                       1.76
+## Attrib risk (crude) *                        20.28 (3.52, 37.05)
+## Attrib risk (M-H) *                          6.19 (-116.53, 128.91)
+## Attrib risk (crude:M-H)                      3.28
+## -------------------------------------------------------------------
+##  M-H test of homogeneity of incidence risk ratios: chi2(1) = 0.041 Pr>chi2 = 0.839
+##  M-H test of homogeneity of odds ratios: chi2(1) = 0.072 Pr>chi2 = 0.789
+##  Test that M-H adjusted odds ratio = 1: chi2(1) = 0.224 Pr>chi2 = 0.636
+##  Wald confidence limits
+##  M-H: Mantel-Haenszel; CI: confidence interval
+##  * Outcomes per 100 population units
 ```
-
-    ##              Outcome +    Outcome -      Total        Inc risk *
-    ## Exposed +          200          138        338              59.2
-    ## Exposed -           14           22         36              38.9
-    ## Total              214          160        374              57.2
-    ##                  Odds
-    ## Exposed +       1.449
-    ## Exposed -       0.636
-    ## Total           1.337
-    ## 
-    ## 
-    ## Point estimates and 95 % CIs:
-    ## -------------------------------------------------------------------
-    ## Inc risk ratio (crude)                       1.52 (1.00, 2.31)
-    ## Inc risk ratio (M-H)                         1.14 (0.64, 2.03)
-    ## Inc risk ratio (crude:M-H)                   1.33
-    ## Odds ratio (crude)                           2.28 (1.13, 4.61)
-    ## Odds ratio (M-H)                             1.29 (0.45, 3.73)
-    ## Odds ratio (crude:M-H)                       1.76
-    ## Attrib risk (crude) *                        20.28 (3.52, 37.05)
-    ## Attrib risk (M-H) *                          6.19 (-116.53, 128.91)
-    ## Attrib risk (crude:M-H)                      3.28
-    ## -------------------------------------------------------------------
-    ##  Test of homogeneity of IRR: X2 test statistic: 0.137 p-value: 0.711
-    ##  Test of homogeneity of  OR: X2 test statistic: 0.083 p-value: 0.773
-    ##  Wald confidence limits
-    ##  M-H: Mantel-Haenszel
-    ##  * Outcomes per 100 population units
 
 You can then extract various outputs from the `epiR::epi.2by2()` table
 for piecing together your own output. Take a couple of mintues to scan
@@ -126,29 +123,20 @@ the documentation for `epiR::epi.2by2()` to see what outputs are named.
 ``` r
 # Crude RR
 mhtable$massoc$RR.crude.wald
-```
+##        est    lower    upper
+## 1 1.521555 1.000777 2.313334
 
-    ##        est    lower    upper
-    ## 1 1.521555 1.000777 2.313334
-
-``` r
 # Stratum specific RRs
 mhtable$massoc$RR.strata.wald
-```
+##        est     lower    upper
+## 1 1.193939 0.5937236 2.400934
+## 2 1.050000 0.3773566 2.921639
 
-    ##        est     lower    upper
-    ## 1 1.193939 0.5937236 2.400934
-    ## 2 1.050000 0.3773566 2.921639
-
-``` r
 # Adjusted RR
 mhtable$massoc$RR.mh.wald
-```
+##        est     lower    upper
+## 1 1.141738 0.6405961 2.034927
 
-    ##        est     lower    upper
-    ## 1 1.141738 0.6405961 2.034927
-
-``` r
 # You can combine all of those elements in to a single table using rbind
 results <- rbind(
   mhtable$massoc$RR.crude.wald,
@@ -162,13 +150,12 @@ rownames(results) <- c("Crude", "Strata 1", "Strata 0", "Adjusted")
 
 # view output table
 results
+##               est     lower    upper
+## Crude    1.521555 1.0007766 2.313334
+## Strata 1 1.193939 0.5937236 2.400934
+## Strata 0 1.050000 0.3773566 2.921639
+## Adjusted 1.141738 0.6405961 2.034927
 ```
-
-    ##               est     lower    upper
-    ## Crude    1.521555 1.0007766 2.313334
-    ## Strata 1 1.193939 0.5937236 2.400934
-    ## Strata 0 1.050000 0.3773566 2.921639
-    ## Adjusted 1.141738 0.6405961 2.034927
 
 Like we did before, we can use these steps to write a function:
 
@@ -197,42 +184,41 @@ Now we can run all of the variables at once
 vars <- c("veal", "rocket", "shrimps", "champagne", "sauce")
 # run strata_risk for each one using pasta as strata
 lapply(cph[vars], strata_risk, case = cph$case, strat = cph$pasta)
+## $veal
+##               est     lower    upper
+## Crude    1.521555 1.0007766 2.313334
+## Strata 1 1.193939 0.5937236 2.400934
+## Strata 0 1.050000 0.3773566 2.921639
+## Adjusted 1.141738 0.6405961 2.034927
+## 
+## $rocket
+##                est      lower     upper
+## Crude    0.8681467 0.72741416 1.0361066
+## Strata 1 0.8235294 0.69114596 0.9812698
+## Strata 0 0.3636364 0.05592816 2.3643083
+## Adjusted 0.8048371 0.67387797 0.9612463
+## 
+## $shrimps
+##               est     lower    upper
+## Crude    1.052964 0.8686243 1.276425
+## Strata 1 1.016949 0.8377118 1.234536
+## Strata 0 1.101852 0.4635572 2.619046
+## Adjusted 1.022840 0.8454977 1.237380
+## 
+## $champagne
+##               est     lower    upper
+## Crude    1.350981 0.9676189 1.886229
+## Strata 1 1.394552 0.9844555 1.975482
+## Strata 0 0.862069 0.2635860 2.819432
+## Adjusted 1.344662 0.9633515 1.876903
+## 
+## $sauce
+##               est     lower    upper
+## Crude    1.123279 0.9340155 1.350894
+## Strata 1 1.075893 0.8926480 1.296754
+## Strata 0 1.090909 0.3379015 3.521981
+## Adjusted 1.076414 0.8948041 1.294884
 ```
-
-    ## $veal
-    ##               est     lower    upper
-    ## Crude    1.521555 1.0007766 2.313334
-    ## Strata 1 1.193939 0.5937236 2.400934
-    ## Strata 0 1.050000 0.3773566 2.921639
-    ## Adjusted 1.141738 0.6405961 2.034927
-    ## 
-    ## $rocket
-    ##                est      lower     upper
-    ## Crude    0.8681467 0.72741416 1.0361066
-    ## Strata 1 0.8235294 0.69114596 0.9812698
-    ## Strata 0 0.3636364 0.05592816 2.3643083
-    ## Adjusted 0.8048371 0.67387797 0.9612463
-    ## 
-    ## $shrimps
-    ##               est     lower    upper
-    ## Crude    1.052964 0.8686243 1.276425
-    ## Strata 1 1.016949 0.8377118 1.234536
-    ## Strata 0 1.101852 0.4635572 2.619046
-    ## Adjusted 1.022840 0.8454977 1.237380
-    ## 
-    ## $champagne
-    ##               est     lower    upper
-    ## Crude    1.350981 0.9676189 1.886229
-    ## Strata 1 1.394552 0.9844555 1.975482
-    ## Strata 0 0.862069 0.2635860 2.819432
-    ## Adjusted 1.344662 0.9633515 1.876903
-    ## 
-    ## $sauce
-    ##               est     lower    upper
-    ## Crude    1.123279 0.9340155 1.350894
-    ## Strata 1 1.075893 0.8926480 1.296754
-    ## Strata 0 1.090909 0.3379015 3.521981
-    ## Adjusted 1.076414 0.8948041 1.294884
 
 The exact same can be done for veal (switch veal and pasta)
 
@@ -241,42 +227,41 @@ The exact same can be done for veal (switch veal and pasta)
 vars <- c("pasta", "rocket", "shrimps", "champagne", "sauce")
 # run strata_risk for each one using veal as strata
 lapply(cph[vars], strata_risk, case = cph$case, strat = cph$veal)
+## $pasta
+##               est     lower    upper
+## Crude    1.646791 1.0570739 2.565498
+## Strata 1 1.591919 0.6478873 3.911493
+## Strata 0 1.400000 0.5967549 3.284431
+## Adjusted 1.509126 0.8010437 2.843116
+## 
+## $rocket
+##                est     lower     upper
+## Crude    0.8681467 0.7274142 1.0361066
+## Strata 1 0.8373409 0.7015432 0.9994249
+## Strata 0 0.5252525 0.1428526 1.9312932
+## Adjusted 0.8210678 0.6872771 0.9809031
+## 
+## $shrimps
+##                est     lower    upper
+## Crude    1.0529644 0.8686243 1.276425
+## Strata 1 0.9858156 0.8135252 1.194594
+## Strata 0 1.7000000 0.7126936 4.055038
+## Adjusted 1.0269359 0.8503386 1.240209
+## 
+## $champagne
+##                est     lower    upper
+## Crude    1.3509813 0.9676189 1.886229
+## Strata 1 1.3865827 0.9786528 1.964549
+## Strata 0 0.9482759 0.2942761 3.055726
+## Adjusted 1.3455170 0.9639351 1.878151
+## 
+## $sauce
+##               est     lower    upper
+## Crude    1.123279 0.9340155 1.350894
+## Strata 1 1.068421 0.8860069 1.288391
+## Strata 0 1.363636 0.4598608 4.043624
+## Adjusted 1.076885 0.8954576 1.295070
 ```
-
-    ## $pasta
-    ##               est     lower    upper
-    ## Crude    1.646791 1.0570739 2.565498
-    ## Strata 1 1.591919 0.6478873 3.911493
-    ## Strata 0 1.400000 0.5967549 3.284431
-    ## Adjusted 1.509126 0.8010437 2.843116
-    ## 
-    ## $rocket
-    ##                est     lower     upper
-    ## Crude    0.8681467 0.7274142 1.0361066
-    ## Strata 1 0.8373409 0.7015432 0.9994249
-    ## Strata 0 0.5252525 0.1428526 1.9312932
-    ## Adjusted 0.8210678 0.6872771 0.9809031
-    ## 
-    ## $shrimps
-    ##                est     lower    upper
-    ## Crude    1.0529644 0.8686243 1.276425
-    ## Strata 1 0.9858156 0.8135252 1.194594
-    ## Strata 0 1.7000000 0.7126936 4.055038
-    ## Adjusted 1.0269359 0.8503386 1.240209
-    ## 
-    ## $champagne
-    ##                est     lower    upper
-    ## Crude    1.3509813 0.9676189 1.886229
-    ## Strata 1 1.3865827 0.9786528 1.964549
-    ## Strata 0 0.9482759 0.2942761 3.055726
-    ## Adjusted 1.3455170 0.9639351 1.878151
-    ## 
-    ## $sauce
-    ##               est     lower    upper
-    ## Crude    1.123279 0.9340155 1.350894
-    ## Strata 1 1.068421 0.8860069 1.288391
-    ## Strata 0 1.363636 0.4598608 4.043624
-    ## Adjusted 1.076885 0.8954576 1.295070
 
 It appears that pasta confounds the association between eating veal and
 being a case. For a variable to be a confounder it needs to be
@@ -288,22 +273,20 @@ case, we can now check if it is also associated with veal.
 # using a fisher's exact test
 
 fisher.test(table(cph$pasta, cph$veal))
+## 
+##  Fisher's Exact Test for Count Data
+## 
+## data:  table(cph$pasta, cph$veal)
+## p-value < 2.2e-16
+## alternative hypothesis: true odds ratio is not equal to 1
+## 95 percent confidence interval:
+##   45.38863 482.22379
+## sample estimates:
+## odds ratio 
+##   136.7379
 ```
 
-    ## 
-    ##  Fisher's Exact Test for Count Data
-    ## 
-    ## data:  table(cph$pasta, cph$veal)
-    ## p-value < 2.2e-16
-    ## alternative hypothesis: true odds ratio is not equal to 1
-    ## 95 percent confidence interval:
-    ##   45.38863 482.22379
-    ## sample estimates:
-    ## odds ratio 
-    ##   136.7379
-
-Integrate the analysis steps in one master script file
-======================================================
+# Integrate the analysis steps in one master script file
 
 This is easily done, if you have saved each of your analyses in a
 separate script (e.g. one for cleaning, descriptive, univariable and
@@ -318,8 +301,7 @@ the following:
     rmarkdown::render(here::here("reports", "03-univariate-analysis.Rmd"))
     rmarkdown::render(here::here("reports", "04-stratified-analysis.Rmd"))
 
-Conclusions of the stratified analysis
---------------------------------------
+## Conclusions of the stratified analysis
 
 We found that pasta consumption confounds the association between eating
 veal and being ill. The crude (univariable) result for veal suggests
@@ -332,17 +314,16 @@ pasta (RR = 1.05, CI = 0.38, 2.92). This is why the adjusted MH-RR also
 suggests that veal has no effect (RRadj = 1.14, CI: 0.64-2.03). This
 result taken together with the dose response relationship we found
 earlier for pasta gives additional evidence that there was something
-going on with the pesto!
+going on with the pesto\!
 
-Microbiological analyses
-------------------------
+## Microbiological analyses
 
 ### Local clinical microbiology laboratory
 
 The finding of *Salmonella spp.* is surprising because one would expect
 a median incubation period of at least 24 hours in a Salmonella
 outbreak. A look at the epidemic curve tells us that the median
-incubation period in this outbreak was &lt;18 hours. It would also be
+incubation period in this outbreak was \<18 hours. It would also be
 unusual to have such a low proportion of positive stool samples (3 of
 20), if Salmonella was the only pathogen causing the outbreak. Most
 microbiology laboratories use conventional methods (culture and
@@ -387,7 +368,7 @@ non-pathogenic. However, several (six are generally recognized) groups
 of diarrhoea causing *E. coli*, exist. These include ETEC, but also
 other groups, among which are:
 
-+EPEC (enteropathogenic *E. coli*), cause diarrhoea through an
+\+EPEC (enteropathogenic *E. coli*), cause diarrhoea through an
 infectious mechanism not involving toxins. It mostly affects children
 under the age of 2. Is transmitted from person-to-person, sometimes via
 foods. + STEC, (shiga toxin producing *E. coli*), STEC (also known as
@@ -425,8 +406,7 @@ sixteen of the 17 O92:H- isolates were indistinguishable by PFGE whereas
 the PFGE profile of the remaining O92:H- isolate differed from the
 others by a few bands.
 
-Conclusions of the investigation
---------------------------------
+## Conclusions of the investigation
 
 In summary, it is fair to say that there was both epidemiological and
 microbiological evidence that the pasta salad with pesto was the most
@@ -435,8 +415,7 @@ focused on how the pasta salad with pesto could have become contaminated
 and on lessons learned from this outbreak that could then communicated
 both the scientific community, the caterer and the general public.
 
-About this document
-===================
+# About this document
 
 This code has been adapted to *R* for learning purposes. The initial
 contributors and copyright license are listed below. All copyrights and
@@ -445,18 +424,16 @@ licenses of the original document apply here as well.
 **Contributors to *R* code:**  
 Zhian N. Kamvar, Daniel Gardiner (PHE), and Lukas Richter (AGES)
 
-Citation
---------
+## Citation
 
 Pakalniskiene, J., G. Falkenhorst, M. Lisby, S. B. Madsen, K. E. P.
 Olsen, E. M. Nielsen, A. Mygh, Jeppe Boel, and K. Mølbak. “A foodborne
 outbreak of enterotoxigenic E. coli and Salmonella Anatum infection
 after a high-school dinner in Denmark, November 2006.” Epidemiology &
-Infection 137, no. 3 (2009): 396-401. [doi:
-10.1017/S0950268808000484](https://doi.org/10.1017/S0950268808000484)
+Infection 137, no. 3 (2009): 396-401.
+[doi: 10.1017/S0950268808000484](https://doi.org/10.1017/S0950268808000484)
 
-Copyright and license
----------------------
+## Copyright and license
 
 This case study was designed under an ECDC service contract for the
 development of training material (2010). The data were slightly modified
@@ -479,33 +456,33 @@ Ioannis Karagiannis and Pawel Stefanoff
 
 **You are free:**
 
--   to Share - to copy, distribute and transmit the work
--   to Remix - to adapt the work Under the following conditions:
--   Attribution - You must attribute the work in the manner specified by
+  - to Share - to copy, distribute and transmit the work
+  - to Remix - to adapt the work Under the following conditions:
+  - Attribution - You must attribute the work in the manner specified by
     the author or licensor (but not in any way that suggests that they
     endorse you or your use of the work). The best way to do this is to
     keep as it is the list of contributors: sources, authors and
     reviewers.
--   Share Alike - If you alter, transform, or build upon this work, you
+  - Share Alike - If you alter, transform, or build upon this work, you
     may distribute the resulting work only under the same or similar
     license to this one. Your changes must be documented. Under that
     condition, you are allowed to add your name to the list of
     contributors.
--   You cannot sell this work alone but you can use it as part of a
+  - You cannot sell this work alone but you can use it as part of a
     teaching. With the understanding that:
--   Waiver - Any of the above conditions can be waived if you get
+  - Waiver - Any of the above conditions can be waived if you get
     permission from the copyright holder.
--   Public Domain - Where the work or any of its elements is in the
+  - Public Domain - Where the work or any of its elements is in the
     public domain under applicable law, that status is in no way
     affected by the license.
--   Other Rights - In no way are any of the following rights affected by
+  - Other Rights - In no way are any of the following rights affected by
     the license:
--   Your fair dealing or fair use rights, or other applicable copyright
+  - Your fair dealing or fair use rights, or other applicable copyright
     exceptions and limitations;
--   The author’s moral rights;
--   Rights other persons may have either in the work itself or in how
+  - The author’s moral rights;
+  - Rights other persons may have either in the work itself or in how
     the work is used, such as publicity or privacy rights.
--   Notice - For any reuse or distribution, you must make clear to
+  - Notice - For any reuse or distribution, you must make clear to
     others the license terms of this work by keeping together this work
     and the current license. This licence is based on
-    <a href="http://creativecommons.org/licenses/by-sa/3.0/" class="uri">http://creativecommons.org/licenses/by-sa/3.0/</a>
+    <http://creativecommons.org/licenses/by-sa/3.0/>

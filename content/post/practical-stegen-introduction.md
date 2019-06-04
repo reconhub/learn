@@ -11,8 +11,7 @@ image: img/highres/graduation-1965.jpg
 showonlyimage: true
 ---
 
-Introduction
-============
+# Introduction
 
 On 26 June 1998, the St Sebastian High School in Stegen (school A),
 Germany, celebrated a graduation party, where 250 to 350 participants
@@ -29,8 +28,7 @@ were followed by a dessert buffet offered from 10 pm. The party and the
 buffet extended late during the night and alcoholic beverages were quite
 popular. All agreed it was a party to be remembered.
 
-The alert
----------
+## The alert
 
 On 2nd July 1998, the Freiburg local health office reported to the
 Robert Koch Institute (RKI) in Berlin the occurrence of many cases of
@@ -53,8 +51,7 @@ investigation to assess the magnitude of the outbreak and identify
 potential vehicle(s) and risk factors for transmission in order to
 better control the outbreak
 
-The study
----------
+## The study
 
 Cases were defined as any person who had attended the party at St
 Sebastian High School who suffered from diarrhoea (min. 3 loose stool
@@ -67,8 +64,7 @@ interviews to provide names of persons who attended the party.
 
 Overall, 291 responded to enquiries and 103 cases were identified.
 
-An introduction to the *R* companion
-------------------------------------
+## An introduction to the *R* companion
 
 This text was adapted from the introduction used at the 2016 TSA module.
 
@@ -84,10 +80,10 @@ required. All the R packages you need for the exercises can be installed
 over the Internet.
 
 > If you get stuck with any of the tasks in this practical, additional
-> information for each task can be found in the [**Help** section](#help)
+> information for each task can be found in the [**Help**
+> section](#help)
 
-Setting up
-----------
+## Setting up
 
 ### a) Load the required packages and functions for this practical
 
@@ -95,10 +91,10 @@ Setting up
 
 The required packages are:
 
--   epiR
--   Hmisc
--   epitools
--   here
+  - epiR
+  - Hmisc
+  - epitools
+  - here
 
 The two required functions are **big\_table** and **attack\_rate** and
 can be found below.
@@ -128,16 +124,14 @@ counts, proportions and cumulative sums, thus reducing the number of
 lines of code required for descriptive analyses. The **attack\_rate**
 function makes tables that combine counts, proportions and row sums.
 
-The dataset
-===========
+# The dataset
 
 In this practical, we will be using the **tirav12.csv** file located in
 the data folder.
 
 ### b) Read in the dataset for this practical
 
-Recoding missing data
-=====================
+# Recoding missing data
 
 ### c) Browse your dataset
 
@@ -152,10 +146,10 @@ with a value of 9). Recode these to NA.
 
 As a csv file named **stegen\_clean**.
 
-Help
-====
+# Help
 
 <details>
+
 <summary> <b> a) Install and load the required packages and functions
 for this practical </b> </summary>
 
@@ -178,15 +172,20 @@ library("incidence")
 ```
 
 </details>
+
 <details>
-<summary> <b> b) Read in the dataset for this practical </b> </summary>
+
+<summary> <b> b) Read in the dataset for this practical </b>
+</summary>
 
 ``` r
 stegen_data <- read.csv(here::here("data", "stegen_raw.csv"), stringsAsFactors = FALSE)
 ```
 
 </details>
+
 <details>
+
 <summary> <b> c) Browse your dataset </b> </summary>
 
 *RStudio* has the nice feature that everything is in one browser window,
@@ -205,7 +204,9 @@ datasets, functions and other things you have loaded in the current
 session.
 
 </details>
+
 <details>
+
 <summary> <b> d) Recode data </b> </summary>
 
 Use the “describe” command to assess your data and identify variables
@@ -213,16 +214,19 @@ with missing values. The describe command showed that the variables
 salmon, pork and horseradish have a few records with a value of 9. These
 need to be recoded to NA.
 
--   Using the square brackets “`[...]`” after a variable allows you to
+  - Using the square brackets “`[...]`” after a variable allows you to
     subset for certain observations. To recode values of 9 to NA for the
     pork variable, select observations where pork
     **(`stegen_data$pork`)** is equal to 9 **`[stegen_data$pork == 9]`**
     and set these observations equal to NA
 
--   Always use the double equals “`==`” within square brackets; this a
+  - Always use the double equals “`==`” within square brackets; this a
     logical (Boolean) operator
 
--   Use “`!=`” when you want to write “not equal to”
+  - Use “`!=`” when you want to write “not equal
+to”
+
+<!-- end list -->
 
 ``` r
 # The first line below is read as follows:  assign a value of NA to stegen_data$pork WHERE stegen_data$pork is equal to 9
@@ -234,7 +238,9 @@ stegen_data$horseradish[stegen_data$horseradish == 9] <- NA
 ```
 
 </details>
+
 <details>
+
 <summary> <b> e) Save your new dataset </b> </summary>
 
 ``` r
@@ -242,8 +248,8 @@ write.csv(stegen_data, file = here::here("data", "stegen_clean.csv"))
 ```
 
 </details>
-Copyright and license
----------------------
+
+## Copyright and license
 
 **Source:** This case study was first designed by Alain Moren and Gilles
 Desve, EPIET. It is based on an investigation conducted by Anja Hauri,
@@ -258,33 +264,33 @@ Karagiannis
 
 **You are free:**
 
--   to Share - to copy, distribute and transmit the work
--   to Remix - to adapt the work Under the following conditions:
--   Attribution - You must attribute the work in the manner specified by
+  - to Share - to copy, distribute and transmit the work
+  - to Remix - to adapt the work Under the following conditions:
+  - Attribution - You must attribute the work in the manner specified by
     the author or licensor (but not in any way that suggests that they
     endorse you or your use of the work). The best way to do this is to
     keep as it is the list of contributors: sources, authors and
     reviewers.
--   Share Alike - If you alter, transform, or build upon this work, you
+  - Share Alike - If you alter, transform, or build upon this work, you
     may distribute the resulting work only under the same or similar
     license to this one. Your changes must be documented. Under that
     condition, you are allowed to add your name to the list of
     contributors.
--   You cannot sell this work alone but you can use it as part of a
+  - You cannot sell this work alone but you can use it as part of a
     teaching. With the understanding that:
--   Waiver - Any of the above conditions can be waived if you get
+  - Waiver - Any of the above conditions can be waived if you get
     permission from the copyright holder.
--   Public Domain - Where the work or any of its elements is in the
+  - Public Domain - Where the work or any of its elements is in the
     public domain under applicable law, that status is in no way
     affected by the license.
--   Other Rights - In no way are any of the following rights affected by
+  - Other Rights - In no way are any of the following rights affected by
     the license:
--   Your fair dealing or fair use rights, or other applicable copyright
+  - Your fair dealing or fair use rights, or other applicable copyright
     exceptions and limitations;
--   The author’s moral rights;
--   Rights other persons may have either in the work itself or in how
+  - The author’s moral rights;
+  - Rights other persons may have either in the work itself or in how
     the work is used, such as publicity or privacy rights.
--   Notice - For any reuse or distribution, you must make clear to
+  - Notice - For any reuse or distribution, you must make clear to
     others the license terms of this work by keeping together this work
     and the current license. This licence is based on
     <http://creativecommons.org/licenses/by-sa/3.0/>
