@@ -49,41 +49,43 @@ render_new_rmds_to_md <- function(dir = "content/post",
   if (build == "new") {
     to_build <- unbuilt
   }
-  pv <- rmarkdown::pandoc_version() >= package_version("2.0.0")
-  variant <- if(pv) "gfm" else "markdown_github"
-  figfile <- if (pv) "figure-gfm" else "figure-markdown_github"
+  # pv <- rmarkdown::pandoc_version() >= package_version("2.0.0")
+  # variant <- if(pv) "gfm" else "markdown_github"
+  # figfile <- if (pv) "figure-gfm" else "figure-markdown_github"
   # build only the ones to be built
   if (length(to_build) > 0){
     if (dry_run) {
       return(to_build)
     }
     for (b in to_build) {
-      rmd   <- b
-      cpath <- gsub("\\.Rmd", "_files", rmd)
-      spath <- gsub("content", "static", cpath)
-      res <- try(rmarkdown::render(rmd,
-                        rmarkdown::md_document(variant = variant,
-                                               preserve_yaml = TRUE ),
-                        envir = new.env()))
-      if (inherits(res, "try-error")) {
-        next
-      }
-      # If there are any figures, they should be moved into the correct folder
-      #
-      # Figures from the knitr run
-      source_figs <- fs::path(cpath, figfile)
-      # Where the figures should be
-      site_figs   <- fs::path(cpath, figfile)
-      
-      if (fs::dir_exists(source_figs)) {
-        # create the output directory if it doesn't exist
-        if (!fs::dir_exists(site_figs)) {
-          fs::dir_create(site_figs)
-        }
-        # Move the files
-        fs::file_move(fs::dir_ls(source_figs), fs::path(site_figs))
-      }
-
+      try_to_render_and_move(b)
+    #   rmd   <- b
+    #   cpath <- gsub("\\.Rmd", "_files", rmd)
+    #   spath <- gsub("content", "static", cpath)
+    #   res <- try(rmarkdown::render(rmd,
+    #                     rmarkdown::md_document(variant = variant,
+    #                                            preserve_yaml = TRUE ),
+    #                     envir = new.env()))
+    #   if (inherits(res, "try-error")) {
+    #     next
+    #   }
+    #   # If there are any figures, they should be moved into the correct folder
+    #   #
+    #   # Figures from the knitr run
+    #   source_figs <- fs::path(cpath, figfile)
+    #   # Where the figures should be
+    #   site_figs   <- fs::path(cpath, figfile)
+    #   
+    #   if (fs::dir_exists(source_figs)) {
+    #     # create the output directory if it doesn't exist
+    #     if (!fs::dir_exists(site_figs)) {
+    #       fs::dir_create(site_figs)
+    #     }
+    #     # Move the files
+    #     fs::file_move(fs::dir_ls(source_figs), fs::path(site_figs))
+    #   }
+    # 
+    # }
     }
   } else {
     message("Nothing to build, all .md up-to-date")

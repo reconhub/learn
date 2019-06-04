@@ -98,20 +98,31 @@ TIME     <-        # Number of years to run the simulation for
 
 ### Humans
 
-\[\ \frac{dSh}{dt}  = \mu_h N_h - \frac {\beta_h b}{N_h} S_h  I_v - \mu_h  S_h \]
-\[\ \frac{dIh}{dt}  = \frac {\beta_h b}{N_h}S_h I_v - (\gamma_h + \mu_h) I_h \]
-\[\ \frac{dRh}{dt}  = \gamma_h + I_h  - \mu_v I_v\]
+`$$\ \frac{dSh}{dt} = \mu_h N_h - \frac {\beta_h b}{N_h} S_h I_v - \mu_h
+S_h $$`
+
+`$$\ \frac{dIh}{dt} = \frac {\beta_h b}{N_h}S_h I_v - (\gamma_h + \mu_h)
+I_h $$`
+
+`$$\ \frac{dRh}{dt} = \gamma_h + I_h - \mu_v I_v $$`
 
 ### Vectors
 
-\[\ \frac{dSv}{dt}  = \mu_v N_v  - \frac{\beta_v b} {N_h} I_h S_v - \mu_v Sv\]
-\[\ \frac{dE_v}{dt}  = \frac{\beta_v b} {N_h} I_h S_v - (\delta + \mu_v) Ev\]
-\[\ \frac{dI_v}{dt}  = \delta Ev - \mu_v I_v\]
+\[
+\frac{dSv}{dt}  = \mu_v N_v  - \frac{\beta_v b} {N_h} I_h S_v - \mu_v Sv 
+\]
+
+`$$\ \frac{dE_v}{dt} = \frac{\beta_v b} {N_h} I_h S_v - (\delta + \mu_v)
+Ev $$`
+
+`$$\ \frac{dI_v}{dt} = \delta Ev - \mu_v I_v $$`
 
 ## Estimating R0 (Reproductive number)
 
 We need a formula to estimate R0:
-\[ R_0^2 = \frac{mb^2 \beta_h \beta_v \delta}{\mu_v (\mu_v+\delta)(\mu_h+\gamma_h)} \]
+
+`$$ R_0^2 = \frac{mb^2 \beta_h \beta_v \delta}{\mu_v
+(\mu_v+\delta)(\mu_h+\gamma_h)} $$`
 
 ## The flow diagram (part II)
 
