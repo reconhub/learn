@@ -37,16 +37,16 @@ render_new_rmds_to_md <- function(dir = "content/post",
     dplyr::filter((.data$change_time_rmd - .data$change_time_md) > tol) %>%
     dplyr::pull(.data$path_rmd) -> too_old
     
-  if(build == "all"){
-    to_build <- rmds$path_rmd 
+  if (build == "all") {
+    to_build <- rmds$path
   }
-  if(build == "old and new"){
+  if (build == "old and new") {
     to_build <- c(too_old, unbuilt)
   }
-  if(build == "old"){
+  if (build == "old") {
     to_build <- too_old
   }
-  if(build == "new"){
+  if (build == "new") {
     to_build <- unbuilt
   }
   pv <- rmarkdown::pandoc_version() >= package_version("2.0.0")
