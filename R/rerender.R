@@ -21,7 +21,10 @@ rerender <- function(rmd = NULL, dir = "content/post") {
     md <- the_file
     rmd  <- gsub("\\.md", "\\.Rmd", the_file) 
   }
-  try_to_render_and_move(rmd)
+  pv <- rmarkdown::pandoc_version() >= package_version("2.0.0")
+  variant <- if(pv) "gfm" else "markdown_github"
+  figfile <- if (pv) "figure-gfm" else "figure-markdown_github"
+  try_to_render_and_move(rmd, variant, figfile)
   # rmarkdown::render(rmd,
   #                   rmarkdown::md_document(variant = variant,
   #                                          preserve_yaml = TRUE))

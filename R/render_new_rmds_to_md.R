@@ -49,16 +49,16 @@ render_new_rmds_to_md <- function(dir = "content/post",
   if (build == "new") {
     to_build <- unbuilt
   }
-  # pv <- rmarkdown::pandoc_version() >= package_version("2.0.0")
-  # variant <- if(pv) "gfm" else "markdown_github"
-  # figfile <- if (pv) "figure-gfm" else "figure-markdown_github"
+  pv <- rmarkdown::pandoc_version() >= package_version("2.0.0")
+  variant <- if(pv) "gfm" else "markdown_github"
+  figfile <- if (pv) "figure-gfm" else "figure-markdown_github"
   # build only the ones to be built
   if (length(to_build) > 0){
     if (dry_run) {
       return(to_build)
     }
     for (b in to_build) {
-      try_to_render_and_move(b)
+      try_to_render_and_move(b, variant, figfile)
     #   rmd   <- b
     #   cpath <- gsub("\\.Rmd", "_files", rmd)
     #   spath <- gsub("content", "static", cpath)
