@@ -41,6 +41,7 @@ From the previous lecture, we will futher develop these concepts:
 
 ```{r eval=FALSE}
 #install.packages("deSolve", dep=TRUE)
+#install.packages("ggplot2")
 #install.packages("gridExtra", dep = TRUE)
 ```
 
@@ -453,9 +454,9 @@ grid.arrange(p1e, p2e)
 
 Now, using this basic model we are going to model the impact of three different types of interventions. 
 
-- 1. Vaccination 
-- 2. Bednets
-- 3. Mosquito spraying
+1. Vaccination 
+2. Bednets
+3. Mosquito spraying
 
 Try to find literature that explain these interventions and describe how you will parameterise the model. Are all of these interventions feasible? Are they cost effective?
 
@@ -466,7 +467,7 @@ Try to find literature that explain these interventions and describe how you wil
 
 - Zulma Cucunuba & Pierre Nouvellet: initial version
 
-Contributions are welcome via [pull requests](https://github.com/reconhub/learn/pulls). The source file if this document can be found [**here**](https://raw.githubusercontent.com/reconhub/learn/master/content/post/2017-12-04-practical-vbd.Rmd).
+Contributions are welcome via [pull requests](https://github.com/reconhub/learn/pulls). The source file if this document can be found [**here**](https://raw.githubusercontent.com/reconhub/learn/master/content/post/practical-vbd.Rmd).
 
 
 

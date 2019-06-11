@@ -36,6 +36,7 @@ Required packages
 
 ``` r
 #install.packages("deSolve", dep=TRUE)
+#install.packages("ggplot2")
 #install.packages("gridExtra", dep = TRUE)
 ```
 
@@ -45,18 +46,17 @@ Then load the packages using:
 library(deSolve)
 library(ggplot2)
 library(gridExtra)
-## Warning: package 'gridExtra' was built under R version 3.4.4
 ```
 
 The basic Zika model
 --------------------
 
--   Sh : Susceptible Humans
--   Ih : Ingected/Infectious humans
--   Rh : humans recovered from infection (with lifelasting immunity)
--   Sv : Susceptible vectors
--   Ev : Exposed vectors
--   Iv : Infected vectors
+- Sh : Susceptible Humans
+- Ih : Infected/Infectious humans
+- Rh : Humans recovered from infection (with lifelong immunity)
+- Sv : Susceptible vectors
+- Ev : Exposed vectors
+- Iv : Infected vectors
 
 The flow diagram (part I)
 -------------------------
@@ -74,8 +74,8 @@ Please, look at the suplementary material of the paper
 <http://science.sciencemag.org/content/early/2016/07/13/science.aag0219>
 and look at the parameter table of this model.
 
-Lets’ find the parameter values for the model. Note that we are using
-all the parameters in the same time unit (days)
+Let's find the parameter values for the model. Note that we are using all the
+parameters in the same time unit (days)
 
 ``` r
 Lv       <-        # life span of mosquitos (in days)
@@ -87,7 +87,7 @@ muv      <-        # mortality of mosquitos
 muh      <-        # mortality of humans
 gamma    <-        # recovery rate in humans
 delta    <-        # extrinsic incubation rate
-b        <-        # Bitting Rate
+b        <-        # Biting Rate
 betah    <-        # Probability of transmission from vector to host
 betav    <-        # Probability of transmission from host to vector
 Nh       <-        # Number of humans (Population of Cali 2.4 million)
@@ -95,7 +95,7 @@ m        <-        # Vector to human ratio
 Nv       <-        # Number of vectors
 R0       <-        # Reproductive number
 b        <-        sqrt((R0 ^2 * muv*(muv+delta) * (muh+gamma)) /
-                   (m * betah * betav * delta)) # bitting rate
+                   (m * betah * betav * delta)) # biting rate
 
 TIME     <-        # Number of years to run the simulation for 
 ```
@@ -107,7 +107,7 @@ The model (Equations)
 
 $$\\ \\frac{dSh}{dt}  = \\mu\_h N\_h - \\frac {\\beta\_h b}{N\_h} S\_h  I\_v - \\mu\_h  S\_h $$
 $$\\ \\frac{dIh}{dt}  = \\frac {\\beta\_h b}{N\_h}S\_h I\_v - (\\gamma\_h + \\mu\_h) I\_h $$
-$$\\ \\frac{dRh}{dt}  = \\gamma\_h + I\_h  - \\mu\_v I\_v$$
+$$\\ \\frac{dRh}{dt}  = \\gamma\_h I\_h  - \\mu\_h I\_h$$
 
 ### Vectors
 
@@ -132,7 +132,7 @@ Finally, the model in R
 -----------------------
 
 After having your flow diagram and equations, now please complete the
-model below witth the right parameters (PAR)
+model below with the right parameters (PAR)
 
 ``` r
 arbovmodel <- function (t, x, params) {
@@ -166,7 +166,7 @@ arbovmodel <- function (t, x, params) {
 Solve the system
 ----------------
 
-In this section, complete and comment that code for:
+In this section, complete and comment the code for:
 
 -   The VALUES for the initial conditions of the system
 
@@ -282,7 +282,7 @@ grid.arrange(p1v, p2v, p3v, p4v, ncol=2)
 
 ### Proportion
 
-Let’s take a more careful look at the propotions and discuss them
+Let’s take a more careful look at the proportions and discuss them
 
 ``` r
 
@@ -309,7 +309,7 @@ grid.arrange(p1, p2, p3, ncol=2)
 ### The First Epidemic
 
 ``` r
-# Check the fists epidemic
+# Check the first epidemic
 
 dat <- out[out$weeks < 54,]
 
@@ -330,29 +330,24 @@ grid.arrange(p1e, p2e)
 
 ![](practical-vbd_files/figure-markdown_github/p4-1.png)
 
-### Lets’ discuss some aspects
+### Let's discuss some aspects
 
--   Sensitivity of the model to change of the R0
--   Sensititity of the model to change of bitting rate
--   What are the reasons of the time lag between epidemics?
--   How we calculate the attack rate
--   What happen if we vaccinate 80% of the population?
--   What is the impact of a vector control programme?
+- Sensitivity of the model to changes in R0.
+- What are the reasons of the time lag between epidemics?
+- How do we calculate the attack rate?
 
 ### Modelling control interventions
 
-Now, using this basic model we are going to model the impact of three
-different types of interventions, all of them related to vector control.
+Now, using this basic model we are going to model the impact of three different
+types of interventions. 
 
--   1.  An intervention than reduces the life span of the mosquito
+1. Vaccination 
+2. Bednets
+3. Mosquito spraying
 
--   1.  An intervention that reduces the carrying capacity
-
--   1.  An intervention that reduces the probability of transmission
-
-For these three inteventions, try to find literature that explain which
-specific interventions can do that and in that way you will parameterise
-the model.
+Try to find literature that explain these interventions and describe how you
+will parameterise the model. Are all of these interventions feasible? Are they
+cost effective?
 
 About this document
 ===================
@@ -365,7 +360,7 @@ Contributors
 Contributions are welcome via [pull
 requests](https://github.com/reconhub/learn/pulls). The source file if
 this document can be found
-[**here**](https://raw.githubusercontent.com/reconhub/learn/master/content/post/2017-12-04-practical-vbd.Rmd).
+[**here**](https://raw.githubusercontent.com/reconhub/learn/master/content/post/practical-vbd.Rmd).
 
 Legal stuff
 -----------
