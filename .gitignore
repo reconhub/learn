@@ -4,3 +4,5 @@ public/*
 .Rhistory
 .Rproj.user
 public
+.DS_Store
+content/post/*.html

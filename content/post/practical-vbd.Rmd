@@ -469,7 +469,7 @@ For these three inteventions, try to find literature that explain which specific
 
 - Zulma Cucunuba & Pierre Nouvellet: initial version
 
-Contributions are welcome via [pull requests](https://github.com/reconhub/learn/pulls). The source file if this document can be found [**here**](https://raw.githubusercontent.com/reconhub/learn/master/content/post/2017-12-04-practical-vbd.Rmd).
+Contributions are welcome via [pull requests](https://github.com/reconhub/learn/pulls). The source file of this document can be found [**here**](https://raw.githubusercontent.com/reconhub/learn/master/content/post/2017-12-04-practical-vbd.Rmd).
 
 
 
