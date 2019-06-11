@@ -22,14 +22,15 @@ rerender <- function(rmd = NULL, dir = "content/post") {
     rmd  <- gsub("\\.md", "\\.Rmd", the_file) 
   }
   pv <- rmarkdown::pandoc_version() >= package_version("2.0.0")
-  variant <- if (pv) "gfm" else "markdown_github"
+  variant <- if(pv) "gfm" else "markdown_github"
   figfile <- if (pv) "figure-gfm" else "figure-markdown_github"
-  rmarkdown::render(rmd,
-                    rmarkdown::md_document(variant = variant,
-                                           preserve_yaml = TRUE))
-  cpath <- gsub("\\.md", "_files", md)
-  spath <- gsub("content", "static", cpath)
-  fs::file_move(fs::dir_ls(file.path(cpath, figfile)), 
-                file.path(spath, figfile)
-               )
+  try_to_render_and_move(rmd, variant, figfile)
+  # rmarkdown::render(rmd,
+  #                   rmarkdown::md_document(variant = variant,
+  #                                          preserve_yaml = TRUE))
+  # cpath <- gsub("\\.md", "_files", md)
+  # spath <- gsub("content", "static", cpath)
+  # fs::file_move(fs::dir_ls(file.path(cpath, figfile)), 
+  #               file.path(spath, figfile)
+  #              )
 }
