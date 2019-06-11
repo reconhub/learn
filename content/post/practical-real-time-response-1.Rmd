@@ -85,7 +85,7 @@ A new EVD outbreak has been notified in a fictional country in West Africa. The 
 The following packages, available on CRAN or github, are needed for this analysis.
 Install necessary packages as follows:
 
-```{r install_packages, eval = TRUE, echo = TRUE}
+```{r install_packages, eval = FALSE, echo = TRUE}
 # install.packages("remotes")
 # install.packages("readxl")
 # install.packages("outbreaks")
@@ -99,12 +99,13 @@ Install necessary packages as follows:
 # install.packages("magrittr")
 # install.packages("binom")
 # install.packages("ape")
-# remotes::install_github("finlaycampbell/outbreaker2") [on CRAN soon]
+# remotes::install_github("finlaycampbell/outbreaker2") # [on CRAN soon]
 # install.packages("here")
 ```
 
 Once the packages are installed, you may need to open a new R session. Then load the libraries as follows:
-```{r load_library, warning = FALSE}
+
+```{r load_library, warning = FALSE, message = FALSE}
 library(readxl)
 library(outbreaks)
 library(incidence)
@@ -303,7 +304,7 @@ plot(i_weekly, border = "black")
 This is the end of part 1 of the practical. 
 Before going on to part 2, you'll need to save the following objects:
 
-```{r save_data, include = FALSE}
+```{r save_data_ni, include = FALSE}
 dir.create(here("static/data/clean")) # create clean data directory if it doesn't exist
 saveRDS(i_daily, here("static/data/clean/i_daily.rds"))
 saveRDS(i_weekly, here("static/data/clean/i_weekly.rds"))
@@ -312,7 +313,7 @@ saveRDS(linelist_clean, here("static/data/clean/linelist_clean.rds"))
 saveRDS(contacts, here("static/data/clean/contacts.rds"))
 ```
 
-```{r save_data, here(eval = FALSE}
+```{r save_data, eval = FALSE}
 dir.create(here("data/clean")) # create clean data directory if it doesn't exist
 saveRDS(i_daily, here("data/clean/i_daily.rds"))
 saveRDS(i_weekly, here("data/clean/i_weekly.rds"))

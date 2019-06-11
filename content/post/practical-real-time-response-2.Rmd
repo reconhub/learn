@@ -107,7 +107,7 @@ linelist_clean <- readRDS(here("static/data/clean/linelist_clean.rds"))
 contacts <- readRDS(here("static/data/clean/contacts.rds"))
 ```
 
-```{r read_data}
+```{r read_data, eval = FALSE}
 i_daily <- readRDS(here("data/clean/i_daily.rds"))
 i_weekly <- readRDS(here("data/clean/i_weekly.rds"))
 linelist <- readRDS(here("data/clean/linelist.rds"))
@@ -646,7 +646,7 @@ cat("- the above assumes constant R within sliding time-window")
 This is the end of part 2 of the practical. 
 Before going on to part 3, you'll need to save the following objects:
 
-```{r save_data, include = FALSE}
+```{r save_data_ni, include = FALSE}
 saveRDS(linelist, here("static/data/clean/linelist.rds"))
 saveRDS(linelist_clean, here("static/data/clean/linelist_clean.rds"))
 saveRDS(epi_contacts, here("static/data/clean/epi_contacts.rds"))

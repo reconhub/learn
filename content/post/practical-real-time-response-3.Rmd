@@ -115,10 +115,10 @@ linelist <- readRDS(here("static/data/clean/linelist.rds"))
 linelist_clean <- readRDS(here("static/data/clean/linelist_clean.rds"))
 epi_contacts <- readRDS(here("static/data/clean/epi_contacts.rds"))
 si <- readRDS(here("static/data/clean/si.rds"))
-dna <- read.FASTA(here("static/data/wgs.fa"))
+dna <- read.FASTA(here("static/data/wgs_20140707.fasta"))
 ```
 
-```{r read_data}
+```{r read_data, eval = FALSE}
 linelist <- readRDS(here("data/clean/linelist.rds"))
 linelist_clean <- readRDS(here("data/clean/linelist_clean.rds"))
 epi_contacts <- readRDS(here("data/clean/epi_contacts.rds"))
@@ -133,9 +133,17 @@ file, save it in your working directory, and then import these data using the
 function `read.FASTA` from the `ape` package. Do the sequence labels match the
 IDs in your cleaned linelist?
 
-```{r echo = TRUE, eval = TRUE}
+```{r read_dna, echo = TRUE, eval = FALSE}
 dna <- read.FASTA(here("data/wgs_20140707.fasta"))
 dna
+```
+
+```{r show_dna, echo = FALSE}
+dna
+```
+
+
+```{r echo = TRUE, eval = TRUE}
 identical(labels(dna), linelist_clean$case_id) # check sequences match linelist data
 ```
 
