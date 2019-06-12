@@ -8,20 +8,18 @@ image: img/highres/van-der-helst-banquet.jpg
 slug: real-time-response-1
 showonlyimage: true
 licenses: CC-BY
+output:
+  md_document:
+    version: github_markdown
+params:
+  full_version: true
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
-# if rendering full version
-full_version <- TRUE
-#full_version <- FALSE
-
-if(full_version){
-  render_snippet <- 'asis'
-}else{
-  render_snippet <- FALSE
-}
+# toggle to render full version 
+render_snippet <- if (params$full_version) 'asis' else FALSE
 ```
 
 ## Introduction
@@ -155,39 +153,42 @@ contacts <- read_excel(here("static/data/contacts_20140701.xlsx"), na = c("", "N
 linelist <- read_excel(here("data/linelist_20140701.xlsx"), na = c("", "NA"))
 ```
 
-```{r read_data2, echo = full_version, eval = FALSE}
+```{r read_data2, echo = params$full_version, eval = FALSE}
 contacts <- read_excel(here("data/contacts_20140701.xlsx"), na = c("", "NA"))
 ```
 
 Take some time to look at the data and structure here. 
+
 - Are the data and format similar to linelists that you have seen in the past? 
 - If you were part of the outbreak investigation team, what other information might you want to collect?
 
-```{r explore_data, echo = full_version}
+```{r explore_data, echo = params$full_version}
 dim(linelist)
 head(linelist)
 ```
   
-```{r data_wishes, echo = FALSE, results = render_snippet, eval = full_version}
+```{r data_wishes, echo = FALSE, results = render_snippet, eval = params$full_version}
 
 cat("- You may want to also collect data on date of report, age, household identifier, occupation, etc.")  
 
 ```
   
-Note that for further analyses, you will need to make sure that all dates as stored correctly as `Date` objects.
-You can do this by using the function `as.Date`, for example:  
+Note that for further analyses, you will need to make sure that all dates as
+stored correctly as `Date` objects.  You can do this by using the function
+`as.Date`, for example:  
 
 ```{r format_date_example}
 linelist$date_of_onset <- as.Date(linelist$date_of_onset, format = "%Y-%m-%d")
 ```
   
-```{r format_dates, echo = full_version}
+```{r format_dates, echo = params$full_version} 
 linelist$date_of_infection <- as.Date(linelist$date_of_infection, format = "%Y-%m-%d")
 linelist$date_of_hospitalisation <- as.Date(linelist$date_of_hospitalisation, format = "%Y-%m-%d")
 linelist$date_of_outcome <- as.Date(linelist$date_of_outcome, format = "%Y-%m-%d")
 ```
 
 The formatted data should then look like:
+
 ```{r show_data, echo = FALSE}
 head(linelist)
 head(contacts)
@@ -196,15 +197,17 @@ head(contacts)
 ## Data cleaning and descriptive analysis
 
 Look more closely at the data contained in this `linelist`.   
+
 - What do you notice?  
 
-```{r explore, echo = full_version}
+```{r explore, echo = params$full_version}
 head(linelist)
 names(linelist)
 ```
 
 You may notice that there are missing entries.  
-An important step in analysis is to identify any mistakes in data entry. Although it can be difficult to assess errors in hospital names, we would expect the date of infection to always be before the date of symptom onset.  
+An important step in analysis is to identify any mistakes in data entry. 
+Although it can be difficult to assess errors in hospital names, we would expect the date of infection to always be before the date of symptom onset.  
   
 Clean this dataset to remove any entries with negative or 0 day incubation periods.  
 
@@ -216,7 +219,7 @@ linelist[mistakes, ]
 
 ```
 
-```{r clean_data_answers, echo = full_version}
+```{r clean_data_answers, echo = params$full_version}
 ## identify mistakes in data entry (negative incubation period)
 mistakes <- which(linelist$date_of_onset <= linelist$date_of_infection)
 mistakes
@@ -224,12 +227,14 @@ linelist[mistakes, ] # show just the first few entries where there is negative o
 ```
 
 Save your "cleaned" linelist as a new object: `linelist_clean`  
+
 ```{r save_clean}
 linelist_clean <- linelist[-mistakes, ]
 ```
 
 What other negative dates or mistakes might you want to check if you had the full dataset?
-```{r other_checks, echo = FALSE, results = render_snippet, eval = full_version}
+
+```{r other_checks, echo = FALSE, results = render_snippet, eval = params$full_version}
 
 cat("- You may want to see if there are mistakes including but not restricted to: i) negative symptom onset to hospitalisation or outcome delays and ii) spelling errors such as hospital and names")  
 
@@ -243,7 +248,7 @@ table(linelist_clean$outcome, useNA = "ifany")
 ```
 
 Think about what to do with cases whose outcome is NA?
-```{r cfr, eval = full_version}
+```{r cfr, eval = params$full_version}
 n_dead <- sum(linelist_clean$outcome %in% "Death")
 n_known_outcome <- sum(linelist_clean$outcome %in% c("Death", "Recover"))
 n_all <- nrow(linelist_clean)
@@ -254,7 +259,8 @@ cfr_with_CI <- binom.confint(n_dead, n_known_outcome, method = "exact")
 cfr_wrong_with_CI <- binom.confint(n_dead, n_all, method = "exact")
 ```
 
-```{r cfr_snippet, echo = FALSE, results = render_snippet, eval = full_version}
+
+```{r cfr_snippet, echo = FALSE, results = render_snippet, eval = params$full_version}
 
 cat("- Not properly accounting for the cases with unknown outcome status typically leads to underestimation of the CFR. This is particularly problematic early on in an outbreak where the final status of a large proportion of cases has not yet been observed.")  
 
@@ -266,7 +272,7 @@ The first question we want to know is simply: how bad is it?. The first step of 
 
 Using the package `incidence`, compute the daily incidence from the `linelist_clean` based on the dates of symptom onset. Store the result in an object called i_daily; the result should look like:  
 
-```{r incidence, echo = full_version}
+```{r incidence, echo = params$full_version}
 i_daily <- incidence(linelist_clean$date_of_onset) # daily incidence
 ```
 
@@ -278,11 +284,11 @@ plot(i_daily, border = "black")
 
 You might notice that the incidence dates `i_daily$dates` stops on the last date where we have data on date of symptom onset (29th June 2014). However close inspection of the linelist shows that the last date in the linelist (of any entry) is in fact a bit later (1st July 2014). You can use the argument `last_date` in the `incidence` function to change this.  
 
-```{r update_last_date, echo = full_version}
+```{r update_last_date, echo = params$full_version}
 
 #extend last date:
 i_daily <- incidence(linelist_clean$date_of_onset, 
-               last_date = as.Date(max(linelist_clean$date_of_hospitalisation, na.rm = TRUE)))
+                     last_date = as.Date(max(linelist_clean$date_of_hospitalisation, na.rm = TRUE)))
 i_daily
 plot(i_daily, border = "black")
 

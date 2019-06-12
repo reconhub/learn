@@ -8,6 +8,11 @@ image: img/highres/van-der-helst-banquet.jpg
 slug: real-time-response-1
 showonlyimage: true
 licenses: CC-BY
+output:
+  md_document:
+    version: github_markdown
+params:
+  full_version: true
 ---
 
 ## Introduction
@@ -132,10 +137,14 @@ linelist <- read_excel(here("data/linelist_20140701.xlsx"), na = c("", "NA"))
 contacts <- read_excel(here("data/contacts_20140701.xlsx"), na = c("", "NA"))
 ```
 
-Take some time to look at the data and structure here. - Are the data
-and format similar to linelists that you have seen in the past? - If you
-were part of the outbreak investigation team, what other information
-might you want to collect?
+Take some time to look at the data and structure here.
+
+  - Are the data and format similar to linelists that you have seen in
+    the past?
+  - If you were part of the outbreak investigation team, what other
+    information might you want to collect?
+
+<!-- end list -->
 
 ``` r
 dim(linelist)
@@ -203,8 +212,11 @@ The formatted data should then look like:
 
 ## Data cleaning and descriptive analysis
 
-Look more closely at the data contained in this `linelist`.  
-\- What do you notice?
+Look more closely at the data contained in this `linelist`.
+
+  - What do you notice?
+
+<!-- end list -->
 
 ``` r
 head(linelist)
@@ -277,9 +289,11 @@ linelist_clean <- linelist[-mistakes, ]
 ```
 
 What other negative dates or mistakes might you want to check if you had
-the full dataset? - You may want to see if there are mistakes including
-but not restricted to: i) negative symptom onset to hospitalisation or
-outcome delays and ii) spelling errors such as hospital and names
+the full dataset?
+
+  - You may want to see if there are mistakes including but not
+    restricted to: i) negative symptom onset to hospitalisation or
+    outcome delays and ii) spelling errors such as hospital and names
 
 ## Calculating the case fatality ratio (CFR)
 
@@ -356,7 +370,7 @@ use the argument `last_date` in the `incidence` function to change this.
 ``` r
 #extend last date:
 i_daily <- incidence(linelist_clean$date_of_onset, 
-               last_date = as.Date(max(linelist_clean$date_of_hospitalisation, na.rm = TRUE)))
+                     last_date = as.Date(max(linelist_clean$date_of_hospitalisation, na.rm = TRUE)))
 i_daily
 ```
 
