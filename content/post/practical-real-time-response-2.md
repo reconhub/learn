@@ -8,6 +8,8 @@ image: img/highres/van-der-helst-banquet.jpg
 slug: real-time-response-2
 showonlyimage: true
 licenses: CC-BY
+params:
+  full_version: true
 ---
 
 ## Introduction
@@ -58,12 +60,12 @@ necessary packages as follows:
 # install.packages("distcrete")
 # install.packages("epitrix")
 # remotes::install_github("annecori/EpiEstim")
-# install.packages("projections")
+# remotes::install_github("reconhub/projections")
 # install.packages("ggplot2")
 # install.packages("magrittr")
 # install.packages("binom")
 # install.packages("ape")
-# remotes::install_github("finlaycampbell/outbreaker2") [on CRAN soon]
+# install.packages("outbreaker2")
 # install.packages("here")
 ```
 
@@ -75,6 +77,15 @@ library(readxl)
 library(outbreaks)
 library(incidence)
 library(epicontacts)
+```
+
+    ## Registered S3 methods overwritten by 'ggplot2':
+    ##   method         from 
+    ##   [.quosures     rlang
+    ##   c.quosures     rlang
+    ##   print.quosures rlang
+
+``` r
 library(distcrete)
 library(epitrix)
 library(EpiEstim)
@@ -84,8 +95,20 @@ library(magrittr)
 library(binom)
 library(ape)
 library(outbreaker2)
+```
+
+    ## 
+    ## Attaching package: 'outbreaker2'
+
+    ## The following object is masked from 'package:epicontacts':
+    ## 
+    ##     cases_pal
+
+``` r
 library(here)
 ```
+
+    ## here() starts at /home/zkamvar/Documents/Websites/reconhub--learn
 
 ## Read in the data processed in part 1
 
@@ -419,7 +442,13 @@ p <- plot(epi_contacts, node_shape = "gender", shapes = c(m = "male", f = "femal
 p
 ```
 
-![](practical-real-time-response-2_files/figure-gfm/plot_contacts-1.png)<!-- -->
+<!--html_preserve-->
+
+<iframe src="widgets/real-time-response-2-nework.html" width="100%" height="500px">
+
+</iframe>
+
+<!--/html_preserve-->
 
 Using the function `match` (see `?match`) check that the visualised
 contacts are indeed
@@ -446,7 +475,7 @@ Once you are happy that these are all indeed cases, look at the network:
     single case (11f8ea infecting 5 other individuals. There does not
     seem to be any immediate differences between the gender of cases
 
-## Estimating transmissibility (\(R\))
+## Estimating transmissibility (`$R$`)
 
 ### Branching process model
 
@@ -454,10 +483,10 @@ The transmissibility of the disease can be assessed through the
 estimation of the reproduction number R, defined as the expected number
 of secondary cases per infected case. In the early stages of an
 outbreak, and assuming a large population with no immunity, this
-quantity is also the basic reproduction number \(R_0\), i.e. \(R\) in a
+quantity is also the basic reproduction number `$R_0$`, i.e. `$R$` in a
 large fully susceptible population.
 
-The package `EpiEstim` implements a Bayesian estimation of \(R\), using
+The package `EpiEstim` implements a Bayesian estimation of `$R$`, using
 dates of onset of symptoms and information on the serial interval
 distribution, i.e. the distribution of time from symptom onset in a case
 and symptom onset in their infector (see Cori et al., 2013, AJE 178:
@@ -467,21 +496,22 @@ Briefly, `EpiEstim` uses a simple model describing incidence on a given
 day as Poisson distributed, with a mean determined by the total force of
 infection on that day:
 
-\[ I_t  ∼  Poisson(\lambda_t)\]
+`$$ I_t  ∼  Poisson(\lambda_t)$$`
 
-where \(I_t\) is the incidence (based on symptom onset) on day \(t\) and
-\(\lambda_t\) is the force of infection on that day. Noting R the
+where `$I_t$` is the incidence (based on symptom onset) on day `$t$` and
+`$\lambda_t$` is the force of infection on that day. Noting R the
 reproduction number and w() the discrete serial interval distribution,
 we have:
 
-\[\lambda_t = R \sum_{s=1}^t I_sw(t-s)\]
+`$$\lambda_t = R \sum_{s=1}^t I_sw(t-s)$$`
 
 The likelihood (probability of observing the data given the model and
 parameters) is defined as a function of R:
 
-\[L(I) = p(I|R) = \prod_{t = 1}^{T} f_P(I_t, \lambda_t)\]  
-where \(f_P(.,\mu)\) is the probability mass function of a Poisson
-distribution with mean \(\mu\).
+`$$L(I) = p(I|R) = \prod_{t = 1}^{T} f_P(I_t, \lambda_t)$$`
+
+where `$f_P(.,\mu)$` is the probability mass function of a Poisson
+distribution with mean `$\mu$`.
 
 ### Estimating the serial interval
 
@@ -590,7 +620,7 @@ and a standard deviation 9.3 days?
 
 Now that we have estimates of the serial interval, we can use this
 information to estimate transmissibility of the disease (as measured by
-\(R_0\)). Make sure you use a daily (not weekly) incidence object
+`$R_0$`). Make sure you use a daily (not weekly) incidence object
 truncated to the period where you have decided there is exponential
 growth (`i_daily_trunc`).
 
@@ -662,13 +692,13 @@ under control. What is your opinion on this?
 
 Note that you could have estimated R0 directly from the growth rate and
 the serial interval, using the formula described in Wallinga and
-Lipsitch, Proc Biol Sci, 2007:
-\(R_0 = \frac{1}{\int_{s=0}^{+\infty}e^{-rs}w(s)ds}\), and implemented
-in the function `r2R0` of the `epitrix` package. Although this may seem
-like a complicated formula, the reasoning behind it is simple and
-illustrated in the figure below: for an observed exponentially growing
-incidence curve, if you know the serial interval, you can derive the
-reproduction number.
+Lipsitch, Proc Biol Sci, 2007: `$R_0 =
+\frac{1}{\int_{s=0}^{+\infty}e^{-rs}w(s)ds}$`, and implemented in the
+function `r2R0` of the `epitrix` package. Although this may seem like a
+complicated formula, the reasoning behind it is simple and illustrated
+in the figure below: for an observed exponentially growing incidence
+curve, if you know the serial interval, you can derive the reproduction
+number.
 
 ![Estimating R0 from the growth rate and the serial
 interval.](figs/R0fromr.png)
@@ -695,7 +725,7 @@ R_median_from_growth_rate <- median(R_sample_from_growth_rate)
 R_median_from_growth_rate # compare with R_median
 ```
 
-    ## [1] 1.411895
+    ## [1] 1.416407
 
 ``` r
 # what is the 95%CI?
@@ -704,7 +734,7 @@ R_CI_from_growth_rate # compare with R_CrI
 ```
 
     ##     2.5%    97.5% 
-    ## 1.264151 1.585335
+    ## 1.269487 1.578765
 
 Note the above estimates are slighlty different from those obtained
 using the branching process model. There are a few reasons for this.
@@ -719,12 +749,12 @@ different R estimates.
 
 The function `project` from the package `projections` can be used to
 simulate plausible epidemic trajectories by simulating daily incidence
-using the same branching process as the one used to estimate \(R\) in
-`EpiEstim`. All that is needed is one, or several values of \(R\) and a
+using the same branching process as the one used to estimate `$R$` in
+`EpiEstim`. All that is needed is one, or several values of `$R$` and a
 serial interval distribution, stored as a `distcrete` object.
 
 Here, we first illustrate how we can simulate 5 random trajectories
-using a fixed value of \(R\) = 1.28, the median estimate of R from
+using a fixed value of `$R$` = 1.28, the median estimate of R from
 above.  
 Use the same daily truncated incidence object as above to simulate
 future incidence.
@@ -743,16 +773,16 @@ as.matrix(small_proj)
 ```
 
     ##            [,1] [,2] [,3] [,4] [,5]
-    ## 2014-06-18    2    3    2    3    0
-    ## 2014-06-19    4    5    5    3    3
-    ## 2014-06-20    3    5    2    3    3
-    ## 2014-06-21    7    5    2    5    1
-    ## 2014-06-22    3    1    2    6    4
-    ## 2014-06-23    6    3    4    5    5
-    ## 2014-06-24    5    5    4    2    6
-    ## 2014-06-25    3    3    7    8    5
-    ## 2014-06-26    4    6    2    4    5
-    ## 2014-06-27    4    8    7    5    3
+    ## 2014-06-18    4    3    2    5    4
+    ## 2014-06-19    3    5    4    5    3
+    ## 2014-06-20    2    5    1    3    3
+    ## 2014-06-21    3    3    4    2    7
+    ## 2014-06-22    7    7    4    4    4
+    ## 2014-06-23    6    9    5    5    4
+    ## 2014-06-24    3    8    3    5    7
+    ## 2014-06-25    7    8    6    2    5
+    ## 2014-06-26    3    4    4    5    4
+    ## 2014-06-27    7   11    4    6    3
 
   - You can either use a single value R for the entire trajectory
     (R\_fix\_within = TRUE) or resample R at each time step
@@ -763,7 +793,7 @@ as.matrix(small_proj)
     projections
 
 Using the same principle, generate 1,000 trajectories for the next 2
-weeks, using a range of plausible values of \(R\).  
+weeks, using a range of plausible values of `$R$`.  
 The posterior distribution of R is gamma distributed (see Cori et
 al. AJE 2013) so you can use the `rgamma` function to randomly draw
 values from that distribution. You will also need to use the function
@@ -815,83 +845,83 @@ apply(proj, 1, summary)
 ```
 
     ##         2014-06-18 2014-06-19 2014-06-20 2014-06-21 2014-06-22 2014-06-23
-    ## Min.         0.000      0.000      0.000      0.000      0.000      0.000
-    ## 1st Qu.      2.000      2.000      3.000      3.000      3.000      3.000
-    ## Median       4.000      4.000      4.000      4.000      4.000      4.000
-    ## Mean         3.831      3.984      4.211      4.399      4.288      4.519
-    ## 3rd Qu.      5.000      5.000      6.000      6.000      6.000      6.000
-    ## Max.        11.000     14.000     12.000     12.000     14.000     15.000
+    ## Min.          0.00      0.000      0.000       0.00      0.000      0.000
+    ## 1st Qu.       3.00      3.000      3.000       3.00      3.000      3.000
+    ## Median        4.00      4.000      4.000       4.00      4.000      4.000
+    ## Mean          3.96      3.991      4.118       4.38      4.447      4.523
+    ## 3rd Qu.       5.00      5.000      5.000       6.00      6.000      6.000
+    ## Max.         14.00     13.000     11.000      12.00     11.000     18.000
     ##         2014-06-24 2014-06-25 2014-06-26 2014-06-27 2014-06-28 2014-06-29
-    ## Min.         0.000       0.00      0.000        0.0       0.00      0.000
-    ## 1st Qu.      3.000       3.00      3.000        3.0       3.00      3.000
-    ## Median       4.000       4.00      5.000        5.0       5.00      5.000
-    ## Mean         4.705       4.76      4.969        5.2       5.26      5.469
-    ## 3rd Qu.      6.000       6.00      6.000        7.0       7.00      7.000
-    ## Max.        15.000      15.00     18.000       16.0      19.00     15.000
+    ## Min.         0.000      0.000       0.00      0.000      0.000      0.000
+    ## 1st Qu.      3.000      3.000       3.00      3.000      3.000      4.000
+    ## Median       5.000      4.000       5.00      5.000      5.000      5.000
+    ## Mean         4.741      4.685       5.11      5.201      5.302      5.376
+    ## 3rd Qu.      6.000      6.000       7.00      7.000      7.000      7.000
+    ## Max.        13.000     16.000      15.00     15.000     15.000     17.000
     ##         2014-06-30 2014-07-01
-    ## Min.         0.000      0.000
-    ## 1st Qu.      4.000      4.000
-    ## Median       5.000      5.000
-    ## Mean         5.731      5.766
-    ## 3rd Qu.      7.000      7.000
-    ## Max.        26.000     21.000
+    ## Min.          0.00      0.000
+    ## 1st Qu.       4.00      4.000
+    ## Median        5.00      6.000
+    ## Mean          5.68      5.974
+    ## 3rd Qu.       7.00      7.250
+    ## Max.         15.00     17.000
 
 ``` r
-apply(proj, 1, function(x) mean(x>0)) # proportion of trajectories with at least 
+apply(proj, 1, function(x) mean(x > 0)) # proportion of trajectories with at least 
 ```
 
     ## 2014-06-18 2014-06-19 2014-06-20 2014-06-21 2014-06-22 2014-06-23 
-    ##      0.977      0.989      0.982      0.989      0.988      0.990 
+    ##      0.982      0.981      0.981      0.985      0.980      0.987 
     ## 2014-06-24 2014-06-25 2014-06-26 2014-06-27 2014-06-28 2014-06-29 
-    ##      0.984      0.984      0.988      0.989      0.991      0.995 
+    ##      0.990      0.985      0.990      0.985      0.993      0.992 
     ## 2014-06-30 2014-07-01 
-    ##      0.991      0.996
+    ##      0.988      0.994
 
 ``` r
-                                      # one case on each given day
+                                        # one case on each given day
 
-apply(proj, 1, mean)                  # mean daily number of cases 
+apply(proj, 1, mean) # mean daily number of cases 
 ```
 
     ## 2014-06-18 2014-06-19 2014-06-20 2014-06-21 2014-06-22 2014-06-23 
-    ##      3.831      3.984      4.211      4.399      4.288      4.519 
+    ##      3.960      3.991      4.118      4.380      4.447      4.523 
     ## 2014-06-24 2014-06-25 2014-06-26 2014-06-27 2014-06-28 2014-06-29 
-    ##      4.705      4.760      4.969      5.200      5.260      5.469 
+    ##      4.741      4.685      5.110      5.201      5.302      5.376 
     ## 2014-06-30 2014-07-01 
-    ##      5.731      5.766
+    ##      5.680      5.974
 
 ``` r
 apply(apply(proj, 2, cumsum), 1, summary) # projected cumulative number of cases in 
 ```
 
     ##         2014-06-18 2014-06-19 2014-06-20 2014-06-21 2014-06-22 2014-06-23
-    ## Min.         0.000      1.000      2.000      4.000      7.000      9.000
-    ## 1st Qu.      2.000      6.000      9.000     13.000     17.000     20.000
-    ## Median       4.000      8.000     12.000     16.000     21.000     25.000
-    ## Mean         3.831      7.815     12.026     16.425     20.713     25.232
-    ## 3rd Qu.      5.000     10.000     14.000     19.000     24.000     29.000
-    ## Max.        11.000     20.000     24.000     32.000     45.000     53.000
+    ## Min.          0.00      1.000      3.000      5.000      7.000      9.000
+    ## 1st Qu.       3.00      6.000      9.000     13.000     17.000     21.000
+    ## Median        4.00      8.000     12.000     16.000     21.000     25.000
+    ## Mean          3.96      7.951     12.069     16.449     20.896     25.419
+    ## 3rd Qu.       5.00     10.000     14.000     19.000     24.000     30.000
+    ## Max.         14.00     19.000     26.000     34.000     39.000     46.000
     ##         2014-06-24 2014-06-25 2014-06-26 2014-06-27 2014-06-28 2014-06-29
-    ## Min.        10.000     13.000     14.000     15.000     17.000     18.000
-    ## 1st Qu.     24.000     28.000     32.000     37.000     41.000     46.000
-    ## Median      29.000     34.000     39.000     44.500     49.000     55.000
-    ## Mean        29.937     34.697     39.666     44.866     50.126     55.595
-    ## 3rd Qu.     35.000     40.000     46.000     51.000     58.000     64.000
-    ## Max.        66.000     78.000     96.000    108.000    117.000    130.000
+    ## Min.         12.00     13.000     15.000     19.000     20.000     23.000
+    ## 1st Qu.      25.00     29.000     33.000     37.000     42.000     46.000
+    ## Median       30.00     34.000     39.000     45.000     50.000     55.000
+    ## Mean         30.16     34.845     39.955     45.156     50.458     55.834
+    ## 3rd Qu.      35.00     40.000     47.000     52.000     58.000     64.000
+    ## Max.         52.00     64.000     74.000     88.000     99.000    107.000
     ##         2014-06-30 2014-07-01
-    ## Min.        23.000     26.000
-    ## 1st Qu.     50.000     55.000
-    ## Median      60.000     66.000
-    ## Mean        61.326     67.092
-    ## 3rd Qu.     70.000     77.000
-    ## Max.       140.000    149.000
+    ## Min.        24.000     25.000
+    ## 1st Qu.     51.000     55.000
+    ## Median      61.000     66.000
+    ## Mean        61.514     67.488
+    ## 3rd Qu.     71.000     77.250
+    ## Max.       118.000    134.000
 
 ``` r
                                           # the next two weeks
 ```
 
   - `apply(proj, 1, summary)` shows a summary of incidence on each day
-  - `apply(proj, 1, function(x) mean(x>0))` shows the proportion of
+  - `apply(proj, 1, function(x) mean(x > 0))` shows the proportion of
     trajectories with at least one case on each given day
   - `apply(proj, 1, mean)` shows the mean daily number of cases
   - `apply(apply(proj, 2, cumsum), 1, summary)` shows the projected
@@ -900,7 +930,7 @@ apply(apply(proj, 2, cumsum), 1, summary) # projected cumulative number of cases
 According to these results, what are the chances that more cases will
 appear in the near future? Is this outbreak being brought under control?
 Would you recommend scaling up / down the response? Is this consistent
-with your estimate of \(R\)?
+with your estimate of `$R$`?
 
   - the uncertainty is wide and becomes wider the further into the
     future.
@@ -908,7 +938,7 @@ with your estimate of \(R\)?
   - this is based on the assumption that transmissibility has remained
     constant over the course of the outbreak so far and will remain
     constant in the future
-  - all this relies on our estimated serial interval distribution - a
+  - all this relies on our estimated serial interval distribution—a
     higher mean SI would lead to larger R estimates and therefore more
     pessimistic incidence projections.
 
@@ -950,71 +980,71 @@ the reproduction number).
 config <- make_config(t_start = 2, 
                       t_end = length(i_daily_trunc$counts))
 R_variableSI <- estimate_R(i_daily_trunc, method = "si_from_data", 
-                si_data = si_data,
-                config = config)
+                           si_data = si_data,
+                           config = config)
 ```
 
     ## Running 8000 MCMC iterations 
     ## MCMCmetrop1R iteration 1 of 8000 
-    ## function value = -187.22705
+    ## function value = -186.91967
     ## theta = 
-    ##    0.66380
-    ##    1.42813
+    ##    0.62507
+    ##    1.63895
     ## Metropolis acceptance rate = 1.00000
     ## 
     ## MCMCmetrop1R iteration 1001 of 8000 
-    ## function value = -187.55962
+    ## function value = -186.38542
     ## theta = 
-    ##    0.52482
-    ##    1.73372
-    ## Metropolis acceptance rate = 0.55844
+    ##    0.70698
+    ##    1.51852
+    ## Metropolis acceptance rate = 0.55045
     ## 
     ## MCMCmetrop1R iteration 2001 of 8000 
-    ## function value = -186.24564
+    ## function value = -186.90819
     ## theta = 
-    ##    0.76880
-    ##    1.41542
-    ## Metropolis acceptance rate = 0.55722
+    ##    0.78682
+    ##    1.51972
+    ## Metropolis acceptance rate = 0.54673
     ## 
     ## MCMCmetrop1R iteration 3001 of 8000 
-    ## function value = -187.65218
+    ## function value = -188.32943
     ## theta = 
-    ##    0.60415
-    ##    1.47537
-    ## Metropolis acceptance rate = 0.55348
+    ##    0.49535
+    ##    1.82400
+    ## Metropolis acceptance rate = 0.55482
     ## 
     ## MCMCmetrop1R iteration 4001 of 8000 
-    ## function value = -187.18007
+    ## function value = -187.25942
     ## theta = 
-    ##    0.60906
-    ##    1.50810
-    ## Metropolis acceptance rate = 0.55811
+    ##    0.72469
+    ##    1.35516
+    ## Metropolis acceptance rate = 0.56086
     ## 
     ## MCMCmetrop1R iteration 5001 of 8000 
-    ## function value = -186.21707
+    ## function value = -187.42390
     ## theta = 
-    ##    0.82165
-    ##    1.38300
-    ## Metropolis acceptance rate = 0.55789
+    ##    0.82416
+    ##    1.51388
+    ## Metropolis acceptance rate = 0.56509
     ## 
     ## MCMCmetrop1R iteration 6001 of 8000 
-    ## function value = -186.91247
+    ## function value = -186.51153
     ## theta = 
-    ##    0.97178
-    ##    1.28125
-    ## Metropolis acceptance rate = 0.55707
+    ##    0.92997
+    ##    1.28567
+    ## Metropolis acceptance rate = 0.56207
     ## 
     ## MCMCmetrop1R iteration 7001 of 8000 
-    ## function value = -186.54781
+    ## function value = -187.87591
     ## theta = 
-    ##    0.69409
-    ##    1.55848
-    ## Metropolis acceptance rate = 0.55435
+    ##    0.61348
+    ##    1.44853
+    ## Metropolis acceptance rate = 0.56021
     ## 
     ## 
     ## 
     ## @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    ## The Metropolis acceptance rate was 0.55637
+    ## The Metropolis acceptance rate was 0.56188
     ## @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     ## 
     ## Gelman-Rubin MCMC convergence diagnostic was successful.
@@ -1053,21 +1083,21 @@ R_variableSI_CrI <- c(R_variableSI$R$`Quantile.0.025(R)`, R_variableSI$R$`Quanti
 R_variableSI_median
 ```
 
-    ## [1] 1.296935
+    ## [1] 1.29668
 
 ``` r
 R_variableSI_CrI
 ```
 
-    ## [1] 1.082442 1.547822
+    ## [1] 1.079132 1.544647
 
 ## Estimating time-varying transmissibility
 
-When the assumption that (\(R\)) is constant over time becomes
+When the assumption that (`$R$`) is constant over time becomes
 untenable, an alternative is to estimating time-varying transmissibility
-using the instantaneous reproduction number (\(R_t\)). This approach,
+using the instantaneous reproduction number (`$R_t$`). This approach,
 introduced by Cori et al. (2013), is also implemented in the package
-`EpiEstim`. It estimates (\(R_t\)) for a custom time windows (default is
+`EpiEstim`. It estimates (`$R_t$`) for a custom time windows (default is
 a succession of sliding time windows), using the same Poisson likelihood
 described above. In the following, we estimate transmissibility for
 1-week sliding time windows (the default of `estimate_R`):
@@ -1108,7 +1138,7 @@ tail(Rt$R[,c("t_start", "t_end", "Median(R)",
     ## 64      65    71 1.0335607         0.6576643          1.531230
     ## 65      66    72 1.0337804         0.6578041          1.531556
 
-Plot the estimate of \(R\) over
+Plot the estimate of `$R$` over
 time:
 
 ``` r

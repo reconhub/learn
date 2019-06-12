@@ -8,20 +8,15 @@ image: img/highres/van-der-helst-banquet.jpg
 slug: real-time-response-2
 showonlyimage: true
 licenses: CC-BY
+params:
+  full_version: true
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
-# if rendering full version
-full_version <- TRUE
-#full_version <- FALSE
-
-if(full_version){
-  render_snippet <- 'asis'
-}else{
-  render_snippet <- FALSE
-}
+# toggle to render full version 
+render_snippet <- if (params$full_version) 'asis' else FALSE
 ```
 
 ## Introduction
@@ -60,16 +55,17 @@ You should have installed them in part 1 but if not, install necessary packages 
 # install.packages("distcrete")
 # install.packages("epitrix")
 # remotes::install_github("annecori/EpiEstim")
-# install.packages("projections")
+# remotes::install_github("reconhub/projections")
 # install.packages("ggplot2")
 # install.packages("magrittr")
 # install.packages("binom")
 # install.packages("ape")
-# remotes::install_github("finlaycampbell/outbreaker2") [on CRAN soon]
+# install.packages("outbreaker2")
 # install.packages("here")
 ```
 
 Once the packages are installed, you may need to open a new R session. Then load the libraries as follows:
+
 ```{r load_library, warning = FALSE}
 library(readxl)
 library(outbreaks)
@@ -138,11 +134,11 @@ What does this plot tell you about the epidemic?
 In the `incidence` package, the function `fit` will estimate the parameters of this model from an incidence object (here, `i_weekly`). Apply it to the data and store the result in a new object called `f`. You can print and use `f` to derive estimates of the growth rate r and the doubling time, and add the corresponding model to the incidence plot:  
 
 Fit a log-linear model to the weekly incidence data:  
+
 ```{r log_linear_full}
 f <- incidence::fit(i_weekly)
 f
 plot(i_weekly, fit = f)
-
 ```  
 
 Looking at the plot and fit, do you think this is a reasonable fit?   
@@ -158,11 +154,11 @@ this may inform the threshold date you choose, as follows:
 summary(as.numeric(linelist_clean$date_of_hospitalisation - linelist_clean$date_of_onset))
 ```
 
-```{r delays_in_reporting_answers, echo = FALSE, results = render_snippet, eval = full_version}
+```{r delays_in_reporting_answers, echo = FALSE, results = render_snippet, eval = params$full_version}
 cat("- Assuming that cases are only ever reported on or after hospitalisation, we see that it takes on average 4 days for cases to be hospitalised, but up to 22 days, so delays in reporting can be long, and it's sensible to assume that the last 2-3 weeks of data are likely to be incomplete.")
 ```
 
-```{r log_plot_snippet, echo = FALSE, results = render_snippet, eval = full_version}
+```{r log_plot_snippet, echo = FALSE, results = render_snippet, eval = params$full_version}
 
 cat("- Exponential growth is observed only up until early to early to mid-June\n")  
 cat("- This is likely due to the delay between onset and reporting. This means that the cases with most recent onset have not been reported and are missing from the linelist\n")  
@@ -175,7 +171,7 @@ cat("- This can result in potentially erroneous interpretation of the recent tre
 n_weeks_to_discard <- 
 ```
   
-```{r n_weeks_to_remove_answer, echo = full_version}
+```{r n_weeks_to_remove_answer, echo = params$full_version}
 # how many weeks should we discard at the end of the epicurve
 n_weeks_to_discard <- 2
 ```
@@ -195,7 +191,7 @@ i_daily_trunc <- subset(i_daily,
   
 Refit and plot your log-linear model as before but using the truncated data `i_weekly_trunc`. 
   
-```{r fit_truncated, echo = full_version}
+```{r fit_truncated, echo = params$full_version}
 f <- incidence::fit(i_weekly_trunc)
 f
 plot(i_weekly_trunc, fit = f)
@@ -226,7 +222,7 @@ doubling_time_days_CI <- log(2) / rev(daily_growth_rate_CI)
 
 Although the log-linear is a simple and quick method for early epidemic assessment, care must be taken to only fit to the point that there is epidemic growth. Note that it may be difficult to define this point.  
 
-```{r notes_growth_rate, echo = FALSE, results = render_snippet, eval = full_version}
+```{r notes_growth_rate, echo = FALSE, results = render_snippet, eval = params$full_version}
 cat("- The log-linear model can't be readily applied if there are days with no cases as you can't take the log of 0. Here we have aggregated to weekly data to avoid this issue, and have set weeks with 0 cases to NA so they are ignored in the analysis.\n")  
 
 cat("- Here we had quite a few weeks of data to work with but early on in an outbreak a similar analysis may lead to very uncertain estimates of the growth rate and doubling time due to small sample size.\n")  
@@ -240,7 +236,7 @@ Contact tracing is one of the pillars of an Ebola outbreak response. This involv
 
 Using the function `make_epicontacts` in the `epicontacts` package, create a new `epicontacts` object called `epi_contacts`. Make sure you check the column names of the relevant `to` and `from` arguments. 
 
-```{r epicontacts, echo = full_version}
+```{r epicontacts, echo = params$full_version}
 epi_contacts <- make_epicontacts(linelist = linelist, contacts = contacts, 
                                  id = "case_id", # name of identifier in linelist
                                  from = "infector", # name of 'from' col in the contacts
@@ -260,14 +256,18 @@ table(epi_contacts$contacts$source, useNA = "ifany")
 
 ```
 
-```{r plot_contacts}
+```{r plot_contacts, eval = FALSE}
 p <- plot(epi_contacts, node_shape = "gender", shapes = c(m = "male", f = "female"), node_color = "gender", edge_color = "source", selector = FALSE)
 p
 ```
 
+```{r plot_contacts-ns, echo = FALSE}
+p <- plot(epi_contacts, node_shape = "gender", shapes = c(m = "male", f = "female"), node_color = "gender", edge_color = "source", selector = FALSE)
+learn::save_and_use_widget(p, 'real-time-response-2-nework.html')
+```
 Using the function `match` (see `?match`) check that the visualised contacts are indeed cases.
 
-```{r check_contact_cases, echo = full_version}
+```{r check_contact_cases, echo = params$full_version}
 match(contacts$case_id, linelist$case_id)
 ```
 
@@ -276,31 +276,32 @@ Once you are happy that these are all indeed cases, look at the network:
 - does it look like there is super-spreading (heterogeneous transmission)?
 - looking at the gender of the cases, can you deduce anything from this? Are there any visible differences by gender?
   
-```{r superspreading_snippet, echo = FALSE, results = render_snippet, eval = full_version}
+```{r superspreading_snippet, echo = FALSE, results = render_snippet, eval = params$full_version}
 #table(contacts$infector)
 cat("- There seems to be some superspreading, with some cases coming from a single case (11f8ea infecting 5 other individuals. There does not seem to be any immediate differences between the gender of cases")  
 ```
 
-## Estimating transmissibility ($R$)  
+## Estimating transmissibility (`$R$`)  
 
 ### Branching process model  
 
-The transmissibility of the disease can be assessed through the estimation of the reproduction number R, defined as the expected number of secondary cases per infected case. In the early stages of an outbreak, and assuming a large population with no immunity, this quantity is also the basic reproduction number $R_0$, i.e. $R$ in a large fully susceptible population.  
+The transmissibility of the disease can be assessed through the estimation of the reproduction number R, defined as the expected number of secondary cases per infected case. In the early stages of an outbreak, and assuming a large population with no immunity, this quantity is also the basic reproduction number `$R_0$`, i.e. `$R$` in a large fully susceptible population.  
 
-The package `EpiEstim` implements a Bayesian estimation of $R$, using dates of onset of symptoms and information on the serial interval distribution, i.e. the distribution of time from symptom onset in a case and symptom onset in their infector (see Cori et al., 2013, AJE 178: 1505–1512).
+The package `EpiEstim` implements a Bayesian estimation of `$R$`, using dates of onset of symptoms and information on the serial interval distribution, i.e. the distribution of time from symptom onset in a case and symptom onset in their infector (see Cori et al., 2013, AJE 178: 1505–1512).
 
 Briefly, `EpiEstim` uses a simple model describing incidence on a given day as Poisson distributed, with a mean determined by the total force of infection on that day:
 
-$$ I_t  ∼  Poisson(\lambda_t)$$
+`$$ I_t  ∼  Poisson(\lambda_t)$$`
 
-where $I_t$ is the incidence (based on symptom onset) on day $t$ and $\lambda_t$ is the force of infection on that day. Noting R the reproduction number and w() the discrete serial interval distribution, we have:
+where `$I_t$` is the incidence (based on symptom onset) on day `$t$` and `$\lambda_t$` is the force of infection on that day. Noting R the reproduction number and w() the discrete serial interval distribution, we have:
 
-$$\lambda_t = R \sum_{s=1}^t I_sw(t-s)$$
+ `$$\lambda_t = R \sum_{s=1}^t I_sw(t-s)$$`
 
 The likelihood (probability of observing the data given the model and parameters) is defined as a function of R:
 
-$$L(I) = p(I|R) = \prod_{t = 1}^{T} f_P(I_t, \lambda_t)$$  
-where $f_P(.,\mu)$ is the probability mass function of a Poisson distribution with mean $\mu$.
+ `$$L(I) = p(I|R) = \prod_{t = 1}^{T} f_P(I_t, \lambda_t)$$`
+
+where `$f_P(.,\mu)$` is the probability mass function of a Poisson distribution with mean `$\mu$`.
 
 ### Estimating the serial interval
 
@@ -344,7 +345,7 @@ points(0:60, si$d(0:60), col = "#9933ff", type = "l", lty = 2)
 
 Would you trust this estimation of the generation time? How would you compare it to actual estimates from the West African EVD outbreak (WHO Ebola Response Team (2014) NEJM 371:1481–1495) with a mean of 15.3 days and a standard deviation 9.3 days?  
 
-```{r si_snippet, echo = FALSE, results = render_snippet, eval = full_version}
+```{r si_snippet, echo = FALSE, results = render_snippet, eval = params$full_version}
 cat("- skewed distribution with much shorter mean than estimated in NEJM 371:1481–1495\n")  
 
 cat("- large majority of pairs have SI <15 days\n")  
@@ -360,7 +361,7 @@ cat("- this estimate is based on few observations so there is uncertainty on
 
 ### Estimation of the Reproduction Number
 
-Now that we have estimates of the serial interval, we can use this information to estimate transmissibility of the disease (as measured by $R_0$). Make sure you use a daily (not weekly) incidence object truncated to the period where you have decided there is exponential growth (`i_daily_trunc`).  
+Now that we have estimates of the serial interval, we can use this information to estimate transmissibility of the disease (as measured by `$R_0$`). Make sure you use a daily (not weekly) incidence object truncated to the period where you have decided there is exponential growth (`i_daily_trunc`).  
 
 Using the estimates of the mean and standard deviation of the serial interval you just obtained, use the function `estimate_R` to estimate the reproduction number  (see `?estimate_R`) and store the result in a new object `R`.  
 
@@ -380,7 +381,7 @@ R <- # use estimate_R using method = "parametric_si"
 plot(R, legend = FALSE)  
 ```
 
-```{r calc_R, echo = full_version, warning = FALSE}
+```{r calc_R, echo = params$full_version, warning = FALSE}
 R <- estimate_R(i_daily_trunc, method = "parametric_si", config = config)
 plot(R, legend = FALSE)
 ```
@@ -396,7 +397,7 @@ R_CrI
 
 Interpret these results: what do you make of the reproduction number? What does it reflect? Based on the last part of the epicurve, some colleagues suggest that incidence is going down and the outbreak may be under control. What is your opinion on this?
 
-```{r R_snippet, echo = FALSE, results = render_snippet, eval = full_version}  
+```{r R_snippet, echo = FALSE, results = render_snippet, eval = params$full_version}  
 
 cat("- Note that these results are highly dependent on the estimated serial interval - a higher mean SI will lead to higher R estimates.\n")  
 
@@ -406,7 +407,7 @@ cat("- The results will also be sensitive to the number of data points discarded
 
 Note that you could have estimated R0 directly from the growth rate and the serial interval, 
 using the formula described in Wallinga and Lipsitch, Proc Biol Sci, 2007: 
-$R_0 = \frac{1}{\int_{s=0}^{+\infty}e^{-rs}w(s)ds}$, and implemented in the function `r2R0` of the `epitrix` package. Although this may seem like a complicated formula, the reasoning behind it is simple and illustrated in the figure below: for an observed exponentially growing incidence curve, 
+ `$R_0 = \frac{1}{\int_{s=0}^{+\infty}e^{-rs}w(s)ds}$`, and implemented in the function `r2R0` of the `epitrix` package. Although this may seem like a complicated formula, the reasoning behind it is simple and illustrated in the figure below: for an observed exponentially growing incidence curve, 
 if you know the serial interval, you can derive the reproduction number. 
 
 ![Estimating R0 from the growth rate and the serial interval.](figs/R0fromr.png)
@@ -436,9 +437,9 @@ This may lead to slighlty different R estimates.
 
 ## Short-term incidence forecasting  
 
-The function `project` from the package `projections` can be used to simulate plausible epidemic trajectories by simulating daily incidence using the same branching process as the one used to estimate $R$ in `EpiEstim`. All that is needed is one, or several values of $R$ and a serial interval distribution, stored as a `distcrete` object.  
+The function `project` from the package `projections` can be used to simulate plausible epidemic trajectories by simulating daily incidence using the same branching process as the one used to estimate `$R$` in `EpiEstim`. All that is needed is one, or several values of `$R$` and a serial interval distribution, stored as a `distcrete` object.  
 
-Here, we first illustrate how we can simulate 5 random trajectories using a fixed value of $R$ = `r signif(R_median, 3)`, the median estimate of R from above.  
+Here, we first illustrate how we can simulate 5 random trajectories using a fixed value of `$R$` = `r signif(R_median, 3)`, the median estimate of R from above.  
 Use the same daily truncated incidence object as above to simulate future incidence.  
 
 ```{r projections}
@@ -454,7 +455,7 @@ small_proj <- project(i_daily_trunc,# incidence object
 as.matrix(small_proj)
 ```
 
-```{r R_fix_within_explanation, echo = FALSE, results = render_snippet, eval = full_version}
+```{r R_fix_within_explanation, echo = FALSE, results = render_snippet, eval = params$full_version}
 cat("- You can either use a single  value R for the entire trajectory (R_fix_within = TRUE) or resample R at each time step (R_fix_within = FALSE).\n")  
 
 cat("- `R_fix_within = TRUE` means that the trajectory is associated with a single R value and easier to understand\n")  
@@ -463,7 +464,7 @@ cat("- It also gives more extreme values of R and more conservative projections 
 
 ```
 
-Using the same principle, generate 1,000 trajectories for the next 2 weeks, using a range of plausible values of $R$.  
+Using the same principle, generate 1,000 trajectories for the next 2 weeks, using a range of plausible values of `$R$`.  
 The posterior distribution of R is gamma distributed (see Cori et al. AJE 2013) so you can use the `rgamma` function to randomly draw values from that distribution. You will also need to use the function `gamma_mucv2shapescale` from the `epitrix` package as shown below.  
 
 ```{r sampling_posterior_R}
@@ -485,7 +486,7 @@ abline(v = R_CrI, col = "red", lty = 2) # show the 95%CrI of R as red dashed ver
 
 Store the results of your new projections in an object called `proj`.
 
-```{r projections2, echo = full_version}
+```{r projections2, echo = params$full_version}
 proj <- project(x = i_daily_trunc, 
                 R = R_sample, # now using a sample of R values
                 si = si, 
@@ -505,36 +506,36 @@ How would you interpret the following summary of the projections?
 
 ```{r interpret_results}
 apply(proj, 1, summary)
-apply(proj, 1, function(x) mean(x>0)) # proportion of trajectories with at least 
-                                      # one case on each given day
+apply(proj, 1, function(x) mean(x > 0)) # proportion of trajectories with at least 
+                                        # one case on each given day
 
-apply(proj, 1, mean)                  # mean daily number of cases 
+apply(proj, 1, mean) # mean daily number of cases 
 
 apply(apply(proj, 2, cumsum), 1, summary) # projected cumulative number of cases in 
                                           # the next two weeks
 ```
 
-```{r interpret_results_answers, echo = FALSE, results = render_snippet, eval = full_version}
+```{r interpret_results_answers, echo = FALSE, results = render_snippet, eval = params$full_version}
 cat("- `apply(proj, 1, summary)` shows a summary of incidence on each day\n")  
 
-cat("- `apply(proj, 1, function(x) mean(x>0))` shows  the proportion of trajectories with at least one case on each given day\n")  
+cat("- `apply(proj, 1, function(x) mean(x > 0))` shows  the proportion of trajectories with at least one case on each given day\n")  
 
 cat("- `apply(proj, 1, mean)` shows the mean daily number of cases\n")  
 
 cat("- `apply(apply(proj, 2, cumsum), 1, summary)` shows the projected additional cumulative number of cases in the next two weeks\n")  
 ```
 
-According to these results, what are the chances that more cases will appear in the near future? Is this outbreak being brought under control? Would you recommend scaling up / down the response? Is this consistent with your estimate of $R$?
+According to these results, what are the chances that more cases will appear in the near future? Is this outbreak being brought under control? Would you recommend scaling up / down the response? Is this consistent with your estimate of `$R$`?
  
 
-```{r R_snippet_proj, echo = FALSE, results = render_snippet, eval = full_version}
+```{r R_snippet_proj, echo = FALSE, results = render_snippet, eval = params$full_version}
 cat("- the uncertainty is wide and becomes wider the further into the future.\n")  
   
 cat("- the central trend suggests increasing number of cases\n")  
   
 cat("- this is based on the assumption that transmissibility has remained constant over the course of the outbreak so far and will remain constant in the future\n")  
   
-cat("- all this relies on our estimated serial interval distribution - a higher mean SI would lead to larger R estimates and therefore more pessimistic incidence projections.")  
+cat("- all this relies on our estimated serial interval distribution---a higher mean SI would lead to larger R estimates and therefore more pessimistic incidence projections.")  
 ```
 
 ## Pause !
@@ -559,12 +560,12 @@ si_data <- data.frame(EL = rep(0L, length(si_obs)),
 
 We can then feed this into `estimate_R` (but this will take some time to run as it estimates the serial interval distribution using an MCMC and fully accounts for the uncertainty in the serial interval to estimate the reproduction number).
 
-```{r R_variableSI, warning = FALSE}
+```{r R_variableSI, warning = FALSE, cache = TRUE}
 config <- make_config(t_start = 2, 
                       t_end = length(i_daily_trunc$counts))
 R_variableSI <- estimate_R(i_daily_trunc, method = "si_from_data", 
-                si_data = si_data,
-                config = config)
+                           si_data = si_data,
+                           config = config)
 # checking that the MCMC converged: 
 R_variableSI$MCMC_converged
 # and plotting the output:
@@ -582,7 +583,7 @@ R_variableSI_CrI
 
 ## Estimating time-varying transmissibility  
 
-When the assumption that ($R$) is constant over time becomes untenable, an alternative is to estimating time-varying transmissibility using the instantaneous reproduction number ($R_t$). This approach, introduced by Cori et al. (2013), is also implemented in the package `EpiEstim`. It estimates ($R_t$) for a custom time windows (default is a succession of sliding time windows), using the same Poisson likelihood described above. In the following, we estimate transmissibility for 1-week sliding time windows (the default of `estimate_R`):  
+When the assumption that (`$R$`) is constant over time becomes untenable, an alternative is to estimating time-varying transmissibility using the instantaneous reproduction number (`$R_t$`). This approach, introduced by Cori et al. (2013), is also implemented in the package `EpiEstim`. It estimates (`$R_t$`) for a custom time windows (default is a succession of sliding time windows), using the same Poisson likelihood described above. In the following, we estimate transmissibility for 1-week sliding time windows (the default of `estimate_R`):  
 
 ```{r config_Rt}
 config = make_config(list(mean_si = si_fit$mu, std_si = si_fit$sd))  
@@ -597,7 +598,7 @@ tail(Rt$R[,c("t_start", "t_end", "Median(R)",
              "Quantile.0.025(R)", "Quantile.0.975(R)")])
 ```
 
-```{r timevarying_r, echo = full_version, warning = FALSE}
+```{r timevarying_r, echo = params$full_version, warning = FALSE}
 Rt <- estimate_R(incid = i_daily_trunc,      # incidence object
                  method = "parametric_si",   # use parametric serial interval
                  config = config)            # config specified above
@@ -607,7 +608,7 @@ tail(Rt$R[,c("t_start", "t_end", "Median(R)",
              "Quantile.0.025(R)", "Quantile.0.975(R)")])
 ```
 
-Plot the estimate of $R$ over time:
+Plot the estimate of `$R$` over time:
 ```{r new_EpiEstim, warnings = FALSE}
 plot(Rt, legend = FALSE)
 ```
@@ -626,7 +627,7 @@ tail(Rt_whole_incid$R[,c("t_start", "t_end",
 
 ```
 
-```{r timevarying_r_whole_incid, echo = full_version}
+```{r timevarying_r_whole_incid, echo = params$full_version}
 Rt_whole_incid <- estimate_R(incid = i_daily, 
                              method = "parametric_si", 
                              config = config) 
@@ -636,7 +637,7 @@ tail(Rt_whole_incid$R[,c("t_start", "t_end",
 # the above incorrectly infers that the recent transmissibility is <1
 ```
 
-```{r Rt_plot, echo = FALSE, results = render_snippet, eval = full_version}
+```{r Rt_plot, echo = FALSE, results = render_snippet, eval = params$full_version}
 cat("- the above assumes constant R within sliding time-window")  
 
 ```
