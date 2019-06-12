@@ -1,20 +1,23 @@
 ---
-title: An introduction to R and RStudio
-author: Zulma M. Cucunuba
-authors: ["Zulma M. Cucunuba"]
-categories: ["practicals"]
-topics: ["R","Rstudio"]
-date: 2019-06-01
-image: img/highres/an-introduction-to-r-and-r-studio.jpg
-showonlyimage: yes
-bibliography: 
-licenses: CC-BY
-always_allow_html: yes
+title: "An introduction to R and RStudio"
+author: "Zulma M. Cucunuba"
+date: '2019-06-01'
 output:
+  html_document:
+    df_print: paged
   md_document:
-    variant: markdown_github
     preserve_yaml: yes
-
+    variant: markdown_github
+categories: practicals
+authors: Zulma M. Cucunuba
+image: img/highres/an-introduction-to-r-and-r-studio.jpg
+licenses: CC-BY
+bibliography: null
+showonlyimage: yes
+always_allow_html: yes
+topics:
+- R
+- Rstudio
 ---
 
 Introduction
@@ -47,13 +50,13 @@ To create this, do the following steps:
 
 2.  Create a new RStudio project in a new directory that you can call “introR”
 
-\[`static/img/screenshots/NewDirectory.png`\]
+![Screenshot New Directory](../../static/img/screenshots/NewDirectory.png)
 
 1.  Create the sub folders you need for organising your work (i.e. data, scripts, figs)
 
 In the end, your project should look something like this image
 
-\[`static/img/screenshots/Rproject.png`\]
+![Screenshot R Project](../../static/img/screenshots/Rproject.png)
 
 Structures in R
 ===============
@@ -286,7 +289,7 @@ body(myfun)
 ##     return(BMI)
 ## }
 environment(myfun)
-## <environment: 0x119af4660>
+## <environment: 0x109e66a78>
 
 myfun(weight = 88, height = 1.78)
 ## [1] 27.77427
@@ -385,7 +388,8 @@ mynewfun(xx = 4)
 
 This characteristic of R is very important when running any analysis or routine. It is always recommended NOT to use elements within a function that are only available in the global environment.
 
-\# Working with probability distributions
+Working with probability distributions
+======================================
 
 All distributions in R can be explored by the use of functions that allow us to get the different forms of a distribution. Fortunately, all distributions work in the same way, so if you learn to work with one, you will have the general idea of how to work with the others
 
@@ -899,41 +903,33 @@ Example:
 
 ``` r
 
-people <- tibble(
-  birth_date = as.Date('2000-01-01') + 0:9,
+malaria <- tibble(
   name = letters[1:10],
-  Y = rnorm(10, 0, 2),
-  Z = rnorm(10, 0, 4),
-  gender = rep(c('f', 'm'), 5)
-)  %>%
-  mutate(age = as.Date('2019-06-01') -  birth_date)
-
-glimpse(people)
+  age = round(rnorm(10, 30, 10),0),
+  gender = rep(c('f', 'm'), 5),
+  infection = rep(c('falciparum', 'vivax', 'vivax', 'vivax', 'vivax'), 2)) 
+glimpse(malaria)
 ## Observations: 10
-## Variables: 6
-## $ birth_date <date> 2000-01-01, 2000-01-02, 2000-01-03, 2000-01-04, 2000…
-## $ name       <chr> "a", "b", "c", "d", "e", "f", "g", "h", "i", "j"
-## $ Y          <dbl> 0.6370456, 1.8358036, -0.8761612, 0.7128543, 1.582006…
-## $ Z          <dbl> -3.9181014, -2.4690262, 2.9559129, -4.7689641, -4.742…
-## $ gender     <chr> "f", "m", "f", "m", "f", "m", "f", "m", "f", "m"
-## $ age        <time> 7091 days, 7090 days, 7089 days, 7088 days, 7087 day…
+## Variables: 4
+## $ name      <chr> "a", "b", "c", "d", "e", "f", "g", "h", "i", "j"
+## $ age       <dbl> 32, 12, 22, 24, 44, 49, 35, 24, 32, 19
+## $ gender    <chr> "f", "m", "f", "m", "f", "m", "f", "m", "f", "m"
+## $ infection <chr> "falciparum", "vivax", "vivax", "vivax", "vivax", "fal…
 
-people %>% spread(key = 'age', gender)
-## # A tibble: 10 x 14
-##    birth_date name       Y      Z `7082` `7083` `7084` `7085` `7086` `7087`
-##    <date>     <chr>  <dbl>  <dbl> <chr>  <chr>  <chr>  <chr>  <chr>  <chr> 
-##  1 2000-01-01 a      0.637 -3.92  <NA>   <NA>   <NA>   <NA>   <NA>   <NA>  
-##  2 2000-01-02 b      1.84  -2.47  <NA>   <NA>   <NA>   <NA>   <NA>   <NA>  
-##  3 2000-01-03 c     -0.876  2.96  <NA>   <NA>   <NA>   <NA>   <NA>   <NA>  
-##  4 2000-01-04 d      0.713 -4.77  <NA>   <NA>   <NA>   <NA>   <NA>   <NA>  
-##  5 2000-01-05 e      1.58  -4.74  <NA>   <NA>   <NA>   <NA>   <NA>   f     
-##  6 2000-01-06 f     -1.67  -3.46  <NA>   <NA>   <NA>   <NA>   m      <NA>  
-##  7 2000-01-07 g     -0.454  0.706 <NA>   <NA>   <NA>   f      <NA>   <NA>  
-##  8 2000-01-08 h     -0.932 -1.26  <NA>   <NA>   m      <NA>   <NA>   <NA>  
-##  9 2000-01-09 i     -3.47  -3.76  <NA>   f      <NA>   <NA>   <NA>   <NA>  
-## 10 2000-01-10 j     -0.265 -1.38  m      <NA>   <NA>   <NA>   <NA>   <NA>  
-## # … with 4 more variables: `7088` <chr>, `7089` <chr>, `7090` <chr>,
-## #   `7091` <chr>
+malaria %>% spread(key = 'infection', gender)
+## # A tibble: 10 x 4
+##    name    age falciparum vivax
+##    <chr> <dbl> <chr>      <chr>
+##  1 a        32 f          <NA> 
+##  2 b        12 <NA>       m    
+##  3 c        22 <NA>       f    
+##  4 d        24 <NA>       m    
+##  5 e        44 <NA>       f    
+##  6 f        49 m          <NA> 
+##  7 g        35 <NA>       f    
+##  8 h        24 <NA>       m    
+##  9 i        32 <NA>       f    
+## 10 j        19 <NA>       m
 ```
 
 ggplot2

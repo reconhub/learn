@@ -1,20 +1,23 @@
 ---
-title: An introduction to R and RStudio
-author: Zulma M. Cucunuba
-authors: ["Zulma M. Cucunuba"]
-categories: ["practicals"]
-topics: ["R","Rstudio"]
-date: 2019-06-01
-image: img/highres/an-introduction-to-r-and-r-studio.jpg
-showonlyimage: yes
-bibliography: 
-licenses: CC-BY
-always_allow_html: yes
+title: "An introduction to R and RStudio"
+author: "Zulma M. Cucunuba"
+date: '2019-06-01'
 output:
+  html_document:
+    df_print: paged
   md_document:
-    variant: markdown_github
     preserve_yaml: yes
-
+    variant: markdown_github
+categories: practicals
+authors: Zulma M. Cucunuba
+image: img/highres/an-introduction-to-r-and-r-studio.jpg
+licenses: CC-BY
+bibliography: null
+showonlyimage: yes
+always_allow_html: yes
+topics:
+- R
+- Rstudio
 ---
 
 	
@@ -81,13 +84,14 @@ To create this, do the following steps:
 
 2) Create a new RStudio project in a new directory that you can call “introR”
 
-[`static/img/screenshots/NewDirectory.png`]
+![Screenshot New Directory](../../static/img/screenshots/NewDirectory.png)
 
 3) Create the sub folders you need for organising your work (i.e. data, scripts, figs)
 
 In the end, your project should look something like this image
 
-[`static/img/screenshots/Rproject.png`]
+
+![Screenshot R Project](../../static/img/screenshots/Rproject.png)
 
 
 \newline
@@ -435,6 +439,7 @@ This characteristic of R is very important when running any analysis or routine.
 
 \newline
 \newline
+
 # Working with probability distributions
 
 All distributions in R can be explored by the use of functions that allow us to get the different forms of a distribution. Fortunately, all distributions work in the same way, so if you learn to work with one, you will have the general idea of how to work with the others
@@ -575,20 +580,16 @@ From the package  `tidyr`, the most common functions are:
 
 Example:
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 
-people <- tibble(
-  birth_date = as.Date('2000-01-01') + 0:9,
+malaria <- tibble(
   name = letters[1:10],
-  Y = rnorm(10, 0, 2),
-  Z = rnorm(10, 0, 4),
-  gender = rep(c('f', 'm'), 5)
-)  %>%
-  mutate(age = as.Date('2019-06-01') -  birth_date)
+  age = round(rnorm(10, 30, 10),0),
+  gender = rep(c('f', 'm'), 5),
+  infection = rep(c('falciparum', 'vivax', 'vivax', 'vivax', 'vivax'), 2)) 
+glimpse(malaria)
 
-glimpse(people)
-
-people %>% spread(key = 'age', gender)
+malaria %>% spread(key = 'infection', gender)
 
 
 
