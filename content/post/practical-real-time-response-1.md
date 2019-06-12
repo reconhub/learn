@@ -20,34 +20,45 @@ params:
 This practical (in three parts) simulates the early assessment and
 reconstruction of an Ebola Virus Disease (EVD) outbreak. It introduces
 various aspects of analysis of the early stage of an outbreak, including
-case fatality ratio (CFR), epicurves (part 1), growth rate estimation,
-contact tracing data, delays, and estimates of transmissibility (part
-2), as well as transmission chain reconstruction using outbreaker2 (part
-3).
+case fatality ratio (CFR), epicurves ([part
+1](./real-time-response-1.html)), growth rate estimation, contact
+tracing data, delays, and estimates of transmissibility ([part
+2](./real-time-response-2.html)), as well as transmission chain
+reconstruction using outbreaker2 ([part
+3](./real-time-response-3.html)).
+
+> Note: This practical is derived from earlier practicals called [Ebola
+> simulation part 1: early outbreak
+> assessment](./simulated-evd-early.html) and [Ebola simulation part 2:
+> outbreak reconstruction](./practical-ebola-reconstruction.html)
 
 ## Learning outcomes
 
 By the end of this practical, you should be able to:
 
-  - Load and clean outbreak data in R (part 1)
+  - Load and clean outbreak data in R ([part
+    1](./real-time-response-1.html))
 
-  - Estimate the case fatality ratio (CFR) (part 1)
+  - Estimate the case fatality ratio (CFR) ([part
+    1](./real-time-response-1.html))
 
-  - Compute and plot incidence from linelist (part 1)
+  - Compute and plot incidence from linelist ([part
+    1](./real-time-response-1.html))
 
   - Estimate & interpret the growth rate & doubling time of the epidemic
-    (part 2)
+    ([part 2](./real-time-response-2.html))
 
   - Estimate the serial interval from data on pairs infector / infected
-    individuals (part 2)
+    individuals ([part 2](./real-time-response-2.html))
 
-  - Estimate & interpret the reproduction number of the epidemic (part
-    2)
+  - Estimate & interpret the reproduction number of the epidemic ([part
+    2](./real-time-response-2.html))
 
-  - Forecast short-term future incidence (part 2)
+  - Forecast short-term future incidence ([part
+    2](./real-time-response-2.html))
 
   - Reconstruct who infected whom using epidemiological and genetic data
-    (part 3)
+    ([part 3](./real-time-response-3.html))
 
 ## A novel EVD outbreak in a fictional country in West Africa
 
@@ -419,7 +430,8 @@ plot(i_weekly, border = "black")
 
 ## Save data and outputs
 
-This is the end of part 1 of the practical. Before going on to part 2,
+This is the end of [part 1](./real-time-response-1.html) of the
+practical. Before going on to [part 2](./real-time-response-2.html),
 you’ll need to save the following
 objects:
 

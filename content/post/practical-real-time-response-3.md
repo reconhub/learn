@@ -16,13 +16,21 @@ params:
 
 This practical is the third (and last) part of a practical which
 simulates the early assessment and reconstruction of an Ebola Virus
-Disease (EVD) outbreak. Please make sure you have gone through parts 1
-and 2 before starting part 3. In part 3 of the practical, we give an
+Disease (EVD) outbreak. Please make sure you have gone through [part
+1](./real-time-response-1.html) and [part
+2](./real-time-response-2.html) before starting [part
+3](./real-time-response-3.html). In part 3 of the practical, we give an
 introduction to transmission chain reconstruction using `outbreaker2`.
+
+> Note: This practical is derived from earlier practicals called [Ebola
+> simulation part 1: early outbreak
+> assessment](./simulated-evd-early.html) and [Ebola simulation part 2:
+> outbreak reconstruction](./practical-ebola-reconstruction.html)
 
 ## Learning outcomes
 
-By the end of this practical (part 3), you should be able to:
+By the end of this practical ([part 3](./real-time-response-3.html)),
+you should be able to:
 
   - Use the `outbreaker2` package to reconstruct who infected whom using
     epidemiological and genetic data
@@ -39,18 +47,21 @@ Africa. The Ministry of Health is in charge of coordinating the outbreak
 response, and have contracted you as a consultant in epidemic analysis
 to inform the response in real time. You have already done descriptive
 and statistical analyses of the data to understand the overall epidemic
-trend (parts 1 and 2 of the practical). Now we will try and draw a more
-detailed picture of the epidemic by trying to infer who infected whom
-using the data available to us, namely dates of symptom onset, whole
-genome sequences (WGS) and limited contact data. This can be achieved
-using `outbreaker2`, which provides a modular platform for outbreak
-reconstruction.
+trend ([part 1](./real-time-response-1.html) and [part
+2](./real-time-response-2.html) of the practical). Now we will try and
+draw a more detailed picture of the epidemic by trying to infer who
+infected whom using the data available to us, namely dates of symptom
+onset, whole genome sequences (WGS) and limited contact data. This can
+be achieved using `outbreaker2`, which provides a modular platform for
+outbreak reconstruction.
 
 ## Required packages
 
 The following packages, available on CRAN or github, are needed for this
-analysis. You should have installed them in parts 1 and 2 but if not,
-install necessary packages as follows:
+analysis. You should have installed them in [part
+1](./real-time-response-1.html) and [part
+2](./real-time-response-2.html) but if not, install necessary packages
+as follows:
 
 ``` r
 # install.packages("remotes")
@@ -90,7 +101,7 @@ library(outbreaker2)
 library(here)
 ```
 
-## Read in the data processed in parts 1 and 2
+## Read in the data processed in [part 1](./real-time-response-1.html) and [part 2](./real-time-response-2.html)
 
 <!--
 ZNK: These two chunks are needed because of the way the documents are structured

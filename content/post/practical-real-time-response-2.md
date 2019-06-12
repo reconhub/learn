@@ -16,16 +16,24 @@ params:
 
 This practical is the second (out of three) part of a practical which
 simulates the early assessment and reconstruction of an Ebola Virus
-Disease (EVD) outbreak. Please make sure you have gone through part 1
-before starting part 2. In part 2 of the practical, we introduce various
+Disease (EVD) outbreak. Please make sure you have gone through [part
+1](./real-time-response-1.html) before starting [part
+2](./real-time-response-2.html). In [part
+2](./real-time-response-2.html) of the practical, we introduce various
 aspects of analysis of the early stage of an outbreak, including growth
 rate estimation, contact tracing data, delays, and estimates of
 transmissibility. Part 3 of the practical will give an introduction to
 transmission chain reconstruction using outbreaker2.
 
+> Note: This practical is derived from earlier practicals called [Ebola
+> simulation part 1: early outbreak
+> assessment](./simulated-evd-early.html) and [Ebola simulation part 2:
+> outbreak reconstruction](./practical-ebola-reconstruction.html)
+
 ## Learning outcomes
 
-By the end of this practical (part 2), you should be able to:
+By the end of this practical ([part 2](./real-time-response-2.html)),
+you should be able to:
 
   - Estimate & interpret the growth rate & doubling time of the epidemic
 
@@ -42,14 +50,15 @@ A new EVD outbreak has been notified in a fictional country in West
 Africa. The Ministry of Health is in charge of coordinating the outbreak
 response, and have contracted you as a consultant in epidemic analysis
 to inform the response in real time. You have already read in an done
-descriptive analysis of the data (part 1 of the practical). Now let’s do
-some statistical analyses\!
+descriptive analysis of the data ([part 1](./real-time-response-1.html)
+of the practical). Now let’s do some statistical analyses\!
 
 ## Required packages
 
 The following packages, available on CRAN or github, are needed for this
-analysis. You should have installed them in part 1 but if not, install
-necessary packages as follows:
+analysis. You should have installed them in [part
+1](./real-time-response-1.html) but if not, install necessary packages
+as follows:
 
 ``` r
 # install.packages("remotes")
@@ -77,15 +86,6 @@ library(readxl)
 library(outbreaks)
 library(incidence)
 library(epicontacts)
-```
-
-    ## Registered S3 methods overwritten by 'ggplot2':
-    ##   method         from 
-    ##   [.quosures     rlang
-    ##   c.quosures     rlang
-    ##   print.quosures rlang
-
-``` r
 library(distcrete)
 library(epitrix)
 library(EpiEstim)
@@ -95,22 +95,10 @@ library(magrittr)
 library(binom)
 library(ape)
 library(outbreaker2)
-```
-
-    ## 
-    ## Attaching package: 'outbreaker2'
-
-    ## The following object is masked from 'package:epicontacts':
-    ## 
-    ##     cases_pal
-
-``` r
 library(here)
 ```
 
-    ## here() starts at /home/zkamvar/Documents/Websites/reconhub--learn
-
-## Read in the data processed in part 1
+## Read in the data processed in [part 1](./real-time-response-1.html)
 
 <!--
 ZNK: These two chunks are needed because of the way the documents are structured
@@ -725,7 +713,7 @@ R_median_from_growth_rate <- median(R_sample_from_growth_rate)
 R_median_from_growth_rate # compare with R_median
 ```
 
-    ## [1] 1.416407
+    ## [1] 1.416124
 
 ``` r
 # what is the 95%CI?
@@ -734,7 +722,7 @@ R_CI_from_growth_rate # compare with R_CrI
 ```
 
     ##     2.5%    97.5% 
-    ## 1.269487 1.578765
+    ## 1.276007 1.573391
 
 Note the above estimates are slighlty different from those obtained
 using the branching process model. There are a few reasons for this.
@@ -773,16 +761,16 @@ as.matrix(small_proj)
 ```
 
     ##            [,1] [,2] [,3] [,4] [,5]
-    ## 2014-06-18    4    3    2    5    4
-    ## 2014-06-19    3    5    4    5    3
-    ## 2014-06-20    2    5    1    3    3
-    ## 2014-06-21    3    3    4    2    7
-    ## 2014-06-22    7    7    4    4    4
-    ## 2014-06-23    6    9    5    5    4
-    ## 2014-06-24    3    8    3    5    7
-    ## 2014-06-25    7    8    6    2    5
-    ## 2014-06-26    3    4    4    5    4
-    ## 2014-06-27    7   11    4    6    3
+    ## 2014-06-18    4    3    3    4    2
+    ## 2014-06-19    3   10    6    8    5
+    ## 2014-06-20    4    4    3    7    2
+    ## 2014-06-21    3    4    6    3    0
+    ## 2014-06-22    4    4    3    7    3
+    ## 2014-06-23    5    8    5    9    6
+    ## 2014-06-24    2    6    5    8    1
+    ## 2014-06-25    3    3    1    8    1
+    ## 2014-06-26    3    6    5   10    3
+    ## 2014-06-27    4    3    8   10    5
 
   - You can either use a single value R for the entire trajectory
     (R\_fix\_within = TRUE) or resample R at each time step
@@ -845,37 +833,37 @@ apply(proj, 1, summary)
 ```
 
     ##         2014-06-18 2014-06-19 2014-06-20 2014-06-21 2014-06-22 2014-06-23
-    ## Min.          0.00      0.000      0.000       0.00      0.000      0.000
-    ## 1st Qu.       3.00      3.000      3.000       3.00      3.000      3.000
-    ## Median        4.00      4.000      4.000       4.00      4.000      4.000
-    ## Mean          3.96      3.991      4.118       4.38      4.447      4.523
-    ## 3rd Qu.       5.00      5.000      5.000       6.00      6.000      6.000
-    ## Max.         14.00     13.000     11.000      12.00     11.000     18.000
+    ## Min.         0.000      0.000      0.000      0.000      0.000      0.000
+    ## 1st Qu.      2.000      3.000      3.000      3.000      3.000      3.000
+    ## Median       4.000      4.000      4.000      4.000      4.000      4.000
+    ## Mean         3.891      4.108      4.175      4.299      4.452      4.689
+    ## 3rd Qu.      5.000      5.000      6.000      6.000      6.000      6.000
+    ## Max.        13.000     13.000     11.000     14.000     14.000     14.000
     ##         2014-06-24 2014-06-25 2014-06-26 2014-06-27 2014-06-28 2014-06-29
-    ## Min.         0.000      0.000       0.00      0.000      0.000      0.000
-    ## 1st Qu.      3.000      3.000       3.00      3.000      3.000      4.000
-    ## Median       5.000      4.000       5.00      5.000      5.000      5.000
-    ## Mean         4.741      4.685       5.11      5.201      5.302      5.376
-    ## 3rd Qu.      6.000      6.000       7.00      7.000      7.000      7.000
-    ## Max.        13.000     16.000      15.00     15.000     15.000     17.000
+    ## Min.         0.000      0.000      0.000      0.000      0.000      0.000
+    ## 1st Qu.      3.000      3.000      3.000      3.000      4.000      4.000
+    ## Median       5.000      5.000      5.000      5.000      5.000      5.000
+    ## Mean         4.783      4.972      5.088      5.124      5.451      5.482
+    ## 3rd Qu.      6.000      7.000      7.000      7.000      7.000      7.000
+    ## Max.        16.000     14.000     15.000     18.000     14.000     17.000
     ##         2014-06-30 2014-07-01
-    ## Min.          0.00      0.000
-    ## 1st Qu.       4.00      4.000
-    ## Median        5.00      6.000
-    ## Mean          5.68      5.974
-    ## 3rd Qu.       7.00      7.250
-    ## Max.         15.00     17.000
+    ## Min.         0.000      0.000
+    ## 1st Qu.      4.000      4.000
+    ## Median       6.000      6.000
+    ## Mean         5.838      5.957
+    ## 3rd Qu.      8.000      8.000
+    ## Max.        19.000     17.000
 
 ``` r
 apply(proj, 1, function(x) mean(x > 0)) # proportion of trajectories with at least 
 ```
 
     ## 2014-06-18 2014-06-19 2014-06-20 2014-06-21 2014-06-22 2014-06-23 
-    ##      0.982      0.981      0.981      0.985      0.980      0.987 
+    ##      0.983      0.980      0.983      0.980      0.995      0.992 
     ## 2014-06-24 2014-06-25 2014-06-26 2014-06-27 2014-06-28 2014-06-29 
-    ##      0.990      0.985      0.990      0.985      0.993      0.992 
+    ##      0.989      0.986      0.994      0.990      0.989      0.990 
     ## 2014-06-30 2014-07-01 
-    ##      0.988      0.994
+    ##      0.993      0.993
 
 ``` r
                                         # one case on each given day
@@ -884,37 +872,37 @@ apply(proj, 1, mean) # mean daily number of cases
 ```
 
     ## 2014-06-18 2014-06-19 2014-06-20 2014-06-21 2014-06-22 2014-06-23 
-    ##      3.960      3.991      4.118      4.380      4.447      4.523 
+    ##      3.891      4.108      4.175      4.299      4.452      4.689 
     ## 2014-06-24 2014-06-25 2014-06-26 2014-06-27 2014-06-28 2014-06-29 
-    ##      4.741      4.685      5.110      5.201      5.302      5.376 
+    ##      4.783      4.972      5.088      5.124      5.451      5.482 
     ## 2014-06-30 2014-07-01 
-    ##      5.680      5.974
+    ##      5.838      5.957
 
 ``` r
 apply(apply(proj, 2, cumsum), 1, summary) # projected cumulative number of cases in 
 ```
 
     ##         2014-06-18 2014-06-19 2014-06-20 2014-06-21 2014-06-22 2014-06-23
-    ## Min.          0.00      1.000      3.000      5.000      7.000      9.000
-    ## 1st Qu.       3.00      6.000      9.000     13.000     17.000     21.000
-    ## Median        4.00      8.000     12.000     16.000     21.000     25.000
-    ## Mean          3.96      7.951     12.069     16.449     20.896     25.419
-    ## 3rd Qu.       5.00     10.000     14.000     19.000     24.000     30.000
-    ## Max.         14.00     19.000     26.000     34.000     39.000     46.000
+    ## Min.         0.000      1.000      2.000      4.000      7.000      9.000
+    ## 1st Qu.      2.000      6.000     10.000     13.000     17.000     21.000
+    ## Median       4.000      8.000     12.000     16.000     21.000     25.000
+    ## Mean         3.891      7.999     12.174     16.473     20.925     25.614
+    ## 3rd Qu.      5.000     10.000     15.000     19.000     25.000     30.000
+    ## Max.        13.000     19.000     26.000     33.000     40.000     48.000
     ##         2014-06-24 2014-06-25 2014-06-26 2014-06-27 2014-06-28 2014-06-29
-    ## Min.         12.00     13.000     15.000     19.000     20.000     23.000
-    ## 1st Qu.      25.00     29.000     33.000     37.000     42.000     46.000
-    ## Median       30.00     34.000     39.000     45.000     50.000     55.000
-    ## Mean         30.16     34.845     39.955     45.156     50.458     55.834
-    ## 3rd Qu.      35.00     40.000     47.000     52.000     58.000     64.000
-    ## Max.         52.00     64.000     74.000     88.000     99.000    107.000
+    ## Min.        11.000     13.000     15.000     15.000     19.000     19.000
+    ## 1st Qu.     25.000     29.000     33.000     37.000     42.000     46.000
+    ## Median      30.000     35.000     40.000     45.000     50.000     55.000
+    ## Mean        30.397     35.369     40.457     45.581     51.032     56.514
+    ## 3rd Qu.     35.000     41.000     47.000     53.000     60.000     66.000
+    ## Max.        54.000     65.000     74.000     81.000     92.000    101.000
     ##         2014-06-30 2014-07-01
-    ## Min.        24.000     25.000
-    ## 1st Qu.     51.000     55.000
-    ## Median      61.000     66.000
-    ## Mean        61.514     67.488
-    ## 3rd Qu.     71.000     77.250
-    ## Max.       118.000    134.000
+    ## Min.        20.000     25.000
+    ## 1st Qu.     51.000     55.750
+    ## Median      61.000     67.000
+    ## Mean        62.352     68.309
+    ## 3rd Qu.     73.000     80.250
+    ## Max.       115.000    123.000
 
 ``` r
                                           # the next two weeks
@@ -1204,7 +1192,8 @@ tail(Rt_whole_incid$R[,c("t_start", "t_end",
 
 ## Save data and outputs
 
-This is the end of part 2 of the practical. Before going on to part 3,
+This is the end of [part 2](./real-time-response-2.html) of the
+practical. Before going on to [part 3](./real-time-response-3.html),
 you’ll need to save the following objects:
 
 ``` r

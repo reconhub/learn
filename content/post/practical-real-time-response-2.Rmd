@@ -22,12 +22,17 @@ render_snippet <- if (params$full_version) 'asis' else FALSE
 ## Introduction
 
 This practical is the second (out of three) part of a practical which simulates the early assessment and reconstruction of an Ebola Virus Disease (EVD) outbreak. 
-Please make sure you have gone through part 1 before starting part 2. 
-In part 2 of the practical, we introduce various aspects of analysis of the early stage of an outbreak, including growth rate estimation, contact tracing data, delays, and estimates of transmissibility. Part 3 of the practical will give an introduction to transmission chain reconstruction using outbreaker2.
+Please make sure you have gone through [part 1](./real-time-response-1.html) before starting [part 2](./real-time-response-2.html). 
+In [part 2](./real-time-response-2.html) of the practical, we introduce various aspects of analysis of the early stage of an outbreak, including growth rate estimation, contact tracing data, delays, and estimates of transmissibility. Part 3 of the practical will give an introduction to transmission chain reconstruction using outbreaker2.
+
+> Note: This practical is derived from earlier practicals called [Ebola
+> simulation part 1: early outbreak assessment](./simulated-evd-early.html) and
+> [Ebola simulation part 2: outbreak
+> reconstruction](./practical-ebola-reconstruction.html)
 
 ## Learning outcomes
 
-By the end of this practical (part 2), you should be able to:
+By the end of this practical ([part 2](./real-time-response-2.html)), you should be able to:
 
 - Estimate & interpret the growth rate & doubling time of the epidemic
 
@@ -39,12 +44,12 @@ By the end of this practical (part 2), you should be able to:
 
 ## Context: A novel EVD outbreak in a fictional country in West Africa
 
-A new EVD outbreak has been notified in a fictional country in West Africa. The Ministry of Health is in charge of coordinating the outbreak response, and have contracted you as a consultant in epidemic analysis to inform the response in real time. You have already read in an done descriptive analysis of the data (part 1 of the practical). Now let's do some statistical analyses! 
+A new EVD outbreak has been notified in a fictional country in West Africa. The Ministry of Health is in charge of coordinating the outbreak response, and have contracted you as a consultant in epidemic analysis to inform the response in real time. You have already read in an done descriptive analysis of the data ([part 1](./real-time-response-1.html) of the practical). Now let's do some statistical analyses! 
 
 ## Required packages 
 
 The following packages, available on CRAN or github, are needed for this analysis.
-You should have installed them in part 1 but if not, install necessary packages as follows:
+You should have installed them in [part 1](./real-time-response-1.html) but if not, install necessary packages as follows:
 
 ```{r install_packages, eval = TRUE, echo = TRUE}
 # install.packages("remotes")
@@ -83,7 +88,7 @@ library(outbreaker2)
 library(here)
 ```
 
-## Read in the data processed in part 1
+## Read in the data processed in [part 1](./real-time-response-1.html)
 
 
 <!--
@@ -644,8 +649,8 @@ cat("- the above assumes constant R within sliding time-window")
 
 ## Save data and outputs
 
-This is the end of part 2 of the practical. 
-Before going on to part 3, you'll need to save the following objects:
+This is the end of [part 2](./real-time-response-2.html) of the practical. 
+Before going on to [part 3](./real-time-response-3.html), you'll need to save the following objects:
 
 ```{r save_data_ni, include = FALSE}
 saveRDS(linelist, here("static/data/clean/linelist.rds"))
