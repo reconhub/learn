@@ -8,6 +8,8 @@ image: img/highres/van-der-helst-banquet.jpg
 slug: real-time-response-3
 showonlyimage: true
 licenses: CC-BY
+params:
+  full_version: true
 ---
 
 ## Introduction
@@ -701,7 +703,7 @@ q <- plot(cons_tree,
           reverse_node_order = TRUE, ## put large subtrees as the bottom
           ttree_shape = 'branching' ## 
           )
-learn::save_and_use_widget(q, "real-time-response-network-4.html")
+q
 ```
 
 <!--html_preserve-->

@@ -8,20 +8,15 @@ image: img/highres/van-der-helst-banquet.jpg
 slug: real-time-response-3
 showonlyimage: true
 licenses: CC-BY
+params:
+  full_version: true
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
-# if rendering full version
-full_version <- TRUE
-#full_version <- FALSE
-
-if(full_version){
-  render_snippet <- 'asis'
-}else{
-  render_snippet <- FALSE
-}
+# toggle to render full version 
+render_snippet <- if (params$full_version) 'asis' else FALSE
 ```
 
 ## Introduction
@@ -166,7 +161,7 @@ already estimated above and stored in the object `si`.
 
 How are the generation time and serial interval related? How might they differ?
 
-```{r gentime_incub, echo = FALSE, results = render_snippet, eval = full_version}
+```{r gentime_incub, echo = FALSE, results = render_snippet, eval = params$full_version}
 cat("
 - the generation time is the delay between infection times of transmission pairs,
     whereas the serial interval is the delay between times of symptom onset
@@ -259,7 +254,7 @@ We can now run the analysis. This should take a couple of minutes on modern
 laptops. Note the use of `set.seed(0)` to have identical results across
 different users and computers:
 
-```{r outbreaker-basic}
+```{r outbreaker-basic, cache = TRUE}
 set.seed(0)
 res_basic <- outbreaker(data = data, config = ob_config)
 res_basic
@@ -319,7 +314,7 @@ learn::save_and_use_widget(p, "real-time-response-network-1.html")
 Explain briefly what each of these plots shows, and what (if any) conclusions
 can be drawn from them.
 
-```{r posterior_dist, echo = FALSE, results = render_snippet, eval = full_version}
+```{r posterior_dist, echo = FALSE, results = render_snippet, eval = params$full_version}
 cat("
 - The `alpha` plot shows the posterior probability of one case infecting another.
 Some ancestries are clearly well resolved (large circles), whereas others are not.
@@ -348,7 +343,7 @@ hist(smry_basic$tree$support, col = "grey", border = "white",
 
 How would you interpret this result? How well resolved is the transmission tree?
 
-```{r tree_resolution, echo = FALSE, results = render_snippet, eval = full_version}
+```{r tree_resolution, echo = FALSE, results = render_snippet, eval = params$full_version}
 cat("
 - The tree is fairly poorly resolved, as most ancestries have <0.5 posterior support
 - The genetic data can resolve the outbreak into clusters of identical cases,
@@ -360,7 +355,7 @@ As a point of comparison, repeat the same analysis using temporal data only, and
 plot a graph of ancestries (`type = "alpha"`); you
 should obtain something along the lines of:
 
-```{r outbreaker-time}
+```{r outbreaker-time, cache = TRUE}
 set.seed(0)
 
 data <- outbreaker_data(dates = linelist_clean$date_of_onset, # dates of onset
@@ -392,7 +387,7 @@ hist(smry_time$tree$support, col = "grey", border = "white",
 What is the usefulness of temporal and genetic data for outbreak reconstruction?
 What other data would you ideally include?
 
-```{r data_informativeness, echo = FALSE, results = render_snippet, eval = full_version}
+```{r data_informativeness, echo = FALSE, results = render_snippet, eval = params$full_version}
 cat("
 - Temporal data is not very informative (especially if the generation time and
 incubation period distributions are flat)
@@ -438,7 +433,7 @@ ob_config <- create_config(move_kappa = FALSE, # don't look for missing cases
 We are now ready to run the analysis. This may take a couple of minutes,
 depending on your computer:
 
-```{r outbreaker-full}
+```{r outbreaker-full, cache = TRUE}
 set.seed(0)
 res_full <- outbreaker(data = data, config = ob_config)
 res_full
@@ -498,7 +493,7 @@ How would you interpret the results? Compare the results to those using
 temporal data only, or temporal and genetic data. Can we always rely on contact
 data to estimate who infected whom?
 
-```{r contact_data_interpret, echo = FALSE, results = render_snippet, eval = full_version}
+```{r contact_data_interpret, echo = FALSE, results = render_snippet, eval = params$full_version}
 cat("
 - Contact data clearly resolves additional transmission pairs
 - However, we only have 59 contacts in an outbreak of ~160 cases; many ancestries remain unresolved
@@ -577,7 +572,32 @@ subtree and double-click on a node to collapse it. Set `ttree_shape =
 'rectangle'` if you want a tree with right-angled edges. For more info,
 see `?vis_ttree`.
 
-```{r ebola_outbreaker_4, echo = TRUE}
+```{r ebola_outbreaker_4, echo = TRUE, eval = FALSE}
+
+q <- plot(cons_tree,
+          method = 'ttree', ## show timed tree
+          x_axis = 't_inf_est', ## use 't_inf_est' column for x_axis
+          edge_color = "support", ## color edges by posterior support
+          edge_col_pal = support_pal, ## specify color palette 
+          node_size = 'R_i', ## node size reflects R_i
+          ## edge_label = "support", ## not showing for readability
+          ## node_shape = "gender", ## not showing for readability
+          ## shapes = c(m = "male", f = "female"), ## specify shapes
+          width = 1000, ## adjust to improve readability
+          height = 1500, ## adjust to improve readability
+          node_color = "outcome", ## color nodes by outcome
+          hide_labels = TRUE, ## don't show node labels
+          date_labels = "%d/%m", ## formatting date labels
+          axis_type = 'double', ## show two axes
+          col_pal = outcome_pal, ## specify color palette
+          node_order = 'subtree_size', ## order nodes vertically by subtree size
+          reverse_node_order = TRUE, ## put large subtrees as the bottom
+          ttree_shape = 'branching' ## 
+          )
+q
+```
+
+```{r ebola_outbreaker_4-ns, echo = FALSE}
 
 q <- plot(cons_tree,
           method = 'ttree', ## show timed tree
@@ -605,7 +625,7 @@ learn::save_and_use_widget(q, "real-time-response-network-4.html")
 
 Are there any conclusions can you draw from these figures?
 
-```{r support_final, echo = FALSE, results = render_snippet, eval = full_version}
+```{r support_final, echo = FALSE, results = render_snippet, eval = params$full_version}
 cat("
 - Perhaps some evidence for superspreading events (e.g. 11f8ea, 9f6884, 0f58c4, f547d6); these largely capture the patterns we saw in the contact data
 - No noticeable correlation with recovery status or gender (you can check this by colouring by gender or setting the shape to gender)
@@ -670,7 +690,7 @@ learn::save_and_use_widget(r, "real-time-response-network-prune.html")
 Do you think we can reliably answer the question of who infected whom in this
 outbreak? How can we improve our estimates?
 
-```{r support_partial, echo = FALSE, results = render_snippet, eval = full_version}
+```{r support_partial, echo = FALSE, results = render_snippet, eval = params$full_version}
 cat("
 - Though support for some ancestries is high, the overall outbreak is still not very well resolved --- Especially the more recent cases are poorly resolved, which are of the most interest
 - More contact data would be useful (currently only have 60 reported contacts, whereas we already have genetic data and dates of sampling for all cases)
