@@ -16,18 +16,18 @@ This practical is the third (and last) part of a practical which
 simulates the early assessment and reconstruction of an Ebola Virus
 Disease (EVD) outbreak. Please make sure you have gone through parts 1
 and 2 before starting part 3. In part 3 of the practical, we give an
-introduction to transmission chain reconstruction using outbreaker2.
+introduction to transmission chain reconstruction using `outbreaker2`.
 
 ## Learning outcomes
 
 By the end of this practical (part 3), you should be able to:
 
-  - Use the outbreaker2 package to reconstruct who infected whom using
+  - Use the `outbreaker2` package to reconstruct who infected whom using
     epidemiological and genetic data
   - Understand how different types of data contribute to our
     understanding of who infected whom
-  - Understand the various outputs from outbreaker2, especially the
-    uncertainty associated with any conclusions we draw from them
+  - Interpret the various outputs from `outbreaker2`, and understand the
+    uncertainty associated with any conclusions you draw
   - Visualise a consensus tree using epicontacts
 
 ## Context: A novel EVD outbreak in a fictional country in West Africa
@@ -41,7 +41,7 @@ trend (parts 1 and 2 of the practical). Now we will try and draw a more
 detailed picture of the epidemic by trying to infer who infected whom
 using the data available to us, namely dates of symptom onset, whole
 genome sequences (WGS) and limited contact data. This can be achieved
-using outbreaker2, which provides a modular platform for outbreak
+using `outbreaker2`, which provides a modular platform for outbreak
 reconstruction.
 
 ## Required packages
@@ -64,7 +64,7 @@ install necessary packages as follows:
 # install.packages("magrittr")
 # install.packages("binom")
 # install.packages("ape")
-# remotes::install_github("finlaycampbell/outbreaker2") [on CRAN soon]
+# install.packages("outbreaker2")
 # install.packages("here")
 ```
 
@@ -85,20 +85,8 @@ library(magrittr)
 library(binom)
 library(ape)
 library(outbreaker2)
-```
-
-    ## 
-    ## Attaching package: 'outbreaker2'
-
-    ## The following object is masked from 'package:epicontacts':
-    ## 
-    ##     cases_pal
-
-``` r
 library(here)
 ```
-
-    ## here() starts at /home/zkamvar/Documents/Websites/reconhub--learn
 
 ## Read in the data processed in parts 1 and 2
 
@@ -278,7 +266,7 @@ linked to their respective cases:
 dates <- linelist_clean$date_of_onset
 names(dates) <- linelist_clean$case_id
 data <- outbreaker_data(dates = dates, # dates of onset
-                        dna = dna, # WGS; remove labels for compatibility
+                        dna = dna, # WGS
                         w_dens = si$d(1:100), # generation time distribution
                         f_dens = incub$d(1:100) # incubation period distribution
                         )
@@ -390,21 +378,27 @@ p <- plot(res_basic,
 p
 ```
 
-![](practical-real-time-response-3_files/figure-gfm/ebola_outbreaker_1-4.png)<!-- -->
+<!--html_preserve-->
+
+<iframe src="widgets/real-time-response-network-1.html" width="100%" height="500px">
+
+</iframe>
+
+<!--/html_preserve-->
 
 Explain briefly what each of these plots shows, and what (if any)
 conclusions can be drawn from them.
 
-  - The ‘alpha’ plot shows the posterior probability of one case
+  - The `alpha` plot shows the posterior probability of one case
     infecting another. Some ancestries are clearly well resolved (large
     circles), whereas others are not. The clustering of circles into
     rectangles suggests there are clusters of unresolved cases (in this
-    case, the genetically identical cases).
-  - The ‘t\_inf’ plot shows the posterior distribution of infection
-    times. For most cases, this distribution is quite flat.
-  - The ‘mu’ plot simply shows the posterior distribution of mutation
-    rate estimates. It is unimodal around 6e-6.
-  - The ‘network’ plot shows a network of likely infectious
+    case, the genetically identical cases)
+  - The `t_inf` plot shows the posterior distribution of infection
+    times. For most cases, this distribution is quite flat
+  - The `mu` plot simply shows the posterior distribution of mutation
+    rate estimates. It is unimodal around 6e-6
+  - The `network` plot shows a network of likely infectious
     relationships between cases. You can see the clustering of cases
     that correspond to genetically identical cases.
 
@@ -448,9 +442,9 @@ How would you interpret this result? How well resolved is the
 transmission tree?
 
   - The tree is fairly poorly resolved, as most ancestries have \<0.5
-    posterior support.
+    posterior support
   - The genetic data can resolve the outbreak into clusters of identical
-    cases, but not beyond that.
+    cases, but not beyond that
 
 As a point of comparison, repeat the same analysis using temporal data
 only, and plot a graph of ancestries (`type = "alpha"`); you should
@@ -505,15 +499,21 @@ reconstruction? What other data would you ideally include?
 `outbreaker2` natively accepts `epicontacts` objects. Therefore all we
 need to do is make an `epi_contacts_clean` object that contains contacts
 between cases in `linelist_clean`, and pass it to the `ctd` argument in
-`outbreaker_data`. Make sure to set `directed` to `TRUE`, as the
-contacts we have are directional.
+`outbreaker_data`. Make sure the `epicontacts` object is defined as the
+contacts we have are directional (i.e. specify an infector and
+infectee).
 
 ``` r
 ## only keep linelist and contacts elements in linelist_clean
 epi_contacts_clean <- epi_contacts[i = linelist_clean$case_id, ## keep linelist
                                    j = linelist_clean$case_id, ## keep contacts
-                                   contacts = 'both'] ## both contacts in linelist
+                                   contacts = 'both'] ## both contacts must be in linelist
+epi_contacts_clean$directed ## check directionality
+```
 
+    ## [1] TRUE
+
+``` r
 data <- outbreaker_data(dates = linelist_clean$date_of_onset, # dates of onset
                         dna = dna, # dna sequences
                         ctd = epi_contacts_clean, # contact data
@@ -569,18 +569,7 @@ Produce graphics as in the previous model. Assess convergence, choose an
 appropriate burnin, visualise ancestries and the infection
 timelines:
 
-![](practical-real-time-response-3_files/figure-gfm/ebola_outbreaker_2-1.png)<!-- -->![](practical-real-time-response-3_files/figure-gfm/ebola_outbreaker_2-2.png)<!-- -->![](practical-real-time-response-3_files/figure-gfm/ebola_outbreaker_2-3.png)<!-- -->![](practical-real-time-response-3_files/figure-gfm/ebola_outbreaker_2-4.png)<!-- -->![](practical-real-time-response-3_files/figure-gfm/ebola_outbreaker_2-5.png)<!-- -->
-
-How would you interpret the results?
-
-  - Contact data clearly resolves additional ancestries, however not all
-    of them
-  - Infection times estimates are not improved much
-  - The network plot shows how some ancestries are better resolved,
-    whereas others remain unclear
-  - Contact data is informative, but it depends on how much of it you
-    have. In this case, we only have 59 contacts in an outbreak of ~160
-    cases.
+![](practical-real-time-response-3_files/figure-gfm/ebola_outbreaker_2-1.png)<!-- -->![](practical-real-time-response-3_files/figure-gfm/ebola_outbreaker_2-2.png)<!-- -->![](practical-real-time-response-3_files/figure-gfm/ebola_outbreaker_2-3.png)<!-- -->![](practical-real-time-response-3_files/figure-gfm/ebola_outbreaker_2-4.png)<!-- --><!--html_preserve--><iframe src="widgets/real-time-response-network-2.html" width="100%" height="500px"></iframe><!--/html_preserve-->
 
 Derive a consensus tree using `summary`, then visualise the results in
 the `support` column. This time set the option `method = 'decycle'` to
@@ -608,18 +597,30 @@ hist(smry_full$tree$support, col = "grey", border = "white",
 
 ![](practical-real-time-response-3_files/figure-gfm/outbreaker-full-summary-1.png)<!-- -->
 
-Compare the results to those using temporal data only, or temporal and
-genetic data. When is contact data informative? When not?
+How would you interpret the results? Compare the results to those using
+temporal data only, or temporal and genetic data. Can we always rely on
+contact data to estimate who infected whom?
 
-  - Once again: we have indivdual ancestries that are very well resolved
-    due to the contact data, however other remain poorly resolved.
-  - We need to collect more data, or integrate new types of data that we
-    have already collected.
-  - Contact data is informative when most registered contacts are
-    between transmission pairs. If we have a very mixed group of people
-    (i.e. a classroom where all children have been in contact with each
-    other), we have a large number of contacts between non-transmission
-    pairs, making the contact data less useful.
+  - Contact data clearly resolves additional transmission pairs
+  - However, we only have 59 contacts in an outbreak of ~160 cases; many
+    ancestries remain unresolved
+  - The network plot shows the same results; we still have clusters of
+    genetically identical cases with no contact data to further resolve
+    them
+  - Infection times estimates have not improved much; we haven’t
+    integrated information on the timing of contacts to improve these
+    estimates
+  - Contact data will not always be informative of transmission events:
+      - in a very mixed group of people (i.e. a classroom where all
+        children have been in contact with each other), many contacts
+        exist between non-transmission pairs; this makes the contact
+        data less ‘specific’ to transmission events
+      - for diseases with long incubation periods, it can be difficult
+        to narrow down when infection occured and know which contacts
+        are epidemiologically relevant
+      - contact tracing is resource intensive and can be inaccurate
+        (e.g. people giving false information); quality and quantity of
+        the data is not always assured
 
 Now make a new `epicontacts` object to visualise the consensus tree with
 meta-information. First convert the index labels in the consensus tree
@@ -631,9 +632,9 @@ from the consensus tree (`smry_full$tree$time`).
 smry_full$tree$from <- linelist_clean$case_id[smry_full$tree$from]
 smry_full$tree$to <- linelist_clean$case_id[smry_full$tree$to]
 
-## convert t_inf from integers to dates
-linelist_clean$t_inf <- as.Date(smry_full$tree$time,
-                                origin = min(linelist_clean$date_of_onset))
+## convert infection time estimates from integers to dates
+linelist_clean$t_inf_est <- as.Date(smry_full$tree$time,
+                                    origin = min(linelist_clean$date_of_onset))
 
 cons_tree <- make_epicontacts(linelist_clean,
                               smry_full$tree,
@@ -657,26 +658,32 @@ Looking carefully at the documentation of `vis_epicontacts`, try to
 reproduce the final consensus tree
 below:
 
-![](practical-real-time-response-3_files/figure-gfm/ebola_outbreaker_3-1.png)<!-- -->
+<!--html_preserve-->
+
+<iframe src="widgets/real-time-response-network-3.html" width="100%" height="500px">
+
+</iframe>
+
+<!--/html_preserve-->
 
 `epicontacts` can now also display timed transmission trees using the
 `method = 'ttree'` argument. In the interactive plot below, the colour
 of the edges represents the posterior support, the color of the nodes
 the outcome, the size of the nodes individual reproductive number
-\(R_i\).
+R<sub>i</sub>.
 
 Try adjusting the `height` and `width` arguments so the tree is cleary
 visible, then explore clusters of infection by zooming in and out and
 moving the tree around. Drag nodes around to improve clarity if need be.
 Hover your mouse over the nodes to get more information, single-click on
 a node to highlight its subtree and double-click on a node to collapse
-it. Set `ttree_shape = 'rectangle'` if you want a tree that looks more
-like a phylogeny. For more info, see `?vis_ttree`.
+it. Set `ttree_shape = 'rectangle'` if you want a tree with right-angled
+edges. For more info, see `?vis_ttree`.
 
 ``` r
 q <- plot(cons_tree,
           method = 'ttree', ## show timed tree
-          x_axis = 't_inf', ## use 't_inf' column for x_axis
+          x_axis = 't_inf_est', ## use 't_inf_est' column for x_axis
           edge_color = "support", ## color edges by posterior support
           edge_col_pal = support_pal, ## specify color palette 
           node_size = 'R_i', ## node size reflects R_i
@@ -694,18 +701,24 @@ q <- plot(cons_tree,
           reverse_node_order = TRUE, ## put large subtrees as the bottom
           ttree_shape = 'branching' ## 
           )
-q
+learn::save_and_use_widget(q, "real-time-response-network-4.html")
 ```
 
-![](practical-real-time-response-3_files/figure-gfm/ebola_outbreaker_4-1.png)<!-- -->
+<!--html_preserve-->
+
+<iframe src="widgets/real-time-response-network-4.html" width="100%" height="500px">
+
+</iframe>
+
+<!--/html_preserve-->
 
 Are there any conclusions can you draw from these figures?
 
   - Perhaps some evidence for superspreading events (e.g. 11f8ea,
     9f6884, 0f58c4, f547d6); these largely capture the patterns we saw
-    in the contact data.
+    in the contact data
   - No noticeable correlation with recovery status or gender (you can
-    check this by colouring by gender or setting the shape to gender).
+    check this by colouring by gender or setting the shape to gender)
 
 Now plot the consensus tree, but only including links with more than 30%
 posterior support:
@@ -713,7 +726,7 @@ posterior support:
 ``` r
 r <- plot(cons_tree[, cons_tree$contacts$support > 0.3],
           method = 'ttree', ## show timed tree
-          x_axis = 't_inf', ## use 't_inf' column for x_axis
+          x_axis = 't_inf_est', ## use 't_inf_est' column for x_axis
           edge_color = "support", ## color edges by posterior support
           edge_col_pal = support_pal, ## specify color palette 
           node_size = 'R_i', ## node size reflects R_i
@@ -728,22 +741,28 @@ r <- plot(cons_tree[, cons_tree$contacts$support > 0.3],
           axis_type = 'double', ## show two axes
           col_pal = outcome_pal, ## specify color palette
           unlinked_pos = 'middle', ## show unlinked nodes in the middle
-          root_order = 't_inf', ## order roots by time of infection
+          root_order = 't_inf_est', ## order roots by time of infection
           reverse_root_order = TRUE ## show earliest nodes at the top
           )
 r
 ```
 
-![](practical-real-time-response-3_files/figure-gfm/ebola_cons_prune-1.png)<!-- -->
+<!--html_preserve-->
+
+<iframe src="widgets/real-time-response-network-prune.html" width="100%" height="500px">
+
+</iframe>
+
+<!--/html_preserve-->
 
 Do you think we can reliably answer the question of who infected whom in
 this outbreak? How can we improve our estimates?
 
   - Though support for some ancestries is high, the overall outbreak is
-    still not very well resolved. Especially the more recent cases are
-    poorly resolved, which are of the most interest.
+    still not very well resolved — Especially the more recent cases are
+    poorly resolved, which are of the most interest
   - More contact data would be useful (currently only have 60 reported
     contacts, whereas we already have genetic data and dates of sampling
-    for all cases).
-  - Or integrate other types of data (i.e. location, covariates such as
+    for all cases)
+  - Integrate other types of data (i.e. location, covariates such as
     age, gender, occupation, etc.)
