@@ -1,29 +1,61 @@
 ---
-title: "An introduction to R and RStudio"
-author: "Zulma M. Cucunubá"
-categories:
-tags: ["level: beginner"]
+title: An introduction to R and RStudio
+author: Zulma M. Cucunuba
+authors: ["Zulma M. Cucunuba"]
+categories: ["practicals"]
+topics: ["R","Rstudio"]
 date: 2019-06-01
-slug: introR
+image: img/highres/an-introduction-to-r-and-r-studio.jpg
+showonlyimage: yes
+bibliography: 
 licenses: CC-BY
-image: img/highres/mosquito.jpg
-showonlyimage: true
+always_allow_html: yes
+output:
+  md_document:
+    variant: markdown_github
+    preserve_yaml: yes
+
 ---
+
+	
+```{r options, include = FALSE, message = FALSE, warning = FALSE, error = FALSE}
+library(knitr)
+opts_chunk$set(collapse = TRUE)
+
+
+CACHE <- TRUE
+
+```
+
+
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
+library(readxl)
+library(here)
+library(kableExtra)
+library(knitr)
+library(readxl)
+library(tidyverse)
+
 ```
+
+\newline
+\newline
 
 # Introduction
 
 
-This tutorial is part of the pre-course materials of a "Short Course on Epidemics Analysis". The aim is to introduce students to the very basic concepts of R and R Studio, in order to get some baseline knowledge in R and R programming. 
+This tutorial is part of the pre-course materials of a "Short Course on Outbreak Analysis and Modelling for Public Health". The aim is to introduce students to the very basic concepts of R and R Studio, in order to get some baseline knowledge in R and R programming. 
 
+
+\newline
 
 # Installing R and R Studio
 
-_R_ is a free software environment and _RStudio_ is a free and open-source environment for to work on R. Both, R and Rstuido should be installed separately. 
+_R_ is a free software environment and _RStudio_ is a free and open-source environment for to work on R. Both, R and Studio should be installed separately. 
 
 _R_ can be installed from the R Project for Statistical computing website: 
 https://r-project.org/
@@ -37,7 +69,28 @@ For a very detailed explanation on how to install R and R Studio, please visit t
 https://www.youtube.com/watch?v=LbezGA_Yle8
 
 
+\newline
 
+# Project setup
+
+One of the great advantages of using RStudio is the prossibility of using `R.proj` to organise the work space, history and source documents.
+
+To create this, do the following steps:
+
+1) Open RStudio and on the top right corner find *New Project*  
+
+2) Create a new RStudio project in a new directory that you can call “introR”
+
+[`static/img/screenshots/NewDirectory.png`]
+
+3) Create the sub folders you need for organising your work (i.e. data, scripts, figs)
+
+In the end, your project should look something like this image
+
+[`static/img/screenshots/Rproject.png`]
+
+
+\newline
 
 # Structures in R
 
@@ -45,7 +98,7 @@ According to Hadley Wickham, in his Advanced R book [http://adv-r.had.co.nz/], t
 
 - Homogeneous: atomic vectors (1d), matrices (2d) and arrays (nd) 
 
-- Heterogeneous: dataframes and lists 
+- Heterogeneous: data frames and lists 
 
 
 
@@ -53,13 +106,13 @@ According to Hadley Wickham, in his Advanced R book [http://adv-r.had.co.nz/], t
 
 These are the most basic structures in R and have only one dimension (1d):
 
-- a. Double (numeric)
+- Double (numeric)
 
-- b. Logic
+- Logic
 
-- c. Character
+- Character
 
-- d. Integer
+- Integer
 
 
 ```{r}
@@ -75,7 +128,7 @@ vector_integer <- c(1L, 2L, 3L, 4L)
 ```
 
 
-To evaluate which type of vector we have, we can use two commands *typeof* 
+To evaluate which type of vector we have, we can use two commands `typeof` 
 
 ```{r}
 typeof(vector_double)
@@ -85,6 +138,7 @@ typeof(vector_integer)
 
 ```
 
+\newline
 
 ### Matrices
 
@@ -94,46 +148,48 @@ Matrices are structures a bit more complex than vectors, with two main character
 
 - A matrix has only one dimension
 
-A command to build a *matrix* uses three arguments: 
+A command to build a `matrix` uses three arguments: 
 
-- *data* corresponds to the list of vectors we want to use in the matrix
+`data` corresponds to the list of vectors we want to use in the matrix
 
-- *nrow* the number of rows where the data is gonna be split (first dimension)
+`nrow` the number of rows where the data is gonna be split (first dimension)
 
-- *ncol*  the number of columns where the data is gonna be split (second dimension)
+`ncol`  the number of columns where the data is gonna be split (second dimension)
 
-By default the matrix is filled by column, unless we specify otherwise using *byrow = TRUE*
+By default the matrix is filled by column, unless we specify otherwise using `byrow = TRUE`
 
 ```{r}
 
 matrix_of_doub <-  matrix(data = vector_double, nrow = 2, ncol = 2)
 matrix_of_doub
+dim(matrix_of_doub)
+```
 
+
+Make and test other types of matrices
+
+```{r, eval= FALSE}
 matrix_of_log <-  matrix(data = vector_logic, nrow = 4, ncol = 3)
 matrix_of_log
 
-matrix_of_char <-  matrix(data = vector_character, nrow = 4, ncol = 4)
+matrix_of_char <- matrix(data = vector_character, nrow = 4, ncol = 4)
 matrix_of_char
 
 matrix_of_int <-  matrix(data = vector_integer, nrow = 4, ncol = 5)
 matrix_of_int
-
-
-dim(matrix_of_int)
-
 ```
 
 
-
+\newline
 ### Arrays
 
 Array is a special type of matrix, where there is more than two dimensions (n dimensions).
 
 An array of two dimensions is a matrix\
 
-To create an array we need three arguments: *data* and *dim*.
+To create an array we need three arguments: `data` and `dim`.
 
-In turn, the *dim* argument of an array is composed of three arguments being: 1) number of rows, 2) number of columns and 3) number of dimensions.
+In turn, the `dim` argument of an array is composed of three arguments being: 1) number of rows, 2) number of columns and 3) number of dimensions.
 
 
 
@@ -148,12 +204,12 @@ array_example
 ```
 
 
-
+\newline
 ### Dataframes
 
-A *dataframe* is a heterogeneous and bidimensional structure, similar but not exactly equal to a matrix. Unlike a matrix, various types of vectors can be part of a single dataframe.
+A `data.frame` is a heterogeneous and bi dimensional structure, similar but not exactly equal to a matrix. Unlike a matrix, various types of vectors can be part of a single data frame.
 
-The arguments for the *data.frame* command are simply the columns in the dataframe. Each column shoud have the same number of rows to bea able to fit into a daraframe.
+The arguments for the `data.frame` command are simply the columns in the data frame. Each column should have the same number of rows to be able to fit into a data frame.
 
 Data frames do not allow vectors with different lengths. When the length of the vector is smaller than the length of the data frame, the data frame coerces the vector to its length.
 
@@ -164,7 +220,7 @@ data_example <- data.frame( vector_character,vector_double, vector_logic, vector
 
 ```
 
-To access the general structure of a dataframe we use the command *str* 
+To access the general structure of a data frame we use the command `str` 
 
 ```{r}
 
@@ -173,7 +229,7 @@ str(data_example)
 ```
 
 
-To access the different components of the dataframe we use this syntax *[,]* where the first dimension corresponds to rows and the second dimension to columns.
+To access the different components of the data frame we use this syntax `[,]` where the first dimension corresponds to rows and the second dimension to columns.
 
 ```{r}
 
@@ -182,21 +238,20 @@ data_example[1,2]
 ```
 
 
+\newline
+### Lists
 
-### List
-
-A *list* is the most complex structure in base R. A list cab be composed of any type of other structures of any dimension.
+A `list` is the most complex structure in base R. A list cab be composed of any type of other structures of any dimension.
 
 ```{r}
 
 list_example <- list(vector_character,
-                     matrix_of_int,
+                     matrix_of_doub,
                      data_example)
 
 ```
 
-
-To access the different components of a list, we use the syntax *[]* where the argument is simply the order within the list.
+To access the different components of a list, we use the syntax `[]` where the argument is simply the order within the list.
 
 ```{r}
 
@@ -206,36 +261,44 @@ list_example[1]
 
 
 
+\newline
+\newline
 
 # Functions
 
 A function is one of the structures that makes *R* a very powerful platform for programming. 
 
-There are varios types of functions
+\newline
+There are various types of functions
 
-- *Primitive or base functions*: these are the default functions in _R_ under the _base_ package. For instance, for basic arithmentic operations such as addition _sum_, substraction _*_, multiplication _*_, but also for more complex operations such as extraction of median values _median_, or even more complex like _summary_ of a variable.
+_Primitive or base functions_: these are the default functions in _R_ under the _base package_. For instance, for basic arithmetic operations, but also for more complex operations such as extraction of median values `median`, or even more complex like `summary` of a variable.
 
-- *Functions from packages*: these are functions created within a package. For example the function *glm* in the *stats* package.
+*Functions from packages* : these are functions created within a package. For example the function `glm` in the *stats* package.
 
 
-- *User-built functions*: these are the functions that any user creates for a customised routine. In turn, these functions could become part of a package.
+*User-built functions*: these are the functions that any user creates for a customized routine. In turn, these functions could become part of a package.
 
+
+
+\newline
 
 The basic components of a function are:
 
 
-- __*name*:__ this is the name that we give to our function (for example: _myfun_)
+*name*: this is the name that we give to our function (for example: `myfun`)
 
-- __*formals or arguments*:__ these are the series of elements that control how to call the funciton.
+*formals or arguments*: these are the series of elements that control how to call the function.
 
-- __*body*:__ this is the seires of operarions or modifications on my argumnets.
+*body*: this is the series of operations or modifications on my arguments.
 
-- __*output*:__ This is the results after mofifying the arguments. If this output corresponds to a series of data we can extract it using the command _return_.
+*output*: this is the results after modifying the arguments. If this output corresponds to a series of data we can extract it using the command `return`.
 
-- __*function internal environment*:__ means the specific rules and obnjects within a function. Those rules and objects will not work outside the function. 
+*function internal environment*: means the specific rules and objects within a function. Those rules and objects will not work outside the function. 
 
 
-##### User-built function (example 1)
+\newline
+
+-  User-built function (example 1)
 
 Let's build a function that calculates our Body Mass Index (BMI)
 
@@ -263,12 +326,10 @@ myfun(weight = 88, height = 1.78)
 
 
 ```
+\newline
 
 
-
-
-
-##### User-built function (example 2)
+- User-built function (example 2)
 
 Let's build a function that has default values, in this case we don't need to specify always some of the arguments as they can be set as by default.
 
@@ -295,9 +356,12 @@ myfun2(weight = 8800, height = 178, units = 'g/cm2')
 
 ```
 
+\newline
+\newline
+
 # R packages
 
-As described by Hadley Wilkham in his book *R packages*, a package is the fundamental unit of reproducible R code. A package should include at least:
+As described by Hadley Wickham in his book *R packages*, a package is the fundamental unit of reproducible R code. A package should include at least:
 
 - Reusable R functions
 - Documentation
@@ -309,8 +373,8 @@ The R packages are available on the Comprehensive R Archive Network (CRAN) https
 
 The basic commands to basic use of packages
 
-1. Install a package with the command _install.packages ("package-name")_
-2. Use them in R with _library ("package-name")_
+1. Install a package with the command `install.packages ("package-name")`
+2. Use them in R with `library ("package-name")`
 
 
 Let's install one of the packages from RECON.
@@ -321,17 +385,19 @@ library(incidence)
 
 ```
 
-Library is a directory containing installed packages. We can use _ lapply(.libPaths(), dir)_ to check which packages are active currently in our R session. 
+Library is a directory containing installed packages. We can use `lapply(.libPaths(), dir)` to check which packages are active currently in our R session. 
 
-An important part of a package is the documentation. This is stored in the _vignettes_. To access the basic documentation on a package we can use _browseVignettes("incidence")_
+An important part of a package is the documentation. This is stored in the `vignettes`. To access the basic documentation on a package we can use `browseVignettes("incidence")`
 
 
+\newline
+\newline
 
 # Scoping and Environments
 
 Wen we create a function, a new environment is created. This is important because within a function R look for the elements  within the function but if the element doesn't exist within the function then R looks for it in the global environment.
 
-#### Example of a function which objects are only avalible in th eglobal environment
+- Example of a function which objects are only avalible in th eglobal environment
 
 ```{r}
 mynewfun <- function () {
@@ -348,28 +414,9 @@ mynewfun()
 ```
 
 
+\newline
 
-# Some of the most used functions in R
-
-## Distributions
-
-All distributions in R can be explored by the use of functions that allow us to get the different forms of a distribution. For example for a normal distribution
-
-To explore the arguments in a function we use _?dnorm_
-
-- _dnorm_ = density function with default arguments _(x, mean = 0, sd = 1, log = FALSE)_
-_ _pnorm_ gives the distribution function
-- _qnorm_  gives the quantile function
-- _rnorm_  generates random deviates
-
-Many other distributions are part of the package *stats* with comes by default with R such as: uniform, poisson, binomial. 
-
-For other less used distributions sometimes other packages.
-
-
-
-
-#### Example of a function which objects are defined partically in the local environment and in the global envoronment
+- Example of a function which objects are defined partically in the local environment and in the global envoronment
 
 ```{r}
 mynewfun <- function (xx) {
@@ -386,20 +433,52 @@ mynewfun(xx = 4)
 This characteristic of R is very important when running any analysis or routine. It is always recommended NOT to use elements within a function that are only available in the global environment.
 
 
+\newline
+\newline
+# Working with probability distributions
+
+All distributions in R can be explored by the use of functions that allow us to get the different forms of a distribution. Fortunately, all distributions work in the same way, so if you learn to work with one, you will have the general idea of how to work with the others
+
+For example for a normal distribution
+
+To explore the arguments in a function we use `?dnorm`
+
+`dnorm` = density function with default arguments `(x, mean = 0, sd = 1, log = FALSE)`
+
+`pnorm` gives the distribution function
+
+`qnorm` gives the quantile function
+
+`rnorm`  generates random deviates
+
+Many distributions are part of the `stats` package that comes by default with R such as the _uniform_, _poisson_ and _binomial_, among others. For other less used distributions sometimes you may need to intsall other packages. For a non exaustibe list of the most used distrubutions and their arguments, see the table below:
+
+```{r, echo=FALSE, eval=TRUE}
+
+dis <- read_excel(here("static/data/distributions.xlsx"))
+  kable(dis) %>%
+    kable_styling(bootstrap_options = "striped", full_width = FALSE)
+
+```
+
+
+
+\newline
+\newline
 
 # Create and open datasets
 
 R allows not only to open but also to create data sets. There are three sources of data sets:
 
-- Data set imported as such (from Excel, csv, stata, or RDS formats, among others)
+- Data-set imported as such (from `.xlsx`, `.csv`, `.stata`, or `.RDS` formats, among many others)
 
-- Dataset that is part of a R package
+- Data-set that is part of a R package
 
-- Dataset created in our R session
+- Data-set created in our R session
 
 # Tidyverse
 
-In order to better manage datasets, we recommend install and use _tidyverse_ package which authomatically upload many other packages that (dplyr, tidyr, tibble, readr, purr, among others) that are very useful for data wrangling.
+In order to better manage data-sets, we recommend install and use `tidyverse` package which automatically upload many other packages that (dplyr, tidyr, tibble, readr, purr, among others) that are very useful for data wrangling.
 
 ```{r, echo = TRUE, include=TRUE, eval= TRUE}
 library(tidyverse)
@@ -407,46 +486,46 @@ library(tidyverse)
 ```
 
 
+\newline
+Let's open and explore a data-set that is imported from excel
 
-Let's open and explore a dataset that is imported from excel
-
-For example this dataset from our RECON practical on early outbreak analysis:
+For example this data-set from our RECON practical on early outbreak analysis:
 - [PHM-EVD-linelist-2017-10-27.xlsx](static/data/PHM-EVD-contacts-2017-10-27.xlsx):
 
-Then, lets save this dataset in the same directory we are currently working.
+Then, lets save this data-set in the same directory we are currently working.
 
-For importing datasets from excel we can use the library _readxl_ which is linked to tidyverse. However to will still need to load the _readxl_ library as it is not a core tidyverse package.
+For importing data-sets from excel we can use the library `readxl` which is linked to tidyverse. However to will still need to load the `readxl` library as it is not a core tidyverse package.
 
 ```{r, eval=FALSE}
 library(readxl)
-dat <- read_excel("PHM-EVD-linelist-2017-10-27.xlsx")
+dat <- read_excel("data/PHM-EVD-linelist-2017-10-27.xlsx")
 
 ```
 
 	
 ```{r include = FALSE}
-library(readxl)
-library(here)
+
 dat <- readxl::read_xlsx(here("static/data/PHM-EVD-linelist-2017-11-25.xlsx"))
 
 ```
 
 
-Here, we will take a look at some of the most used functions from  *tidyverse* 
 
-Here, we will be using a lot the pipe function _%>%_ which is key to use tidyverse and makes programming easier. The pipe function allows emphasise a sequence of actions on an object. 
+Here, we will take a look at some of the most used functions from  `tidyverse`.
 
-From the package  *dyplr*, the most common functions are:
+Here, we will be using a lot the pipe function `%>%` which is key to use tidyverse and makes programming easier. The pipe function allows emphasize a sequence of actions on an object. 
 
-__glimpse__: allows a rapid exploration of a dataset
+From the package  `dyplr`, the most common functions are:
 
-__arrange__: arranges the dataset by the value of a particular variable if numeric, or by alphabetic order if it is a character.
+`glimpse`: allows a rapid exploration of a data-set
 
-__mutate__: allows generate a new variable
+`arrange`: arranges the data-set by the value of a particular variable if numeric, or by alphabetic order if it is a character.
 
-__rename__: allows change a variable's name
+`mutate`: allows generate a new variable
 
-__summarise__: reduces the dimension of a dataset 
+`rename`: allows change a variable's name
+
+`summarise`: reduces the dimension of a data-set 
 
 
 
@@ -474,7 +553,7 @@ filter(dat, sex == "female", age <= 30)
 
 ```
 
-Let's open and explore a dataset that is part of a package
+Let's open and explore a data-set that is part of a package
 
 
 ```{r, echo = TRUE, include=TRUE}
@@ -489,12 +568,12 @@ tail(measles_dat)
 
 
 
-From the package  *tidyr*, the most common functions are:
+From the package  `tidyr`, the most common functions are:
 
-__gather__: makes wide data 
-__spred__ : makes long data
+`gather`: makes wide data 
+`spread`: makes long data
 
-
+Example:
 
 ```{r}
 
@@ -517,63 +596,64 @@ people %>% spread(key = 'age', gender)
 ```
 
 
-
+\newline
+\newline
 
 # ggplot2
 
-GGplot is an implementation of the concept of *grammar of grapphics* that has been implemmented in R by Hadley Wikcham. He explains in his ggplot2 book that "the grammar is a mapping from data to aesthesic atributes (colour, shape, size) of geomethic objects (points, lines, bars)". 
+`ggplot` is an implementation of the concept of *grammar of grapphics* that has been implemented in R by Hadley Wickham. He explains in his ggplot2 book that "the grammar is a mapping from data to aesthetic attributes (colour, shape, size) of geometric objects (points, lines, bars)". 
 
 The main components of a ggplot2 plot are:
-- _data frame_ 
+_data frame_ 
 
-- _aesthesic mappings_ this reffers to the indications on how teh data should be mapped (x, y) to color, size, etc
+_aesthesic mappings_ this refers to the indications on how the data should be mapped (x, y) to color, size, etc
 
-_geoms_ reffers to geometric objects such as points, lines, shapes
+_geoms_ refers to geometric objects such as points, lines, shapes
 
-_facets_  for condictional plors
+_facets_  for conditional plots
 
 _coodinate system_ 
 
 ### Basic functions in ggplot
 
-_ggplo()_ is the core function in ggplot2. The basic argument of the function is the dataframe we want to plot _(data)_.
+`ggplo()` is the core function in ggplot2. The basic argument of the function is the data frame we want to plot (data).
 
-_ggplot(data)_ then can be associated using the simbol _+_ to other type of functions the __geoms_ that will  draw a particular type of shape. Some of the most commonly used are:
+`ggplot(data)` then can be associated using the symbol `+` to other type of functions the _geoms_ that will  draw a particular type of shape. Some of the most commonly used are:
 
-- _geompoints()_ : for points 
+`_geom_points()` : for points 
 
-- _geomline()_   : for lines 
+`geom_line()`    : for lines 
 
-- _geombar()_    : for bar charts 
+`geom_bar()`  : for bar charts 
 
-- _geomhistogram()_: for historgrams
+`geom_histogram()`: for histograms
 
-All these commands wiil use the same sintax for the aesthesics _(x, y, colour, fill, shape)_. 
+All these commands will use the same syntax for the aesthetics `(x, y, colour, fill, shape)`. 
 
 #### GGplot example with the measles dataset 
 
-Let's use the measles dataset from the _outbreaks_ package that we had impoted above. In this case we want to make a graph that display a the time-series of cases by week coloured by gender, so we have to define that:
+Let's use the measles data-set from the `outbreaks` package that we had imported above. In this case we want to make a graph that display a the time-series of cases by week coloured by gender, so we have to define that:
 
-*x* = time
+`x` = time
 
-*y* = agregated number of cases by week and gender
+`y` = aggregated number of cases by week and gender
 
-*colour* = gender
+`colour` = gender
 
-An important thing to be aware is that for a single instruction in ggplot, it will only use variables that belong to the same dataset. So, we need to have the three variables (x, y and colour) in the same dataframe (with the same length). 
+An important thing to be aware is that for a single instruction in ggplot, it will only use variables that belong to the same data-set. So, we need to have the three variables (x, y and colour) in the same data frame (with the same length). 
 
-
-```{r}
-head(measles_dat, 5)
-```
-
-In this case, we can notice that the measles dataset as it is now doesn't contain one of the three variables, the _y_ variable (agggregated number of cases per week, by gender). This means we first need to reformat the dataframe so that it actually contains the three variables we want to plot.
 
 ```{r}
 head(measles_dat, 5)
 ```
 
-To reformat the dataframe we can use various functions explained above from the _dplyr_ package.
+In this case, we can notice that the measles data-set as it is now doesn't contain one of the three variables, the `y` variable (aggregated number of cases per week, by gender). This means we first need to reformat the data frame so that it actually contains the three variables we want to plot.
+
+```{r}
+head(measles_dat, 5)
+```
+
+To reformat the data frame we can use various functions explained above from the `dplyr` package.
 
 ```{r}
 
@@ -590,27 +670,19 @@ head(measles_grouped, 5)
 Once the data frame is ready, plotting is very easy
 
 ```{r}
-
-
 ggplot(data = measles_grouped) +
   geom_line(aes(x = date_of_rash, y = cases, colour = gender))
-
-
-  
-   
-
 
 ```
 
 
-#### Modifying the theme and defaults visualisation
+-  Modifying the theme and defaults visualisation
 
-By default  ggplot makes many decition for us, such as the colours used, the size of the lines, the font size, etc. Sometimes we may want to change them to improve the  visualisation.
+By default  ggplot makes many Decisions for us, such as the colours used, the size of the lines, the font size, etc. Sometimes we may want to change them to improve the  visualisation.
 
-Here there is an example of an alternative way to present the exact same data. You can try and mofify some of the lines in order to understand which is the effect of each of the instructions.
+Here there is an example of an alternative way to present the exact same data. You can try and modify some of the lines in order to understand which is the effect of each of the instructions.
 
 ```{r}
-
 
 p <- ggplot(data = measles_grouped, 
        aes(x = date_of_rash, y = cases, fill = gender)) +
@@ -627,28 +699,29 @@ p
 
 ```
 
-Finally, ggplot has a very useful feature that allows you to simply add moficiations on top of a ggplot object. For instance, we decided we want to change the title and the colour of the gender variable after we have finished the plot. In this case, we don't have to make the plot again. We simply need to add the instruction on top of the previous plot
+Finally, ggplot has a very useful feature that allows you to simply add mortification on top of a ggplot object. For instance, we decided we want to change the title and the colour of the gender variable after we have finished the plot. In this case, we don't have to make the plot again. We simply need to add the instruction on top of the previous plot
 
 
 ```{r}
-
-
 p + ggtitle('another title') +
     scale_fill_manual(values =c('blue', 'lightblue')) 
 
-
 ```
+
+
+\newline
+\newline
 
 # Further learning
 
-In order to apply many of these basic concept to a particular case, I recommend to do the practical "An outbreak of gastroenteritis in Stegen, Germany" from the RECON learn webiste https://www.reconlearn.org/post/stegen.html
+In order to apply many of these basic concept to a particular case, I recommend to do the practical "An outbreak of gastroenteritis in Stegen, Germany" from the RECON learn website https://www.reconlearn.org/post/stegen.html
 
 
 
 # Recommended readings
 
 
-Many materials for this basic R tutorial have been taken from the very famous books by Hadley Wikham which are mostly available online. 
+Many materials for this basic R tutorial have been taken from the very famous books by Hadley Wickham which are mostly available online. 
 
 
 - R for Data Science
@@ -662,10 +735,17 @@ http://adv-r.had.co.nz/
 http://r-pkgs.had.co.nz/
 
 
-
 ## Contributors
 
-- Zulma Cucunuba: initial version
+- Zulma M. Cucunuba: initial version
+
+Contributions are welcome via [pull requests](https://github.com/reconhub/learn/pulls).
+
+
+## Legal stuff
+
+**License**: [CC-BY](https://creativecommons.org/licenses/by/3.0/)
+**Copyright**: Zulma M. Cucunuba, 2019
 
 Contributions are welcome via [pull requests](https://github.com/reconhub/learn/pulls). The source file of this document can be found [**here**](https://raw.githubusercontent.com/reconhub/learn/master/content/post/practical-introR.Rmd).
 
@@ -695,3 +775,4 @@ With the understanding that:
 + Rights other persons may have either in the work itself or in how the work is used, such as publicity or privacy rights.
 + Notice - For any reuse or distribution, you must make clear to others the license terms of this work by keeping together this work and the current license.
 This licence is based on http://creativecommons.org/licenses/by-sa/3.0/
+
