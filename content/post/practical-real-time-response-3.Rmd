@@ -293,6 +293,10 @@ plot(res_basic,
 
 # mutation rate
 plot(res_basic, "mu", burn = 500, type = "density")
+```
+
+
+```{r, ebola_outbreaker_1-net, eval = FALSE}
 
 # transmission trees
 p <- plot(res_basic,
@@ -300,6 +304,15 @@ p <- plot(res_basic,
           burnin = 500,
           min_support = .05) 
 p
+```
+
+```{r, ebola_outbreaker_1-ns, echo = FALSE}
+# transmission trees
+p <- plot(res_basic,
+          type = "network",
+          burnin = 500,
+          min_support = .05) 
+learn::save_and_use_widget(p, "real-time-response-network-1.html")
 
 ```
 
@@ -460,7 +473,7 @@ p <- plot(res_full,
           type = "network",
           burnin = 500,
           min_support = .05) 
-p
+learn::save_and_use_widget(p, 'real-time-response-network-2.html')
 
 ```
 
@@ -558,8 +571,8 @@ p <- plot(cons_tree,
           shapes = c(m = "male", f = "female"),
           node_color = "outcome",
           col_pal = outcome_pal)
-p
 
+learn::save_and_use_widget(p, "real-time-response-network-3.html")
 ```
 
 `epicontacts` can now also display timed transmission trees using the `method =
@@ -597,7 +610,7 @@ q <- plot(cons_tree,
           reverse_node_order = TRUE, ## put large subtrees as the bottom
           ttree_shape = 'branching' ## 
           )
-q
+learn::save_and_use_widget(q, "real-time-response-network-4.html")
 
 ```
 
@@ -613,7 +626,7 @@ cat("
 Now plot the consensus tree, but only including links with more than 30%
 posterior support:
 
-```{r ebola_cons_prune, echo = TRUE}
+```{r ebola_cons_prune, echo = TRUE, eval = FALSE}
 
 r <- plot(cons_tree[, cons_tree$contacts$support > 0.3],
           method = 'ttree', ## show timed tree
@@ -636,6 +649,32 @@ r <- plot(cons_tree[, cons_tree$contacts$support > 0.3],
           reverse_root_order = TRUE ## show earliest nodes at the top
           )
 r
+
+```
+
+```{r ebola_cons_prune, echo = FALSE}
+
+r <- plot(cons_tree[, cons_tree$contacts$support > 0.3],
+          method = 'ttree', ## show timed tree
+          x_axis = 't_inf', ## use 't_inf' column for x_axis
+          edge_color = "support", ## color edges by posterior support
+          edge_col_pal = support_pal, ## specify color palette 
+          node_size = 'R_i', ## node size reflects R_i
+          ## edge_label = "support",## not showing for readability
+          ## node_shape = "gender", ## not showing for readability
+          ## shapes = c(m = "male", f = "female"), ## specify shapes
+          width = 1000, ## adjust to improve readability
+          height = 1500, ## adjust to improve readability
+          node_color = "outcome", ## color nodes by outcome
+          hide_labels = TRUE, ## don't show node labels
+          date_labels = "%d/%m", ## formatting date labels
+          axis_type = 'double', ## show two axes
+          col_pal = outcome_pal, ## specify color palette
+          unlinked_pos = 'middle', ## show unlinked nodes in the middle
+          root_order = 't_inf', ## order roots by time of infection
+          reverse_root_order = TRUE ## show earliest nodes at the top
+          )
+learn::save_and_use_widget(r, "real-time-response-network-prune.html")
 
 ```
 
