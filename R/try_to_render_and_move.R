@@ -1,14 +1,18 @@
-try_to_render_and_move <- function(rmd, variant, figfile) {
+try_to_render_and_move <- function(rmd, variant, figfile, params) {
 
   cpath <- gsub("\\.Rmd", "_files", rmd)
   spath <- gsub("content", "static", cpath)
   res <- try(rmarkdown::render(rmd,
                                rmarkdown::md_document(variant = variant,
-                                                      preserve_yaml = TRUE ),
-                               envir = new.env()))
+                                                      preserve_yaml = TRUE),
+                               envir = new.env(),
+                               params = params))
   if (inherits(res, "try-error")) {
     return(FALSE)
   }
+  tmpres <- xfun::read_utf8(res)
+  tmpres <- xfun::protect_math(tmpres)
+  res    <- xfun::write_utf8(tmpres, res)
   # If there are any figures, they should be moved into the correct folder
   #
   # Figures from the knitr run

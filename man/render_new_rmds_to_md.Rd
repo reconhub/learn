@@ -5,19 +5,28 @@
 \title{Prep Hugo pages by converting Rmds to Md's}
 \usage{
 render_new_rmds_to_md(dir = "content/post", build = "new", tol = 1,
-  dry_run = FALSE)
+  dry_run = FALSE, params = list(full_version = FALSE))
 }
 \arguments{
-\item{dir}{Directory to search for new Rmds in. Defaults to the blog post location of Hugo.}
+\item{dir}{Directory to search for new Rmds in. Defaults to the blog post
+location of Hugo.}
 
-\item{build}{Selection criteria for which Rmds to convert to md, options are c("all", "old and new", "old", "new")}
+\item{build}{Selection criteria for which Rmds to convert to md, options are
+c("all", "old and new", "old", "new")}
 
-\item{dry_run}{When `TRUE`, targets are printed, but not rendered. Defaults to `FALSE`.}
+\item{dry_run}{When `TRUE`, targets are printed, but not rendered. Defaults
+to `FALSE`.}
 
-\item{when}{`build = "old"` or `build = "old and new"`, this number will avoid re-building md files that are fewer than `tol` seconds old.}
+\item{params}{a list of parameters to be passed to [rmarkdown::render()].
+Defaults to the parameter `full_version = FALSE`, which is used to indicate
+if certain chunks should be displayed.}
+
+\item{when}{`build = "old"` or `build = "old and new"`, this number will
+avoid re-building md files that are fewer than `tol` seconds old.}
 }
 \value{
-Used for pure side effect. If `dry_run = TRUE`, then the list of targets to be rendered will be printed.
+Used for pure side effect. If `dry_run = TRUE`, then the list of
+  targets to be rendered will be printed.
 }
 \description{
 Assumes anything without a corresponding markdown file
