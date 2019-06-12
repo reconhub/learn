@@ -4,7 +4,7 @@ authors: ["Anne Cori", "Natsuko Imai", "Finlay Campbell", "Zhian N. Kamvar", "Th
 categories: ["practicals"]
 topics: ["simulation", "response", "ebola", "epicurve", "reproduction number"]
 date: 2019-06-11
-image: img/highres/ebola-strikes-back.jpg
+image: img/highres/ebola-strikes-back-2.jpg
 slug: real-time-response-2
 showonlyimage: true
 licenses: CC-BY
