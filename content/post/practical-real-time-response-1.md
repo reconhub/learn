@@ -112,15 +112,17 @@ library(here)
 
 ## Early data (reading data into R)
 
-You have been given the following linelist and contact data:
+You have been given the following linelist and contact
+data:
 
-[linelist\_20140701.xlsx](../../linelist_20140701.xlsx): a linelist
-containing case information up to the 1st July 2014; and
+[linelist\_20140701.xlsx](https://github.com/reconhub/learn/raw/master/static/data/linelist_20140701.xlsx):
+a linelist containing case information up to the 1st July 2014;
+and
 
-[contact\_20140701.xlsx](../../contacts/20140701.xlsx): a list of
-contacts reported between cases up to the 1st July 2014. “infector”
-indicates a potential source of infection, and “case\_id” the recipient
-of the contact.
+[contact\_20140701.xlsx](https://github.com/reconhub/learn/raw/master/static/data/contacts/20140701.xlsx):
+a list of contacts reported between cases up to the 1st July 2014.
+“infector” indicates a potential source of infection, and “case\_id”
+the recipient of the contact.
 
 To read into R, download these files and use the function `read_xlsx()`
 from the `readxl` package to import the data. Each import will create a

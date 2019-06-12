@@ -128,7 +128,7 @@ si <- readRDS(here("data/clean/si.rds"))
 ### Importing Whole Genome Sequences (WGS)
 
 WGS have been obtained for all cases in this outbreak. They are stored as a
-`fasta` [wgs_20140707.fasta](../../data/wgs_20140707.fasta). Download this
+`fasta` [wgs_20140707.fasta](https://github.com/reconhub/learn/raw/master/static/data/wgs_20140707.fasta). Download this
 file, save it in your working directory, and then import these data using the
 function `read.FASTA` from the `ape` package. Do the sequence labels match the
 IDs in your cleaned linelist?
