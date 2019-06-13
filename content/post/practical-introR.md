@@ -49,7 +49,8 @@ visit the video made by Thibaut Jombart from RECON
 # Project setup
 
 One of the great advantages of using RStudio is the prossibility of
-using `R.proj` to organise the work space, history and source documents.
+using R Projects (indicated by an `.Rproj` file) to organise the work
+space, history and source documents.
 
 To create this, do the following steps:
 
@@ -178,7 +179,7 @@ dimensions.
 ``` r
 
 vector_example <-1:18
-array_example <- array(data = vector_example, dim = c(2,3,3))
+array_example <- array(data = vector_example, dim = c(2, 3, 3))
 
 dim(array_example)
 ## [1] 2 3 3
@@ -219,7 +220,7 @@ frame coerces the vector to its length.
 ``` r
 
 
-data_example <- data.frame( vector_character,vector_double, vector_logic, vector_integer)
+data_example <- data.frame(vector_character, vector_double, vector_logic, vector_integer)
 ```
 
 To access the general structure of a data frame we use the command `str`
@@ -240,7 +241,7 @@ dimension to columns.
 
 ``` r
 
-data_example[1,2]
+data_example[1, 2]
 ## [1] 1
 ```
 
@@ -333,7 +334,7 @@ body(myfun)
 ##     return(BMI)
 ## }
 environment(myfun)
-## <environment: 0x56400c3bd2d8>
+## <environment: 0x55c28c50c3b0>
 
 myfun(weight = 88, height = 1.78)
 ## [1] 27.77427
@@ -354,7 +355,7 @@ myfun2 <- function(weight,
 { 
   # The body
   BMI      <- weight/(height^2)
-  output <- paste(round(BMI,1), units)
+  output <- paste(round(BMI, 1), units)
   
   return(output) # Retun specification for the output
 }
@@ -386,9 +387,9 @@ The R packages are available on the Comprehensive R Archive Network
 
 The basic commands to basic use of packages
 
-1.  Install a package with the command `install.packages
-    ("package-name")`
-2.  Use them in R with `library ("package-name")`
+1.  Install a package with the command
+    `install.packages("package-name")`
+2.  Use them in R with `library("package-name")`
 
 Let’s install one of the packages from RECON.
 
@@ -418,7 +419,7 @@ looks for it in the global environment.
 <!-- end list -->
 
 ``` r
-mynewfun <- function () {
+mynewfun <- function() {
   z = x + y 
   return(z)
   
@@ -437,7 +438,7 @@ mynewfun()
 <!-- end list -->
 
 ``` r
-mynewfun <- function (xx) {
+mynewfun <- function(xx) {
   zz = xx + yy 
   return(zz)
   
@@ -1028,7 +1029,7 @@ Let’s open and explore a data-set that is imported from excel
 
 For example this data-set from our RECON practical on early outbreak
 analysis: -
-[PHM-EVD-linelist-2017-10-27.xlsx](static/data/PHM-EVD-contacts-2017-10-27.xlsx):
+[PHM-EVD-linelist-2017-10-27.xlsx](../../data/PHM-EVD-contacts-2017-10-27.xlsx):
 
 Then, lets save this data-set in the same directory we are currently
 working.
@@ -1039,7 +1040,7 @@ library as it is not a core tidyverse package.
 
 ``` r
 library(readxl)
-dat <- read_excel("data/PHM-EVD-linelist-2017-10-27.xlsx")
+dat <- read_excel(here("data/PHM-EVD-linelist-2017-10-27.xlsx"))
 ```
 
 Here, we will take a look at some of the most used functions from
@@ -1071,7 +1072,7 @@ glimpse(dat)
 ## $ sex     <chr> "female", "male", "male", "male", "female", "female", "f…
 ## $ age     <dbl> 62, 28, 54, 57, 23, 66, 13, 10, 34, 11, 23, 23, 9, 68, 3…
 
-dat %>% arrange (age)
+dat %>% arrange(age)
 ## # A tibble: 50 x 4
 ##    case_id onset               sex      age
 ##    <chr>   <dttm>              <chr>  <dbl>
@@ -1086,7 +1087,7 @@ dat %>% arrange (age)
 ##  9 af0ac0  2017-10-21 00:00:00 male      10
 ## 10 778316  2017-11-04 00:00:00 female    10
 ## # … with 40 more rows
-dat %>% mutate (fecha_inicio_sintomas = onset)
+dat %>% mutate(fecha_inicio_sintomas = onset)
 ## # A tibble: 50 x 5
 ##    case_id onset               sex      age fecha_inicio_sintomas
 ##    <chr>   <dttm>              <chr>  <dbl> <dttm>               
@@ -1102,7 +1103,7 @@ dat %>% mutate (fecha_inicio_sintomas = onset)
 ## 10 601d2e  2017-10-22 00:00:00 male      11 2017-10-22 00:00:00  
 ## # … with 40 more rows
 
-dat %>% rename (edad = age)
+dat %>% rename(edad = age)
 ## # A tibble: 50 x 4
 ##    case_id onset               sex     edad
 ##    <chr>   <dttm>              <chr>  <dbl>
@@ -1163,7 +1164,7 @@ slice(dat, 10:15)
 ## 4 e37897  2017-10-28 00:00:00 female     9
 ## 5 f658bc  2017-10-28 00:00:00 male      68
 ## 6 a8e9d8  2017-10-29 00:00:00 female    37
-dat[10:15,]
+dat[10:15, ]
 ## # A tibble: 6 x 4
 ##   case_id onset               sex      age
 ##   <chr>   <dttm>              <chr>  <dbl>
@@ -1249,14 +1250,15 @@ Example:
 
 malaria <- tibble(
   name = letters[1:10],
-  age = round(rnorm(10, 30, 10),0),
+  age = round(rnorm(10, 30, 10), 0),
   gender = rep(c('f', 'm'), 5),
-  infection = rep(c('falciparum', 'vivax', 'vivax', 'vivax', 'vivax'), 2)) 
+  infection = rep(c('falciparum', 'vivax', 'vivax', 'vivax', 'vivax'), 2)
+  ) 
 glimpse(malaria)
 ## Observations: 10
 ## Variables: 4
 ## $ name      <chr> "a", "b", "c", "d", "e", "f", "g", "h", "i", "j"
-## $ age       <dbl> 20, 27, 32, 18, 27, 44, 27, 33, 17, 21
+## $ age       <dbl> 42, 35, 22, 51, 41, 47, 15, 20, 37, 29
 ## $ gender    <chr> "f", "m", "f", "m", "f", "m", "f", "m", "f", "m"
 ## $ infection <chr> "falciparum", "vivax", "vivax", "vivax", "vivax", "fal…
 
@@ -1264,16 +1266,16 @@ malaria %>% spread(key = 'infection', gender)
 ## # A tibble: 10 x 4
 ##    name    age falciparum vivax
 ##    <chr> <dbl> <chr>      <chr>
-##  1 a        20 f          <NA> 
-##  2 b        27 <NA>       m    
-##  3 c        32 <NA>       f    
-##  4 d        18 <NA>       m    
-##  5 e        27 <NA>       f    
-##  6 f        44 m          <NA> 
-##  7 g        27 <NA>       f    
-##  8 h        33 <NA>       m    
-##  9 i        17 <NA>       f    
-## 10 j        21 <NA>       m
+##  1 a        42 f          <NA> 
+##  2 b        35 <NA>       m    
+##  3 c        22 <NA>       f    
+##  4 d        51 <NA>       m    
+##  5 e        41 <NA>       f    
+##  6 f        47 m          <NA> 
+##  7 g        15 <NA>       f    
+##  8 h        20 <NA>       m    
+##  9 i        37 <NA>       f    
+## 10 j        29 <NA>       m
 ```
 
 # ggplot2
@@ -1297,14 +1299,14 @@ should be mapped (x, y) to color, size, etc
 
 ### Basic functions in ggplot
 
-`ggplo()` is the core function in ggplot2. The basic argument of the
+`ggplot()` is the core function in ggplot2. The basic argument of the
 function is the data frame we want to plot (data).
 
 `ggplot(data)` then can be associated using the symbol `+` to other type
 of functions the *geoms* that will draw a particular type of shape. Some
 of the most commonly used are:
 
-`_geom_points()` : for points
+`geom_point()` : for points
 
 `geom_line()` : for lines
 
@@ -1379,7 +1381,8 @@ from the `dplyr` package.
 measles_grouped <- measles_dat %>% 
   mutate(cases = 1) %>%
   filter(!(is.na(gender))) %>%
-  group_by(date_of_rash, gender) %>% summarise(cases = n())
+  group_by(date_of_rash, gender) %>% 
+  summarise(cases = n())
 
 head(measles_grouped, 5)
 ## # A tibble: 5 x 3
@@ -1415,15 +1418,16 @@ which is the effect of each of the instructions.
 ``` r
 
 p <- ggplot(data = measles_grouped, 
-       aes(x = date_of_rash, y = cases, fill = gender)) +
-  geom_bar(stat= 'identity', colour = 'black', alpha = 0.5) +
-  facet_wrap (~ gender, nrow = 2) +
-  xlab ('Date of onset')   + ylab ('measles cases') +
+            aes(x = date_of_rash, y = cases, fill = gender)) +
+  geom_bar(stat = 'identity', colour = 'black', alpha = 0.5) +
+  facet_wrap(~ gender, nrow = 2) +
+  xlab('Date of onset') + 
+  ylab('measles cases') +
+  ggtitle('Measles Cases in Hagelloch (Germany) in 1861') +
   theme(strip.background = element_blank(),
         strip.text.x = element_blank()) +
-  ggtitle('Measles Cases in Hagelloch (Germany) in 1861') +
   theme(legend.position = c(0.9, 0.2))  +
-    scale_fill_manual(values =c('purple', 'green')) 
+  scale_fill_manual(values =c('purple', 'green')) 
 
 p
 ```

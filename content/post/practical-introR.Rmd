@@ -45,8 +45,8 @@ library(tidyverse)
 
 ```
 
-\newline
-\newline
+
+
 
 # Introduction
 
@@ -54,7 +54,7 @@ library(tidyverse)
 This tutorial is part of the pre-course materials of a "Short Course on Outbreak Analysis and Modelling for Public Health". The aim is to introduce students to the very basic concepts of R and R Studio, in order to get some baseline knowledge in R and R programming. 
 
 
-\newline
+
 
 # Installing R and R Studio
 
@@ -72,11 +72,11 @@ For a very detailed explanation on how to install R and R Studio, please visit t
 https://www.youtube.com/watch?v=LbezGA_Yle8
 
 
-\newline
+
 
 # Project setup
 
-One of the great advantages of using RStudio is the prossibility of using `R.proj` to organise the work space, history and source documents.
+One of the great advantages of using RStudio is the prossibility of using R Projects (indicated by an `.Rproj` file) to organise the work space, history and source documents.
 
 To create this, do the following steps:
 
@@ -94,7 +94,7 @@ In the end, your project should look something like this image
 ![Screenshot R Project](../../img/screenshots/Rproject.png)
 
 
-\newline
+
 
 # Structures in R
 
@@ -142,7 +142,7 @@ typeof(vector_integer)
 
 ```
 
-\newline
+
 
 ### Matrices
 
@@ -184,7 +184,7 @@ matrix_of_int
 ```
 
 
-\newline
+
 ### Arrays
 
 Array is a special type of matrix, where there is more than two dimensions (n dimensions).
@@ -200,7 +200,7 @@ In turn, the `dim` argument of an array is composed of three arguments being: 1)
 ```{r}
 
 vector_example <-1:18
-array_example <- array(data = vector_example, dim = c(2,3,3))
+array_example <- array(data = vector_example, dim = c(2, 3, 3))
 
 dim(array_example)
 array_example
@@ -208,7 +208,7 @@ array_example
 ```
 
 
-\newline
+
 ### Dataframes
 
 A `data.frame` is a heterogeneous and bi dimensional structure, similar but not exactly equal to a matrix. Unlike a matrix, various types of vectors can be part of a single data frame.
@@ -220,7 +220,7 @@ Data frames do not allow vectors with different lengths. When the length of the 
 ```{r}
 
 
-data_example <- data.frame( vector_character,vector_double, vector_logic, vector_integer)
+data_example <- data.frame(vector_character, vector_double, vector_logic, vector_integer)
 
 ```
 
@@ -237,12 +237,12 @@ To access the different components of the data frame we use this syntax `[,]` wh
 
 ```{r}
 
-data_example[1,2]
+data_example[1, 2]
 
 ```
 
 
-\newline
+
 ### Lists
 
 A `list` is the most complex structure in base R. A list cab be composed of any type of other structures of any dimension.
@@ -265,14 +265,14 @@ list_example[1]
 
 
 
-\newline
-\newline
+
+
 
 # Functions
 
 A function is one of the structures that makes *R* a very powerful platform for programming. 
 
-\newline
+
 There are various types of functions
 
 _Primitive or base functions_: these are the default functions in _R_ under the _base package_. For instance, for basic arithmetic operations, but also for more complex operations such as extraction of median values `median`, or even more complex like `summary` of a variable.
@@ -284,7 +284,7 @@ _Primitive or base functions_: these are the default functions in _R_ under the 
 
 
 
-\newline
+
 
 The basic components of a function are:
 
@@ -300,7 +300,7 @@ The basic components of a function are:
 *function internal environment*: means the specific rules and objects within a function. Those rules and objects will not work outside the function. 
 
 
-\newline
+
 
 -  User-built function (example 1)
 
@@ -330,7 +330,7 @@ myfun(weight = 88, height = 1.78)
 
 
 ```
-\newline
+
 
 
 - User-built function (example 2)
@@ -347,7 +347,7 @@ myfun2 <- function(weight,
 { 
   # The body
   BMI      <- weight/(height^2)
-  output <- paste(round(BMI,1), units)
+  output <- paste(round(BMI, 1), units)
   
   return(output) # Retun specification for the output
 }
@@ -360,8 +360,8 @@ myfun2(weight = 8800, height = 178, units = 'g/cm2')
 
 ```
 
-\newline
-\newline
+
+
 
 # R packages
 
@@ -377,8 +377,8 @@ The R packages are available on the Comprehensive R Archive Network (CRAN) https
 
 The basic commands to basic use of packages
 
-1. Install a package with the command `install.packages ("package-name")`
-2. Use them in R with `library ("package-name")`
+1. Install a package with the command `install.packages("package-name")`
+2. Use them in R with `library("package-name")`
 
 
 Let's install one of the packages from RECON.
@@ -394,8 +394,8 @@ Library is a directory containing installed packages. We can use `lapply(.libPat
 An important part of a package is the documentation. This is stored in the `vignettes`. To access the basic documentation on a package we can use `browseVignettes("incidence")`
 
 
-\newline
-\newline
+
+
 
 # Scoping and Environments
 
@@ -404,7 +404,7 @@ Wen we create a function, a new environment is created. This is important becaus
 - Example of a function which objects are only avalible in th eglobal environment
 
 ```{r}
-mynewfun <- function () {
+mynewfun <- function() {
   z = x + y 
   return(z)
   
@@ -418,12 +418,12 @@ mynewfun()
 ```
 
 
-\newline
+
 
 - Example of a function which objects are defined partically in the local environment and in the global envoronment
 
 ```{r}
-mynewfun <- function (xx) {
+mynewfun <- function(xx) {
   zz = xx + yy 
   return(zz)
   
@@ -436,9 +436,6 @@ mynewfun(xx = 4)
 
 This characteristic of R is very important when running any analysis or routine. It is always recommended NOT to use elements within a function that are only available in the global environment.
 
-
-\newline
-\newline
 
 # Working with probability distributions
 
@@ -461,15 +458,10 @@ Many distributions are part of the `stats` package that comes by default with R 
 ```{r, echo=FALSE, eval=TRUE}
 
 dis <- read_excel(here("static/data/distributions.xlsx"))
-  kable(dis) %>%
-    kable_styling(bootstrap_options = "striped", full_width = FALSE)
+kable(dis) %>%
+  kable_styling(bootstrap_options = "striped", full_width = FALSE)
 
 ```
-
-
-
-\newline
-\newline
 
 # Create and open datasets
 
@@ -491,11 +483,11 @@ library(tidyverse)
 ```
 
 
-\newline
+
 Let's open and explore a data-set that is imported from excel
 
 For example this data-set from our RECON practical on early outbreak analysis:
-- [PHM-EVD-linelist-2017-10-27.xlsx](static/data/PHM-EVD-contacts-2017-10-27.xlsx):
+- [PHM-EVD-linelist-2017-10-27.xlsx](../../data/PHM-EVD-contacts-2017-10-27.xlsx):
 
 Then, lets save this data-set in the same directory we are currently working.
 
@@ -503,7 +495,7 @@ For importing data-sets from excel we can use the library `readxl` which is link
 
 ```{r, eval=FALSE}
 library(readxl)
-dat <- read_excel("data/PHM-EVD-linelist-2017-10-27.xlsx")
+dat <- read_excel(here("data/PHM-EVD-linelist-2017-10-27.xlsx"))
 
 ```
 
@@ -538,10 +530,10 @@ From the package  `dyplr`, the most common functions are:
 ```{r}
 glimpse(dat)
 
-dat %>% arrange (age)
-dat %>% mutate (fecha_inicio_sintomas = onset)
+dat %>% arrange(age)
+dat %>% mutate(fecha_inicio_sintomas = onset)
 
-dat %>% rename (edad = age)
+dat %>% rename(edad = age)
 glimpse(dat)
 
 dat %>% group_by(sex) %>% summarise(number = n())
@@ -552,7 +544,7 @@ select(dat, starts_with("date"))
 select(dat, ends_with("loc"))
 
 slice(dat, 10:15)
-dat[10:15,]
+dat[10:15, ]
 
 filter(dat, sex == "female", age <= 30)
 
@@ -584,9 +576,10 @@ Example:
 
 malaria <- tibble(
   name = letters[1:10],
-  age = round(rnorm(10, 30, 10),0),
+  age = round(rnorm(10, 30, 10), 0),
   gender = rep(c('f', 'm'), 5),
-  infection = rep(c('falciparum', 'vivax', 'vivax', 'vivax', 'vivax'), 2)) 
+  infection = rep(c('falciparum', 'vivax', 'vivax', 'vivax', 'vivax'), 2)
+  ) 
 glimpse(malaria)
 
 malaria %>% spread(key = 'infection', gender)
@@ -597,8 +590,8 @@ malaria %>% spread(key = 'infection', gender)
 ```
 
 
-\newline
-\newline
+
+
 
 # ggplot2
 
@@ -617,11 +610,11 @@ _coodinate system_
 
 ### Basic functions in ggplot
 
-`ggplo()` is the core function in ggplot2. The basic argument of the function is the data frame we want to plot (data).
+`ggplot()` is the core function in ggplot2. The basic argument of the function is the data frame we want to plot (data).
 
 `ggplot(data)` then can be associated using the symbol `+` to other type of functions the _geoms_ that will  draw a particular type of shape. Some of the most commonly used are:
 
-`_geom_points()` : for points 
+`geom_point()` : for points 
 
 `geom_line()`    : for lines 
 
@@ -661,7 +654,8 @@ To reformat the data frame we can use various functions explained above from the
 measles_grouped <- measles_dat %>% 
   mutate(cases = 1) %>%
   filter(!(is.na(gender))) %>%
-  group_by(date_of_rash, gender) %>% summarise(cases = n())
+  group_by(date_of_rash, gender) %>% 
+  summarise(cases = n())
 
 head(measles_grouped, 5)
 
@@ -686,15 +680,16 @@ Here there is an example of an alternative way to present the exact same data. Y
 ```{r}
 
 p <- ggplot(data = measles_grouped, 
-       aes(x = date_of_rash, y = cases, fill = gender)) +
-  geom_bar(stat= 'identity', colour = 'black', alpha = 0.5) +
-  facet_wrap (~ gender, nrow = 2) +
-  xlab ('Date of onset')   + ylab ('measles cases') +
+            aes(x = date_of_rash, y = cases, fill = gender)) +
+  geom_bar(stat = 'identity', colour = 'black', alpha = 0.5) +
+  facet_wrap(~ gender, nrow = 2) +
+  xlab('Date of onset') + 
+  ylab('measles cases') +
+  ggtitle('Measles Cases in Hagelloch (Germany) in 1861') +
   theme(strip.background = element_blank(),
         strip.text.x = element_blank()) +
-  ggtitle('Measles Cases in Hagelloch (Germany) in 1861') +
   theme(legend.position = c(0.9, 0.2))  +
-    scale_fill_manual(values =c('purple', 'green')) 
+  scale_fill_manual(values =c('purple', 'green')) 
 
 p
 
@@ -710,8 +705,8 @@ p + ggtitle('another title') +
 ```
 
 
-\newline
-\newline
+
+
 
 # Further learning
 
