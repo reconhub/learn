@@ -5,17 +5,30 @@
 #' then converts these md files to html on the site. Use the
 #' preview option in Rstudio to quickly see how your md has worked.
 #'
-#' @param dir Directory to search for new Rmds in. Defaults to the blog post location of Hugo.
-#' @param build Selection criteria for which Rmds to convert to md, options are c("all", "old and new", "old", "new")
-#' @param when `build = "old"` or `build = "old and new"`, this number will avoid re-building md files that are fewer than `tol` seconds old. 
-#' @param dry_run When `TRUE`, targets are printed, but not rendered. Defaults to `FALSE`.
+#' @param dir Directory to search for new Rmds in. Defaults to the blog post
+#'   location of Hugo.
 #'
-#' @return Used for pure side effect. If `dry_run = TRUE`, then the list of targets to be rendered will be printed.
+#' @param build Selection criteria for which Rmds to convert to md, options are
+#'   c("all", "old and new", "old", "new")
+#'
+#' @param when `build = "old"` or `build = "old and new"`, this number will
+#'   avoid re-building md files that are fewer than `tol` seconds old. 
+#'
+#' @param dry_run When `TRUE`, targets are printed, but not rendered. Defaults
+#'   to `FALSE`.
+#'
+#' @param params a list of parameters to be passed to [rmarkdown::render()].
+#'   Defaults to the parameter `full_version = FALSE`, which is used to indicate
+#'   if certain chunks should be displayed.
+#'
+#' @return Used for pure side effect. If `dry_run = TRUE`, then the list of
+#'   targets to be rendered will be printed.
 #' @export
 render_new_rmds_to_md <- function(dir = "content/post", 
                                   build = "new",
                                   tol = 1,
-                                  dry_run = FALSE) {
+                                  dry_run = FALSE,
+                                  params = list(full_version = FALSE)) {
   match.arg(build, c("all", "old and new", "old", "new"))
   root    <- rprojroot::has_file("DESCRIPTION")
   content <- root$find_file(dir)
@@ -59,33 +72,6 @@ render_new_rmds_to_md <- function(dir = "content/post",
     }
     for (b in to_build) {
       try_to_render_and_move(b, variant, figfile)
-    #   rmd   <- b
-    #   cpath <- gsub("\\.Rmd", "_files", rmd)
-    #   spath <- gsub("content", "static", cpath)
-    #   res <- try(rmarkdown::render(rmd,
-    #                     rmarkdown::md_document(variant = variant,
-    #                                            preserve_yaml = TRUE ),
-    #                     envir = new.env()))
-    #   if (inherits(res, "try-error")) {
-    #     next
-    #   }
-    #   # If there are any figures, they should be moved into the correct folder
-    #   #
-    #   # Figures from the knitr run
-    #   source_figs <- fs::path(cpath, figfile)
-    #   # Where the figures should be
-    #   site_figs   <- fs::path(cpath, figfile)
-    #   
-    #   if (fs::dir_exists(source_figs)) {
-    #     # create the output directory if it doesn't exist
-    #     if (!fs::dir_exists(site_figs)) {
-    #       fs::dir_create(site_figs)
-    #     }
-    #     # Move the files
-    #     fs::file_move(fs::dir_ls(source_figs), fs::path(site_figs))
-    #   }
-    # 
-    # }
     }
   } else {
     message("Nothing to build, all .md up-to-date")

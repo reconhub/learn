@@ -1,6 +1,7 @@
 public/*
 *_cache*
 *~
+*.swp
 .Rhistory
 .Rproj.user
 public

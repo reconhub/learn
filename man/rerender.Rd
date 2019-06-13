@@ -4,12 +4,17 @@
 \alias{rerender}
 \title{Re-build an MD file for hugo}
 \usage{
-rerender(rmd = NULL, dir = "content/post")
+rerender(rmd = NULL, dir = "content/post", params = list(full_version
+  = FALSE))
 }
 \arguments{
 \item{rmd}{the name of an md file you want to rebuild.}
 
 \item{dir}{Directory to search for new Rmds in. Defaults to the blog post location of Hugo.}
+
+\item{params}{a list of parameters to be passed to [rmarkdown::render()].
+Defaults to the parameter `full_version = FALSE`, which is used to indicate
+if certain chunks should be displayed.}
 }
 \value{
 Used for pure side effect
