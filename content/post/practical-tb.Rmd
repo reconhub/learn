@@ -1,6 +1,18 @@
 ---
 title: "TB: exploring the case of TB elimination with a simple compartmental model"
+author: Juan F. Vesga
+authors: ["Vesga, Juan"]
+categories: ["practicals"]
+topics: ["tuberculosis"]
 date: 2019-06-13
+image: img/highres/m-tuberculosis.jpg
+showonlyimage: true
+licenses: CC-BY
+always_allow_html: yes
+output: 
+  md_document:
+    variant: markdown_github
+    preserve_yaml: true
 ---
 
 ```{r setup, include=FALSE}
