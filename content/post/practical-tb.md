@@ -1,6 +1,6 @@
 ---
 title: "TB: exploring the case of TB elimination with a simple compartmental model"
-output: html_document
+date: 2019-06-13
 ---
 
 Ending Tuberculosis (TB) and elimination are terms now more present than ever in the Global Health agenda. Is it achievable? how and when could this happen?. All this is yet uncertain, and an ongoing discussion in the field. In this practical, we intend to illustrate important concepts of TB epidemiology by setting up a simple compartmental model and trying to assess what would be required to End TB goals as set by WHO and/or elimination thresholds.

@@ -1,6 +1,6 @@
 ---
 title: "TB: exploring the case of TB elimination with a simple compartmental model"
-output: html_document
+date: 2019-06-13
 ---
 
 ```{r setup, include=FALSE}
