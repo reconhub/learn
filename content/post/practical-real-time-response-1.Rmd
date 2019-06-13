@@ -48,6 +48,12 @@ reconstruction using outbreaker2 ([part 3](./real-time-response-3.html)).
 # linelist_20140701$outcome[linelist_20140701$date_of_outcome > threshold_date] <- NA
 # linelist_20140701$date_of_outcome[linelist_20140701$date_of_outcome > threshold_date] <- NA
 # write.csv(linelist_20140701, "data/linelist_20140701.csv", row.names = FALSE) # then manually change to excel file
+# ### NOTE FROM ZNK (2019-06-13)
+# # Opening this file in excel to convert to an excel document caused two case
+# # ids to be interpreted as numbers: 700e84 and 8940e5. It's actually a pretty
+# # good example to use for highlighting the errors of excel, but a better way
+# # to preserve these tags would be to use the rio package:
+# # rio::export(data, 'path/to/file.xlsx')
 # 
 # contacts_20140701 <- data$contacts
 # contacts_20140701 <- contacts_20140701[!(is.na(match(contacts_20140701$case_id, linelist_20140701$case_id)) | is.na(match(contacts_20140701$infector, linelist_20140701$case_id))), ]
