@@ -54,8 +54,7 @@ space, history and source documents.
 
 To create this, do the following steps:
 
-1)  Open RStudio and on the top right corner find *New Project*
-
+1)  Open RStudio and on the top right corner find *New Project*  
 2)  Create a new RStudio project in a new directory that you can call
     “introR”
 
@@ -74,7 +73,6 @@ According to Hadley Wickham, in his Advanced R book
 \[<http://adv-r.had.co.nz/>\], there are two types of structures in R:
 
   - Homogeneous: atomic vectors (1d), matrices (2d) and arrays (nd)
-
   - Heterogeneous: data frames and lists
 
 ### Atomic vectors
@@ -83,11 +81,8 @@ These are the most basic structures in R and have only one dimension
 (1d):
 
   - Double (numeric)
-
   - Logic
-
   - Character
-
   - Integer
 
 <!-- end list -->
@@ -123,18 +118,16 @@ Matrices are structures a bit more complex than vectors, with two main
 characteristics:
 
   - A matrix is composed of only one type of vector
-
   - A matrix has only one dimension
 
 A command to build a `matrix` uses three arguments:
 
-`data` corresponds to the list of vectors we want to use in the matrix
-
-`nrow` the number of rows where the data is gonna be split (first
-dimension)
-
-`ncol` the number of columns where the data is gonna be split (second
-dimension)
+  - `data` corresponds to the list of vectors we want to use in the
+    matrix
+  - `nrow` the number of rows where the data is gonna be split (first
+    dimension)
+  - `ncol` the number of columns where the data is gonna be split
+    (second dimension)
 
 By default the matrix is filled by column, unless we specify otherwise
 using `byrow = TRUE`
@@ -288,24 +281,20 @@ a package.
 
 The basic components of a function are:
 
-*name*: this is the name that we give to our function (for example:
-`myfun`)
+  - *name*: this is the name that we give to our function (for example:
+    `myfun`)
+  - *formals or arguments*: these are the series of elements that
+    control how to call the function.
+  - *body*: this is the series of operations or modifications on my
+    arguments.
+  - *output*: this is the results after modifying the arguments. If this
+    output corresponds to a series of data we can extract it using the
+    command `return`.
+  - *function internal environment*: means the specific rules and
+    objects within a function. Those rules and objects will not work
+    outside the function.
 
-*formals or arguments*: these are the series of elements that control
-how to call the function.
-
-*body*: this is the series of operations or modifications on my
-arguments.
-
-*output*: this is the results after modifying the arguments. If this
-output corresponds to a series of data we can extract it using the
-command `return`.
-
-*function internal environment*: means the specific rules and objects
-within a function. Those rules and objects will not work outside the
-function.
-
-  - User-built function (example 1)
+## User-built function (example 1)
 
 Let’s build a function that calculates our Body Mass Index (BMI)
 
@@ -334,13 +323,13 @@ body(myfun)
 ##     return(BMI)
 ## }
 environment(myfun)
-## <environment: 0x55c28c50c3b0>
+## <environment: 0x55d5cd596718>
 
 myfun(weight = 88, height = 1.78)
 ## [1] 27.77427
 ```
 
-  - User-built function (example 2)
+## User-built function (example 2)
 
 Let’s build a function that has default values, in this case we don’t
 need to specify always some of the arguments as they can be set as by
@@ -413,7 +402,7 @@ important because within a function R look for the elements within the
 function but if the element doesn’t exist within the function then R
 looks for it in the global environment.
 
-  - Example of a function which objects are only avalible in th eglobal
+  - Example of a function which objects are only avalible in the global
     environment
 
 <!-- end list -->
@@ -464,14 +453,11 @@ For example for a normal distribution
 
 To explore the arguments in a function we use `?dnorm`
 
-`dnorm` = density function with default arguments `(x, mean = 0, sd = 1,
-log = FALSE)`
-
-`pnorm` gives the distribution function
-
-`qnorm` gives the quantile function
-
-`rnorm` generates random deviates
+  - `dnorm` = density function with default arguments `(x, mean = 0, sd
+    = 1, log = FALSE)`
+  - `pnorm` gives the distribution function
+  - `qnorm` gives the quantile function
+  - `rnorm` generates random deviates
 
 Many distributions are part of the `stats` package that comes by default
 with R such as the *uniform*, *poisson* and *binomial*, among others.
@@ -1009,9 +995,7 @@ sources of data sets:
 
   - Data-set imported as such (from `.xlsx`, `.csv`, `.stata`, or `.RDS`
     formats, among many others)
-
   - Data-set that is part of a R package
-
   - Data-set created in our R session
 
 # Tidyverse
@@ -1052,16 +1036,14 @@ emphasize a sequence of actions on an object.
 
 From the package `dyplr`, the most common functions are:
 
-`glimpse`: allows a rapid exploration of a data-set
+  - `glimpse`: allows a rapid exploration of a data-set
+  - `arrange`: arranges the data-set by the value of a particular
+    variable if numeric, or by alphabetic order if it is a character.
+  - `mutate`: allows generate a new variable
+  - `rename`: allows change a variable’s name
+  - `summarise`: reduces the dimension of a data-set
 
-`arrange`: arranges the data-set by the value of a particular variable
-if numeric, or by alphabetic order if it is a character.
-
-`mutate`: allows generate a new variable
-
-`rename`: allows change a variable’s name
-
-`summarise`: reduces the dimension of a data-set
+<!-- end list -->
 
 ``` r
 glimpse(dat)
@@ -1242,7 +1224,8 @@ tail(measles_dat)
 
 From the package `tidyr`, the most common functions are:
 
-`gather`: makes wide data `spread`: makes long data
+  - `gather`: makes wide data
+  - `spread`: makes long data
 
 Example:
 
@@ -1258,7 +1241,7 @@ glimpse(malaria)
 ## Observations: 10
 ## Variables: 4
 ## $ name      <chr> "a", "b", "c", "d", "e", "f", "g", "h", "i", "j"
-## $ age       <dbl> 42, 35, 22, 51, 41, 47, 15, 20, 37, 29
+## $ age       <dbl> 12, 33, 14, 24, 33, 44, 17, 44, 31, 18
 ## $ gender    <chr> "f", "m", "f", "m", "f", "m", "f", "m", "f", "m"
 ## $ infection <chr> "falciparum", "vivax", "vivax", "vivax", "vivax", "fal…
 
@@ -1266,16 +1249,16 @@ malaria %>% spread(key = 'infection', gender)
 ## # A tibble: 10 x 4
 ##    name    age falciparum vivax
 ##    <chr> <dbl> <chr>      <chr>
-##  1 a        42 f          <NA> 
-##  2 b        35 <NA>       m    
-##  3 c        22 <NA>       f    
-##  4 d        51 <NA>       m    
-##  5 e        41 <NA>       f    
-##  6 f        47 m          <NA> 
-##  7 g        15 <NA>       f    
-##  8 h        20 <NA>       m    
-##  9 i        37 <NA>       f    
-## 10 j        29 <NA>       m
+##  1 a        12 f          <NA> 
+##  2 b        33 <NA>       m    
+##  3 c        14 <NA>       f    
+##  4 d        24 <NA>       m    
+##  5 e        33 <NA>       f    
+##  6 f        44 m          <NA> 
+##  7 g        17 <NA>       f    
+##  8 h        44 <NA>       m    
+##  9 i        31 <NA>       f    
+## 10 j        18 <NA>       m
 ```
 
 # ggplot2
@@ -1286,49 +1269,41 @@ ggplot2 book that “the grammar is a mapping from data to aesthetic
 attributes (colour, shape, size) of geometric objects (points, lines,
 bars)”.
 
-The main components of a ggplot2 plot are: *data frame*
+The main components of a ggplot2 plot are:
 
-*aesthesic mappings* this refers to the indications on how the data
-should be mapped (x, y) to color, size, etc
+  - *data frame*
+  - *aesthesic mappings* this refers to the indications on how the data
+    should be mapped (x, y) to color, size, etc
+  - *geoms* refers to geometric objects such as points, lines, shapes
+  - *facets* for conditional plots
+  - *coodinate system*
 
-*geoms* refers to geometric objects such as points, lines, shapes
-
-*facets* for conditional plots
-
-*coodinate system*
-
-### Basic functions in ggplot
+## Basic functions in ggplot
 
 `ggplot()` is the core function in ggplot2. The basic argument of the
-function is the data frame we want to plot (data).
+function is the data frame we want to plot (data). `ggplot(data)` then
+can be associated using the symbol `+` to other type of functions the
+*geoms* that will draw a particular type of shape. Some of the most
+commonly used are:
 
-`ggplot(data)` then can be associated using the symbol `+` to other type
-of functions the *geoms* that will draw a particular type of shape. Some
-of the most commonly used are:
-
-`geom_point()` : for points
-
-`geom_line()` : for lines
-
-`geom_bar()` : for bar charts
-
-`geom_histogram()`: for histograms
+  - `geom_point()` : for points
+  - `geom_line()` : for lines
+  - `geom_bar()` : for bar charts
+  - `geom_histogram()`: for histograms
 
 All these commands will use the same syntax for the aesthetics `(x, y,
 colour, fill, shape)`.
 
-#### GGplot example with the measles dataset
+### GGplot example with the measles dataset
 
 Let’s use the measles data-set from the `outbreaks` package that we had
 imported above. In this case we want to make a graph that display a the
 time-series of cases by week coloured by gender, so we have to define
 that:
 
-`x` = time
-
-`y` = aggregated number of cases by week and gender
-
-`colour` = gender
+  - `x` = time
+  - `y` = aggregated number of cases by week and gender
+  - `colour` = gender
 
 An important thing to be aware is that for a single instruction in
 ggplot, it will only use variables that belong to the same data-set. So,
@@ -1462,9 +1437,7 @@ Many materials for this basic R tutorial have been taken from the very
 famous books by Hadley Wickham which are mostly available online.
 
   - R for Data Science <https://r4ds.had.co.nz/index.html>
-
   - Advanced R <http://adv-r.had.co.nz/>
-
   - R packages <http://r-pkgs.had.co.nz/>
 
 ## Contributors
