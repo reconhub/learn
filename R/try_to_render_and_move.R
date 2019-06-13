@@ -18,7 +18,7 @@ try_to_render_and_move <- function(rmd, variant, figfile, params) {
   # Figures from the knitr run
   source_figs <- fs::path(cpath, figfile)
   # Where the figures should be
-  site_figs   <- fs::path(cpath, figfile)
+  site_figs   <- fs::path(spath, figfile)
 
   if (fs::dir_exists(source_figs)) {
     # create the output directory if it doesn't exist
