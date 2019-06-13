@@ -72,7 +72,7 @@ as follows:
 # install.packages("distcrete")
 # install.packages("epitrix")
 # remotes::install_github("annecori/EpiEstim")
-# install.packages("projections")
+# remotes::install_github("reconhub/projections")
 # install.packages("ggplot2")
 # install.packages("magrittr")
 # install.packages("binom")
@@ -179,14 +179,6 @@ stored in the object `si`.
 
 How are the generation time and serial interval related? How might they
 differ?
-
-  - the generation time is the delay between infection times of
-    transmission pairs, whereas the serial interval is the delay between
-    times of symptom onset
-  - the serial interval captures the delay between infection times *and*
-    the delays from infection times to symptom onset
-  - the serial interval distribution therefore generally has a larger
-    variance than the generation time distribution
 
 The incubation period can be estimated from the linelist data by
 calculating the delay between dates of symptom onset and dates of
@@ -403,19 +395,6 @@ p
 Explain briefly what each of these plots shows, and what (if any)
 conclusions can be drawn from them.
 
-  - The `alpha` plot shows the posterior probability of one case
-    infecting another. Some ancestries are clearly well resolved (large
-    circles), whereas others are not. The clustering of circles into
-    rectangles suggests there are clusters of unresolved cases (in this
-    case, the genetically identical cases)
-  - The `t_inf` plot shows the posterior distribution of infection
-    times. For most cases, this distribution is quite flat
-  - The `mu` plot simply shows the posterior distribution of mutation
-    rate estimates. It is unimodal around 6e-6
-  - The `network` plot shows a network of likely infectious
-    relationships between cases. You can see the clustering of cases
-    that correspond to genetically identical cases.
-
 As a further help for interpretation, you can derive a consensus tree
 from the posterior samples of trees using `summary`. Look in particular
 at the *support* column.
@@ -455,11 +434,6 @@ hist(smry_basic$tree$support, col = "grey", border = "white",
 How would you interpret this result? How well resolved is the
 transmission tree?
 
-  - The tree is fairly poorly resolved, as most ancestries have \<0.5
-    posterior support
-  - The genetic data can resolve the outbreak into clusters of identical
-    cases, but not beyond that
-
 As a point of comparison, repeat the same analysis using temporal data
 only, and plot a graph of ancestries (`type = "alpha"`); you should
 obtain something along the lines of:
@@ -498,15 +472,6 @@ hist(smry_time$tree$support, col = "grey", border = "white",
 
 What is the usefulness of temporal and genetic data for outbreak
 reconstruction? What other data would you ideally include?
-
-  - Temporal data is not very informative (especially if the generation
-    time and incubation period distributions are flat)
-  - Genetic data is more informative, but it depends on how large the
-    clusters of genetically identical cases are.
-  - Complex evolutionary behaviour will also make genetic data less
-    informative.
-  - Other data: contact tracing, location data, covariates such as age,
-    sex, occupation.
 
 ### Adding contact data to the reconstruction process
 
@@ -615,27 +580,6 @@ How would you interpret the results? Compare the results to those using
 temporal data only, or temporal and genetic data. Can we always rely on
 contact data to estimate who infected whom?
 
-  - Contact data clearly resolves additional transmission pairs
-  - However, we only have 59 contacts in an outbreak of ~160 cases; many
-    ancestries remain unresolved
-  - The network plot shows the same results; we still have clusters of
-    genetically identical cases with no contact data to further resolve
-    them
-  - Infection times estimates have not improved much; we haven’t
-    integrated information on the timing of contacts to improve these
-    estimates
-  - Contact data will not always be informative of transmission events:
-      - in a very mixed group of people (i.e. a classroom where all
-        children have been in contact with each other), many contacts
-        exist between non-transmission pairs; this makes the contact
-        data less ‘specific’ to transmission events
-      - for diseases with long incubation periods, it can be difficult
-        to narrow down when infection occured and know which contacts
-        are epidemiologically relevant
-      - contact tracing is resource intensive and can be inaccurate
-        (e.g. people giving false information); quality and quantity of
-        the data is not always assured
-
 Now make a new `epicontacts` object to visualise the consensus tree with
 meta-information. First convert the index labels in the consensus tree
 to the case IDs in linelist. Also include the estimated infection time
@@ -728,12 +672,6 @@ q
 
 Are there any conclusions can you draw from these figures?
 
-  - Perhaps some evidence for superspreading events (e.g. 11f8ea,
-    9f6884, 0f58c4, f547d6); these largely capture the patterns we saw
-    in the contact data
-  - No noticeable correlation with recovery status or gender (you can
-    check this by colouring by gender or setting the shape to gender)
-
 Now plot the consensus tree, but only including links with more than 30%
 posterior support:
 
@@ -771,12 +709,3 @@ r
 
 Do you think we can reliably answer the question of who infected whom in
 this outbreak? How can we improve our estimates?
-
-  - Though support for some ancestries is high, the overall outbreak is
-    still not very well resolved — Especially the more recent cases are
-    poorly resolved, which are of the most interest
-  - More contact data would be useful (currently only have 60 reported
-    contacts, whereas we already have genetic data and dates of sampling
-    for all cases)
-  - Integrate other types of data (i.e. location, covariates such as
-    age, gender, occupation, etc.)

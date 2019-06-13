@@ -209,32 +209,9 @@ summary(as.numeric(linelist_clean$date_of_hospitalisation - linelist_clean$date_
     ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
     ##    0.00    1.00    2.00    3.53    5.00   22.00
 
-  - Assuming that cases are only ever reported on or after
-    hospitalisation, we see that it takes on average 4 days for cases to
-    be hospitalised, but up to 22 days, so delays in reporting can be
-    long, and it’s sensible to assume that the last 2-3 weeks of data
-    are likely to be incomplete.
-
-  - Exponential growth is observed only up until early to early to
-    mid-June
-
-  - This is likely due to the delay between onset and reporting. This
-    means that the cases with most recent onset have not been reported
-    and are missing from the linelist
-
-  - This can result in potentially erroneous interpretation of the
-    recent trends in incidence when just looking at the epicurve.
-
-<!-- end list -->
-
 ``` r
 # how many weeks should we discard at the end of the epicurve
 n_weeks_to_discard <- 
-```
-
-``` r
-# how many weeks should we discard at the end of the epicurve
-n_weeks_to_discard <- 2
 ```
 
 ``` r
@@ -252,11 +229,6 @@ i_daily_trunc <- subset(i_daily,
 
 Refit and plot your log-linear model as before but using the truncated
 data `i_weekly_trunc`.
-
-``` r
-f <- incidence::fit(i_weekly_trunc)
-f
-```
 
     ## <incidence_fit object>
     ## 
@@ -278,10 +250,6 @@ f
     ## [1,] 10.82034 22.06609
     ## 
     ##   $pred: data.frame of incidence predictions (11 rows, 5 columns)
-
-``` r
-plot(i_weekly_trunc, fit = f)
-```
 
 ![](practical-real-time-response-2_files/figure-gfm/fit_truncated-1.png)<!-- -->
 
@@ -330,17 +298,6 @@ Although the log-linear is a simple and quick method for early epidemic
 assessment, care must be taken to only fit to the point that there is
 epidemic growth. Note that it may be difficult to define this point.
 
-  - The log-linear model can’t be readily applied if there are days with
-    no cases as you can’t take the log of 0. Here we have aggregated to
-    weekly data to avoid this issue, and have set weeks with 0 cases to
-    NA so they are ignored in the analysis.
-  - Here we had quite a few weeks of data to work with but early on in
-    an outbreak a similar analysis may lead to very uncertain estimates
-    of the growth rate and doubling time due to small sample size.
-  - If data on reporting delays had been available, a more informed
-    decision about the number of weeks/days to discard could have been
-    made.
-
 ## Contact Tracing - Looking at contacts
 
 Contact tracing is one of the pillars of an Ebola outbreak response.
@@ -355,16 +312,7 @@ still be valid.
 
 Using the function `make_epicontacts` in the `epicontacts` package,
 create a new `epicontacts` object called `epi_contacts`. Make sure you
-check the column names of the relevant `to` and `from`
-arguments.
-
-``` r
-epi_contacts <- make_epicontacts(linelist = linelist, contacts = contacts, 
-                                 id = "case_id", # name of identifier in linelist
-                                 from = "infector", # name of 'from' col in the contacts
-                                 to = "case_id",  # name of 'to' col in the contacts
-                                 directed = TRUE)
-```
+check the column names of the relevant `to` and `from` arguments.
 
 ``` r
 epi_contacts
@@ -442,10 +390,6 @@ Using the function `match` (see `?match`) check that the visualised
 contacts are indeed
     cases.
 
-``` r
-match(contacts$case_id, linelist$case_id)
-```
-
     ##  [1]   2   5   8  14  15  16  18  20  21  22  24  25  26  27  30  33  37
     ## [18]  38  40  46  48  51  58  59  62  64  68  69  70  71  73  75  79  84
     ## [35]  86  88  90  94  95  96  98 103 108 115 116 122 126 131 133 142 145
@@ -455,13 +399,8 @@ Once you are happy that these are all indeed cases, look at the network:
 
   - does it look like there is super-spreading (heterogeneous
     transmission)?
-
   - looking at the gender of the cases, can you deduce anything from
     this? Are there any visible differences by gender?
-
-  - There seems to be some superspreading, with some cases coming from a
-    single case (11f8ea infecting 5 other individuals. There does not
-    seem to be any immediate differences between the gender of cases
 
 ## Estimating transmissibility (`$R$`)
 
@@ -594,16 +533,6 @@ compare it to actual estimates from the West African EVD outbreak (WHO
 Ebola Response Team (2014) NEJM 371:1481–1495) with a mean of 15.3 days
 and a standard deviation 9.3 days?
 
-  - skewed distribution with much shorter mean than estimated in NEJM
-    371:1481–1495
-  - large majority of pairs have SI \<15 days
-  - cases may remember more precisely their recent exposures which may
-    lead to underestimation of the serial interval
-  - when estimating the serial interval in real-time, longer serial
-    intervals may not yet have been observed because of right censoring
-  - this estimate is based on few observations so there is uncertainty
-    on the serial interval estimates
-
 ### Estimation of the Reproduction Number
 
 Now that we have estimates of the serial interval, we can use this
@@ -638,11 +567,6 @@ R <- # use estimate_R using method = "parametric_si"
 plot(R, legend = FALSE)  
 ```
 
-``` r
-R <- estimate_R(i_daily_trunc, method = "parametric_si", config = config)
-plot(R, legend = FALSE)
-```
-
 ![](practical-real-time-response-2_files/figure-gfm/calc_R-1.png)<!-- -->
 
     ## TableGrob (3 x 1) "arrange": 3 grobs
@@ -672,11 +596,6 @@ Interpret these results: what do you make of the reproduction number?
 What does it reflect? Based on the last part of the epicurve, some
 colleagues suggest that incidence is going down and the outbreak may be
 under control. What is your opinion on this?
-
-  - Note that these results are highly dependent on the estimated serial
-    interval - a higher mean SI will lead to higher R estimates.
-  - The results will also be sensitive to the number of data points
-    discarded towards the end of the available data.
 
 Note that you could have estimated R0 directly from the growth rate and
 the serial interval, using the formula described in Wallinga and
@@ -772,14 +691,6 @@ as.matrix(small_proj)
     ## 2014-06-26    3    6    5   10    3
     ## 2014-06-27    4    3    8   10    5
 
-  - You can either use a single value R for the entire trajectory
-    (R\_fix\_within = TRUE) or resample R at each time step
-    (R\_fix\_within = FALSE).
-  - `R_fix_within = TRUE` means that the trajectory is associated with a
-    single R value and easier to understand
-  - It also gives more extreme values of R and more conservative
-    projections
-
 Using the same principle, generate 1,000 trajectories for the next 2
 weeks, using a range of plausible values of `$R$`.  
 The posterior distribution of R is gamma distributed (see Cori et
@@ -806,15 +717,6 @@ abline(v = R_CrI, col = "red", lty = 2) # show the 95%CrI of R as red dashed ver
 ![](practical-real-time-response-2_files/figure-gfm/sampling_posterior_R-1.png)<!-- -->
 
 Store the results of your new projections in an object called `proj`.
-
-``` r
-proj <- project(x = i_daily_trunc, 
-                R = R_sample, # now using a sample of R values
-                si = si, 
-                n_sim = 1000, 
-                n_days = 14, # project over 2 weeks
-                R_fix_within = TRUE)
-```
 
 You can visualise the projections as
 follows:
@@ -908,27 +810,10 @@ apply(apply(proj, 2, cumsum), 1, summary) # projected cumulative number of cases
                                           # the next two weeks
 ```
 
-  - `apply(proj, 1, summary)` shows a summary of incidence on each day
-  - `apply(proj, 1, function(x) mean(x > 0))` shows the proportion of
-    trajectories with at least one case on each given day
-  - `apply(proj, 1, mean)` shows the mean daily number of cases
-  - `apply(apply(proj, 2, cumsum), 1, summary)` shows the projected
-    additional cumulative number of cases in the next two weeks
-
 According to these results, what are the chances that more cases will
 appear in the near future? Is this outbreak being brought under control?
 Would you recommend scaling up / down the response? Is this consistent
 with your estimate of `$R$`?
-
-  - the uncertainty is wide and becomes wider the further into the
-    future.
-  - the central trend suggests increasing number of cases
-  - this is based on the assumption that transmissibility has remained
-    constant over the course of the outbreak so far and will remain
-    constant in the future
-  - all this relies on our estimated serial interval distribution—a
-    higher mean SI would lead to larger R estimates and therefore more
-    pessimistic incidence projections.
 
 ## Pause \!
 
@@ -1099,24 +984,12 @@ config = make_config(list(mean_si = si_fit$mu, std_si = si_fit$sd))
 Rt <-         # use estimate_R using method = "parametric_si"
   
 # look at the most recent Rt estimates:
-tail(Rt$R[,c("t_start", "t_end", "Median(R)", 
+tail(Rt$R[, c("t_start", "t_end", "Median(R)", 
              "Quantile.0.025(R)", "Quantile.0.975(R)")])
-```
-
-``` r
-Rt <- estimate_R(incid = i_daily_trunc,      # incidence object
-                 method = "parametric_si",   # use parametric serial interval
-                 config = config)            # config specified above
 ```
 
     ## Default config will estimate R on weekly sliding windows.
     ##     To change this change the t_start and t_end arguments.
-
-``` r
-# look at the most recent Rt estimates:
-tail(Rt$R[,c("t_start", "t_end", "Median(R)", 
-             "Quantile.0.025(R)", "Quantile.0.975(R)")])
-```
 
     ##    t_start t_end Median(R) Quantile.0.025(R) Quantile.0.975(R)
     ## 60      61    67 1.2417304         0.8144152          1.797603
@@ -1155,14 +1028,8 @@ Rt_whole_incid <-             # use estimate_R using method = "parametric_si",
                               # the same config as above but i_daily instead of i_daily_trunc
   
 # look at the most recent Rt estimates:
-tail(Rt_whole_incid$R[,c("t_start", "t_end", 
+tail(Rt_whole_incid$R[, c("t_start", "t_end", 
                          "Median(R)", "Quantile.0.025(R)", "Quantile.0.975(R)")])  
-```
-
-``` r
-Rt_whole_incid <- estimate_R(incid = i_daily, 
-                             method = "parametric_si", 
-                             config = config) 
 ```
 
     ## Default config will estimate R on weekly sliding windows.
@@ -1171,11 +1038,6 @@ Rt_whole_incid <- estimate_R(incid = i_daily,
     ## Warning in estimate_R_func(incid = incid, method = method, si_sample = si_sample, : You're estimating R too early in the epidemic to get the desired
     ##             posterior CV.
 
-``` r
-tail(Rt_whole_incid$R[,c("t_start", "t_end", 
-                         "Median(R)", "Quantile.0.025(R)", "Quantile.0.975(R)")])  
-```
-
     ##    t_start t_end Median(R) Quantile.0.025(R) Quantile.0.975(R)
     ## 74      75    81 1.2330741         0.8412787         1.7310657
     ## 75      76    82 1.0008292         0.6564151         1.4488601
@@ -1183,12 +1045,6 @@ tail(Rt_whole_incid$R[,c("t_start", "t_end",
     ## 77      78    84 0.8202251         0.5158976         1.2258508
     ## 78      79    85 0.7452526         0.4566772         1.1356909
     ## 79      80    86 0.5146158         0.2811874         0.8515131
-
-``` r
-# the above incorrectly infers that the recent transmissibility is <1
-```
-
-  - the above assumes constant R within sliding time-window
 
 ## Save data and outputs
 

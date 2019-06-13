@@ -81,12 +81,12 @@ analysis. Install necessary packages as follows:
 # install.packages("distcrete")
 # install.packages("epitrix")
 # remotes::install_github("annecori/EpiEstim")
-# install.packages("projections")
+# remotes::install_github("reconhub/projections")
 # install.packages("ggplot2")
 # install.packages("magrittr")
 # install.packages("binom")
 # install.packages("ape")
-# remotes::install_github("finlaycampbell/outbreaker2") # [on CRAN soon]
+# install.packages("outbreaker2")
 # install.packages("here")
 ```
 
@@ -146,10 +146,6 @@ song-and-dance to appease the directory gods.
 linelist <- read_excel(here("data/linelist_20140701.xlsx"), na = c("", "NA"))
 ```
 
-``` r
-contacts <- read_excel(here("data/contacts_20140701.xlsx"), na = c("", "NA"))
-```
-
 Take some time to look at the data and structure here.
 
   - Are the data and format similar to linelists that you have seen in
@@ -159,15 +155,7 @@ Take some time to look at the data and structure here.
 
 <!-- end list -->
 
-``` r
-dim(linelist)
-```
-
     ## [1] 169  11
-
-``` r
-head(linelist)
-```
 
     ## # A tibble: 6 x 11
     ##   case_id generation date_of_infecti… date_of_onset date_of_hospita…
@@ -181,9 +169,6 @@ head(linelist)
     ## # … with 6 more variables: date_of_outcome <chr>, outcome <chr>,
     ## #   gender <chr>, hospital <chr>, lon <dbl>, lat <dbl>
 
-  - You may want to also collect data on date of report, age, household
-    identifier, occupation, etc.
-
 Note that for further analyses, you will need to make sure that all
 dates as stored correctly as `Date` objects. You can do this by using
 the function `as.Date`, for
@@ -191,12 +176,6 @@ example:
 
 ``` r
 linelist$date_of_onset <- as.Date(linelist$date_of_onset, format = "%Y-%m-%d")
-```
-
-``` r
-linelist$date_of_infection <- as.Date(linelist$date_of_infection, format = "%Y-%m-%d")
-linelist$date_of_hospitalisation <- as.Date(linelist$date_of_hospitalisation, format = "%Y-%m-%d")
-linelist$date_of_outcome <- as.Date(linelist$date_of_outcome, format = "%Y-%m-%d")
 ```
 
 The formatted data should then look like:
@@ -231,10 +210,6 @@ Look more closely at the data contained in this `linelist`.
 
 <!-- end list -->
 
-``` r
-head(linelist)
-```
-
     ## # A tibble: 6 x 11
     ##   case_id generation date_of_infecti… date_of_onset date_of_hospita…
     ##   <chr>        <dbl> <date>           <date>        <date>          
@@ -246,10 +221,6 @@ head(linelist)
     ## 6 49731d           0 2014-03-19       2014-04-25    2014-05-02      
     ## # … with 6 more variables: date_of_outcome <date>, outcome <chr>,
     ## #   gender <chr>, hospital <chr>, lon <dbl>, lat <dbl>
-
-``` r
-names(linelist)
-```
 
     ##  [1] "case_id"                 "generation"             
     ##  [3] "date_of_infection"       "date_of_onset"          
@@ -274,17 +245,7 @@ mistakes
 linelist[mistakes, ]
 ```
 
-``` r
-## identify mistakes in data entry (negative incubation period)
-mistakes <- which(linelist$date_of_onset <= linelist$date_of_infection)
-mistakes
-```
-
     ## [1]  46  63 110
-
-``` r
-linelist[mistakes, ] # show just the first few entries where there is negative or 0 incubation times.
-```
 
     ## # A tibble: 3 x 11
     ##   case_id generation date_of_infecti… date_of_onset date_of_hospita…
@@ -303,10 +264,6 @@ linelist_clean <- linelist[-mistakes, ]
 
 What other negative dates or mistakes might you want to check if you had
 the full dataset?
-
-  - You may want to see if there are mistakes including but not
-    restricted to: i) negative symptom onset to hospitalisation or
-    outcome delays and ii) spelling errors such as hospital and names
 
 ## Calculating the case fatality ratio (CFR)
 
@@ -334,11 +291,6 @@ cfr_with_CI <- binom.confint(n_dead, n_known_outcome, method = "exact")
 cfr_wrong_with_CI <- binom.confint(n_dead, n_all, method = "exact")
 ```
 
-  - Not properly accounting for the cases with unknown outcome status
-    typically leads to underestimation of the CFR. This is particularly
-    problematic early on in an outbreak where the final status of a
-    large proportion of cases has not yet been observed.
-
 ## Looking at incidence curves
 
 The first question we want to know is simply: how bad is it?. The first
@@ -349,10 +301,6 @@ onset.
 Using the package `incidence`, compute the daily incidence from the
 `linelist_clean` based on the dates of symptom onset. Store the result
 in an object called i\_daily; the result should look like:
-
-``` r
-i_daily <- incidence(linelist_clean$date_of_onset) # daily incidence
-```
 
 ``` r
 i_daily
@@ -380,13 +328,6 @@ However close inspection of the linelist shows that the last date in the
 linelist (of any entry) is in fact a bit later (1st July 2014). You can
 use the argument `last_date` in the `incidence` function to change this.
 
-``` r
-#extend last date:
-i_daily <- incidence(linelist_clean$date_of_onset, 
-                     last_date = as.Date(max(linelist_clean$date_of_hospitalisation, na.rm = TRUE)))
-i_daily
-```
-
     ## <incidence object>
     ## [166 cases from days 2014-04-07 to 2014-07-01]
     ## 
@@ -396,10 +337,6 @@ i_daily
     ## $interval: 1 day
     ## $timespan: 86 days
     ## $cumulative: FALSE
-
-``` r
-plot(i_daily, border = "black")
-```
 
 ![](practical-real-time-response-1_files/figure-gfm/update_last_date-1.png)<!-- -->
 

@@ -599,7 +599,7 @@ config = make_config(list(mean_si = si_fit$mu, std_si = si_fit$sd))
 Rt <-         # use estimate_R using method = "parametric_si"
   
 # look at the most recent Rt estimates:
-tail(Rt$R[,c("t_start", "t_end", "Median(R)", 
+tail(Rt$R[, c("t_start", "t_end", "Median(R)", 
              "Quantile.0.025(R)", "Quantile.0.975(R)")])
 ```
 
@@ -609,7 +609,7 @@ Rt <- estimate_R(incid = i_daily_trunc,      # incidence object
                  config = config)            # config specified above
 
 # look at the most recent Rt estimates:
-tail(Rt$R[,c("t_start", "t_end", "Median(R)", 
+tail(Rt$R[, c("t_start", "t_end", "Median(R)", 
              "Quantile.0.025(R)", "Quantile.0.975(R)")])
 ```
 
@@ -627,7 +627,7 @@ Rt_whole_incid <-             # use estimate_R using method = "parametric_si",
                               # the same config as above but i_daily instead of i_daily_trunc
   
 # look at the most recent Rt estimates:
-tail(Rt_whole_incid$R[,c("t_start", "t_end", 
+tail(Rt_whole_incid$R[, c("t_start", "t_end", 
                          "Median(R)", "Quantile.0.025(R)", "Quantile.0.975(R)")])  
 
 ```
@@ -637,7 +637,7 @@ Rt_whole_incid <- estimate_R(incid = i_daily,
                              method = "parametric_si", 
                              config = config) 
 
-tail(Rt_whole_incid$R[,c("t_start", "t_end", 
+tail(Rt_whole_incid$R[, c("t_start", "t_end", 
                          "Median(R)", "Quantile.0.025(R)", "Quantile.0.975(R)")])  
 # the above incorrectly infers that the recent transmissibility is <1
 ```

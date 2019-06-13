@@ -99,12 +99,12 @@ Install necessary packages as follows:
 # install.packages("distcrete")
 # install.packages("epitrix")
 # remotes::install_github("annecori/EpiEstim")
-# install.packages("projections")
+# remotes::install_github("reconhub/projections")
 # install.packages("ggplot2")
 # install.packages("magrittr")
 # install.packages("binom")
 # install.packages("ape")
-# remotes::install_github("finlaycampbell/outbreaker2") # [on CRAN soon]
+# install.packages("outbreaker2")
 # install.packages("here")
 ```
 

@@ -71,7 +71,7 @@ You should have installed them in [part 1](./real-time-response-1.html) and [par
 # install.packages("distcrete")
 # install.packages("epitrix")
 # remotes::install_github("annecori/EpiEstim")
-# install.packages("projections")
+# remotes::install_github("reconhub/projections")
 # install.packages("ggplot2")
 # install.packages("magrittr")
 # install.packages("binom")
