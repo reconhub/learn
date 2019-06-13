@@ -21,7 +21,7 @@ hugo serve -D
 
 This *RECON learn* website uses [R Markdown](http://rmarkdown.rstudio.com/) (`.Rmd`) documents to build markdown (`.md`) content that [Hugo](https://gohugo.io) then turns into a nifty website (`.html`).
 
-For practical details, head out to [this step-by-step tutorial about creating posts](https://reconlearn.netlify.com/post/post-creation.html).
+For practical details, head out to [this step-by-step tutorial about creating posts](https://reconlearn.org/post/tutorial-post-creation.html).
 
 ## Other topics
 

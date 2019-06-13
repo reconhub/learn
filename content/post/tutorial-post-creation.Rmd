@@ -114,9 +114,58 @@ You can load packages or use functions via the typical methods `library("tidyver
 
 This means you do not need to have mandatory install statements - you can make these `eval=FALSE`.
 
-### Storing images
+### Storing and reading data
 
-The **image** will be the image associated with the document on the website. We try using natural, high-resolution, evocative images having a link, if only figurative, with the topic covered. These images are stored in `static/img/highres/`. Do not forget to add and push this file as well, as it will be required for your post to be successfully integrated. The path to the file provided in the header assumes `static/` as root folder (see example above), so that the right path will look like: `img/highres/your-image.jpg`.
+If you have external example data you want to show users, you should store it
+in the `static/data` directory. If it's more than 5MB, consider storing it on
+an exeternal service such as https://osf.io. 
+
+Because the documents are renderd on your machine before they are displayed on
+the website, there is a bit of unfortunate directory juggling that needs to
+happen when you attempt to read in your file.
+
+When you read in a file, you need to refer to the path that's currently on your
+machine. For example, if you wanted to read in a file that the user would have
+in `data/clean/linelist.rds`, you would write it like this:
+
+```{r}
+x <- readRDS(here::here("static/data/clean/linelist.rds"))
+```
+
+Because the readers will not likely have the `static/` directory, you should 
+add `include = FALSE` into the above chunk option and show the next chunk
+*but do not evaluate it*:
+
+```{r eval = FALSE}
+x <- readRDS(here::here("data/clean/linelist.rds"))
+```
+
+### Storing and displaying images
+
+The **image** will be the image associated with the document on the website. We
+try using natural, high-resolution, evocative images having a link, if only
+figurative, with the topic covered. These images are stored in
+`static/img/highres/`. Do not forget to add and push this file as well, as it
+will be required for your post to be successfully integrated. The path to the
+file provided in the header assumes `static/` as root folder (see example
+above), so that the right path will look like: `img/highres/your-image.jpg`.
+
+If you need to refer to a static image such as a screenshot, place it in the 
+appropriate `img/` subdirectory and be sure to commit the file. When you refer
+to your image in your document, you should refer to it using a relative path.
+For example, we would use the following markdown code to refer to the recon logo:
+
+```markdown
+![Logo for the R Epidemics Consortium](../../img/logo/recon.png)
+```
+
+![Logo for the R Epidemics Consortium](../../img/logo/recon.png)
+
+The reason why you need to refer to images two directories up is because the
+post will always live in `content/post/` relative to the root directory (which
+is the `static/` directory when the site is rendered).
+
+Any images that are rendered as part of the practical will auto-populate.
 
 ### Bibliographies
 
@@ -129,9 +178,66 @@ The **`bibliography`** is optional. If provided, it should contain references ci
 If your post features an interactive plot or map, please use the `save_and_use_widget` function.
 
 ```{r map}
-map <- leaflet::leaflet()
+library(leaflet)
+map <- leaflet::leaflet() %>%
+  addTiles() %>%
+  fitBounds(0, 40, 10, 50) %>%
+  addPopups(-93.65, 42.0285, "Here is the <b>Department of Statistics</b>, ISU")
+
 learn::save_and_use_widget(map, "map.html")
 ```
+
+You will very rarely want to actually show the `save_and_use_widget` function to
+the readers of your tutorial or practical. To alleviate this, we suggest to have
+identical chunks, where the first chunk is not evaluated and the second chunk
+is not echoed:
+
+
+````markdown
+<!-- The first part is shown to the reader -->
+
+`r ''````{r map_show, eval = FALSE}
+library(leaflet)
+map <- leaflet::leaflet() %>%
+  addTiles() %>%
+  fitBounds(0, 40, 10, 50) %>%
+  addPopups(-93.65, 42.0285, "Here is the <b>Department of Statistics</b>, ISU")
+
+map
+```
+
+
+<!-- The second part is hidden from the user, but the results are shown -->
+
+`r ''````{r map_eval, echo = FALSE}
+library(leaflet)
+map <- leaflet::leaflet() %>%
+  addTiles() %>%
+  fitBounds(0, 40, 10, 50) %>%
+  addPopups(-93.65, 42.0285, "Here is the <b>Department of Statistics</b>, ISU")
+
+learn::save_and_use_widget(map, "map.html")
+```
+````
+
+### Math
+
+RECONLearn is built via [hugo](https://gohugo.io) on netlify with support for 
+[MathJax](https://mathjax.org), which means that you can include math equations
+with a small catch. Because the RMarkdown pages are first rendered to plain
+markdown on your computer via [pandoc](https://pandoc.org), you must wrap your 
+math equations in backtics or the equations will not render properly.
+
+Take for example this latex equation: `` `$$ I_t  ∼  Poisson(\lambda_t)$$` ``
+
+#### With Backtics
+
+`$$ I_t  ∼  Poisson(\lambda_t)$$`
+
+#### Without Backtics
+
+$$ I_t  ∼  Poisson(\lambda_t)$$
+
 
 ### Be nice
 
