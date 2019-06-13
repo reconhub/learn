@@ -34,9 +34,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(readxl)
 library(here)
-library(kableExtra)
-library(knitr)
-library(readxl)
 library(tidyverse)
 
 ```
@@ -435,13 +432,38 @@ To explore the arguments in a function we use `?dnorm`
 
 Many distributions are part of the `stats` package that comes by default with R such as the _uniform_, _poisson_ and _binomial_, among others. For other less used distributions sometimes you may need to intsall other packages. For a non exaustibe list of the most used distrubutions and their arguments, see the table below:
 
-```{r, echo=FALSE, eval=TRUE}
+<!--
 
-dis <- read_excel(here("static/data/distributions.xlsx"))
-kable(dis) %>%
-  kable_styling(bootstrap_options = "striped", full_width = FALSE)
+ZNK note: This was originally presented in an excel table using kable to
+present as an html table. Unfortunately, the javascript used for protecting
+math was attacking these and creating some truely weird: 
+https://github.com/reconhub/learn/issues/60#issuecomment-501680789
 
-```
+I created this table by using:
+
+    x <- kable(dat, format = "markdown")
+    clipr::write_clip(x)
+
+and then pasting the result here.
+
+-->
+|name              |probability  |quantile     |distribution |random       |
+|:-----------------|:------------|:------------|:------------|:------------|
+|Beta              |`pbeta()`    |`qbeta()`    |`dbeta()`    |`rbeta()`    |
+|Binomial          |`pbinom()`   |`qbinom()`   |`dbinom()`   |`rbinom()`   |
+|Cauchy            |`pcauchy()`  |`qcauchy()`  |`dcauchy()`  |`rcauchy()`  |
+|Chi-Square        |`pchisq()`   |`qchisq()`   |`dchisq()`   |`rchisq()`   |
+|Exponential       |`pexp()`     |`qexp()`     |`dexp()`     |`rexp()`     |
+|Gamma             |`pgamma()`   |`qgamma()`   |`dgamma()`   |`rgamma()`   |
+|Logistic          |`plogis()`   |`qlogis()`   |`dlogis()`   |`rlogis()`   |
+|Log Normal        |`plnorm()`   |`qlnorm()`   |`dlnorm()`   |`rlnorm()`   |
+|Negative Binomial |`pnbinom()`  |`qnbinom()`  |`dnbinom()`  |`rnbinom()`  |
+|Normal            |`pnorm()`    |`qnorm()`    |`dnorm()`    |`rnorm()`    |
+|Poisson           |`ppois()`    |`qpois()`    |`dpois()`    |`rpois()`    |
+|Student's t       |`pt()`       |`qt()`       |`dt()`       |`rt()`       |
+|Uniform           |`punif()`    |`qunif()`    |`dunif()`    |`runif()`    |
+|Weibull           |`pweibull()` |`qweibull()` |`dweibull()` |`rweibull()` |
+
 
 # Create and open datasets
 
@@ -457,7 +479,6 @@ In order to better manage data-sets, we recommend install and use `tidyverse` pa
 
 ```{r, echo = TRUE, include=TRUE, eval= TRUE}
 library(tidyverse)
-
 ```
 
 
@@ -473,6 +494,7 @@ For importing data-sets from excel we can use the library `readxl` which is link
 
 ```{r, eval=FALSE}
 library(readxl)
+library(here)
 dat <- read_excel(here("data/PHM-EVD-linelist-2017-10-27.xlsx"))
 
 ```
@@ -599,10 +621,6 @@ head(measles_dat, 5)
 
 In this case, we can notice that the measles data-set as it is now doesn't contain one of the three variables, the `y` variable (aggregated number of cases per week, by gender). This means we first need to reformat the data frame so that it actually contains the three variables we want to plot.
 
-```{r}
-head(measles_dat, 5)
-```
-
 To reformat the data frame we can use various functions explained above from the `dplyr` package.
 
 ```{r}
@@ -614,8 +632,6 @@ measles_grouped <- measles_dat %>%
   summarise(cases = n())
 
 head(measles_grouped, 5)
-
-
 ```
 
 Once the data frame is ready, plotting is very easy
@@ -680,6 +696,7 @@ Many materials for this basic R tutorial have been taken from the very famous bo
 ## Contributors
 
 - Zulma M. Cucunuba: initial version
+- Zhian N. Kamvar: minor edits
 
 Contributions are welcome via [pull requests](https://github.com/reconhub/learn/pulls).
 
@@ -690,14 +707,6 @@ Contributions are welcome via [pull requests](https://github.com/reconhub/learn/
 **Copyright**: Zulma M. Cucunuba, 2019
 
 Contributions are welcome via [pull requests](https://github.com/reconhub/learn/pulls). The source file of this document can be found [**here**](https://raw.githubusercontent.com/reconhub/learn/master/content/post/practical-introR.Rmd).
-
-
-
-## Legal stuff
-
-**License**: [CC-BY](https://creativecommons.org/licenses/by/3.0/)
-**Copyright**: Zulma Cucunuba, 2019
-
 
 
 **You are free:**

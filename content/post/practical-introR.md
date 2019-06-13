@@ -323,7 +323,7 @@ body(myfun)
 ##     return(BMI)
 ## }
 environment(myfun)
-## <environment: 0x55d5cd596718>
+## <environment: 0x55b0904f8c00>
 
 myfun(weight = 88, height = 1.78)
 ## [1] 27.77427
@@ -463,530 +463,40 @@ Many distributions are part of the `stats` package that comes by default
 with R such as the *uniform*, *poisson* and *binomial*, among others.
 For other less used distributions sometimes you may need to intsall
 other packages. For a non exaustibe list of the most used distrubutions
-and their arguments, see the table
-below:
-
-<table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
-
-<thead>
-
-<tr>
-
-<th style="text-align:left;">
-
-name
-
-</th>
-
-<th style="text-align:left;">
-
-probability
-
-</th>
-
-<th style="text-align:left;">
-
-quantile
-
-</th>
-
-<th style="text-align:left;">
-
-distribution
-
-</th>
-
-<th style="text-align:left;">
-
-randomn
-
-</th>
-
-</tr>
-
-</thead>
-
-<tbody>
-
-<tr>
-
-<td style="text-align:left;">
-
-Beta
-
-</td>
-
-<td style="text-align:left;">
-
-`pbeta`
-
-</td>
-
-<td style="text-align:left;">
-
-`qbeta`
-
-</td>
-
-<td style="text-align:left;">
-
-`dbeta`
-
-</td>
-
-<td style="text-align:left;">
-
-`rbeta`
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:left;">
-
-Binomial
-
-</td>
-
-<td style="text-align:left;">
-
-`pbinom`
-
-</td>
-
-<td style="text-align:left;">
-
-`qbinom`
-
-</td>
-
-<td style="text-align:left;">
-
-`dbinom`
-
-</td>
-
-<td style="text-align:left;">
-
-`rbinom`
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:left;">
-
-Cauchy
-
-</td>
-
-<td style="text-align:left;">
-
-`pcauchy`
-
-</td>
-
-<td style="text-align:left;">
-
-`qcauchy`
-
-</td>
-
-<td style="text-align:left;">
-
-`dcauchy`
-
-</td>
-
-<td style="text-align:left;">
-
-`rcauchy`
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:left;">
-
-Chi-Square
-
-</td>
-
-<td style="text-align:left;">
-
-`pchisq`
-
-</td>
-
-<td style="text-align:left;">
-
-`qchisq`
-
-</td>
-
-<td style="text-align:left;">
-
-`dchisq`
-
-</td>
-
-<td style="text-align:left;">
-
-`rchisq`
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:left;">
-
-Exponential
-
-</td>
-
-<td style="text-align:left;">
-
-`pexp`
-
-</td>
-
-<td style="text-align:left;">
-
-`qexp`
-
-</td>
-
-<td style="text-align:left;">
-
-`dexp`
-
-</td>
-
-<td style="text-align:left;">
-
-`rexp`
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:left;">
-
-Gamma
-
-</td>
-
-<td style="text-align:left;">
-
-`pgamma`
-
-</td>
-
-<td style="text-align:left;">
-
-`qgamma`
-
-</td>
-
-<td style="text-align:left;">
-
-`dgamma`
-
-</td>
-
-<td style="text-align:left;">
-
-`rgamma`
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:left;">
-
-Logistic
-
-</td>
-
-<td style="text-align:left;">
-
-`plogis`
-
-</td>
-
-<td style="text-align:left;">
-
-`qlogis`
-
-</td>
-
-<td style="text-align:left;">
-
-`dlogis`
-
-</td>
-
-<td style="text-align:left;">
-
-`rlogis`
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:left;">
-
-Log Normal
-
-</td>
-
-<td style="text-align:left;">
-
-`plnorm`
-
-</td>
-
-<td style="text-align:left;">
-
-`qlnorm`
-
-</td>
-
-<td style="text-align:left;">
-
-`dlnorm`
-
-</td>
-
-<td style="text-align:left;">
-
-`rlnorm`
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:left;">
-
-Negative Binomial
-
-</td>
-
-<td style="text-align:left;">
-
-`pnbinom`
-
-</td>
-
-<td style="text-align:left;">
-
-`qnbinom`
-
-</td>
-
-<td style="text-align:left;">
-
-`dnbinom`
-
-</td>
-
-<td style="text-align:left;">
-
-`rnbinom`
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:left;">
-
-Normal
-
-</td>
-
-<td style="text-align:left;">
-
-`pnorm`
-
-</td>
-
-<td style="text-align:left;">
-
-`qnorm`
-
-</td>
-
-<td style="text-align:left;">
-
-`dnorm`
-
-</td>
-
-<td style="text-align:left;">
-
-`rnorm`
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:left;">
-
-Poisson
-
-</td>
-
-<td style="text-align:left;">
-
-`ppois`
-
-</td>
-
-<td style="text-align:left;">
-
-`qpois`
-
-</td>
-
-<td style="text-align:left;">
-
-`dpois`
-
-</td>
-
-<td style="text-align:left;">
-
-`rpois`
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:left;">
-
-Student t
-
-</td>
-
-<td style="text-align:left;">
-
-`pt`
-
-</td>
-
-<td style="text-align:left;">
-
-`qt`
-
-</td>
-
-<td style="text-align:left;">
-
-`dt`
-
-</td>
-
-<td style="text-align:left;">
-
-`rt`
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:left;">
-
-Uniform
-
-</td>
-
-<td style="text-align:left;">
-
-`punif`
-
-</td>
-
-<td style="text-align:left;">
-
-`qunif`
-
-</td>
-
-<td style="text-align:left;">
-
-`dunif`
-
-</td>
-
-<td style="text-align:left;">
-
-`runif`
-
-</td>
-
-</tr>
-
-<tr>
-
-<td style="text-align:left;">
-
-Weibull
-
-</td>
-
-<td style="text-align:left;">
-
-`pweibull`
-
-</td>
-
-<td style="text-align:left;">
-
-`qweibull`
-
-</td>
-
-<td style="text-align:left;">
-
-`dweibull`
-
-</td>
-
-<td style="text-align:left;">
-
-`rweibull`
-
-</td>
-
-</tr>
-
-</tbody>
-
-</table>
+and their arguments, see the table below:
+
+<!--
+
+ZNK note: This was originally presented in an excel table using kable to
+present as an html table. Unfortunately, the javascript used for protecting
+math was attacking these and creating some truely weird: 
+https://github.com/reconhub/learn/issues/60#issuecomment-501680789
+
+I created this table by using:
+
+    x <- kable(dat, format = "markdown")
+    clipr::write_clip(x)
+
+and then pasting the result here.
+
+-->
+
+| name              | probability  | quantile     | distribution | random       |
+| :---------------- | :----------- | :----------- | :----------- | :----------- |
+| Beta              | `pbeta()`    | `qbeta()`    | `dbeta()`    | `rbeta()`    |
+| Binomial          | `pbinom()`   | `qbinom()`   | `dbinom()`   | `rbinom()`   |
+| Cauchy            | `pcauchy()`  | `qcauchy()`  | `dcauchy()`  | `rcauchy()`  |
+| Chi-Square        | `pchisq()`   | `qchisq()`   | `dchisq()`   | `rchisq()`   |
+| Exponential       | `pexp()`     | `qexp()`     | `dexp()`     | `rexp()`     |
+| Gamma             | `pgamma()`   | `qgamma()`   | `dgamma()`   | `rgamma()`   |
+| Logistic          | `plogis()`   | `qlogis()`   | `dlogis()`   | `rlogis()`   |
+| Log Normal        | `plnorm()`   | `qlnorm()`   | `dlnorm()`   | `rlnorm()`   |
+| Negative Binomial | `pnbinom()`  | `qnbinom()`  | `dnbinom()`  | `rnbinom()`  |
+| Normal            | `pnorm()`    | `qnorm()`    | `dnorm()`    | `rnorm()`    |
+| Poisson           | `ppois()`    | `qpois()`    | `dpois()`    | `rpois()`    |
+| Student’s t       | `pt()`       | `qt()`       | `dt()`       | `rt()`       |
+| Uniform           | `punif()`    | `qunif()`    | `dunif()`    | `runif()`    |
+| Weibull           | `pweibull()` | `qweibull()` | `dweibull()` | `rweibull()` |
 
 # Create and open datasets
 
@@ -1024,6 +534,7 @@ library as it is not a core tidyverse package.
 
 ``` r
 library(readxl)
+library(here)
 dat <- read_excel(here("data/PHM-EVD-linelist-2017-10-27.xlsx"))
 ```
 
@@ -1049,10 +560,10 @@ From the package `dyplr`, the most common functions are:
 glimpse(dat)
 ## Observations: 50
 ## Variables: 4
-## $ case_id <chr> "39e9dc", "664549", "b4d8aa", "51883d", "947e40", "9aa19…
-## $ onset   <dttm> 2017-10-10, 2017-10-16, 2017-10-17, 2017-10-18, 2017-10…
-## $ sex     <chr> "female", "male", "male", "male", "female", "female", "f…
-## $ age     <dbl> 62, 28, 54, 57, 23, 66, 13, 10, 34, 11, 23, 23, 9, 68, 3…
+## $ case_id [3m[38;5;246m<chr>[39m[23m "39e9dc", "664549", "b4d8aa", "51883d", "947e40", "9aa19…
+## $ onset   [3m[38;5;246m<dttm>[39m[23m 2017-10-10, 2017-10-16, 2017-10-17, 2017-10-18, 2017-10…
+## $ sex     [3m[38;5;246m<chr>[39m[23m "female", "male", "male", "male", "female", "female", "f…
+## $ age     [3m[38;5;246m<dbl>[39m[23m 62, 28, 54, 57, 23, 66, 13, 10, 34, 11, 23, 23, 9, 68, 3…
 
 dat %>% arrange(age)
 ## # A tibble: 50 x 4
@@ -1241,7 +752,7 @@ glimpse(malaria)
 ## Observations: 10
 ## Variables: 4
 ## $ name      <chr> "a", "b", "c", "d", "e", "f", "g", "h", "i", "j"
-## $ age       <dbl> 12, 33, 14, 24, 33, 44, 17, 44, 31, 18
+## $ age       <dbl> 31, 28, 41, 26, 14, 35, 39, 32, 49, 27
 ## $ gender    <chr> "f", "m", "f", "m", "f", "m", "f", "m", "f", "m"
 ## $ infection <chr> "falciparum", "vivax", "vivax", "vivax", "vivax", "fal…
 
@@ -1249,16 +760,16 @@ malaria %>% spread(key = 'infection', gender)
 ## # A tibble: 10 x 4
 ##    name    age falciparum vivax
 ##    <chr> <dbl> <chr>      <chr>
-##  1 a        12 f          <NA> 
-##  2 b        33 <NA>       m    
-##  3 c        14 <NA>       f    
-##  4 d        24 <NA>       m    
-##  5 e        33 <NA>       f    
-##  6 f        44 m          <NA> 
-##  7 g        17 <NA>       f    
-##  8 h        44 <NA>       m    
-##  9 i        31 <NA>       f    
-## 10 j        18 <NA>       m
+##  1 a        31 f          <NA> 
+##  2 b        28 <NA>       m    
+##  3 c        41 <NA>       f    
+##  4 d        26 <NA>       m    
+##  5 e        14 <NA>       f    
+##  6 f        35 m          <NA> 
+##  7 g        39 <NA>       f    
+##  8 h        32 <NA>       m    
+##  9 i        49 <NA>       f    
+## 10 j        27 <NA>       m
 ```
 
 # ggplot2
@@ -1332,22 +843,6 @@ doesn’t contain one of the three variables, the `y` variable
 need to reformat the data frame so that it actually contains the three
 variables we want to plot.
 
-``` r
-head(measles_dat, 5)
-##   case_ID infector date_of_prodrome date_of_rash date_of_death age gender
-## 1       1       45       1861-11-21   1861-11-25          <NA>   7      f
-## 2       2       45       1861-11-23   1861-11-27          <NA>   6      f
-## 3       3      172       1861-11-28   1861-12-02          <NA>   4      f
-## 4       4      180       1861-11-27   1861-11-28          <NA>  13      m
-## 5       5       45       1861-11-22   1861-11-27          <NA>   8      f
-##   family_ID class complications x_loc y_loc
-## 1        41     1           yes 142.5 100.0
-## 2        41     1           yes 142.5 100.0
-## 3        41     0           yes 142.5 100.0
-## 4        61     2           yes 165.0 102.5
-## 5        42     1           yes 145.0 120.0
-```
-
 To reformat the data frame we can use various functions explained above
 from the `dplyr` package.
 
@@ -1378,7 +873,7 @@ ggplot(data = measles_grouped) +
   geom_line(aes(x = date_of_rash, y = cases, colour = gender))
 ```
 
-![](practical-introR_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
+![](practical-introR_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
   - Modifying the theme and defaults visualisation
 
@@ -1407,7 +902,7 @@ p <- ggplot(data = measles_grouped,
 p
 ```
 
-![](practical-introR_files/figure-gfm/unnamed-chunk-27-1.png)<!-- -->
+![](practical-introR_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
 
 Finally, ggplot has a very useful feature that allows you to simply add
 mortification on top of a ggplot object. For instance, we decided we
@@ -1422,7 +917,7 @@ p + ggtitle('another title') +
 ## which will replace the existing scale.
 ```
 
-![](practical-introR_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
+![](practical-introR_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
 
 # Further learning
 
@@ -1443,6 +938,7 @@ famous books by Hadley Wickham which are mostly available online.
 ## Contributors
 
   - Zulma M. Cucunuba: initial version
+  - Zhian N. Kamvar: minor edits
 
 Contributions are welcome via [pull
 requests](https://github.com/reconhub/learn/pulls).
@@ -1456,11 +952,6 @@ Contributions are welcome via [pull
 requests](https://github.com/reconhub/learn/pulls). The source file of
 this document can be found
 [**here**](https://raw.githubusercontent.com/reconhub/learn/master/content/post/practical-introR.Rmd).
-
-## Legal stuff
-
-**License**: [CC-BY](https://creativecommons.org/licenses/by/3.0/)
-**Copyright**: Zulma Cucunuba, 2019
 
 **You are free:**
 
