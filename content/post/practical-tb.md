@@ -308,7 +308,7 @@ out  <- get_intervention(xstart, params, NA, times, NA, NA, TB.Basic,
 out$lines
 ```
 
-![](practical-tb_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](practical-tb_files/figure-gfm/practical-tb-10-1.png)<!-- -->
 
 We have produced and incidence trajectory for a system that seems to be
 in endemic equilibrium. What does this mean?
@@ -318,16 +318,11 @@ means for an epidemic to achieve an endemic equilibrium?**
 
 **5) Making use of concepts from your previous lectures, can you think
 of a simple mathematical expression for the endemic equilibrium in terms
-of the basic reproduction number (\(R_0\))
-?**
+of the basic reproduction number (\(R_0\)) ?**
 
 <!-- --- -->
 
 <!-- #### *Answer* -->
-
-<!-- 4) Briefly, an epidemic reaches an endemic equilibrium when the average number of secondary infections at time *t* is equal to 1, this is, when the net reproduction number is equal to one. -->
-
-<!-- 5) `\(R_0*S = 1\)`, *where S is the fraction of population susceptible at time t*    -->
 
 <!-- --- -->
 
@@ -339,24 +334,11 @@ infections.
 
 **6) Can you think of at least two factors specific to the natural
 history of TB that can complicate our interpretation of \(R_0\) and
-\(R_t\)
-?**
+\(R_t\) ?**
 
 -----
 
-<!-- --- -->
-
 <!-- #### *Answer* -->
-
-<!-- 6) -->
-
-<!-- * The fact that TB does not confer complete immunity means that even infected individuals are part of the pool of susceptible at each point in time. -->
-
-<!-- * A long incubation period (sometimes as long as a life-time) means that the transmission potential described by `\(R_0\)` can hardly reflect  the potential to produce new infectious cases. -->
-
-<!-- * Extra: `\(R_0\)` as we understand it speaks of the transmission potential in a fully susceptible population. The very long term dynamics of TB will make any interpretation of this number meaningless for our current population, given the drastic demographic changes suffered over the centuries. -->
-
-<!-- --- -->
 
 ## Part II: explore the case for TB elimination
 
@@ -407,7 +389,7 @@ grid.arrange(p1, out$pie)
 
 Explore your model fit, visually
 
-![](practical-tb_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+![](practical-tb_files/figure-gfm/practical-tb-14-1.png)<!-- -->
 
 **4) Can you think of other ways in which the model parameters govern
 the overall size of the epidemic and in this case the incidence rate at
@@ -474,7 +456,7 @@ data0 <- get_intervention(sfin, params_base, params_base, times_new, NA,
 grid.arrange(data0$lines, data0$pie)
 ```
 
-![](practical-tb_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+![](practical-tb_files/figure-gfm/practical-tb-17-1.png)<!-- -->
 
 ## *TB treatment*
 
@@ -504,16 +486,6 @@ success?**
 <!-- --- -->
 
 <!-- #### *Answer* -->
-
-<!-- 5)  -->
-
-<!-- * Treatment completion rates: TB treatment is long and potentially toxic. Low adherence is a big problem for TB programmes -->
-
-<!-- * Drug sensitivity of TB strain: even with full completion, resistance to components of TB treatment regimen will invariably lead to treatment failure     -->
-
-<!-- * Extra: Concomitant TB and HIV treatment: even with full completion and a drug-sensitive TB  strain, interactions with antiretrovirals might reduce the bioavailability of TB drugs.        -->
-
-<!-- --- -->
 
 **6) In the code below, assign values to the variables that reflect the
 components of TB treatment. Consider an average careseeking delay of 1
@@ -561,18 +533,11 @@ grid.arrange(p1, data1$pie)
 
 You should be looking at a plot similar to the one below.
 
-**8) What can you say about the proportion *Recent vs. Remote*
-?**
+**8) What can you say about the proportion *Recent vs. Remote* ?**
 
-![](practical-tb_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
-
-<!-- --- -->
+![](practical-tb_files/figure-gfm/practical-tb-20-1.png)<!-- -->
 
 <!-- #### *Answer* -->
-
-<!-- 8) The fraction of incident cases from a remote source has increased with the intervention. This reflects the fact that successful TB treatment is removing individuals from the infectious pool at a higher rate than they are generated.     -->
-
-<!-- ---    -->
 
 As you could see from the plot above, we have included dashed lines for
 WHO’s End TB goal (black) and a TB elimination threshold (red). This is
@@ -634,7 +599,7 @@ grid.arrange(p1, data2$pie )
 
 Our plot should look like this..
 
-![](practical-tb_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
+![](practical-tb_files/figure-gfm/practical-tb-23-1.png)<!-- -->
 
 We can see from our remote/recent pie chart that even after a strong
 combined campaign to reduce TB burden, some transmission remains.
@@ -676,7 +641,7 @@ p1 <- data3$lines +
 grid.arrange(p1, data3$pie)
 ```
 
-![](practical-tb_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](practical-tb_files/figure-gfm/practical-tb-24-1.png)<!-- -->
 
 A fully curative intervention appears insufficient to drive the TB
 epidemic to elimination.
@@ -684,16 +649,11 @@ epidemic to elimination.
 **11) If transmission has stopped (as seen in the pie chart), where is
 the remaining incidence coming from?**
 
-**12) Where should we intervene to finally drive the TB epidemic
-down?**
+**12) Where should we intervene to finally drive the TB epidemic down?**
 
 <!-- --- -->
 
 <!-- #### *Answer* -->
-
-<!-- 11) Turning beta to zero will stop ongoing transmission but relapse is still happening among previously infected and latent infections are still breaking into active disease.  -->
-
-<!-- 12) Relapse could only be prevented by introducing a therapy that is 100% sterilizing which at the moment is not available. But the latent pool of infected can be addressed with preventive treatment, which is currently available.   -->
 
 <!-- --- -->
 
@@ -733,7 +693,7 @@ p1 <- data4$lines +
 grid.arrange(p1, data4$pie)
 ```
 
-![](practical-tb_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
+![](practical-tb_files/figure-gfm/practical-tb-26-1.png)<!-- -->
 
 This final intervention scenario reach the goal for End TB just before
 2035 but is still far from elimination.
@@ -749,22 +709,13 @@ complexities to the model could affect our estimations:
 
 1)  Age structure
 
-2)  Risk groups (e.g. HIV, Slum dwellers, diabetes,
-malnourished)
+2)  Risk groups (e.g. HIV, Slum dwellers, diabetes, malnourished)
 
 3)  MDR-TB
 
 <!-- --- -->
 
 <!-- #### *Answer* -->
-
-<!-- a) Age is an important factor of TB dynamics: Children are more likely to develop extra-pulmonary TB (non-infectious) which overall makes this group (0 to 5 years) less likely to transmit the infection. Also, as the slow progression to latent TB can take periods as long as a life time, it is common to observe that reduction of burden will first impact younger ages while the older groups accumulate the larger number of latent progressors. Finally, age mixing patterns are an important factor when establishing the overall size of the epidemic.  -->
-
-<!-- b) Transmission and progression to active TB is known to be strongly related to risk factors that drive epidemics in different settings. Existence of risk groups means that control strategies can be drastically reduced in scale if targeted to those risk groups fuelling the epidemic. -->
-
-<!-- c) Since MDR-TB is the resulting effect of a wide access to TB drug regimens. As such, incomplete coverage and treatment completion will effectively lead epidemics to transition into higher rates of MDR-TB, making the case of elimination even harder.    -->
-
-<!-- --- -->
 
 -----
 

@@ -17,6 +17,10 @@ output:
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+# toggle to render full version 
+full_version   <- FALSE
+render_snippet <- if (full_version) 'asis' else FALSE
 ```
 
 Ending Tuberculosis (TB) and elimination are terms now more present than ever in the Global Health agenda.  Is it achievable? how and when could  this happen?. All this is yet uncertain, and an ongoing discussion in the field. In this practical, we intend to illustrate important concepts of TB epidemiology by setting up a simple compartmental model and trying to assess what would be required to End TB goals as set by WHO and/or elimination thresholds. 
@@ -34,7 +38,7 @@ The following concepts will be developed further during the practical:
 
 ## Required packages
 
-```{r}
+```{r practical-tb-1}
 # install.packages("deSolve", dep = TRUE)
 # install.packages("gridExtra", dep = TRUE)
 # install.packages("ggplot2", dep = TRUE)
@@ -59,7 +63,7 @@ The average duration of the infectious period is ~3 years. Cohort studies have e
 
 
 First, let's load some libraries we need. 
-```{r echo = TRUE}
+```{r practical-tb-2, echo = TRUE}
 # Load packages
 library(deSolve)
 library(gridExtra)
@@ -69,7 +73,7 @@ library(reshape)
 
 
 Now, complete the parameter list below:
-```{r eval = FALSE}
+```{r practical-tb-3, eval = FALSE}
 
 # Model Parameters
 T.lfx    <- 72              # Life expectancy
@@ -84,7 +88,7 @@ imm      <-                 # Infectiousness decline (partial immunity)
 relapse  <-                 # Relapse rate
   
 ```
-```{r include = FALSE}
+```{r practical-tb-4, include = full_version}
 
 # Model Parameters
 T.lfx    <- 72              # Life expectancy
@@ -108,7 +112,7 @@ During the lecture the concept of recent *vs.* remote incidence was introduced. 
 
 *Copy and Paste the code below*
 
-```{r eval = FALSE}
+```{r practical-tb-5, eval = FALSE}
 TB.Basic <- function (t, state, parameters) {
   with(as.list(c(state, parameters)),             
        {
@@ -154,7 +158,7 @@ TB.Basic <- function (t, state, parameters) {
 **3) Looking at the code above, can you write down (*on paper*) the differential equations for this model?**  
 
 
-```{r include = FALSE}
+```{r practical-tb-6, include = full_version}
 TB.Basic <- function (t, state, parameters) {
   with(as.list(c(state, parameters)),             
        {
@@ -198,7 +202,7 @@ But before, we have to create a handy function that will help us run our models 
 
 *Copy and Paste the code below*
 
-```{r echo = TRUE, warning = FALSE}
+```{r practical-tb-7, echo = TRUE, warning = FALSE}
 get_intervention <- function(sfin, params_new, params_old, times_new,
                              t.interv, fx_scale, fx_basic, int_name, data_stub) {
 
@@ -273,7 +277,8 @@ get_intervention <- function(sfin, params_new, params_old, times_new,
 Set some simulation parameters 
 
 *Copy and Paste the code below*
-```{r echo = TRUE}
+
+```{r practical-tb-8, echo = TRUE}
 
 t.intervention <- 400      # years of simulation
 t.scale        <- 3        # Scaling up time of interventions
@@ -285,7 +290,7 @@ Create our parameter list and initial conditions
 
 *Copy and Paste the code below*
 
-```{r echo = TRUE}
+```{r practical-tb-9, echo = TRUE}
 # Prepare to run
 params <- c(break_in = break_in, selfcure = selfcure, mu = mu, mu_tb = mu_tb,
             beta = beta, fast = fast, imm = imm, relapse = relapse) # running parameters
@@ -307,7 +312,7 @@ Now, let's solve our system
 
 *Copy and Paste the code below*
 
-```{r echo = TRUE}
+```{r practical-tb-10, echo = TRUE}
 
 # run the model
 out  <- get_intervention(xstart, params, NA, times, NA, NA, TB.Basic,
@@ -331,9 +336,17 @@ We have produced and incidence trajectory for a system that seems to be in endem
 
 <!-- #### *Answer* -->
 
-<!-- 4) Briefly, an epidemic reaches an endemic equilibrium when the average number of secondary infections at time *t* is equal to 1, this is, when the net reproduction number is equal to one. -->
+```{r practical-tb-11, results = render_snippet, echo = FALSE}
 
-<!-- 5) $R_0*S = 1$, *where S is the fraction of population susceptible at time t*    -->
+cat("
+*Answer*
+
+4) Briefly, an epidemic reaches an endemic equilibrium when the average number of secondary infections at time *t* is equal to 1, this is, when the net reproduction number is equal to one.
+
+5) $R_0*S = 1$, *where S is the fraction of population susceptible at time t*
+")
+
+```
 
 <!-- --- -->
 
@@ -350,18 +363,25 @@ We could attempt to estimate $R_0$ for the given model with a simple rearrange o
 
 
 
-<!-- --- -->
 
 <!-- #### *Answer* -->
+ 
+```{r practical-tb-12, results = render_snippet, echo = FALSE}
 
-<!-- 6) -->
-<!-- * The fact that TB does not confer complete immunity means that even infected individuals are part of the pool of susceptible at each point in time. -->
+cat("
+*Answer*
 
-<!-- * A long incubation period (sometimes as long as a life-time) means that the transmission potential described by $R_0$ can hardly reflect  the potential to produce new infectious cases. -->
+6)
 
-<!-- * Extra: $R_0$ as we understand it speaks of the transmission potential in a fully susceptible population. The very long term dynamics of TB will make any interpretation of this number meaningless for our current population, given the drastic demographic changes suffered over the centuries. -->
+* The fact that TB does not confer complete immunity means that even infected individuals are part of the pool of susceptible at each point in time.
 
-<!-- --- -->
+* A long incubation period (sometimes as long as a life-time) means that the transmission potential described by $R_0$ can hardly reflect  the potential to produce new infectious cases.
+
+* Extra: $R_0$ as we understand it speaks of the transmission potential in a fully susceptible population. The very long term dynamics of TB will make any interpretation of this number meaningless for our current population, given the drastic demographic changes suffered over the centuries.
+
+")
+
+```
 
 
 
@@ -386,7 +406,7 @@ Now we have some understanding of TB dynamics, and we want to explore the case o
 
 *Copy and Paste the code below*
 
-```{r eval = FALSE, warning = FALSE}
+```{r practical-tb-13, eval = FALSE, warning = FALSE}
 
 # :::::: FILL THE MISSING VALUES HERE 
 
@@ -416,7 +436,7 @@ Explore your model fit, visually
 
 
 
-```{r echo = FALSE, warning = FALSE}
+```{r practical-tb-14, echo = full_version, warning = FALSE}
 Inc.country    <- 221 # TB incidence per 100K (including TB/HIV) 
 country.name   <- "Bangladesh"  # e.g., "Sierra Leone"
 params["beta"] <- 6.9  # Transmission rate per capita per year
@@ -446,7 +466,7 @@ First, we need to create a wrapper function that allows us to scale-up our inter
 
 *Copy and Paste the code below*
 
-```{r echo = TRUE, warning = FALSE}
+```{r practical-tb-15, echo = TRUE, warning = FALSE}
 # Intervention scaling function
 scale_up <- function(t, state, parameters, t.interv, parameters_old, fx) {
   
@@ -469,7 +489,7 @@ Let's create some function handles to pass as arguments.
 
 *Copy and Paste the code below*
 
-```{r echo = TRUE, warning = FALSE}
+```{r practical-tb-16, echo = TRUE, warning = FALSE}
 # Function handles
 
 fx_basic <- TB.Basic
@@ -480,7 +500,7 @@ fx_scale <- function(t, state, parameters) scale_up(t, state, parameters, t.inte
 Now, lets create a baseline incidence to use as counterfactual in our exploration of TB elimination.    
 
 *Copy and Paste the code below*
-```{r echo = TRUE, warning = FALSE}
+```{r practical-tb-17, echo = TRUE, warning = FALSE}
 ## Simulation 0
 # Project a baseline
 int_name    <- "Baseline"
@@ -524,14 +544,20 @@ For the sake of simplicity we will not include other factors that might also pla
 
 <!-- #### *Answer* -->
 
-<!-- 5)  -->
-<!-- * Treatment completion rates: TB treatment is long and potentially toxic. Low adherence is a big problem for TB programmes -->
-<!-- * Drug sensitivity of TB strain: even with full completion, resistance to components of TB treatment regimen will invariably lead to treatment failure     -->
+```{r practical-tb-18, results = render_snippet, echo = FALSE}
 
-<!-- * Extra: Concomitant TB and HIV treatment: even with full completion and a drug-sensitive TB  strain, interactions with antiretrovirals might reduce the bioavailability of TB drugs.        -->
+cat("
+*Answer*
 
-<!-- --- -->
+5)
 
+* Treatment completion rates: TB treatment is long and potentially toxic. Low adherence is a big problem for TB programmes
+* Drug sensitivity of TB strain: even with full completion, resistance to components of TB treatment regimen will invariably lead to treatment failure   
+* Extra: Concomitant TB and HIV treatment: even with full completion and a drug-sensitive TB  strain, interactions with antiretrovirals might reduce the bioavailability of TB drugs.      
+
+")
+
+```
 
 **6) In the code below, assign values to the variables that reflect the components of TB treatment. Consider an average careseeking delay of 1 year, a probability of diagnosis of 95%, and treatment initiation of 95%.**  
 
@@ -541,7 +567,7 @@ For the sake of simplicity we will not include other factors that might also pla
 
 
 
-```{r eval = FALSE, warning = FALSE}
+```{r practical-tb-19, eval = FALSE, warning = FALSE}
 ## Simulation 1
 # An Intervention simulating introduction of treatment
 int_name  <- "Treatment"
@@ -585,7 +611,7 @@ You should be looking at a plot similar to the one below.
 
 
 
-```{r echo = FALSE, warning = FALSE}
+```{r practical-tb-20, echo = full_version, warning = FALSE}
 ## Simulation 1
 # An Intervention simulating introduction of treatment
 int_name  <- "Treatment"
@@ -618,13 +644,17 @@ p1 <- data1$lines +
 grid.arrange(p1, data1$pie )
 ```
 
-<!-- --- -->
 
 <!-- #### *Answer* -->
+```{r practical-tb-21, results = render_snippet, echo = FALSE}
 
-<!-- 8) The fraction of incident cases from a remote source has increased with the intervention. This reflects the fact that successful TB treatment is removing individuals from the infectious pool at a higher rate than they are generated.     -->
+cat("
+*Answer*
 
-<!-- ---    -->
+8) The fraction of incident cases from a remote source has increased with the intervention. This reflects the fact that successful TB treatment is removing individuals from the infectious pool at a higher rate than they are generated.
+")
+
+```
 
 
 As you could see from the plot above, we have included dashed lines for WHO's End TB goal (black) and a TB elimination threshold (red). This is so we can check how our model performs against these reference goals. WHO has define the End TB goal as a 95% reduction in TB incidence by 2035. Elimination is defined as a threshold <1 case per million population. The latter should be interpreted as the theoretical limit for eradication, while the End TB is meant to be an achievable goal, which, if achieved, should leave countries at the door of elimination.  
@@ -643,7 +673,7 @@ Now, let's combine the treatment campaign with an intervention that make TB serv
 
 *(Note: remember that we want to combine interventions, i.e., the previous intervention should be introduced here too)*
 
-```{r eval = FALSE, warning = FALSE}
+```{r practical-tb-22, eval = FALSE, warning = FALSE}
 ## Simulation 2
 # An Intervention simulating demand generation
 int_name  <- "Demand generation"
@@ -684,7 +714,7 @@ Our plot should look like this..
 
 
 
-```{r echo = FALSE,, warning = FALSE}
+```{r practical-tb-23, echo = full_version, warning = FALSE}
 ## Simulation 2
 # An Intervention simulating demand generation
 int_name  <- "Demand generation"
@@ -735,7 +765,7 @@ Let's imagine a hypothetical scenario where transmission is completely shut down
 
 *Copy and Paste the code below*
 
-```{r echo = TRUE, warning = FALSE}
+```{r practical-tb-24, echo = TRUE, warning = FALSE}
 ## Simulation 3
 int_name  <- "Transmission stop"
 
@@ -782,9 +812,17 @@ A fully curative intervention appears insufficient to drive the TB epidemic to e
 
 <!-- #### *Answer* -->
 
-<!-- 11) Turning beta to zero will stop ongoing transmission but relapse is still happening among previously infected and latent infections are still breaking into active disease.  -->
+```{r practical-tb-25, results = render_snippet, echo = FALSE}
 
-<!-- 12) Relapse could only be prevented by introducing a therapy that is 100% sterilizing which at the moment is not available. But the latent pool of infected can be addressed with preventive treatment, which is currently available.   -->
+cat("
+*Answer*
+
+11) Turning beta to zero will stop ongoing transmission but relapse is still happening among previously infected and latent infections are still breaking into active disease.
+
+12) Relapse could only be prevented by introducing a therapy that is 100% sterilizing which at the moment is not available. But the latent pool of infected can be addressed with preventive treatment, which is currently available.
+")
+
+```
 
 <!-- --- -->
 
@@ -805,7 +843,7 @@ Let's introduce a prevention campaign that treats 100% latent TB infection (LTBI
 
 *Copy and Paste the code below*
 
-```{r echo = TRUE, warning = FALSE}
+```{r practical-tb-26, echo = TRUE, warning = FALSE}
 ## Simulation 4
 # An Intervention simulating LTBI treatment
 int_name  <- "Prevention"
@@ -850,13 +888,19 @@ c) MDR-TB
 
 <!-- #### *Answer* -->
 
-<!-- a) Age is an important factor of TB dynamics: Children are more likely to develop extra-pulmonary TB (non-infectious) which overall makes this group (0 to 5 years) less likely to transmit the infection. Also, as the slow progression to latent TB can take periods as long as a life time, it is common to observe that reduction of burden will first impact younger ages while the older groups accumulate the larger number of latent progressors. Finally, age mixing patterns are an important factor when establishing the overall size of the epidemic.  -->
+```{r practical-tb-27, results = render_snippet, echo = FALSE}
 
-<!-- b) Transmission and progression to active TB is known to be strongly related to risk factors that drive epidemics in different settings. Existence of risk groups means that control strategies can be drastically reduced in scale if targeted to those risk groups fuelling the epidemic. -->
+cat("
+*Answer*
 
-<!-- c) Since MDR-TB is the resulting effect of a wide access to TB drug regimens. As such, incomplete coverage and treatment completion will effectively lead epidemics to transition into higher rates of MDR-TB, making the case of elimination even harder.    -->
+a) Age is an important factor of TB dynamics: Children are more likely to develop extra-pulmonary TB (non-infectious) which overall makes this group (0 to 5 years) less likely to transmit the infection. Also, as the slow progression to latent TB can take periods as long as a life time, it is common to observe that reduction of burden will first impact younger ages while the older groups accumulate the larger number of latent progressors. Finally, age mixing patterns are an important factor when establishing the overall size of the epidemic. 
 
-<!-- --- -->
+b) Transmission and progression to active TB is known to be strongly related to risk factors that drive epidemics in different settings. Existence of risk groups means that control strategies can be drastically reduced in scale if targeted to those risk groups fuelling the epidemic.
+
+c) Since MDR-TB is the resulting effect of a wide access to TB drug regimens. As such, incomplete coverage and treatment completion will effectively lead epidemics to transition into higher rates of MDR-TB, making the case of elimination even harder.
+
+")
+```
 
 ---  
 
