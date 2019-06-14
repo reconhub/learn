@@ -71,7 +71,7 @@ render_new_rmds_to_md <- function(dir = "content/post",
       return(to_build)
     }
     for (b in to_build) {
-      try_to_render_and_move(b, variant, figfile)
+      try_to_render_and_move(b, variant, figfile, params)
     }
   } else {
     message("Nothing to build, all .md up-to-date")
