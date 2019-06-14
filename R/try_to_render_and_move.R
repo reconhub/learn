@@ -24,6 +24,8 @@ try_to_render_and_move <- function(rmd, variant, figfile, params) {
     # create the output directory if it doesn't exist
     if (!fs::dir_exists(site_figs)) {
       fs::dir_create(site_figs)
+    } else {
+      fs::file_delete(fs::dir_ls(site_figs))
     }
     # Move the files
     fs::file_move(fs::dir_ls(source_figs), fs::path(site_figs))
