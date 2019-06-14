@@ -194,7 +194,7 @@ array_example
 
 
 
-### Dataframes
+### Data frames
 
 A `data.frame` is a heterogeneous and bi dimensional structure, similar but not exactly equal to a matrix. Unlike a matrix, various types of vectors can be part of a single data frame.
 
@@ -260,12 +260,14 @@ A function is one of the structures that makes *R* a very powerful platform for 
 
 There are various types of functions
 
-_Primitive or base functions_: these are the default functions in _R_ under the _base package_. For instance, these can include basic arithmetic operations, but also more complex operations such as extraction of median values `median` or `summary` of a variable.
-
-*Functions from packages* : these are functions created within a package. For example the function `glm` in the *stats* package.
-
-
-*User-built functions*: these are functions that any user creates for a customized routine. These functions could become part of a package.
+ - *Primitive or base functions*: these are the default functions in _R_ under
+   the _base package_. For instance, these can include basic arithmetic
+   operations, but also more complex operations such as extraction of median
+   values `median` or `summary` of a variable.
+ - *Functions from packages* : these are functions created within a package.
+   For example the function `glm` in the *stats* package.
+ - *User-built functions*: these are functions that any user creates for a
+   customized routine. These functions could become part of a package.
 
 
 
@@ -274,10 +276,14 @@ _Primitive or base functions_: these are the default functions in _R_ under the 
 The basic components of a function are:
 
  - *name*: this is the name that we give to our function (for example: `myfun`)
- - *formals or arguments*: these are the series of elements that control how to call the function.
+ - *formals or arguments*: these are the series of elements that control how to
+   call the function.
  - *body*: this is the series of operations or modifications to the arguments.
- - *output*: this is the results after modifying the arguments. If this output corresponds to a series of data, we can extract it using the command `return`.
- - *function internal environment*: means the specific rules and objects within a function. Those rules and objects will not work outside the function. 
+ - *output*: this is the results after modifying the arguments. If this output
+   corresponds to a series of data, we can extract it using the command
+   `return`.
+ - *function internal environment*: means the specific rules and objects within
+   a function. Those rules and objects will not work outside the function. 
 
 
 
@@ -463,13 +469,13 @@ and then pasting the result here.
 |Weibull           |`pweibull()` |`qweibull()` |`dweibull()` |`rweibull()` |
 
 
-# Create and open datasets
+# Create and open data sets
 
 R allows users not only to open but also to create data sets. There are three sources of data sets:
 
-- Data-set imported as such (from `.xlsx`, `.csv`, `.stata`, or `.RDS` formats, among many others)
-- Data-set that is part of a R package
-- Data-set created in our R session
+- Data set imported as such (from `.xlsx`, `.csv`, `.stata`, or `.RDS` formats, among many others)
+- Data set that is part of a R package
+- Data set created in our R session
 
 # Tidyverse
 
@@ -513,7 +519,8 @@ We will be using the pipe function `%>%` often. This is key to using tidyverse a
 From the package  `dyplr`, the most common functions are:
 
  - `glimpse`: used to rapidly explore a data set
- - `arrange`: arranges the data set by the value of a particular variable if numeric, or by alphabetic order if it is a character.
+ - `arrange`: arranges the data set by the value of a particular variable if
+   numeric, or by alphabetic order if it is a character.
  - `mutate`: generates a new variable
  - `rename`: changes a variable's name
  - `summarise`: reduces the dimensions of a data set 
@@ -665,8 +672,9 @@ Finally, ggplot has a useful feature that allows users to add layers on top of e
 
 
 ```{r}
-p + ggtitle('another title') +
-    scale_fill_manual(values =c('blue', 'lightblue')) 
+p + 
+  ggtitle('another title') +
+  scale_fill_manual(values =c('blue', 'lightblue')) 
 
 ```
 
