@@ -58,7 +58,6 @@ First, let's load some libraries we need.
 ```{r echo=TRUE}
 #Load packages
 library(deSolve)
-## Warning: package 'deSolve' was built under R version 3.4.4
 library(gridExtra)
 library(ggplot2)
 library(reshape)
