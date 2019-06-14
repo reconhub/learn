@@ -15,13 +15,15 @@ output:
     preserve_yaml: true
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
 Ending Tuberculosis (TB) and elimination are terms now more present than ever in the Global Health agenda.  Is it achievable? how and when could  this happen?. All this is yet uncertain, and an ongoing discussion in the field. In this practical, we intend to illustrate important concepts of TB epidemiology by setting up a simple compartmental model and trying to assess what would be required to End TB goals as set by WHO and/or elimination thresholds. 
 
 
-##Core concepts
+## Core concepts
+
 The following concepts will be developed further during the practical:
 
 * Compartmental Models
@@ -30,11 +32,12 @@ The following concepts will be developed further during the practical:
 * Natural History of TB
 * TB control strategies
 
-##Required packages
+## Required packages
+
 ```{r}
-#install.packages("deSolve", dep=TRUE)
-#install.packages("gridExtra", dep = TRUE)
-#install.packages("ggplot2", dep = TRUE)
+# install.packages("deSolve", dep = TRUE)
+# install.packages("gridExtra", dep = TRUE)
+# install.packages("ggplot2", dep = TRUE)
 ```
 
 
@@ -51,12 +54,13 @@ The average duration of the infectious period is ~3 years. Cohort studies have e
 
 
 **1) Following the statement above, can you complete the table of parameters? Draw a flow chart if necessary.**   
+
 *(Note: All parameters with prefix T. are in a scale of time (years). Use this parameters to calculate the missing rates as necessary).* 
 
 
 First, let's load some libraries we need. 
-```{r echo=TRUE}
-#Load packages
+```{r echo = TRUE}
+# Load packages
 library(deSolve)
 library(gridExtra)
 library(ggplot2)
@@ -65,7 +69,7 @@ library(reshape)
 
 
 Now, complete the parameter list below:
-```{r eval=FALSE}
+```{r eval = FALSE}
 
 # Model Parameters
 T.lfx    <- 72              # Life expectancy
@@ -80,7 +84,7 @@ imm      <-                 # Infectiousness decline (partial immunity)
 relapse  <-                 # Relapse rate
   
 ```
-```{r include=FALSE}
+```{r include = FALSE}
 
 # Model Parameters
 T.lfx    <- 72              # Life expectancy
@@ -104,40 +108,40 @@ During the lecture the concept of recent *vs.* remote incidence was introduced. 
 
 *Copy and Paste the code below*
 
-```{r eval=FALSE}
+```{r eval = FALSE}
 TB.Basic <- function (t, state, parameters) {
-  with(as.list(c(state,parameters)),             
+  with(as.list(c(state, parameters)),             
        {
          N      <- U + L + I + R            # Total population
          births <- I * mu_tb + N * mu       # Births (for stable population)
-         lambda <-   beta * I/N             # Force of Infection
+         lambda <- beta * I/N               # Force of Infection
          
          # Uninfected 
-         dU <- births - U * (lambda+mu)                              
+         dU <- births - U * (lambda + mu)                              
          
          # Latent 
-         dL <-  U * lambda * (1-fast) + R * (lambda * (1-fast) * imm) - L * (mu + break_in) 
+         dL <- U * lambda * (1-fast) + R * (lambda * (1-fast) * imm) - L * (mu + break_in) 
          
          # Active TB
-         dI <-  U * lambda * fast + R * (lambda * fast * imm) +  L * break_in + R * relapse -
-           I * (mu + mu_tb + selfcure)
+         dI <- U * lambda * fast + R * (lambda * fast * imm) +  L * break_in + R * relapse -
+               I * (mu + mu_tb + selfcure)
          
          # Recovered
-         dR <-  I * selfcure - R * (lambda * imm + relapse + mu)      
+         dR <- I * selfcure - R * (lambda * imm + relapse + mu)      
          
          # Model outcomes
          dIncidence <- U * (lambda * fast) + R * (lambda * fast * imm) + L * break_in + R * relapse 
          
-         #::::::::: TRY  TO COMPLETE THIS EQUATIONS 
+         # ::::::::: TRY  TO COMPLETE THIS EQUATIONS 
          
          dIrecent   <-
 
          dIremote   <-
         
-         #::::::::::::::::::::::::::::::::::::::::::::
+         # ::::::::::::::::::::::::::::::::::::::::::::
            
-         #wrap-up 
-         dx <- c(dU, dL, dI, dR, dIncidence, dIrecent , dIremote)
+         # wrap-up 
+         dx <- c(dU, dL, dI, dR, dIncidence, dIrecent, dIremote)
          list(dx)
        }
   )
@@ -150,36 +154,36 @@ TB.Basic <- function (t, state, parameters) {
 **3) Looking at the code above, can you write down (*on paper*) the differential equations for this model?**  
 
 
-```{r include=FALSE}
+```{r include = FALSE}
 TB.Basic <- function (t, state, parameters) {
-  with(as.list(c(state,parameters)),             
+  with(as.list(c(state, parameters)),             
        {
       
          N      <- U + L + I + R            # Total population
          births <- I * mu_tb + N * mu       # Births (for stable population)
-         lambda <-   beta* I/N             # Force of Infection
+         lambda <- beta * I/N               # Force of Infection
          
          # Uninfected 
-         dU <- births - U * (lambda+mu)                              
+         dU <- births - U * (lambda + mu)                              
          
          # Latent 
-         dL <-  U * lambda * (1-fast) + R * (lambda * (1-fast) * imm) - L * (mu + break_in) 
+         dL <- U * lambda * (1-fast) + R * (lambda * (1-fast) * imm) - L * (mu + break_in) 
          
          # Active TB
-         dI <-  U * lambda * fast + R * (lambda * fast * imm) +  L * break_in + R * relapse -
-           I * (mu + mu_tb + selfcure)
+         dI <- U * lambda * fast + R * (lambda * fast * imm) +  L * break_in + R * relapse -
+               I * (mu + mu_tb + selfcure)
          
          # Recovered
-         dR <-  I * selfcure - R * (lambda * imm + relapse + mu)      
+         dR <- I * selfcure - R * (lambda * imm + relapse + mu)      
          
          # Model outcomes
          dIncidence <- U * (lambda * fast) + R * (lambda * fast * imm) + L * break_in + R * relapse 
          
          dIrecent   <- U * (lambda * fast) + R * (lambda * fast * imm) +  R * relapse                                               
-         dIremote   <- L * break_in +  R * relapse                                          # 
+         dIremote   <- L * break_in +  R * relapse 
          
-         #wrap-up 
-         dx <- c(dU, dL, dI, dR, dIncidence, dIrecent , dIremote)
+         # wrap-up 
+         dx <- c(dU, dL, dI, dR, dIncidence, dIrecent, dIremote)
          list(dx)
        }
   )
@@ -194,78 +198,74 @@ But before, we have to create a handy function that will help us run our models 
 
 *Copy and Paste the code below*
 
-```{r echo=TRUE, warning=FALSE}
-get_intervention<- function (sfin, params_new, params_old,times_new,
-                             t.interv, fx_scale,fx_basic, int_name, data_stub) {
-  
+```{r echo = TRUE, warning = FALSE}
+get_intervention <- function(sfin, params_new, params_old, times_new,
+                             t.interv, fx_scale, fx_basic, int_name, data_stub) {
+
   # Starting conditions
-  xstart <- c(U = sfin$U, 
-              L = sfin$L,  
-              I = sfin$I, 
+  xstart <- c(U = sfin$U,
+              L = sfin$L,
+              I = sfin$I,
               R = sfin$R,
-              Incidence= sfin$Incidence,
-              Irecent=   sfin$Irecent,  
-              Iremote=   sfin$Iremote) 
-  
-  #Select type of function
-  if (is.na(t.interv))
-  {
-    fx<-fx_basic
+              Incidence = sfin$Incidence,
+              Irecent   = sfin$Irecent,
+              Iremote   = sfin$Iremote)
+
+  # Select type of function
+  if (is.na(t.interv)) {
+    fx <- fx_basic
   }  else {
-    fx<-fx_scale
+    fx <- fx_scale
   }
   
-  #Run the model
-  out <- as.data.frame(ode(y = xstart, times = times_new, 
-                           func = fx, parms = params_new))  # 
+  # Run the model
+  out <- as.data.frame(ode(y = xstart, times = times_new,
+                           func = fx, parms = params_new)) 
   # Model output
-  N            <- out$U+out$L+out$I+out$R  
-  rate.inc    <- 1e5*(diff(out$Incidence)/N[1:length(N)-1])
-  fr.remo     <- diff(out$Iremote)/diff(out$Incidence)
-  time         <- out$time[1:length(out$time)-1]
-  dat         <- data.frame(Years=time+(2019-400), Incidence=rate.inc)
+  N           <- out$U + out$L + out$I + out$R
+  rate.inc    <- 1e5 * (diff(out$Incidence) / N[1:length(N) - 1])
+  fr.remo     <- diff(out$Iremote) / diff(out$Incidence)
+  time        <- out$time[1:length(out$time) - 1]
+  dat         <- data.frame(Years = time + (2019 - 400), Incidence = rate.inc)
   dat$Sim     <- int_name
-  
+
   # If it is a first run, nothing to append 
-  if (is.na(data_stub))
-  {
-    data<-dat
+  if (is.na(data_stub)) {
+    data <- dat
   }
   else # Append previous runs
   {
-    data  <-rbind(data_stub, dat)
+    data <- rbind(data_stub, dat)
   }
-  
-  remote<-fr.remo  # rename a variable with the fraction of remote incidence 
-  titl  <-int_name
-  
-  # Create our plot
-  p<- ggplot(data=data, mapping = aes(x=Years, y=Incidence, col=Sim))
-  p1<-p + 
-    geom_line(size=1.2) +
-    ggtitle ('TB Incidence') +
-    theme_bw() + ylab('Rate per 100,000 pop')+
-    ylim(0,max(data$Incidence))
 
-  # Pie chart of remote vs recent incidence 
+  remote <- fr.remo  # rename a variable with the fraction of remote incidence
+  titl   <- int_name
+
+  p <- ggplot(data = data, mapping = aes(x = Years, y = Incidence, col = Sim))
+  p1 <- p +
+    geom_line(size = 1.2) +
+    ggtitle ("TB Incidence") +
+    theme_bw() + ylab("Rate per 100, 000 pop") +
+    ylim(0, max(data$Incidence))
+
   df <- data.frame(
     Source = c("Recent", "Remote"),
-    value  = c(1-tail(remote,1),tail(remote,1))
+    value  = c(1 - tail(remote, 1), tail(remote, 1))
   )
-  
+
+  # Pie chart of remote vs recent incidence 
   mycols <- c("#0073C2FF", "#EFC000FF")
-  pie<- ggplot(df, aes(x="", y=value, fill=Source))+
+  pie <- ggplot(df, aes(x = "", y = value, fill = Source)) +
     geom_bar(width = 1, stat = "identity") +
-    coord_polar("y", start=0)+
+    coord_polar("y", start = 0) +
     scale_fill_manual(values = mycols) +
-    theme_void()+
-    ggtitle (titl) 
-  
-  output<-list("out"=out, "lines"=p1, "pie"=pie, "data"=data)
-  
-  # Spit-out results
+    theme_void() +
+    ggtitle(titl)
+
+  output <- list("out" = out, "lines" = p1, "pie" = pie, "data" = data)
+
+  # Spit out the results
   return(output)
-  
 }
 
 ```
@@ -273,46 +273,46 @@ get_intervention<- function (sfin, params_new, params_old,times_new,
 Set some simulation parameters 
 
 *Copy and Paste the code below*
-```{r echo=TRUE}
+```{r echo = TRUE}
 
 t.intervention <- 400      # years of simulation
 t.scale        <- 3        # Scaling up time of interventions
-times  = seq(0, t.intervention, by=1)          # time scale
+times <- seq(0, t.intervention, by = 1)          # time scale
 
 ```
 
 Create our parameter list and initial conditions
 
 *Copy and Paste the code below*
-```{r echo=TRUE}
 
-#Prepare tu run
-params <- c(break_in=break_in, selfcure=selfcure, mu=mu, mu_tb=mu_tb
-            ,beta=beta, fast=fast, imm=imm, relapse=relapse)   # running parameters
+```{r echo = TRUE}
+# Prepare to run
+params <- c(break_in = break_in, selfcure = selfcure, mu = mu, mu_tb = mu_tb,
+            beta = beta, fast = fast, imm = imm, relapse = relapse) # running parameters
 
 # Initial Conditions
-N <- 1                  # Total population equal to unity 
-I0 <-1e-6               # TB seed at time 0
+N  <- 1                  # Total population equal to unity 
+I0 <- 1e-6               # TB seed at time 0
 
 xstart <- data.frame(U = N-I0,
-            L = 0,
-            I = I0,  
-            R = 0,
-            Incidence=0, 
-            Irecent=0 , 
-            Iremote=0)                
+                     L = 0,
+                     I = I0,  
+                     R = 0,
+                     Incidence = 0, 
+                     Irecent = 0, 
+                     Iremote = 0)                
 ```
 
 Now, let's solve our system 
 
 *Copy and Paste the code below*
-```{r echo=TRUE}
 
+```{r echo = TRUE}
 
-#run the model
-out  <-get_intervention(xstart, params, NA,times, 
-                        NA, NA,TB.Basic, "Initial", NA) 
-#plot
+# run the model
+out  <- get_intervention(xstart, params, NA, times, NA, NA, TB.Basic,
+                         "Initial", NA) 
+# plot
 out$lines
 
 
@@ -329,11 +329,11 @@ We have produced and incidence trajectory for a system that seems to be in endem
 
 <!-- --- -->
 
-<!-- ####*Answer* -->
+<!-- #### *Answer* -->
 
 <!-- 4) Briefly, an epidemic reaches an endemic equilibrium when the average number of secondary infections at time *t* is equal to 1, this is, when the net reproduction number is equal to one. -->
 
-<!-- 5) $R_0*S=1$ , *where S is the fraction of population susceptible at time t*    -->
+<!-- 5) $R_0*S = 1$, *where S is the fraction of population susceptible at time t*    -->
 
 <!-- --- -->
 
@@ -352,7 +352,7 @@ We could attempt to estimate $R_0$ for the given model with a simple rearrange o
 
 <!-- --- -->
 
-<!-- ####*Answer* -->
+<!-- #### *Answer* -->
 
 <!-- 6) -->
 <!-- * The fact that TB does not confer complete immunity means that even infected individuals are part of the pool of susceptible at each point in time. -->
@@ -373,7 +373,7 @@ We could attempt to estimate $R_0$ for the given model with a simple rearrange o
 Now we have some understanding of TB dynamics, and we want to explore the case of TB elimination using our model. To make the case more interesting we can try and get our TB incidence trajectory match the current estimation for a high TB burden country.  
 
 
-**1) Explore WHO's TB country profiles for the 30 countries with the highest TB burden ( [here](https://www.who.int/tb/publications/global_report/gtbr2017_annex2.pdf?ua=1) )**  
+**1) Explore WHO's TB country profiles for the 30 countries with the highest TB burden ( [here](https://www.who.int/tb/publications/global_report/gtbr2017_annex2.pdf?ua = 1) )**  
 
 
 
@@ -385,28 +385,30 @@ Now we have some understanding of TB dynamics, and we want to explore the case o
 
 
 *Copy and Paste the code below*
-```{r eval=FALSE, warning=FALSE}
 
-#:::::: FILL THE MISSING VALUES HERE 
+```{r eval = FALSE, warning = FALSE}
 
-Inc.country   <-  # TB incidence per 100K (including TB/HIV) 
-country.name  <-  # e.g., "Sierra Leone"
-params["beta"]<-  # Transmission rate per capita per year
-#::::::
+# :::::: FILL THE MISSING VALUES HERE 
+
+Inc.country    <-  # TB incidence per 100K (including TB/HIV) 
+country.name   <-  # e.g., "Sierra Leone"
+params["beta"] <-  # Transmission rate per capita per year
+# ::::::
   
   
-#run the model
-out0  <-get_intervention(xstart, params, NA,times, 
-                        NA, NA,TB.Basic, "Initial", NA) 
+# run the model
+out0 <- get_intervention(xstart, params, NA, times, NA, NA, TB.Basic,
+                         "Initial", NA) 
 
-#plot
-dot<-data.frame(Data="Bangladesh",Years=2017, incidence=Inc.country)
+# plot
+dot <- data.frame(Data = "Bangladesh", Years = 2017, incidence = Inc.country)
 
-p1<-out$lines +
-  geom_point(dot, mapping=aes(x=Years, y=incidence, col=Data), size=6, shape=18) 
+p1 <- out$lines +
+  geom_point(dot, mapping = aes(x = Years, y = incidence, col = Data), 
+             size = 6, shape = 18) 
 
-#Arrange plots in a nice grid
-grid.arrange(p1,out$pie)
+# Arrange plots in a nice grid
+grid.arrange(p1, out$pie)
 ```
 
 
@@ -414,22 +416,23 @@ Explore your model fit, visually
 
 
 
-```{r echo=FALSE, warning=FALSE}
-Inc.country   <- 221 # TB incidence per 100K (including TB/HIV) 
-country.name  <-"Bangladesh"  # e.g., "Sierra Leone"
-params["beta"]<- 6.9  # Transmission rate per capita per year
+```{r echo = FALSE, warning = FALSE}
+Inc.country    <- 221 # TB incidence per 100K (including TB/HIV) 
+country.name   <- "Bangladesh"  # e.g., "Sierra Leone"
+params["beta"] <- 6.9  # Transmission rate per capita per year
 
-#run the model
-out0  <-get_intervention(xstart, params, NA,times, 
-                        NA, NA,TB.Basic, "Initial", NA) 
+# run the model
+out0  <- get_intervention(xstart, params, NA, times, NA, NA, TB.Basic,
+                          "Initial", NA) 
 
-#plot
-dot<-data.frame(Data="Bangladesh",Years=2017, incidence=Inc.country)
+# plot
+dot <- data.frame(Data = "Bangladesh", Years = 2017, incidence = Inc.country)
 
-p1<-out$lines +
-  geom_point(dot, mapping=aes(x=Years, y=incidence, col=Data), size=6, shape=18) 
+p1 <- out$lines +
+  geom_point(dot, mapping = aes(x = Years, y = incidence, col = Data), 
+             size = 6, shape = 18) 
 
-grid.arrange(p1,out$pie)
+grid.arrange(p1, out$pie)
 ```
 
 
@@ -443,21 +446,21 @@ First, we need to create a wrapper function that allows us to scale-up our inter
 
 *Copy and Paste the code below*
 
-```{r echo=TRUE, warning=FALSE}
+```{r echo = TRUE, warning = FALSE}
 # Intervention scaling function
-scale_up<- function (t, state, parameters,t.interv,parameters_old,fx) {
+scale_up <- function(t, state, parameters, t.interv, parameters_old, fx) {
   
-  scale <- min((t-t.interv[1])/(t.interv[2]-t.interv[1]),1); 
-  if (scale<0) 
-    {
-    scale=0
-    }
+  scale <- min((t - t.interv[1])/(t.interv[2] - t.interv[1]), 1) 
+  if (scale < 0) 
+  {
+    scale <- 0
+  }
   
   pars_scaled <- parameters;
   
-  pars_scaled <- parameters_old + scale*(parameters-parameters_old)
+  pars_scaled <- parameters_old + scale * (parameters - parameters_old)
   
-  return(fx(t, state,pars_scaled))
+  return(fx(t, state, pars_scaled))
 }
 
 ```
@@ -465,33 +468,34 @@ scale_up<- function (t, state, parameters,t.interv,parameters_old,fx) {
 Let's create some function handles to pass as arguments.
 
 *Copy and Paste the code below*
-```{r echo=TRUE, warning=FALSE}
+
+```{r echo = TRUE, warning = FALSE}
 # Function handles
 
-fx_basic<-TB.Basic
-fx_scale<-function(t, state, parameters) scale_up(t, state, parameters,t.interv,params,fx_basic)
+fx_basic <- TB.Basic
+fx_scale <- function(t, state, parameters) scale_up(t, state, parameters, t.interv, params, fx_basic)
 ```
 
 
 Now, lets create a baseline incidence to use as counterfactual in our exploration of TB elimination.    
 
 *Copy and Paste the code below*
-```{r echo=TRUE, warning=FALSE}
+```{r echo = TRUE, warning = FALSE}
 ## Simulation 0
 # Project a baseline
-int_name   <- "Baseline"
+int_name    <- "Baseline"
 
-#Initial conditions (starting in 2019)
-sfin       <- tail(out0$out,1)                             
-params_base<- params
-times_new  <- seq(t.intervention, t.intervention+25 , by=1)
-t.interv   <- c(times_new[2], times_new[2]+t.scale)
+# Initial conditions (starting in 2019)
+sfin        <- tail(out0$out, 1)                             
+params_base <- params
+times_new   <- seq(t.intervention, t.intervention + 25, by = 1)
+t.interv    <- c(times_new[2], times_new[2] + t.scale)
 
-#Run model
-data0<-get_intervention(sfin, params_base, params_base,times_new,
-                             NA, fx_scale,fx_basic, "Baseline", NA) 
-#Plot
-grid.arrange(data0$lines ,data0$pie )
+# Run model
+data0 <- get_intervention(sfin, params_base, params_base, times_new, NA,
+                          fx_scale, fx_basic, "Baseline", NA) 
+# Plot
+grid.arrange(data0$lines, data0$pie)
  
 
 
@@ -518,7 +522,7 @@ For the sake of simplicity we will not include other factors that might also pla
 
 <!-- --- -->
 
-<!-- ####*Answer* -->
+<!-- #### *Answer* -->
 
 <!-- 5)  -->
 <!-- * Treatment completion rates: TB treatment is long and potentially toxic. Low adherence is a big problem for TB programmes -->
@@ -537,39 +541,39 @@ For the sake of simplicity we will not include other factors that might also pla
 
 
 
-```{r eval=FALSE, warning=FALSE}
+```{r eval = FALSE, warning = FALSE}
 ## Simulation 1
 # An Intervention simulating introduction of treatment
-int_name   <- "Treatment"
+int_name  <- "Treatment"
 
-#Update parameter results data frame to append new results
-params_1 <-params_base
-data_stub<-data0$data
+# Update parameter results data frame to append new results
+params_1  <- params_base
+data_stub <- data0$data
 
-#:::: COMPLETE THE MISSING VALUES AND WRITE A TERM FOR RATE Tx
+# :::: COMPLETE THE MISSING VALUES AND WRITE A TERM FOR RATE Tx
 
 # Change parameters for intervention
-T.cs <-       # Time delay (yrs) between developing symptoms and seeking for care
-pDx  <-       # Probability of being diagnosed once sought care
-pTx  <-       # probability of recieving correct Tx if diagnosed
-T.rTx<-   0.5 # 6 months treatment duration
-Tx <-
+T.cs  <-       # Time delay (yrs) between developing symptoms and seeking for care
+pDx   <-       # Probability of being diagnosed once sought care
+pTx   <-       # probability of recieving correct Tx if diagnosed
+T.rTx <- 0.5   # 6 months treatment duration
+Tx    <-
 
-#::::
+# ::::
   
-params_1["selfcure"]<-selfcure + Tx
+params_1["selfcure"] <- selfcure + Tx
 
-data1<-get_intervention(sfin, params_1, params_base,times_new,
-                       t.interv, fx_scale,fx_basic, int_name, data_stub) 
+data1 <- get_intervention(sfin, params_1, params_base, times_new, t.interv,
+                          fx_scale, fx_basic, int_name, data_stub) 
 
-p1<-data1$lines +
+p1 <- data1$lines +
   # EndTb
-  geom_hline(yintercept=Inc.country*0.1, linetype="dashed", color = "black", size=1)+
+  geom_hline(yintercept = Inc.country*0.1, linetype = "dashed", color = "black", size = 1) +
   # Elimination
-  geom_hline(yintercept=0.1/1e5, linetype="dashed", color = "red", size=1)
+  geom_hline(yintercept = 0.1/1e5, linetype = "dashed", color = "red", size = 1)
 
 
-grid.arrange(p1 ,data1$pie )
+grid.arrange(p1, data1$pie)
 ```
 
 
@@ -581,42 +585,42 @@ You should be looking at a plot similar to the one below.
 
 
 
-```{r echo=FALSE, warning=FALSE}
+```{r echo = FALSE, warning = FALSE}
 ## Simulation 1
 # An Intervention simulating introduction of treatment
-int_name   <- "Treatment"
+int_name  <- "Treatment"
 
-#Update parameter results data frame to append new results
-params_1 <-params_base
-data_stub<-data0$data
+# Update parameter results data frame to append new results
+params_1  <- params_base
+data_stub <- data0$data
 
 
 # Change parameters for intervention
-T.cs <- 1     # Time delay (yrs) between developing symptoms and seeking for care
-pDx  <- 0.95   # Probability of being diagnosed once sought care
-pTx  <- 0.95   # probability of receiving correct Tx if diagnosed
-T.rTx<- 0.5 # 6 months treatment duration
+T.cs  <- 1     # Time delay (yrs) between developing symptoms and seeking for care
+pDx   <- 0.95   # Probability of being diagnosed once sought care
+pTx   <- 0.95   # probability of receiving correct Tx if diagnosed
+T.rTx <- 0.5 # 6 months treatment duration
 
-Tx <-pDx*pTx*(1/(T.cs+T.rTx))
+Tx <- pDx * pTx * (1/(T.cs + T.rTx))
 
-params_1["selfcure"]<-selfcure + Tx
+params_1["selfcure"] <- selfcure + Tx
 
-data1<-get_intervention(sfin, params_1, params_base,times_new,
-                       t.interv, fx_scale,fx_basic, int_name, data_stub) 
+data1 <- get_intervention(sfin, params_1, params_base, times_new, t.interv,
+                          fx_scale, fx_basic, int_name, data_stub) 
 
-p1<-data1$lines +
+p1 <- data1$lines +
   # EndTb
-  geom_hline(yintercept=Inc.country*0.1, linetype="dashed", color = "black", size=1)+
+  geom_hline(yintercept = Inc.country*0.1, linetype = "dashed", color = "black", size = 1) +
   # Elimination
-  geom_hline(yintercept=0.1/1e5, linetype="dashed", color = "red", size=1)
+  geom_hline(yintercept = 0.1/1e5, linetype = "dashed", color = "red", size = 1)
 
 
-grid.arrange(p1 ,data1$pie )
+grid.arrange(p1, data1$pie )
 ```
 
 <!-- --- -->
 
-<!-- ####*Answer* -->
+<!-- #### *Answer* -->
 
 <!-- 8) The fraction of incident cases from a remote source has increased with the intervention. This reflects the fact that successful TB treatment is removing individuals from the infectious pool at a higher rate than they are generated.     -->
 
@@ -639,77 +643,77 @@ Now, let's combine the treatment campaign with an intervention that make TB serv
 
 *(Note: remember that we want to combine interventions, i.e., the previous intervention should be introduced here too)*
 
-```{r eval=FALSE, warning=FALSE}
+```{r eval = FALSE, warning = FALSE}
 ## Simulation 2
 # An Intervention simulating demand generation
-int_name   <- "Demand generation"
+int_name  <- "Demand generation"
 
-#Update parameter results data frame to append new results
-params_2 <-params_1
-data_stub<-data1$data
+# Update parameter results data frame to append new results
+params_2  <- params_1
+data_stub <- data1$data
 
-#::::::: COMPLETE THE MISSING VALUES AND WRITE A NEW TERM FOR Tx
+# ::::::: COMPLETE THE MISSING VALUES AND WRITE A NEW TERM FOR Tx
 
 # Change parameters for intervention
-T.cs <-      # Time delay (yrs) between developing symptoms and seeking for care
-pDx  <-      # Probability of being diagnosed once sought care
-pTx  <-      # probability of receiving correct Tx if diagnosed
-T.rTx<-      # 6 months treatment duration
+T.cs  <-      # Time delay (yrs) between developing symptoms and seeking for care
+pDx   <-      # Probability of being diagnosed once sought care
+pTx   <-      # probability of receiving correct Tx if diagnosed
+T.rTx <-      # 6 months treatment duration
 
-Tx <-
+Tx    <-
 
-#:::::::::::
+# :::::::::::
   
   
-params_2["selfcure"]<-selfcure + Tx
+params_2["selfcure"] <- selfcure + Tx
 
-data2<-get_intervention(sfin, params_2, params_base,times_new,
-                       t.interv, fx_scale,fx_basic, int_name, data_stub) 
+data2 <- get_intervention(sfin, params_2, params_base, times_new, t.interv,
+                          fx_scale, fx_basic, int_name, data_stub) 
 
-p1<-data2$lines +
+p1 <- data2$lines +
   # EndTb
-  geom_hline(yintercept=Inc.country*0.1, linetype="dashed", color = "black", size=1)+
+  geom_hline(yintercept = Inc.country*0.1, linetype = "dashed", color = "black", size = 1) +
   # Elimination
-  geom_hline(yintercept=0.1/1e5, linetype="dashed", color = "red", size=1)
+  geom_hline(yintercept = 0.1/1e5, linetype = "dashed", color = "red", size = 1)
 
 
-grid.arrange(p1 ,data2$pie )
+grid.arrange(p1, data2$pie )
 ```
 
 Our plot should look like this..
 
 
 
-```{r echo=FALSE,, warning=FALSE}
+```{r echo = FALSE,, warning = FALSE}
 ## Simulation 2
 # An Intervention simulating demand generation
-int_name   <- "Demand generation"
+int_name  <- "Demand generation"
 
-#Update parameter results data frame to append new results
-params_2 <-params_1
-data_stub<-data1$data
+# Update parameter results data frame to append new results
+params_2  <- params_1
+data_stub <- data1$data
 
 # Change parameters for intervention
-T.cs <-  1*(1-0.75)    # Time delay (yrs) between developing symptoms and seeking for care
-pDx  <-  0.95     # Probability of being diagnosed once sought care
-pTx  <-  0.95     # probability of receiving correct Tx if diagnosed
-T.rTx<-  0.5     # 6 months treatment duration
+T.cs  <-  1*(1-0.75)    # Time delay (yrs) between developing symptoms and seeking for care
+pDx   <-  0.95     # Probability of being diagnosed once sought care
+pTx   <-  0.95     # probability of receiving correct Tx if diagnosed
+T.rTx <-  0.5     # 6 months treatment duration
 
-Tx <-pDx*pTx*(1/(T.cs+T.rTx))
+Tx    <- pDx*pTx*(1/(T.cs + T.rTx))
 
-params_2["selfcure"]<-selfcure + Tx
+params_2["selfcure"] <- selfcure + Tx
 
-data2<-get_intervention(sfin, params_2, params_BASE,times_new,
-                       t.interv, fx_scale,fx_basic, int_name, data_stub) 
+data2 <- get_intervention(sfin, params_2, params_BASE, times_new, t.interv,
+                          fx_scale, fx_basic, int_name, data_stub) 
 
-p1<-data2$lines +
+p1 <- data2$lines +
   # EndTb
-  geom_hline(yintercept=Inc.country*0.1, linetype="dashed", color = "black", size=1)+
+  geom_hline(yintercept = Inc.country*0.1, linetype = "dashed", color = "black", size = 1) +
   # Elimination
-  geom_hline(yintercept=0.1/1e5, linetype="dashed", color = "red", size=1)
+  geom_hline(yintercept = 0.1/1e5, linetype = "dashed", color = "red", size = 1)
 
 
-grid.arrange(p1 ,data2$pie )
+grid.arrange(p1, data2$pie)
 ```
 
 
@@ -730,30 +734,31 @@ Let's imagine a hypothetical scenario where transmission is completely shut down
 
 
 *Copy and Paste the code below*
-```{r echo=TRUE, warning=FALSE}
-## Simulation 3
-int_name<-"Transmission stop"
 
-#Update parameter results data frame to append new results
-params_3 <-params_2
-data_stub<-data2$data
+```{r echo = TRUE, warning = FALSE}
+## Simulation 3
+int_name  <- "Transmission stop"
+
+# Update parameter results data frame to append new results
+params_3  <- params_2
+data_stub <- data2$data
 
 # An Intervention simulating transmission reduction
 
-params_3["beta"]<-0
+params_3["beta"] <- 0
 
 
-data3<-get_intervention(sfin, params_3, params_base,times_new,
-                       t.interv, fx_scale,fx_basic, int_name, data_stub) 
+data3 <- get_intervention(sfin, params_3, params_base, times_new, t.interv,
+                          fx_scale, fx_basic, int_name, data_stub) 
 
-p1<-data3$lines +
+p1 <- data3$lines +
   # EndTb
-  geom_hline(yintercept=Inc.country*0.1, linetype="dashed", color = "black", size=1)+
+  geom_hline(yintercept = Inc.country*0.1, linetype = "dashed", color = "black", size = 1) +
   # Elimination
-  geom_hline(yintercept=0.1/1e5, linetype="dashed", color = "red", size=1)
+  geom_hline(yintercept = 0.1/1e5, linetype = "dashed", color = "red", size = 1)
 
 
-grid.arrange(p1 ,data3$pie )
+grid.arrange(p1, data3$pie)
 
 ```
 
@@ -775,7 +780,7 @@ A fully curative intervention appears insufficient to drive the TB epidemic to e
 
 <!-- --- -->
 
-<!-- ####*Answer* -->
+<!-- #### *Answer* -->
 
 <!-- 11) Turning beta to zero will stop ongoing transmission but relapse is still happening among previously infected and latent infections are still breaking into active disease.  -->
 
@@ -800,28 +805,28 @@ Let's introduce a prevention campaign that treats 100% latent TB infection (LTBI
 
 *Copy and Paste the code below*
 
-```{r echo=TRUE, warning=FALSE}
+```{r echo = TRUE, warning = FALSE}
 ## Simulation 4
 # An Intervention simulating LTBI treatment
-int_name<- "Prevention"
+int_name  <- "Prevention"
 
-#Update parameter results data frame to append new results
-params_4 <-params_3
-data_stub<-data3$data
+# Update parameter results data frame to append new results
+params_4  <- params_3
+data_stub <- data3$data
 
-params_4["break_in"]<-0.01*(1/T.lfx)
+params_4["break_in"] <- 0.01 * (1/T.lfx)
 
-data4<-get_intervention(sfin, params_4, params_base,times_new,
-                       t.interv, fx_scale,fx_basic, int_name, data_stub) 
+data4 <- get_intervention(sfin, params_4, params_base, times_new,
+                          t.interv, fx_scale, fx_basic, int_name, data_stub) 
 
-p1<-data4$lines +
+p1 <- data4$lines +
   # EndTb
-  geom_hline(yintercept=Inc.country*0.1, linetype="dashed", color = "black", size=1)+
+  geom_hline(yintercept = Inc.country*0.1, linetype = "dashed", color = "black", size = 1) +
   # Elimination
-  geom_hline(yintercept=0.1/1e5, linetype="dashed", color = "red", size=1)
+  geom_hline(yintercept = 0.1/1e5, linetype = "dashed", color = "red", size = 1)
 
 
-grid.arrange(p1 ,data4$pie )
+grid.arrange(p1, data4$pie)
 
 ```
 
@@ -843,7 +848,7 @@ c) MDR-TB
 
 <!-- --- -->
 
-<!-- ####*Answer* -->
+<!-- #### *Answer* -->
 
 <!-- a) Age is an important factor of TB dynamics: Children are more likely to develop extra-pulmonary TB (non-infectious) which overall makes this group (0 to 5 years) less likely to transmit the infection. Also, as the slow progression to latent TB can take periods as long as a life time, it is common to observe that reduction of burden will first impact younger ages while the older groups accumulate the larger number of latent progressors. Finally, age mixing patterns are an important factor when establishing the overall size of the epidemic.  -->
 
@@ -877,7 +882,7 @@ c) MDR-TB
 
 
 
-#About this document
+# About this document
 
 ## Contributors
 
