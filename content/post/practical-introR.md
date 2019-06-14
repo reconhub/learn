@@ -196,7 +196,7 @@ array_example
 ## [2,]   14   16   18
 ```
 
-### Dataframes
+### Data frames
 
 A `data.frame` is a heterogeneous and bi dimensional structure, similar
 but not exactly equal to a matrix. Unlike a matrix, various types of
@@ -267,16 +267,15 @@ platform for programming.
 
 There are various types of functions
 
-*Primitive or base functions*: these are the default functions in *R*
-under the *base package*. For instance, these can include basic
-arithmetic operations, but also more complex operations such as
-extraction of median values `median` or `summary` of a variable.
-
-*Functions from packages* : these are functions created within a
-package. For example the function `glm` in the *stats* package.
-
-*User-built functions*: these are functions that any user creates for a
-customized routine. These functions could become part of a package.
+  - *Primitive or base functions*: these are the default functions in
+    *R* under the *base package*. For instance, these can include basic
+    arithmetic operations, but also more complex operations such as
+    extraction of median values `median` or `summary` of a variable.
+  - *Functions from packages* : these are functions created within a
+    package. For example the function `glm` in the *stats* package.
+  - *User-built functions*: these are functions that any user creates
+    for a customized routine. These functions could become part of a
+    package.
 
 The basic components of a function are:
 
@@ -322,7 +321,7 @@ body(myfun)
 ##     return(BMI)
 ## }
 environment(myfun)
-## <environment: 0x562f83e7ba50>
+## <environment: 0x562f8621e770>
 
 myfun(weight = 88, height = 1.78)
 ## [1] 27.77427
@@ -495,15 +494,15 @@ and then pasting the result here.
 | Uniform           | `punif()`    | `qunif()`    | `dunif()`    | `runif()`    |
 | Weibull           | `pweibull()` | `qweibull()` | `dweibull()` | `rweibull()` |
 
-# Create and open datasets
+# Create and open data sets
 
 R allows users not only to open but also to create data sets. There are
 three sources of data sets:
 
-  - Data-set imported as such (from `.xlsx`, `.csv`, `.stata`, or `.RDS`
+  - Data set imported as such (from `.xlsx`, `.csv`, `.stata`, or `.RDS`
     formats, among many others)
-  - Data-set that is part of a R package
-  - Data-set created in our R session
+  - Data set that is part of a R package
+  - Data set created in our R session
 
 # Tidyverse
 
@@ -749,7 +748,7 @@ glimpse(malaria)
 ## Observations: 10
 ## Variables: 4
 ## $ name      <chr> "a", "b", "c", "d", "e", "f", "g", "h", "i", "j"
-## $ age       <dbl> 18, 31, 36, 50, 31, 8, 14, 27, 35, 21
+## $ age       <dbl> 42, 24, 13, 30, 25, 30, 36, 37, 46, 29
 ## $ gender    <chr> "f", "m", "f", "m", "f", "m", "f", "m", "f", "m"
 ## $ infection <chr> "falciparum", "vivax", "vivax", "vivax", "vivax", "fal…
 
@@ -757,16 +756,16 @@ malaria %>% spread(key = 'infection', gender)
 ## # A tibble: 10 x 4
 ##    name    age falciparum vivax
 ##    <chr> <dbl> <chr>      <chr>
-##  1 a        18 f          <NA> 
-##  2 b        31 <NA>       m    
-##  3 c        36 <NA>       f    
-##  4 d        50 <NA>       m    
-##  5 e        31 <NA>       f    
-##  6 f         8 m          <NA> 
-##  7 g        14 <NA>       f    
-##  8 h        27 <NA>       m    
-##  9 i        35 <NA>       f    
-## 10 j        21 <NA>       m
+##  1 a        42 f          <NA> 
+##  2 b        24 <NA>       m    
+##  3 c        13 <NA>       f    
+##  4 d        30 <NA>       m    
+##  5 e        25 <NA>       f    
+##  6 f        30 m          <NA> 
+##  7 g        36 <NA>       f    
+##  8 h        37 <NA>       m    
+##  9 i        46 <NA>       f    
+## 10 j        29 <NA>       m
 ```
 
 # ggplot2
@@ -845,8 +844,7 @@ from the `dplyr` package.
 ``` r
 
 measles_grouped <- measles_dat %>% 
-  mutate(cases = 1) %>%
-  filter(!(is.na(gender))) %>%
+  filter(!is.na(gender)) %>%
   group_by(date_of_rash, gender) %>% 
   summarise(cases = n())
 
@@ -904,8 +902,9 @@ do not have to make the plot again. We simply add a command to overwrite
 the previous plot.
 
 ``` r
-p + ggtitle('another title') +
-    scale_fill_manual(values =c('blue', 'lightblue')) 
+p + 
+  ggtitle('another title') +
+  scale_fill_manual(values =c('blue', 'lightblue')) 
 ## Scale for 'fill' is already present. Adding another scale for 'fill',
 ## which will replace the existing scale.
 ```
