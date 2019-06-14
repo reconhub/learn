@@ -473,7 +473,7 @@ R allows users not only to open but also to create data sets. There are three so
 
 # Tidyverse
 
-In order to better manage data-sets, we recommend installing and using the `tidyverse` package, which automatically uploads several packages (dplyr, tidyr, tibble, readr, purr, among others) that are useful for data wrangling.
+In order to better manage data sets, we recommend installing and using the `tidyverse` package, which automatically uploads several packages (dplyr, tidyr, tibble, readr, purr, among others) that are useful for data wrangling.
 
 ```{r, echo = TRUE, include=TRUE, eval= TRUE}
 library(tidyverse)
@@ -481,14 +481,14 @@ library(tidyverse)
 
 
 
-Let's open and explore a data-set imported from Excel
+Let's open and explore a data set imported from Excel
 
-This is the data-set from our RECON practical on early outbreak analysis:
+This is the data set from our RECON practical on early outbreak analysis:
 - [PHM-EVD-linelist-2017-10-27.xlsx](../../data/PHM-EVD-contacts-2017-10-27.xlsx):
 
-Let's save this data-set in the same directory in which we are currently working.
+Let's save this data set in the same directory in which we are currently working.
 
-To import data-sets from Excel, we can use the library `readxl`, which is linked to tidyverse. However, we still need to load the `readxl` library, as it is not a core tidyverse package.
+To import data sets from Excel, we can use the library `readxl`, which is linked to tidyverse. However, we still need to load the `readxl` library, as it is not a core tidyverse package.
 
 ```{r, eval=FALSE}
 library(readxl)
@@ -512,11 +512,11 @@ We will be using the pipe function `%>%` often. This is key to using tidyverse a
 
 From the package  `dyplr`, the most common functions are:
 
- - `glimpse`: used to rapidly explore a data-set
- - `arrange`: arranges the data-set by the value of a particular variable if numeric, or by alphabetic order if it is a character.
+ - `glimpse`: used to rapidly explore a data set
+ - `arrange`: arranges the data set by the value of a particular variable if numeric, or by alphabetic order if it is a character.
  - `mutate`: generates a new variable
  - `rename`: changes a variable's name
- - `summarise`: reduces the dimensions of a data-set 
+ - `summarise`: reduces the dimensions of a data set 
 
 
 
@@ -544,7 +544,7 @@ filter(dat, sex == "female", age <= 30)
 
 ```
 
-Let's open and explore a data-set that is part of a package
+Let's open and explore a data set that is part of a package
 
 
 ```{r, echo = TRUE, include=TRUE}
@@ -602,22 +602,22 @@ The main components of a ggplot2 plot are:
 
 All of these commands will use the same syntax for the aesthetics `(x, y, colour, fill, shape)`. 
 
-### GGplot example with the measles data-set 
+### GGplot example with the measles data set 
 
-Let's use the measles data-set from the `outbreaks` package that we imported above. In this case, we want to make a graph that displays the time-series of cases by week coloured by gender. We have to define that:
+Let's use the measles data set from the `outbreaks` package that we imported above. In this case, we want to make a graph that displays the time-series of cases by week coloured by gender. We have to define that:
 
  - `x` = time
  - `y` = aggregated number of cases by week and gender
  - `colour` = gender
 
-An important thing to be of aware is that for a single instruction, ggplot will only use variables that belong to the same data-set. So, we need to have the three variables (x, y, and colour) in the same data frame (with the same length). 
+An important thing to be of aware is that for a single instruction, ggplot will only use variables that belong to the same data set. So, we need to have the three variables (x, y, and colour) in the same data frame (with the same length). 
 
 
 ```{r}
 head(measles_dat, 5)
 ```
 
-From the above command, we notice that the measles data-set does not currently contain one of the three variables, the `y` variable (aggregated number of cases per week, by gender). This means we first need to reformat the data frame so that it contains the three variables we want to plot.
+From the above command, we notice that the measles data set does not currently contain one of the three variables, the `y` variable (aggregated number of cases per week, by gender). This means we first need to reformat the data frame so that it contains the three variables we want to plot.
 
 To reformat the data frame, we can use various functions explained above from the `dplyr` package.
 
