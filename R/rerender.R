@@ -6,7 +6,7 @@
 #'
 #' @return Used for pure side effect
 #' @export
-rerender <- function(rmd = NULL, dir = "content/post", params = list(full_version = FALSE)) { 
+rerender <- function(rmd = NULL, dir = "content/post", params = list(full_version = FALSE), solution = FALSE) { 
   root     <- rprojroot::has_file("DESCRIPTION")
   the_dir  <- root$find_file(dir)
   pv <- rmarkdown::pandoc_version() >= package_version("2.0.0")
@@ -27,6 +27,6 @@ rerender <- function(rmd = NULL, dir = "content/post", params = list(full_versio
       md  <- the_file
       rmd <- gsub("\\.md", "\\.Rmd", the_file) 
     }
-    try_to_render_and_move(rmd, variant, figfile, params)
+    try_to_render_and_move(rmd, variant, figfile, params, solution)
   }
 }
