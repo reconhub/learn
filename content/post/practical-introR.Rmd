@@ -624,8 +624,7 @@ To reformat the data frame, we can use various functions explained above from th
 ```{r}
 
 measles_grouped <- measles_dat %>% 
-  mutate(cases = 1) %>%
-  filter(!(is.na(gender))) %>%
+  filter(!is.na(gender)) %>%
   group_by(date_of_rash, gender) %>% 
   summarise(cases = n())
 
