@@ -21,7 +21,9 @@
 #'   Defaults to the parameter `full_version = FALSE`, which is used to indicate
 #'   if certain chunks should be displayed.
 #' 
-#' @param solution if `TRUE`, then 
+#' @param solution if `TRUE`, then the parameter `full_version` will be set to
+#'   `TRUE` and the documents to render are placed in `content/solutions`, but
+#'   all the figures and widgets will remain in `static/post`. 
 #'
 #' @return Used for pure side effect. If `dry_run = TRUE`, then the list of
 #'   targets to be rendered will be printed.
