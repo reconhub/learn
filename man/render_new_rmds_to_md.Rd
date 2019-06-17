@@ -5,7 +5,8 @@
 \title{Prep Hugo pages by converting Rmds to Md's}
 \usage{
 render_new_rmds_to_md(dir = "content/post", build = "new", tol = 1,
-  dry_run = FALSE, params = list(full_version = FALSE))
+  dry_run = FALSE, params = list(full_version = FALSE),
+  solution = FALSE)
 }
 \arguments{
 \item{dir}{Directory to search for new Rmds in. Defaults to the blog post
@@ -20,6 +21,10 @@ to `FALSE`.}
 \item{params}{a list of parameters to be passed to [rmarkdown::render()].
 Defaults to the parameter `full_version = FALSE`, which is used to indicate
 if certain chunks should be displayed.}
+
+\item{solution}{if `TRUE`, then the parameter `full_version` will be set to
+`TRUE` and the documents to render are placed in `content/solutions`, but
+all the figures and widgets will remain in `static/post`.}
 
 \item{when}{`build = "old"` or `build = "old and new"`, this number will
 avoid re-building md files that are fewer than `tol` seconds old.}

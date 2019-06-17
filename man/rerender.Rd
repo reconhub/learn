@@ -5,7 +5,7 @@
 \title{Re-build an MD file for hugo}
 \usage{
 rerender(rmd = NULL, dir = "content/post", params = list(full_version
-  = FALSE))
+  = FALSE), solution = FALSE)
 }
 \arguments{
 \item{rmd}{the name of an md file you want to rebuild.}
@@ -15,6 +15,10 @@ rerender(rmd = NULL, dir = "content/post", params = list(full_version
 \item{params}{a list of parameters to be passed to [rmarkdown::render()].
 Defaults to the parameter `full_version = FALSE`, which is used to indicate
 if certain chunks should be displayed.}
+
+\item{solution}{if `TRUE`, then the parameter `full_version` will be set to
+`TRUE` and the documents to render are placed in `content/solutions`, but
+all the figures and widgets will remain in `static/post`.}
 }
 \value{
 Used for pure side effect

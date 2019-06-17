@@ -20,6 +20,10 @@
 #' @param params a list of parameters to be passed to [rmarkdown::render()].
 #'   Defaults to the parameter `full_version = FALSE`, which is used to indicate
 #'   if certain chunks should be displayed.
+#' 
+#' @param solution if `TRUE`, then the parameter `full_version` will be set to
+#'   `TRUE` and the documents to render are placed in `content/solutions`, but
+#'   all the figures and widgets will remain in `static/post`. 
 #'
 #' @return Used for pure side effect. If `dry_run = TRUE`, then the list of
 #'   targets to be rendered will be printed.
@@ -28,7 +32,8 @@ render_new_rmds_to_md <- function(dir = "content/post",
                                   build = "new",
                                   tol = 1,
                                   dry_run = FALSE,
-                                  params = list(full_version = FALSE)) {
+                                  params = list(full_version = FALSE),
+                                  solution = FALSE) {
   match.arg(build, c("all", "old and new", "old", "new"))
   root    <- rprojroot::has_file("DESCRIPTION")
   content <- root$find_file(dir)

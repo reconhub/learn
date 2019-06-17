@@ -1,11 +1,15 @@
 Package: learn
-Version: 0.0.0.9000
+Version: 0.0.1.9000
 Title: RECON LEARN content
 Description: Contains RECON learn content and infrastructure to build it.
 Authors@R: c(person("Steph", 
                     "Locke", 
                     email = "steph@itsalocke.com", 
                     role = c("ctr", "aut", "cre")),
+             person("Zhian N.",
+                    "Kamvar",
+                    email = "zkamvar@gmail.com",
+                    role = c("aut")),
              person("R Epidemics Consortium (RECON)", 
                     role = c("cph", "fnd"),
                     email = "thibautjombart@gmail.com",
@@ -28,7 +32,8 @@ Imports:
     fs,
     magrittr,
     dplyr,
-    rlang
+    rlang,
+    xfun
 RoxygenNote: 6.1.1
 License: MIT + file LICENSE
 Suggests: 
