@@ -1,3 +1,4 @@
+#' @importFrom xfun read_utf8 write_utf8
 try_to_render_and_move <- function(rmd, variant, figfile, params, solution = FALSE) {
 
   cpath <- sub("\\.Rmd$", "_files", rmd)
