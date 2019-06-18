@@ -119,7 +119,7 @@ data:
 a linelist containing case information up to the 1st July 2014;
 and
 
-[contact\_20140701.xlsx](https://github.com/reconhub/learn/raw/master/static/data/contacts/20140701.xlsx):
+[contact\_20140701.xlsx](https://github.com/reconhub/learn/raw/master/static/data/contacts_20140701.xlsx):
 a list of contacts reported between cases up to the 1st July 2014.
 “infector” indicates a potential source of infection, and “case\_id”
 the recipient of the contact.
