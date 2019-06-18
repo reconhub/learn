@@ -139,7 +139,7 @@ You have been given the following linelist and contact data:
 
 [linelist_20140701.xlsx](https://github.com/reconhub/learn/raw/master/static/data/linelist_20140701.xlsx): a linelist containing case information up to the 1st July 2014; and
 
-[contact_20140701.xlsx](https://github.com/reconhub/learn/raw/master/static/data/contacts/20140701.xlsx): a list of contacts reported between cases up to the 1st July 2014. "infector" indicates a potential source of infection, and "case_id" the recipient of the contact.
+[contact_20140701.xlsx](https://github.com/reconhub/learn/raw/master/static/data/contacts_20140701.xlsx): a list of contacts reported between cases up to the 1st July 2014. "infector" indicates a potential source of infection, and "case_id" the recipient of the contact.
 
 To read into R, download these files and use the function `read_xlsx()` from the `readxl` package to import the data. Each import will create a data table stored as a `tibble` object. 
 
