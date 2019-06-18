@@ -19,7 +19,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 
 # toggle to render full version 
-full_version   <- FALSE
+full_version   <- FALSE 
 render_snippet <- if (full_version) 'asis' else FALSE
 ```
 
