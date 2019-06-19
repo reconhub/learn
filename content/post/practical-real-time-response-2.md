@@ -608,7 +608,7 @@ curve, if you know the serial interval, you can derive the reproduction
 number.
 
 ![Estimating R0 from the growth rate and the serial
-interval.](figs/R0fromr.png)
+interval.](../../img/R0fromr.png)
 
 Compared to the figure above, there is uncertainty in the growth rate r,
 and the serial interval has a full distribution rather than a single
@@ -632,7 +632,7 @@ R_median_from_growth_rate <- median(R_sample_from_growth_rate)
 R_median_from_growth_rate # compare with R_median
 ```
 
-    ## [1] 1.416124
+    ## [1] 1.414592
 
 ``` r
 # what is the 95%CI?
@@ -641,7 +641,7 @@ R_CI_from_growth_rate # compare with R_CrI
 ```
 
     ##     2.5%    97.5% 
-    ## 1.276007 1.573391
+    ## 1.266280 1.573704
 
 Note the above estimates are slighlty different from those obtained
 using the branching process model. There are a few reasons for this.
@@ -680,16 +680,16 @@ as.matrix(small_proj)
 ```
 
     ##            [,1] [,2] [,3] [,4] [,5]
-    ## 2014-06-18    4    3    3    4    2
-    ## 2014-06-19    3   10    6    8    5
-    ## 2014-06-20    4    4    3    7    2
-    ## 2014-06-21    3    4    6    3    0
-    ## 2014-06-22    4    4    3    7    3
-    ## 2014-06-23    5    8    5    9    6
-    ## 2014-06-24    2    6    5    8    1
-    ## 2014-06-25    3    3    1    8    1
-    ## 2014-06-26    3    6    5   10    3
-    ## 2014-06-27    4    3    8   10    5
+    ## 2014-06-18    2    4    3    2    2
+    ## 2014-06-19    5    4    4    4    1
+    ## 2014-06-20    2    5    4    6    3
+    ## 2014-06-21    6    3    3    7    2
+    ## 2014-06-22    6    6    5    5    1
+    ## 2014-06-23    3    2    5    2    3
+    ## 2014-06-24    8    4    6    5    5
+    ## 2014-06-25    7    8    1    7    5
+    ## 2014-06-26    5    5    5    4    4
+    ## 2014-06-27    9    9    7    7    4
 
 Using the same principle, generate 1,000 trajectories for the next 2
 weeks, using a range of plausible values of `$R$`.  
@@ -735,37 +735,37 @@ apply(proj, 1, summary)
 ```
 
     ##         2014-06-18 2014-06-19 2014-06-20 2014-06-21 2014-06-22 2014-06-23
-    ## Min.         0.000      0.000      0.000      0.000      0.000      0.000
-    ## 1st Qu.      2.000      3.000      3.000      3.000      3.000      3.000
-    ## Median       4.000      4.000      4.000      4.000      4.000      4.000
-    ## Mean         3.891      4.108      4.175      4.299      4.452      4.689
-    ## 3rd Qu.      5.000      5.000      6.000      6.000      6.000      6.000
-    ## Max.        13.000     13.000     11.000     14.000     14.000     14.000
+    ## Min.         0.000      0.000      0.000       0.00      0.000      0.000
+    ## 1st Qu.      2.000      2.000      3.000       3.00      3.000      3.000
+    ## Median       4.000      4.000      4.000       4.00      4.000      4.000
+    ## Mean         3.819      3.987      4.038       4.39      4.276      4.437
+    ## 3rd Qu.      5.000      5.000      5.000       6.00      6.000      6.000
+    ## Max.        11.000     13.000     11.000      12.00     13.000     14.000
     ##         2014-06-24 2014-06-25 2014-06-26 2014-06-27 2014-06-28 2014-06-29
-    ## Min.         0.000      0.000      0.000      0.000      0.000      0.000
-    ## 1st Qu.      3.000      3.000      3.000      3.000      4.000      4.000
-    ## Median       5.000      5.000      5.000      5.000      5.000      5.000
-    ## Mean         4.783      4.972      5.088      5.124      5.451      5.482
-    ## 3rd Qu.      6.000      7.000      7.000      7.000      7.000      7.000
-    ## Max.        16.000     14.000     15.000     18.000     14.000     17.000
+    ## Min.         0.000      0.000      0.000      0.000       0.00      0.000
+    ## 1st Qu.      3.000      3.000      3.000      3.000       3.00      3.000
+    ## Median       4.000      5.000      5.000      5.000       5.00      5.000
+    ## Mean         4.528      4.866      4.909      5.095       5.28      5.351
+    ## 3rd Qu.      6.000      6.000      7.000      7.000       7.00      7.000
+    ## Max.        13.000     14.000     14.000     14.000      16.00     16.000
     ##         2014-06-30 2014-07-01
     ## Min.         0.000      0.000
     ## 1st Qu.      4.000      4.000
-    ## Median       6.000      6.000
-    ## Mean         5.838      5.957
-    ## 3rd Qu.      8.000      8.000
-    ## Max.        19.000     17.000
+    ## Median       5.000      5.000
+    ## Mean         5.564      5.716
+    ## 3rd Qu.      7.000      7.000
+    ## Max.        20.000     19.000
 
 ``` r
 apply(proj, 1, function(x) mean(x > 0)) # proportion of trajectories with at least 
 ```
 
     ## 2014-06-18 2014-06-19 2014-06-20 2014-06-21 2014-06-22 2014-06-23 
-    ##      0.983      0.980      0.983      0.980      0.995      0.992 
+    ##      0.970      0.979      0.980      0.990      0.983      0.986 
     ## 2014-06-24 2014-06-25 2014-06-26 2014-06-27 2014-06-28 2014-06-29 
-    ##      0.989      0.986      0.994      0.990      0.989      0.990 
+    ##      0.993      0.993      0.989      0.988      0.995      0.987 
     ## 2014-06-30 2014-07-01 
-    ##      0.993      0.993
+    ##      0.987      0.992
 
 ``` r
                                         # one case on each given day
@@ -774,37 +774,37 @@ apply(proj, 1, mean) # mean daily number of cases
 ```
 
     ## 2014-06-18 2014-06-19 2014-06-20 2014-06-21 2014-06-22 2014-06-23 
-    ##      3.891      4.108      4.175      4.299      4.452      4.689 
+    ##      3.819      3.987      4.038      4.390      4.276      4.437 
     ## 2014-06-24 2014-06-25 2014-06-26 2014-06-27 2014-06-28 2014-06-29 
-    ##      4.783      4.972      5.088      5.124      5.451      5.482 
+    ##      4.528      4.866      4.909      5.095      5.280      5.351 
     ## 2014-06-30 2014-07-01 
-    ##      5.838      5.957
+    ##      5.564      5.716
 
 ``` r
 apply(apply(proj, 2, cumsum), 1, summary) # projected cumulative number of cases in 
 ```
 
     ##         2014-06-18 2014-06-19 2014-06-20 2014-06-21 2014-06-22 2014-06-23
-    ## Min.         0.000      1.000      2.000      4.000      7.000      9.000
-    ## 1st Qu.      2.000      6.000     10.000     13.000     17.000     21.000
-    ## Median       4.000      8.000     12.000     16.000     21.000     25.000
-    ## Mean         3.891      7.999     12.174     16.473     20.925     25.614
-    ## 3rd Qu.      5.000     10.000     15.000     19.000     25.000     30.000
-    ## Max.        13.000     19.000     26.000     33.000     40.000     48.000
+    ## Min.         0.000      0.000      2.000      5.000       7.00      8.000
+    ## 1st Qu.      2.000      6.000      9.000     13.000      17.00     21.000
+    ## Median       4.000      7.000     12.000     16.000      20.00     25.000
+    ## Mean         3.819      7.806     11.844     16.234      20.51     24.947
+    ## 3rd Qu.      5.000     10.000     14.000     19.000      24.00     29.000
+    ## Max.        11.000     18.000     24.000     36.000      43.00     53.000
     ##         2014-06-24 2014-06-25 2014-06-26 2014-06-27 2014-06-28 2014-06-29
-    ## Min.        11.000     13.000     15.000     15.000     19.000     19.000
-    ## 1st Qu.     25.000     29.000     33.000     37.000     42.000     46.000
-    ## Median      30.000     35.000     40.000     45.000     50.000     55.000
-    ## Mean        30.397     35.369     40.457     45.581     51.032     56.514
-    ## 3rd Qu.     35.000     41.000     47.000     53.000     60.000     66.000
-    ## Max.        54.000     65.000     74.000     81.000     92.000    101.000
+    ## Min.        11.000     13.000      16.00     16.000     17.000     18.000
+    ## 1st Qu.     24.000     28.000      32.00     37.000     41.000     45.000
+    ## Median      29.000     34.000      39.00     44.000     49.000     54.000
+    ## Mean        29.475     34.341      39.25     44.345     49.625     54.976
+    ## 3rd Qu.     34.000     40.000      45.00     51.000     57.000     64.000
+    ## Max.        60.000     69.000      83.00     94.000    105.000    116.000
     ##         2014-06-30 2014-07-01
-    ## Min.        20.000     25.000
-    ## 1st Qu.     51.000     55.750
-    ## Median      61.000     67.000
-    ## Mean        62.352     68.309
-    ## 3rd Qu.     73.000     80.250
-    ## Max.       115.000    123.000
+    ## Min.         20.00     21.000
+    ## 1st Qu.      50.00     54.000
+    ## Median       59.00     65.000
+    ## Mean         60.54     66.256
+    ## 3rd Qu.      70.00     76.000
+    ## Max.        132.00    142.000
 
 ``` r
                                           # the next two weeks
@@ -859,65 +859,65 @@ R_variableSI <- estimate_R(i_daily_trunc, method = "si_from_data",
 
     ## Running 8000 MCMC iterations 
     ## MCMCmetrop1R iteration 1 of 8000 
-    ## function value = -186.97681
+    ## function value = -186.93263
     ## theta = 
-    ##    0.57992
-    ##    1.60961
+    ##    0.61048
+    ##    1.53754
     ## Metropolis acceptance rate = 1.00000
     ## 
     ## MCMCmetrop1R iteration 1001 of 8000 
-    ## function value = -188.77915
+    ## function value = -187.66955
     ## theta = 
-    ##    0.74190
-    ##    1.26669
-    ## Metropolis acceptance rate = 0.54845
+    ##    0.60839
+    ##    1.72039
+    ## Metropolis acceptance rate = 0.55145
     ## 
     ## MCMCmetrop1R iteration 2001 of 8000 
-    ## function value = -186.42113
+    ## function value = -186.33760
     ## theta = 
-    ##    0.71802
-    ##    1.44294
-    ## Metropolis acceptance rate = 0.54773
+    ##    0.84673
+    ##    1.39242
+    ## Metropolis acceptance rate = 0.56322
     ## 
     ## MCMCmetrop1R iteration 3001 of 8000 
-    ## function value = -186.23454
+    ## function value = -186.84716
     ## theta = 
-    ##    0.82682
-    ##    1.36169
-    ## Metropolis acceptance rate = 0.54482
+    ##    0.95161
+    ##    1.19723
+    ## Metropolis acceptance rate = 0.56448
     ## 
     ## MCMCmetrop1R iteration 4001 of 8000 
-    ## function value = -189.83955
+    ## function value = -187.56424
     ## theta = 
-    ##    0.58776
-    ##    1.85335
-    ## Metropolis acceptance rate = 0.54786
+    ##    0.86940
+    ##    1.46982
+    ## Metropolis acceptance rate = 0.55711
     ## 
     ## MCMCmetrop1R iteration 5001 of 8000 
-    ## function value = -186.24615
+    ## function value = -186.49130
     ## theta = 
-    ##    0.77789
-    ##    1.44527
-    ## Metropolis acceptance rate = 0.54649
+    ##    0.76777
+    ##    1.49876
+    ## Metropolis acceptance rate = 0.55449
     ## 
     ## MCMCmetrop1R iteration 6001 of 8000 
-    ## function value = -188.09310
+    ## function value = -186.49278
     ## theta = 
-    ##    0.54887
-    ##    1.52219
-    ## Metropolis acceptance rate = 0.54591
+    ##    0.86552
+    ##    1.39227
+    ## Metropolis acceptance rate = 0.55257
     ## 
     ## MCMCmetrop1R iteration 7001 of 8000 
-    ## function value = -188.18511
+    ## function value = -186.98037
     ## theta = 
-    ##    0.43927
-    ##    1.76422
-    ## Metropolis acceptance rate = 0.54378
+    ##    1.00900
+    ##    1.19664
+    ## Metropolis acceptance rate = 0.55092
     ## 
     ## 
     ## 
     ## @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    ## The Metropolis acceptance rate was 0.54775
+    ## The Metropolis acceptance rate was 0.55012
     ## @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     ## 
     ## Gelman-Rubin MCMC convergence diagnostic was successful.
@@ -956,13 +956,13 @@ R_variableSI_CrI <- c(R_variableSI$R$`Quantile.0.025(R)`, R_variableSI$R$`Quanti
 R_variableSI_median
 ```
 
-    ## [1] 1.299632
+    ## [1] 1.296516
 
 ``` r
 R_variableSI_CrI
 ```
 
-    ## [1] 1.081492 1.548026
+    ## [1] 1.078988 1.544788
 
 ## Estimating time-varying transmissibility
 
