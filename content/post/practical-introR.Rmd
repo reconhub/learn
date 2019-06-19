@@ -490,7 +490,7 @@ library(tidyverse)
 Let's open and explore a data set imported from Excel
 
 This is the data set from our RECON practical on early outbreak analysis:
-- [PHM-EVD-linelist-2017-10-27.xlsx](../../data/PHM-EVD-contacts-2017-10-27.xlsx):
+- [PHM-EVD-linelist-2017-10-27.xlsx](../../data/PHM-EVD-linelist-2017-10-27.xlsx):
 
 Let's save this data set in the same directory in which we are currently working.
 

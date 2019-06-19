@@ -321,7 +321,7 @@ body(myfun)
 ##     return(BMI)
 ## }
 environment(myfun)
-## <environment: 0x562f8621e770>
+## <environment: 0x557de6e9e788>
 
 myfun(weight = 88, height = 1.78)
 ## [1] 27.77427
@@ -519,7 +519,7 @@ Let’s open and explore a data set imported from Excel
 
 This is the data set from our RECON practical on early outbreak
 analysis: -
-[PHM-EVD-linelist-2017-10-27.xlsx](../../data/PHM-EVD-contacts-2017-10-27.xlsx):
+[PHM-EVD-linelist-2017-10-27.xlsx](../../data/PHM-EVD-linelist-2017-10-27.xlsx):
 
 Let’s save this data set in the same directory in which we are currently
 working.
@@ -748,7 +748,7 @@ glimpse(malaria)
 ## Observations: 10
 ## Variables: 4
 ## $ name      <chr> "a", "b", "c", "d", "e", "f", "g", "h", "i", "j"
-## $ age       <dbl> 42, 24, 13, 30, 25, 30, 36, 37, 46, 29
+## $ age       <dbl> 25, 47, 21, 24, 34, 24, 39, 19, 31, 33
 ## $ gender    <chr> "f", "m", "f", "m", "f", "m", "f", "m", "f", "m"
 ## $ infection <chr> "falciparum", "vivax", "vivax", "vivax", "vivax", "fal…
 
@@ -756,16 +756,16 @@ malaria %>% spread(key = 'infection', gender)
 ## # A tibble: 10 x 4
 ##    name    age falciparum vivax
 ##    <chr> <dbl> <chr>      <chr>
-##  1 a        42 f          <NA> 
-##  2 b        24 <NA>       m    
-##  3 c        13 <NA>       f    
-##  4 d        30 <NA>       m    
-##  5 e        25 <NA>       f    
-##  6 f        30 m          <NA> 
-##  7 g        36 <NA>       f    
-##  8 h        37 <NA>       m    
-##  9 i        46 <NA>       f    
-## 10 j        29 <NA>       m
+##  1 a        25 f          <NA> 
+##  2 b        47 <NA>       m    
+##  3 c        21 <NA>       f    
+##  4 d        24 <NA>       m    
+##  5 e        34 <NA>       f    
+##  6 f        24 m          <NA> 
+##  7 g        39 <NA>       f    
+##  8 h        19 <NA>       m    
+##  9 i        31 <NA>       f    
+## 10 j        33 <NA>       m
 ```
 
 # ggplot2
