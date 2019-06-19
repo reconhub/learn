@@ -415,7 +415,7 @@ using the formula described in Wallinga and Lipsitch, Proc Biol Sci, 2007:
  `$R_0 = \frac{1}{\int_{s=0}^{+\infty}e^{-rs}w(s)ds}$`, and implemented in the function `r2R0` of the `epitrix` package. Although this may seem like a complicated formula, the reasoning behind it is simple and illustrated in the figure below: for an observed exponentially growing incidence curve, 
 if you know the serial interval, you can derive the reproduction number. 
 
-![Estimating R0 from the growth rate and the serial interval.](figs/R0fromr.png)
+![Estimating R0 from the growth rate and the serial interval.](../../img/R0fromr.png)
 
 Compared to the figure above, there is uncertainty in the growth rate r, and the serial interval has a full distribution rather than a single value. This can be accounted for in estimating R as follows:
 
