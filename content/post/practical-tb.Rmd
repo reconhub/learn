@@ -566,7 +566,7 @@ cat("
 
 
 
-```{r practical-tb-19, eval = FALSE, warning = FALSE}
+```{r practical-tb-19, eval = FALSE}
 ## Simulation 1
 # An Intervention simulating introduction of treatment
 int_name  <- "Treatment"
