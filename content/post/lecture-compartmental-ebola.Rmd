@@ -25,12 +25,24 @@ The example of the dynamics of Ebola is used.
 
 # Slides
 
-**Click on the image below to access the slides:**
-
-<center>
-<a href="../../slides/compartmental-ebola/compartmental-ebola.pptx"><img class="gateway" src="../../img/highres/seismograph.jpg" width="50%" alt="click there for slides" align="middle"></a>
-</center>
-
+<div class="ebola-images" style="float: center;">
+  <div class="imgContainer" style="width: 48%">
+  <center>
+    <h3>PDF slides (click the image below)</h3>
+    <a href="../../slides/compartmental-ebola/compartmental-ebola.pdf">
+    <img class="gateway" src="../../img/highres/seismograph.jpg" width="100%" alt="click on the image for powerpoint slides">
+    </a>
+  </center>
+  </div>
+  <div class="imgContainer" style="width: 48%">
+  <center>
+    <h3>PPTX slides (click the image below)</h3>
+    <a href="../../slides/compartmental-ebola/compartmental-ebola.pptx">
+    <img class="gateway" src="../../img/highres/seismograph.jpg" width="100%" alt="click on the image for pdf slides">
+    </a>
+  </center>
+  </div>
+</div>
 
 
 

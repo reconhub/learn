@@ -12,6 +12,11 @@
     box-shadow: 5px 5px 20px #80002a;
 }
 
+.imgContainer {
+  float:left;
+  margin-left: 1%;
+}
+
 .site-header {
     background: #3d3d5c;
 }

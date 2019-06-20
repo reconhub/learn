@@ -16,29 +16,60 @@ covers various aspects around epidemiological modelling such as flow
 diagrams, writing ordinary differential equations and reproduction
 number. The example of the dynamics of Ebola is used.
 
-Slides
-======
+# Slides
 
-**Click on the image below to access the slides:**
+<div class="ebola-images" style="float: center;">
+
+<div class="imgContainer" style="width: 48%">
 
 <center>
-<a href="../../slides/compartmental-ebola/compartmental-ebola.pptx"><img class="gateway" src="../../img/highres/seismograph.jpg" width="50%" alt="click there for slides" align="middle"></a>
+
+<h3>
+
+PDF slides (click the image below)
+
+</h3>
+
+<a href="../../slides/compartmental-ebola/compartmental-ebola.pdf">
+<img class="gateway" src="../../img/highres/seismograph.jpg" width="100%" alt="click on the image for powerpoint slides">
+</a>
+
 </center>
-About this document
-===================
 
-Contributors
-------------
+</div>
 
--   Pierre Nouvellet: initial version
+<div class="imgContainer" style="width: 48%">
+
+<center>
+
+<h3>
+
+PPTX slides (click the image below)
+
+</h3>
+
+<a href="../../slides/compartmental-ebola/compartmental-ebola.pptx">
+<img class="gateway" src="../../img/highres/seismograph.jpg" width="100%" alt="click on the image for pdf slides">
+</a>
+
+</center>
+
+</div>
+
+</div>
+
+# About this document
+
+## Contributors
+
+  - Pierre Nouvellet: initial version
 
 Contributions are welcome via [pull
 requests](https://github.com/reconhub/learn/pulls). The source file can
 be found
 [here](https://github.com/reconhub/learn/blob/master/static/slides/compartmental-ebola/compartmental-ebola.pptx).
 
-Legal stuff
------------
+## Legal stuff
 
 **License**: [CC-BY](https://creativecommons.org/licenses/by/3.0/)
 **Copyright**: Pierre Nouvellet, 2017
