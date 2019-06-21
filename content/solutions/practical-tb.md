@@ -439,14 +439,14 @@ out0 <- get_intervention(xstart, params, NA, times, NA, NA, TB.Basic,
                          "Initial", NA) 
 
 # plot
-dot <- data.frame(Data = "Bangladesh", Years = 2017, incidence = Inc.country)
+dot <- data.frame(Data = Inc.country, Years = 2017, incidence = Inc.country)
 
-p1 <- out$lines +
+p1 <- out0$lines +
   geom_point(dot, mapping = aes(x = Years, y = incidence, col = Data), 
              size = 6, shape = 18) 
 
 # Arrange plots in a grid
-grid.arrange(p1, out$pie)
+grid.arrange(p1, out0$pie)
 ```
 
 Visually explore the model fit
@@ -461,13 +461,13 @@ out0  <- get_intervention(xstart, params, NA, times, NA, NA, TB.Basic,
                           "Initial", NA) 
 
 # plot
-dot <- data.frame(Data = "Bangladesh", Years = 2017, incidence = Inc.country)
+dot <- data.frame(Data = country.name, Years = 2017, incidence = Inc.country)
 
-p1 <- out$lines +
+p1 <- out0$lines +
   geom_point(dot, mapping = aes(x = Years, y = incidence, col = Data), 
              size = 6, shape = 18) 
 
-grid.arrange(p1, out$pie)
+grid.arrange(p1, out0$pie)
 ```
 
 ![](../post/practical-tb_files/figure-gfm/practical-tb-14-1.png)<!-- -->
