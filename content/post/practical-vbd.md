@@ -103,7 +103,7 @@ TIME     <-        # Number of years to run the simulation for
 S_h $$`  
 `$$\ \frac{dIh}{dt} = \frac {\beta_h b}{N_h}S_h I_v - (\gamma_h + \mu_h)
 I_h $$`  
-`$$\ \frac{dRh}{dt} = \gamma_h I_h - \mu_h I_h$$`
+`$$\ \frac{dRh}{dt} = \gamma_h I_h - \mu_h R_h$$`
 
 ### Vectors
 
@@ -201,7 +201,7 @@ xstart <- c(Sh = VALUE?,       # meaning??
 out <- as.data.frame(ode(y      = ARGUMENT?,   # meaning??  
                          times  = ARGUMENT?,   # meaning??     
                          fun    = ARGUMENT?,   # meaning??  
-                         parms  = ARGUMENT?,   # meaning??   
+                         parms  = ARGUMENT?))  # meaning??   
 ```
 
 ## The results
@@ -254,7 +254,7 @@ grid.arrange(p1h, p2h, p3h, p4h, ncol = 2)
 
 p1v <- ggplot(data = out, aes(y = (Sv + Ev + Iv), x = years)) +
   geom_line(color = 'grey68', size = 1) +
-  ggtitle('Total mosquitio population') +
+  ggtitle('Total mosquito population') +
   theme_bw() + ylab('number')
 
 p2v <- ggplot(data = out, aes(y = Sv, x = years)) +
