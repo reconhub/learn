@@ -361,7 +361,7 @@ out0 <- get_intervention(xstart, params, NA, times, NA, NA, TB.Basic,
                          "Initial", NA) 
 
 # plot
-dot <- data.frame(Data = Inc.country, Years = 2017, incidence = Inc.country)
+dot <- data.frame(Data = country.name, Years = 2017, incidence = Inc.country)
 
 p1 <- out0$lines +
   geom_point(dot, mapping = aes(x = Years, y = incidence, col = Data), 
