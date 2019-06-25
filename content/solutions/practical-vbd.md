@@ -82,7 +82,6 @@ muv      <-        # mortality of mosquitos
 muh      <-        # mortality of humans
 gamma    <-        # recovery rate in humans
 delta    <-        # extrinsic incubation rate
-b        <-        # Biting Rate
 betah    <-        # Probability of transmission from vector to host
 betav    <-        # Probability of transmission from host to vector
 Nh       <-        # Number of humans (Population of Cali 2.4 million)
