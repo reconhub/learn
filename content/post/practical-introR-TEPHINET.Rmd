@@ -44,7 +44,7 @@ library(tidyverse)
 # Introduction
 
 
-This tutorial is part of the pre-course materials of a "Short Course on Outbreak Analysis and Modelling for Public Health." The aim is to introduce students to the very basic concepts of R and R Studio, in order to get some baseline knowledge in R and R programming. 
+This tutorial was adapted from part of the pre-course materials of a "Short Course on Outbreak Analysis and Modelling for Public Health." The aim is to introduce participants to the very basic concepts of R and R Studio, in order to get some baseline knowledge in R and R programming. 
 
 
 
@@ -421,52 +421,6 @@ mynewfun(xx = 4)
 ```
 
 This characteristic of R is very important when running any analysis or routine. It is always recommended to NOT use elements within a function that are only available in the global environment.
-
-
-# Working with probability distributions
-
-All distributions in R can be explored by the use of functions that allow us to get different forms of a distribution. Fortunately, all distributions work in the same way, so if you learn to work with one, you will have the general idea of how to work with the others
-
-For example, for a normal distribution we use `?dnorm` to explore the arguments in this function 
-
- - `dnorm` = density function with default arguments `(x, mean = 0, sd = 1, log = FALSE)`
- - `pnorm` gives the distribution function
- - `qnorm` gives the quantile function
- - `rnorm`  generates random deviates
-
-Many distributions are part of the `stats` package that comes by default with R such as the _uniform_, _poisson_, and _binomial_, among others. For other less frequently used distributions, sometimes you may need to install other packages. For a non-exhaustive list of the most used distrubutions and their arguments, see the table below:
-
-<!--
-
-ZNK note: This was originally presented in an excel table using kable to
-present as an html table. Unfortunately, the javascript used for protecting
-math was attacking these and creating some truely weird: 
-https://github.com/reconhub/learn/issues/60#issuecomment-501680789
-
-I created this table by using:
-
-    x <- kable(dat, format = "markdown")
-    clipr::write_clip(x)
-
-and then pasting the result here.
-
--->
-|name              |probability  |quantile     |distribution |random       |
-|:-----------------|:------------|:------------|:------------|:------------|
-|Beta              |`pbeta()`    |`qbeta()`    |`dbeta()`    |`rbeta()`    |
-|Binomial          |`pbinom()`   |`qbinom()`   |`dbinom()`   |`rbinom()`   |
-|Cauchy            |`pcauchy()`  |`qcauchy()`  |`dcauchy()`  |`rcauchy()`  |
-|Chi-Square        |`pchisq()`   |`qchisq()`   |`dchisq()`   |`rchisq()`   |
-|Exponential       |`pexp()`     |`qexp()`     |`dexp()`     |`rexp()`     |
-|Gamma             |`pgamma()`   |`qgamma()`   |`dgamma()`   |`rgamma()`   |
-|Logistic          |`plogis()`   |`qlogis()`   |`dlogis()`   |`rlogis()`   |
-|Log Normal        |`plnorm()`   |`qlnorm()`   |`dlnorm()`   |`rlnorm()`   |
-|Negative Binomial |`pnbinom()`  |`qnbinom()`  |`dnbinom()`  |`rnbinom()`  |
-|Normal            |`pnorm()`    |`qnorm()`    |`dnorm()`    |`rnorm()`    |
-|Poisson           |`ppois()`    |`qpois()`    |`dpois()`    |`rpois()`    |
-|Student's t       |`pt()`       |`qt()`       |`dt()`       |`rt()`       |
-|Uniform           |`punif()`    |`qunif()`    |`dunif()`    |`runif()`    |
-|Weibull           |`pweibull()` |`qweibull()` |`dweibull()` |`rweibull()` |
 
 
 # Create and open data sets
