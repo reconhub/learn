@@ -387,7 +387,7 @@ An important part of a package is the documentation. This is stored in the `vign
 
 A new environment is created when we create a function. This is important! When we call a function, R first looks for the elements within that function; if the elements do not exist within that function, then R looks for them in the global environment.
 
-- Example of a function in which objects are only avalible in the global environment
+- Example of a function in which objects are only available in the global environment
 
 ```{r}
 mynewfun <- function() {
@@ -632,11 +632,6 @@ p +
 
 ```
 
-# Further learning
-
-To apply these basic concepts to a particular case, I recommend doing the practical "An outbreak of gastroenteritis in Stegen, Germany" from the RECON learn website https://www.reconlearn.org/post/stegen.html
-
-
 
 # Recommended readings
 
@@ -654,6 +649,7 @@ Much of the content for this basic R tutorial came from well-known books by Hadl
 - Zulma M. Cucunuba: initial version
 - Zhian N. Kamvar: minor edits
 - Kelly A. Charniga: minor edits
+- Amy B. Dighe: minor edits
 
 Contributions are welcome via [pull requests](https://github.com/reconhub/learn/pulls).
 
