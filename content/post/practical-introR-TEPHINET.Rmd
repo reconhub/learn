@@ -453,7 +453,7 @@ To import data sets from Excel, we can use the library `readxl`, which is linked
 ```{r, eval=FALSE}
 library(readxl)
 library(here)
-dat <- read_excel(here("data/PHM-EVD-linelist-2017-10-27.xlsx"))
+dat <- read_excel(here("static/data/PHM-EVD-linelist-2017-10-27.xlsx"))
 
 ```
 
