@@ -276,7 +276,7 @@ body(myfun)
 ##     return(BMI)
 ## }
 environment(myfun)
-## <environment: 0x0000000016dbbfb0>
+## <environment: 0x00000000159ce958>
 
 myfun(weight = 88, height = 1.78)
 ## [1] 27.77427
@@ -405,7 +405,7 @@ To import data sets from Excel, we can use the library `readxl`, which is linked
 ``` r
 library(readxl)
 library(here)
-dat <- read_excel(here("static/data/PHM-EVD-linelist-2017-10-27.xlsx"))
+dat <- read_excel(here("data/PHM-EVD-linelist-2017-10-27.xlsx"))
 ```
 
 Next, we will take a look at some of the most commonly used functions from `tidyverse`.
@@ -616,7 +616,7 @@ glimpse(malaria)
 ## Observations: 10
 ## Variables: 4
 ## $ name      <chr> "a", "b", "c", "d", "e", "f", "g", "h", "i", "j"
-## $ age       <dbl> 23, 35, 19, 32, 10, 58, 29, 18, 12, 15
+## $ age       <dbl> 40, 21, 35, 10, 16, 41, 32, 27, 30, 12
 ## $ gender    <chr> "f", "m", "f", "m", "f", "m", "f", "m", "f", "m"
 ## $ infection <chr> "falciparum", "vivax", "vivax", "vivax", "vivax", "f...
 
@@ -624,16 +624,16 @@ malaria %>% spread(key = 'infection', gender)
 ## # A tibble: 10 x 4
 ##    name    age falciparum vivax
 ##    <chr> <dbl> <chr>      <chr>
-##  1 a        23 f          <NA> 
-##  2 b        35 <NA>       m    
-##  3 c        19 <NA>       f    
-##  4 d        32 <NA>       m    
-##  5 e        10 <NA>       f    
-##  6 f        58 m          <NA> 
-##  7 g        29 <NA>       f    
-##  8 h        18 <NA>       m    
-##  9 i        12 <NA>       f    
-## 10 j        15 <NA>       m
+##  1 a        40 f          <NA> 
+##  2 b        21 <NA>       m    
+##  3 c        35 <NA>       f    
+##  4 d        10 <NA>       m    
+##  5 e        16 <NA>       f    
+##  6 f        41 m          <NA> 
+##  7 g        32 <NA>       f    
+##  8 h        27 <NA>       m    
+##  9 i        30 <NA>       f    
+## 10 j        12 <NA>       m
 ```
 
 ggplot2
