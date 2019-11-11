@@ -93,7 +93,6 @@ linelist <- rio::import("PHM-EVD-linelist-2017-10-27.xlsx")
 Note that for further analyses, you will need to make sure all dates are stored as `Date` objects. This could be done manually using `as.Date`, but will be taken care of here using *linelist*'s `clean_data`:
 
 ``` r
-contacts <- rio::import("../../static/data/PHM-EVD-contacts-2017-10-27.xlsx")
 linelist <- clean_data(linelist, guess_dates = 2)
 contacts <- clean_data(contacts)
 ## Warning in guess_dates(x[[i]], error_tolerance = error_tolerance, ...): 
@@ -196,7 +195,9 @@ x
 You can easily plot these contacts, but with a little bit of tweaking (see `?vis_epicontacts`) you can customise shapes by gender:
 
 ``` r
-p <- plot(x, node_shape = "sex", shapes = c(male = "male", female = "female"), selector = FALSE)
+p <- plot(x, node_shape = "sex",
+          shapes = c(male = "male", female = "female"),
+          selector = FALSE)
 ## p
 ```
 
@@ -215,20 +216,18 @@ The first question PHM asks you is simply: *how bad is it?*. Given that this is 
 
 Using the package `incidence`, compute daily incidence based on the dates of symptom onset. Store the result in an object called `i`; the result should look like (pending some fine tweaking, which you should feel free to ignore if this is your first time using *ggplot2*):
 
-    ## <incidence object>
-    ## [12 cases from days 2017-10-10 to 2017-10-23]
-    ## 
-    ## $counts: matrix with 14 rows and 1 columns
-    ## $n: 12 cases in total
-    ## $dates: 14 dates marking the left-side of bins
-    ## $interval: 1 day
-    ## $timespan: 14 days
-    ## $cumulative: FALSE
-    plot(i, show_cases = TRUE) +
-      theme_bw() +
-      large_txt +
-      rotate_x_txt +
-      labs(title = "Epidemic curve")
+``` r
+i
+## <incidence object>
+## [12 cases from days 2017-10-10 to 2017-10-23]
+## 
+## $counts: matrix with 14 rows and 1 columns
+## $n: 12 cases in total
+## $dates: 14 dates marking the left-side of bins
+## $interval: 1 day
+## $timespan: 14 days
+## $cumulative: FALSE
+```
 
 <img src="practical-ebola-response_files/figure-markdown_github/incidence-1.png" width="80%" />
 
@@ -504,7 +503,7 @@ plot(R) +
   large_txt
 ```
 
-![](practical-ebola-response_files/figure-markdown_github/plot-r-1.png)
+![](practical-ebola-response_files/figure-markdown_github/plot_R-1.png)
 
 ``` r
 
@@ -514,7 +513,7 @@ plot(R, "lambdas") +
 ## Warning: Removed 1 rows containing missing values (position_stack).
 ```
 
-![](practical-ebola-response_files/figure-markdown_github/plot-r-2.png)
+![](practical-ebola-response_files/figure-markdown_github/plot_R-2.png)
 
 The first figure shows the distribution of likely values of *R*, and the Maximum-Likelihood (ML) estimation. The second figure shows the global force of infection over time, with dashed bars indicating dates of onset of the cases.
 
@@ -538,10 +537,10 @@ project(i, R = R$R_ml, si = si, n_sim = 5, n_days = 10, R_fix_within = TRUE)
 ## 
 ##  // first rows/columns:
 ##            [,1] [,2] [,3] [,4] [,5]
-## 2017-10-28    1    2    2    1    3
-## 2017-10-29    1    0    1    2    1
-## 2017-10-30    1    1    1    1    1
-## 2017-10-31    3    0    4    1    1
+## 2017-10-28    3    1    0    1    2
+## 2017-10-29    1    2    2    0    3
+## 2017-10-30    2    2    1    0    0
+## 2017-10-31    2    3    2    2    2
 ##  .
 ##  .
 ##  .
@@ -554,12 +553,13 @@ project(i, R = R$R_ml, si = si, n_sim = 5, n_days = 10, R_fix_within = TRUE)
 Using the same principle, generate 1,000 trajectories for the next 2 weeks, using a range of plausible values of *R*<sub>0</sub>. Note that you can use `sample_R` to obtain these values from your `earlyR` object. Store your results in an object called `proj`. Plotting the results should give something akin to:
 
 ``` r
-proj <- project(i, R = sample_R(R, 1000), si = si,
-                n_sim = 1000, n_days = 14,
-                R_fix_within = TRUE)
 plot(i) %>%
   add_projections(proj, c(.1, .5, .9)) +
-  scale_x_date()
+  theme_bw() +
+  scale_x_date() +
+  large_txt +
+  rotate_x_txt + 
+  labs(title = "Short term forcasting of new cases")
 ## Scale for 'x' is already present. Adding another scale for 'x', which
 ## will replace the existing scale.
 ```
@@ -571,33 +571,33 @@ Interpret the following summary:
 ``` r
 apply(proj, 1, summary)
 ##         2017-10-28 2017-10-29 2017-10-30 2017-10-31 2017-11-01 2017-11-02
-## Min.          0.00      0.000      0.000      0.000      0.000      0.000
-## 1st Qu.       1.00      1.000      1.000      1.000      1.000      1.000
-## Median        1.00      1.000      1.000      2.000      2.000      2.000
-## Mean          1.66      1.628      1.651      1.793      1.845      2.063
-## 3rd Qu.       2.00      2.000      2.000      3.000      3.000      3.000
-## Max.          8.00      8.000      8.000     11.000     12.000     14.000
-##         2017-11-03 2017-11-04 2017-11-05 2017-11-06 2017-11-07 2017-11-08
 ## Min.         0.000      0.000       0.00      0.000      0.000      0.000
 ## 1st Qu.      1.000      1.000       1.00      1.000      1.000      1.000
-## Median       2.000      2.000       2.00      2.000      3.000      3.000
-## Mean         2.299      2.513       2.76      3.005      3.375      3.772
-## 3rd Qu.      3.000      4.000       4.00      4.000      5.000      5.000
-## Max.        14.000     12.000      16.00     19.000     24.000     26.000
+## Median       1.000      1.000       1.00      1.000      2.000      2.000
+## Mean         1.639      1.566       1.61      1.769      1.914      2.123
+## 3rd Qu.      2.000      2.000       2.00      3.000      3.000      3.000
+## Max.         8.000     10.000       7.00     11.000      9.000     11.000
+##         2017-11-03 2017-11-04 2017-11-05 2017-11-06 2017-11-07 2017-11-08
+## Min.          0.00      0.000      0.000      0.000      0.000      0.000
+## 1st Qu.       1.00      1.000      1.000      1.000      1.000      1.000
+## Median        2.00      2.000      2.000      3.000      3.000      3.000
+## Mean          2.28      2.475      2.775      3.065      3.422      3.718
+## 3rd Qu.       3.00      3.000      4.000      4.000      5.000      5.000
+## Max.         13.00     14.000     15.000     17.000     28.000     27.000
 ##         2017-11-09 2017-11-10
 ## Min.         0.000      0.000
-## 1st Qu.      2.000      1.750
+## 1st Qu.      1.000      2.000
 ## Median       3.000      3.000
-## Mean         4.322      4.585
+## Mean         4.287      4.753
 ## 3rd Qu.      6.000      6.000
-## Max.        36.000     32.000
+## Max.        30.000     49.000
 apply(proj, 1, function(x) mean(x>0))
 ## 2017-10-28 2017-10-29 2017-10-30 2017-10-31 2017-11-01 2017-11-02 
-##      0.808      0.793      0.793      0.812      0.793      0.823 
+##      0.790      0.769      0.766      0.778      0.814      0.836 
 ## 2017-11-03 2017-11-04 2017-11-05 2017-11-06 2017-11-07 2017-11-08 
-##      0.835      0.869      0.866      0.852      0.885      0.880 
+##      0.834      0.855      0.858      0.875      0.872      0.891 
 ## 2017-11-09 2017-11-10 
-##      0.899      0.905
+##      0.887      0.904
 ```
 
 <font class="question">According to these results, what are the chances that more cases will appear in the near future?</font><font class="question">Is this outbreak being brought under control?</font> <font class="question">Would you recommend scaling up / down the response?</font>
