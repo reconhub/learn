@@ -43,31 +43,70 @@ you as a consultant in epidemics analysis to inform the response in real time.
 
 ## Required packages
 
-The following packages, available on CRAN, are needed for this case study:
+The following packages are needed for this case study:
 
-- [`readxl`](https://cran.r-project.org/web/packages/readxl/index.html) to read `.xlsx` files
-- [`outbreaks`](http://www.repidemicsconsortium.org/outbreaks/) for some other outbreak data
-- [`incidence`](http://www.repidemicsconsortium.org/incidence/) for epicurves
-- [`epicontacts`](http://www.repidemicsconsortium.org/epicontacts/) for contact data visualisation
-- [`distcrete`](http://www.repidemicsconsortium.org/distcrete) to obtain discretised delay distributions
-- [`epitrix`](http://www.repidemicsconsortium.org/epitrix) to fit discretised Gamma distributions
+- [`rio`](https://cran.r-project.org/web/packages/rio/index.html) to read
+  `.xlsx` files in
+- [`ggplot2`](https://cran.r-project.org/web/packages/ggplot2/index.html) for
+  graphics
+- [`outbreaks`](http://www.repidemicsconsortium.org/outbreaks/) for some other
+  outbreak data
+- [`linelist`](http://www.repidemicsconsortium.org/linelist/) for data cleaning
+- [`incidence`](http://www.repidemicsconsortium.org/incidence/) for epidemic
+  curves and basic model fitting
+- [`epicontacts`](http://www.repidemicsconsortium.org/epicontacts/) for
+  visualisation of contacts / transmission chains
+- [`distcrete`](http://www.repidemicsconsortium.org/distcrete) to obtain
+  discretised delay distributions
+- [`epitrix`](http://www.repidemicsconsortium.org/epitrix) to fit discretised
+  Gamma distributions
 - [`earlyR`](http://www.repidemicsconsortium.org/earlyR) to estimate $R_0$ 
-- [`projections`](http://www.repidemicsconsortium.org/projections) for short term forecasting 
+- [`projections`](http://www.repidemicsconsortium.org/projections) for short
+  term forecasting of cases
 
-To install these packages, use `install.packages`, e.g.:
+For some of these packages, we recommend using the *github* (development)
+version, either because it is more up-to-date, or because they have not been
+released on CRAN yet.
+
+We provide installation commands for each package; not that you only need to
+install these packages if they are not already present on your system.
    
 ```{r install, eval = FALSE}
-install.packages("readxl")
+
+## instructions for CRAN packages
+install.packages("rio")
+install.packages("ggplot2")
+install.packages("magrittr")
 install.packages("outbreaks")
 install.packages("incidence")
-install.packages("epicontacts")
 install.packages("distcrete")
 install.packages("epitrix")
-install.packages("earlyR")
-install.packages("projections")
+
+## instructions for github packages (latest versions)
+remotes::install_github("reconhub/epicontacts")
+remotes::install_github("reconhub/linelist")
+remotes::install_github("reconhub/earlyR")
+remotes::install_github("reconhub/projections")
+
 ```
 
+To load these packages, type:
 
+```{r load_packages}
+
+library(rio)
+library(ggplot2)
+library(magrittr)
+library(outbreaks)
+library(incidence)
+library(epicontacts)
+library(linelist)
+library(distcrete)
+library(epitrix)
+library(earlyR)
+library(projections)
+
+```
 
     
 ## Early data
@@ -90,16 +129,20 @@ as a `tibble` object. Call the first one `linelist`, and the second one
 `contacts`. For instance, you first command line could look like:
 	
 ```{r eval = FALSE}
-linelist <- readxl::read_xlsx("PHM-EVD-linelist-2017-10-27.xlsx")
+linelist <- rio::import("PHM-EVD-linelist-2017-10-27.xlsx")
 ```
 
 Note that for further analyses, you will need to make sure all dates are stored
-as `Date` objects. This can be done using `as.Date`:
+as `Date` objects. This could be done manually using `as.Date`, but will be
+taken care of here using *linelist*'s `clean_data`:
 
-```{r date-conversion, echo = -c(1, 2)}
-linelist <- readxl::read_xlsx("../../static/data/PHM-EVD-linelist-2017-10-27.xlsx")
-contacts <- readxl::read_xlsx("../../static/data/PHM-EVD-contacts-2017-10-27.xlsx")
-linelist$onset <- as.Date(linelist$onset)
+```{r data_import, echo = -c(1:3)}
+
+linelist <- rio::import("../../static/data/PHM-EVD-linelist-2017-10-27.xlsx")
+contacts <- rio::import("../../static/data/PHM-EVD-contacts-2017-10-27.xlsx")
+linelist <- clean_data(linelist, guess_dates = 2)
+contacts <- clean_data(contacts)
+
 ```
 
 
@@ -128,15 +171,17 @@ library(epicontacts)
 x <- make_epicontacts(linelist,
                       contacts, directed = TRUE)
 x
-```  
+```
 
 You can easily plot these contacts, but with a little bit of tweaking (see
 `?vis_epicontacts`) you can customise shapes by gender:
 
 ```{r epicontacts_plot, echo = 1:2, eval = -2}
-p <- plot(x, node_shape = "sex", shapes = c(male = "male", female = "female"), selector = FALSE)
+p <- plot(x, node_shape = "sex",
+          shapes = c(male = "male", female = "female"),
+          selector = FALSE)
 p
-save_and_use_widget(p, "epicontacts_plot.html")
+learn::save_and_use_widget(p, "epicontacts_plot.html")
 ```
 
 <font class="question">What can you say about these contacts?</font>
@@ -154,13 +199,37 @@ in drawing an *epicurve*, i.e. an plot of incidence over time.
 
 Using the package `incidence`, compute daily incidence based on the dates of
 symptom onset. Store the result in an object called `i`; the result should look
-like:
+like (pending some fine tweaking, which you should feel free to ignore if this
+is your first time using *ggplot2*):
 
-```{r incidence, echo = -c(1,2), out.width = "80%", fig.width = 10}
-library(incidence)
+```{r incidence, echo = 3, out.width = "80%", fig.width = 10}
+
 i <- incidence(linelist$onset)
 i
-plot(i)
+large_txt <- ggplot2::theme(text = ggplot2::element_text(size = 16),
+                            axis.text = ggplot2::element_text(size = 14))
+rotate_x_txt <- theme(axis.text.x = element_text(angle = 45,
+                                                 hjust = 1))
+
+plot(i, show_cases = TRUE) +
+  theme_bw() +
+  large_txt +
+  rotate_x_txt +
+  labs(title = "Epidemic curve")
+
+```
+
+where `large_txt` can be defined as:
+
+```{r large_txt, eval = FALSE}
+
+large_txt <- ggplot2::theme(text = ggplot2::element_text(size = 16),
+                            axis.text = ggplot2::element_text(size = 14))
+
+rotate_x_txt <- theme(axis.text.x = element_text(angle = 45,
+                                                 hjust = 1))
+
+
 ```
 
 If you pay close attention to the dates on the x-axis, you may notice that
@@ -170,9 +239,17 @@ using the argument `last_date` in the `incidence` function:
       
 
 ```{r incidence_rectif, out.width = "80%", fig.width = 10}
-i <- incidence(linelist$onset, last_date = as.Date("2017-10-27"))
+
+database_date <- as.Date("2017-10-27")
+i <- incidence(linelist$onset, last_date = database_date)
 i
-plot(i)
+
+plot(i, show_cases = TRUE) +
+  theme_bw() +
+  large_txt +
+  rotate_x_txt +
+  labs(title = sprintf("Epidemic curve as of the %s", database_date))
+
 ```
 
 
@@ -189,9 +266,15 @@ called `f`. You can print `f` to derive estimates of the growth rate $r$ and the
 doubling time, and add the corresponding model to the incidence plot:
 
 ```{r fit, out.width = "80%", fig.width = 10}
+
 f <- fit(i)
 f
-plot(i, fit = f)
+plot(i, show_cases = TRUE, fit = f) +
+  theme_bw() +
+  large_txt +
+  rotate_x_txt +
+  labs(title = "Epidemic curve and log-linear fit")
+
 ```
 
 <font class="question">How would you interpret this result?What criticism would
@@ -253,9 +336,12 @@ create a new `epicontacts` object as before, without plotting it (it is a much
 larger dataset). Store the new object as `old_evd`; the output should look like:
 
 ```{r old_evd, echo = 3}
-library(outbreaks)
-old_evd <- make_epicontacts(ebola_sim_clean$linelist, ebola_sim_clean$contacts, directed = TRUE)
+
+old_evd <- make_epicontacts(ebola_sim_clean$linelist,
+                            ebola_sim_clean$contacts,
+                            directed = TRUE)
 old_evd
+
 ```
 
 The function `get_pairwise` can be used to extract pairwise features of contacts
@@ -264,6 +350,7 @@ assortativity, but also to compute delays between connected cases. Here, we use
 it to extract the serial interval:
 
 ```{r old_si}
+
 old_si <- get_pairwise(old_evd, "date_of_onset")
 summary(old_si)
 old_si <- na.omit(old_si)
@@ -271,6 +358,7 @@ summary(old_si)
 hist(old_si, xlab = "Days after symptom onset", ylab = "Frequency",
      main = "Serial interval (empirical distribution)",
      col = "grey", border = "white")
+
 ```
 
 <font class="question">What do you think of this distribution?</font> Make the
@@ -278,11 +366,13 @@ adjustments you deem necessary, and then use the function `fit_disc_gamma` from
 the package `epitrix` to fit a discretised Gamma distribution to these
 data. Your results should approximately look like:
 
-```{r old_si_fit, echo = -(1:2)}
+```{r old_si_fit, echo = -(1:3)}
+
 library(epitrix)
 old_si <- old_si[old_si < 60]
 si_fit <- fit_disc_gamma(old_si)
 si_fit
+
 ```
 
 `si_fit` contains various information about the fitted delays, including the
@@ -290,6 +380,7 @@ estimated distribution in the `$distribution` slot. You can compare this
 distribution to the empirical data in the following plot:
 
 ```{r si}
+
 si <- si_fit$distribution
 si
 
@@ -299,6 +390,7 @@ hist(old_si, xlab = "Days after symptom onset", ylab = "Frequency",
      nclass = 50, ylim = c(0, 0.07), prob = TRUE)
 points(0:60, si$d(0:60), col = "#9933ff", pch = 20)
 points(0:60, si$d(0:60), col = "#9933ff", type = "l", lty = 2)
+
 ```
 
 <font class="question">Would you trust this estimation of the generation
@@ -319,20 +411,26 @@ you just obtained, use the function `get_R` to estimate the reproduction number,
 specifying a maximum R of 10 (see `?get_R`) and store the result in a new object
 `R`:
 
-```{r estimate-R, echo = FALSE}
+```{r estimate_R, echo = FALSE}
 
-library(earlyR)
-R <- get_R(i, si = si_fit$distribution, max_R = 10)
+R <- get_R(i, si = si_fit$distribution, max_R = 6)
 
 ```
 
 You can visualise the results as follows:
 
-```{r plot-r}
+```{r plot_R}
+
 R
-plot(R)
-plot(R, "lambdas")
-abline(v = linelist$onset, lty = 2)
+
+plot(R) +
+  geom_vline(xintercept = 1, color = "#ac3973") +
+  theme_bw() +
+  large_txt
+
+plot(R, "lambdas") +
+  theme_bw() +
+  large_txt
 
 ```
 
@@ -368,13 +466,18 @@ a range of plausible values of $R_0$. Note that you can use `sample_R` to obtain
 these values from your `earlyR` object. Store your results in an object called
 `proj`. Plotting the results should give something akin to:
 
-```{r project, echo = -3, out.width = "80%", fig.width = 10}
-library(magrittr)
-library(ggplot2)
+```{r project, echo = -1, out.width = "80%", fig.width = 10}
 proj <- project(i, R = sample_R(R, 1000), si = si,
                 n_sim = 1000, n_days = 14,
                 R_fix_within = TRUE)
-plot(i) %>% add_projections(proj, c(.1,.9)) + scale_x_date()
+plot(i) %>%
+  add_projections(proj, c(.1, .5, .9)) +
+  theme_bw() +
+  scale_x_date() +
+  large_txt +
+  rotate_x_txt + 
+  labs(title = "Short term forcasting of new cases")
+
 ```
 
 Interpret the following summary:
@@ -383,8 +486,10 @@ apply(proj, 1, summary)
 apply(proj, 1, function(x) mean(x>0))
 ```
 
-<font class="question">According to these results, what are the chances that more cases will appear in the near future?</font><font class="question">Is this outbreak being brought under control?</font>
-<font class="question">Would you recommend scaling up / down the response?</font>
+<font class="question">According to these results, what are the chances that
+more cases will appear in the near future?</font><font class="question">Is this
+outbreak being brought under control?</font> <font class="question">Would you
+recommend scaling up / down the response?</font>
 
 
 
@@ -405,7 +510,9 @@ reconstruction tools.
 
 - Thibaut Jombart: initial version
 
-Contributions are welcome via [pull requests](https://github.com/reconhub/learn/pulls). The source file is hosted on [github](https://github.com/reconhub/learn/blob/master/content/post/2017-11-21-sim-ebola-response-early.Rmd).
+Contributions are welcome via [pull requests](https://github.com/reconhub/learn/pulls). 
+The source file is hosted on 
+[github](https://github.com/reconhub/learn/blob/master/content/post/2017-11-21-sim-ebola-response-early.Rmd).
 
 
 ## Legal stuff
