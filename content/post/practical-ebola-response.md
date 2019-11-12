@@ -4,7 +4,7 @@ author: Thibaut Jombart, Finlay Campbell
 authors: ["Thibaut Jombart","Finlay Campbell"]
 categories: ["practicals"]
 topics: ["simulation", "response", "ebola", "epicurve", "reproduction number"]
-date: 2018-04-09
+date: 2019-11-12
 image: img/highres/ebola.jpg
 slug: simulated-evd-early
 showonlyimage: true
@@ -69,18 +69,8 @@ To load these packages, type:
 ``` r
 
 library(rio)
-## The following rio suggested packages are not installed: 'csvy', 'feather', 'fst', 'hexView', 'readODS', 'rmatio'
-## Use 'install_formats()' to install them
 library(ggplot2)
 library(dplyr)
-## 
-## Attaching package: 'dplyr'
-## The following objects are masked from 'package:stats':
-## 
-##     filter, lag
-## The following objects are masked from 'package:base':
-## 
-##     intersect, setdiff, setequal, union
 library(magrittr)
 library(outbreaks)
 library(incidence)
@@ -97,14 +87,14 @@ Importing data
 
 While a new data update is pending, you have been given the following linelist and contact data, from the early stages of the outbreak:
 
--   [PHM-EVD-linelist-2017-10-27.xlsx](../../data/PHM-EVD-linelist-2017-10-27.xlsx): a linelist containing case information up to the 27th October 2017
+-   [phm\_evd\_linelist\_2017-10-27.xlsx](../../data/phm_evd_linelist_2017-10-27.xlsx): a linelist containing case information up to the 27th October 2017
 
--   [PHM-EVD-contacts-2017-10-27.xlsx](../../data/PHM-EVD-contacts-2017-10-27.xlsx): a list of contacts reported between cases up to the 27th October 2017, where `from` indicates a potential source of infection, and `to` the recipient of the contact.
+-   [phm\_evd\_contacts\_2017-10-27.xlsx](../../data/phm_evd_contacts_2017-10-27.xlsx): a list of contacts reported between cases up to the 27th October 2017, where `from` indicates a potential source of infection, and `to` the recipient of the contact.
 
 To read into R, download these files and use the function `read_xlsx()` from the `readxl` package to import the data. Each import will create a data table stored as a `tibble` object. Call the first one `linelist`, and the second one `contacts`. For instance, you first command line could look like:
 
 ``` r
-linelist <- rio::import("PHM-EVD-linelist-2017-10-27.xlsx")
+linelist <- rio::import("phm_evd_linelist-2017-10-27.xlsx")
 ```
 
 Note that for further analyses, you will need to make sure all dates are stored as `Date` objects. This could be done manually using `as.Date`, but will be taken care of here using *linelist*'s `clean_data`:
@@ -291,7 +281,7 @@ You can easily plot these contacts, but with a little bit of tweaking (see `?vis
 
 ``` r
 p <- plot(x, node_shape = "sex",
-          shapes = c(male = "male", female = "female"),
+          shapes = c(male = "male", female = "female", unknown = "question-circle"),
           selector = FALSE)
 ## p
 ```
@@ -326,12 +316,12 @@ i
 
 <img src="practical-ebola-response_files/figure-markdown_github/incidence-1.png" width="80%" />
 
-where `large_txt` can be defined as:
+we provide two items `large_txt` and `rotate_x_txt` which you can add to your *ggplot* object to mimic the graph above:
 
 ``` r
 
 large_txt <- ggplot2::theme(text = ggplot2::element_text(size = 16),
-                            axis.text = ggplot2::element_text(size = 14))
+                            axis.text = ggplot2::element_text(size = 12))
 
 rotate_x_txt <- theme(axis.text.x = element_text(angle = 45,
                                                  hjust = 1))
@@ -635,10 +625,10 @@ project(i, R = R$R_ml, si = si, n_sim = 5, n_days = 10, R_fix_within = TRUE)
 ## 
 ##  // first rows/columns:
 ##            [,1] [,2] [,3] [,4] [,5]
-## 2017-10-28    0    0    3    1    0
-## 2017-10-29    1    0    2    1    1
-## 2017-10-30    1    0    1    3    4
-## 2017-10-31    0    0    1    4    1
+## 2017-10-28    1    0    2    0    1
+## 2017-10-29    2    2    1    0    0
+## 2017-10-30    1    1    2    1    2
+## 2017-10-31    4    2    3    0    3
 ##  .
 ##  .
 ##  .
@@ -672,30 +662,30 @@ apply(proj, 1, summary)
 ## Min.         0.000      0.000      0.000      0.000      0.000       0.00
 ## 1st Qu.      1.000      1.000      1.000      1.000      1.000       1.00
 ## Median       1.000      1.000      1.000      1.000      2.000       2.00
-## Mean         1.547      1.567      1.659      1.686      1.875       2.08
+## Mean         1.496      1.567      1.606      1.657      1.811       2.08
 ## 3rd Qu.      2.000      2.000      2.000      2.000      3.000       3.00
-## Max.         7.000      7.000      7.000      9.000      9.000      11.00
+## Max.         8.000      8.000      8.000     10.000      9.000      10.00
 ##         2017-11-03 2017-11-04 2017-11-05 2017-11-06 2017-11-07 2017-11-08
-## Min.          0.00      0.000      0.000      0.000      0.000      0.000
-## 1st Qu.       1.00      1.000      1.000      1.000      1.000      1.000
-## Median        2.00      2.000      2.000      2.000      3.000      3.000
-## Mean          2.29      2.427      2.757      3.057      3.289      3.673
-## 3rd Qu.       3.00      3.000      4.000      4.000      5.000      5.000
-## Max.         11.00     16.000     19.000     18.000     21.000     34.000
+## Min.         0.000       0.00      0.000      0.000      0.000       0.00
+## 1st Qu.      1.000       1.00      1.000      1.000      1.000       1.00
+## Median       2.000       2.00      2.000      2.000      2.000       3.00
+## Mean         2.137       2.45      2.662      2.888      3.201       3.62
+## 3rd Qu.      3.000       3.00      4.000      4.000      4.000       5.00
+## Max.        10.000      11.00     18.000     16.000     20.000      22.00
 ##         2017-11-09 2017-11-10
 ## Min.         0.000      0.000
-## 1st Qu.      1.000      2.000
+## 1st Qu.      1.000      1.000
 ## Median       3.000      3.000
-## Mean         3.995      4.661
-## 3rd Qu.      5.000      6.000
-## Max.        30.000     42.000
+## Mean         4.123      4.339
+## 3rd Qu.      6.000      6.000
+## Max.        28.000     49.000
 apply(proj, 1, function(x) mean(x>0))
 ## 2017-10-28 2017-10-29 2017-10-30 2017-10-31 2017-11-01 2017-11-02 
-##      0.777      0.759      0.769      0.792      0.800      0.825 
+##      0.755      0.768      0.781      0.778      0.798      0.814 
 ## 2017-11-03 2017-11-04 2017-11-05 2017-11-06 2017-11-07 2017-11-08 
-##      0.850      0.839      0.868      0.876      0.885      0.887 
+##      0.809      0.857      0.840      0.862      0.865      0.862 
 ## 2017-11-09 2017-11-10 
-##      0.883      0.911
+##      0.888      0.894
 ```
 
 <font class="question">According to these results, what are the chances that more cases will appear in the near future?</font><font class="question">Is this outbreak being brought under control?</font> <font class="question">Would you recommend scaling up / down the response?</font>

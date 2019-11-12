@@ -125,10 +125,10 @@ library(projections)
 While a new data update is pending, you have been given the following linelist
 and contact data, from the early stages of the outbreak:
 
-- [PHM-EVD-linelist-2017-10-27.xlsx](../../data/PHM-EVD-linelist-2017-10-27.xlsx):
+- [phm_evd_linelist_2017-10-27.xlsx](../../data/phm_evd_linelist_2017-10-27.xlsx):
   a linelist containing case information up to the 27th October 2017
 
-- [PHM-EVD-contacts-2017-10-27.xlsx](../../data/PHM-EVD-contacts-2017-10-27.xlsx):
+- [phm_evd_contacts_2017-10-27.xlsx](../../data/phm_evd_contacts_2017-10-27.xlsx):
   a list of contacts reported between cases up to the 27th October 2017, where
   `from` indicates a potential source of infection, and `to` the recipient of
   the contact.
@@ -140,7 +140,7 @@ as a `tibble` object. Call the first one `linelist`, and the second one
 `contacts`. For instance, you first command line could look like:
 	
 ```{r eval = FALSE}
-linelist <- rio::import("PHM-EVD-linelist-2017-10-27.xlsx")
+linelist <- rio::import("phm_evd_linelist-2017-10-27.xlsx")
 ```
 
 Note that for further analyses, you will need to make sure all dates are stored
@@ -149,8 +149,8 @@ taken care of here using *linelist*'s `clean_data`:
 
 ```{r data_import, echo = FALSE}
 
-linelist_raw <- rio::import("../../static/data/PHM-EVD-linelist-2017-10-27.xlsx")
-contacts_raw <- rio::import("../../static/data/PHM-EVD-contacts-2017-10-27.xlsx")
+linelist_raw <- rio::import("../../static/data/phm_evd_linelist_2017-10-27.xlsx")
+contacts_raw <- rio::import("../../static/data/phm_evd_contacts_2017-10-27.xlsx")
 
 ```
 
@@ -266,7 +266,7 @@ You can easily plot these contacts, but with a little bit of tweaking (see
 
 ```{r epicontacts_plot, echo = 1:2, eval = -2}
 p <- plot(x, node_shape = "sex",
-          shapes = c(male = "male", female = "female"),
+          shapes = c(male = "male", female = "female", unknown = "question-circle"),
           selector = FALSE)
 p
 learn::save_and_use_widget(p, "epicontacts_plot.html")
@@ -307,12 +307,13 @@ plot(i, show_cases = TRUE) +
 
 ```
 
-where `large_txt` can be defined as:
+we provide two items `large_txt` and `rotate_x_txt` which you can add to your
+*ggplot* object to mimic the graph above:
 
 ```{r large_txt, eval = FALSE}
 
 large_txt <- ggplot2::theme(text = ggplot2::element_text(size = 16),
-                            axis.text = ggplot2::element_text(size = 14))
+                            axis.text = ggplot2::element_text(size = 12))
 
 rotate_x_txt <- theme(axis.text.x = element_text(angle = 45,
                                                  hjust = 1))
