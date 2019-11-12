@@ -100,6 +100,46 @@ remotes::install_github("reconhub/projections")
 
 ```
 
+
+
+<details>
+
+<summary><b>What if you are using a *Deployer*?</b> </summary>
+
+The RECON deployer should contain all the right versions of the different
+packages; if you are using a *deployer*, you can install all needed packages by:
+
+1. go to the deployer, double-click on the `.Rproj` file to open a new Rstudio
+   session in the right folder (no need to close the session you have opened for
+   the practical)
+
+2. type the instruction below:
+
+```{r install_deployer, eval = FALSE}
+## activate the deployer
+source("activate.R")
+
+## install packages from the deployer
+install.packages("rio")
+install.packages("ggplot2")
+install.packages("dplyr")
+install.packages("magrittr")
+install.packages("outbreaks")
+install.packages("incidence")
+install.packages("distcrete")
+install.packages("epitrix")
+install.packages("epicontacts")
+install.packages("linelist")
+install.packages("earlyR")
+install.packages("projections")
+
+```
+
+</details>
+
+
+
+
 To load these packages, type:
 
 ```{r load_packages}
@@ -118,6 +158,8 @@ library(earlyR)
 library(projections)
 
 ```
+
+
 
     
 ## Importing data
