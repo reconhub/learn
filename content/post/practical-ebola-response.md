@@ -15,6 +15,9 @@ This practical simulates the early assessment and reconstruction of an Ebola Vir
 
 <br>
 
+<!-- ------------------------------------------- -->
+<!-- ------------------------------------------- -->
+<!-- ------------------------------------------- -->
 A novel EVD outbreak in Ankh, Republic of Morporkia
 ===================================================
 
@@ -27,6 +30,8 @@ The following packages are needed for this case study:
 
 -   [`rio`](https://cran.r-project.org/web/packages/rio/index.html) to read `.xlsx` files in
 -   [`ggplot2`](https://cran.r-project.org/web/packages/ggplot2/index.html) for graphics
+-   [`dplyr`](https://cran.r-project.org/web/packages/dplyr/index.html) for data handling
+-   [`magrittr`](https://cran.r-project.org/web/packages/magrittr/index.html) for data handling
 -   [`outbreaks`](http://www.repidemicsconsortium.org/outbreaks/) for some other outbreak data
 -   [`linelist`](http://www.repidemicsconsortium.org/linelist/) for data cleaning
 -   [`incidence`](http://www.repidemicsconsortium.org/incidence/) for epidemic curves and basic model fitting
@@ -45,6 +50,7 @@ We provide installation commands for each package; not that you only need to ins
 ## instructions for CRAN packages
 install.packages("rio")
 install.packages("ggplot2")
+install.packages("dplyr")
 install.packages("magrittr")
 install.packages("outbreaks")
 install.packages("incidence")
@@ -63,7 +69,18 @@ To load these packages, type:
 ``` r
 
 library(rio)
+## The following rio suggested packages are not installed: 'csvy', 'feather', 'fst', 'hexView', 'readODS', 'rmatio'
+## Use 'install_formats()' to install them
 library(ggplot2)
+library(dplyr)
+## 
+## Attaching package: 'dplyr'
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
 library(magrittr)
 library(outbreaks)
 library(incidence)
@@ -75,8 +92,8 @@ library(earlyR)
 library(projections)
 ```
 
-Early data
-----------
+Importing data
+--------------
 
 While a new data update is pending, you have been given the following linelist and contact data, from the early stages of the outbreak:
 
@@ -92,54 +109,132 @@ linelist <- rio::import("PHM-EVD-linelist-2017-10-27.xlsx")
 
 Note that for further analyses, you will need to make sure all dates are stored as `Date` objects. This could be done manually using `as.Date`, but will be taken care of here using *linelist*'s `clean_data`:
 
-``` r
-linelist <- clean_data(linelist, guess_dates = 2)
-contacts <- clean_data(contacts)
-## Warning in guess_dates(x[[i]], error_tolerance = error_tolerance, ...): 
-## The following 3 dates were not in the correct timeframe (1969-11-11 -- 2019-11-11):
-## 
-##   original  |  parsed    
-##   --------  |  ------    
-##   185911    |  2409-01-01
-##   605322    |  3557-04-24
-##   664549    |  3719-06-21
-```
+Data cleaning
+-------------
 
-Once imported, the data should look like:
+Once imported, the raw data should look like:
 
 ``` r
+
 ## linelist: one line per case
-linelist
-##        id      onset    sex age
-## 1  39e9dc 2017-10-10 female  62
-## 2  664549 2017-10-16   male  28
-## 3  b4d8aa 2017-10-17   male  54
-## 4  51883d 2017-10-18   male  57
-## 5  947e40 2017-10-20 female  23
-## 6  9aa197 2017-10-20 female  66
-## 7  e4b0a2 2017-10-21 female  13
-## 8  af0ac0 2017-10-21   male  10
-## 9  185911 2017-10-21 female  34
-## 10 601d2e 2017-10-22   male  11
-## 11 605322 2017-10-22 female  23
-## 12 e399b1 2017-10-23 female  23
+linelist_raw
+##        id  Date of Onset     Date.Report.   SEX. Âge     location
+## 1  39e9dc          43018            43030 Female  62  Pseudopolis
+## 2  664549          43024            43032   Male  28   peudopolis
+## 3  B4D8AA          43025     “23/10/2017”   male  54 Ankh-Morpork
+## 4  51883d “18// 10/2017”       22-10-2017   male  57  PSEUDOPOLIS
+## 5  947e40          43028     “2017/10/25”      f  23 Ankh Morpork
+## 6  9aa197          43028     “2017-10-23”      f  66           AM
+## 7  e4b0a2          43029     “2017-10-24” female  13 Ankh Morpork
+## 8  AF0AC0   “2017-10-21”     “26-10-2017”      M  10 ankh morpork
+## 9  185911   “2017-10-21”     “26-10-2017” female  34           AM
+## 10 601D2E   “2017/10/22”     “28-10-2017”   <NA>  11           AM
+## 11 605322          43030 “28 / 10 / 2017” FEMALE  23 Ankh Morpork
+## 12 E399B1 23 / 10 / 2017     “28/10/2017” female  23 Ankh Morpork
 
 ## contacts: pairs of cases with reported contacts
-contacts
-##      from     to
-## 1  51883d 185911
-## 2  b4d8aa e4b0a2
-## 3  39e9dc b4d8aa
-## 4  39e9dc 601d2e
-## 5  51883d 9aa197
-## 6  39e9dc 51883d
-## 7  39e9dc e399b1
-## 8  b4d8aa af0ac0
-## 9  39e9dc 947e40
-## 10 39e9dc 664549
-## 11 39e9dc 605322
+contacts_raw
+##    Source Case #ID case.id
+## 1           51883d  185911
+## 2           b4d8aa  e4b0a2
+## 3           39e9dc  b4d8aa
+## 4           39E9DC  601d2e
+## 5           51883d  9AA197
+## 6           39e9dc  51883d
+## 7           39E9DC  e399b1
+## 8           b4d8aa  AF0AC0
+## 9           39E9DC  947e40
+## 10          39E9DC  664549
+## 11          39e9dc  605322
 ```
 
+Examine these data and try to list existing issues.
+
+<details>
+
+<summary><b>What is wrong with the raw data?</b> </summary>
+
+The raw data, whilst very small in size, have a number of issues, including:
+
+-   **capitalisation**: mixture of upper case and lower cases
+
+-   **dates**: their format is very heterogeneous, so that dates are not readily useable
+
+-   **special characters**: accents, various separators and trailing / heading white spaces
+
+-   **typos / inconsistent coding**: gender is sometimes indicated in full words, sometimes abbreviated; location has some obvious abbreviations and typos
+
+</details>
+
+We will use the function `clean_data()` from the *linelist* package to clean these data. This function will:
+
+-   set all characters to lower case
+-   use `_` as universal separator
+-   remove all heading and trailing separators
+-   replace all accentuated characters by their closest ASCII match
+-   detect date formats and convert entries to `Date` when relevant (see argument `guess_dates`)
+-   replace typos and recode variables (see argument `wordlists`)
+
+For this last part, we need to load a separate file containing cleaning rules: [phm\_evd\_cleaning\_rules.xlsx](../../data/phm_evd_cleaning_rules.xlsx).
+
+Examine this file (and read the '*explanations*' tab), import it as the other files, and save the resulting `data.frame` as and object called `cleaning_rules`. The output should look like:
+
+``` r
+cleaning_rules
+##   bad_spelling good_spelling variable
+## 1            f        female      sex
+## 2            m          male      sex
+## 3     .missing       unknown      sex
+## 4           am  ankh_morpork location
+## 5   peudopolis   pseudopolis location
+## 6     .missing       unknown location
+```
+
+We can now clean our data using `clean_data`; execute and interprete the following commands:
+
+``` r
+
+## clean linelist
+linelist <- linelist_raw %>%
+  clean_data(wordlist = cleaning_rules) %>%
+  mutate_at(vars(contains("date")), guess_dates)
+
+linelist
+##        id date_of_onset date_report     sex age     location
+## 1  39e9dc    2017-10-10  2017-10-22  female  62  pseudopolis
+## 2  664549    2017-10-16  2017-10-24    male  28  pseudopolis
+## 3  b4d8aa    2017-10-17  2017-10-23    male  54 ankh_morpork
+## 4  51883d    2017-10-18  2017-10-22    male  57  pseudopolis
+## 5  947e40    2017-10-20  2017-10-25  female  23 ankh_morpork
+## 6  9aa197    2017-10-20  2017-10-23  female  66 ankh_morpork
+## 7  e4b0a2    2017-10-21  2017-10-24  female  13 ankh_morpork
+## 8  af0ac0    2017-10-21  2017-10-26    male  10 ankh_morpork
+## 9  185911    2017-10-21  2017-10-26  female  34 ankh_morpork
+## 10 601d2e    2017-10-22  2017-10-28 unknown  11 ankh_morpork
+## 11 605322    2017-10-22  2017-10-28  female  23 ankh_morpork
+## 12 e399b1    2017-10-23  2017-10-28  female  23 ankh_morpork
+
+
+## clean contacts
+contacts <- clean_data(contacts_raw)
+contacts
+##    source_case_id case_id
+## 1          51883d  185911
+## 2          b4d8aa  e4b0a2
+## 3          39e9dc  b4d8aa
+## 4          39e9dc  601d2e
+## 5          51883d  9aa197
+## 6          39e9dc  51883d
+## 7          39e9dc  e399b1
+## 8          b4d8aa  af0ac0
+## 9          39e9dc  947e40
+## 10         39e9dc  664549
+## 11         39e9dc  605322
+```
+
+<!-- ------------------------------------------- -->
+<!-- ------------------------------------------- -->
+<!-- ------------------------------------------- -->
 Descriptive analyses
 ====================
 
@@ -158,21 +253,21 @@ x
 ## 
 ##   // linelist
 ## 
-## # A tibble: 12 x 4
-##    id     onset      sex      age
-##    <chr>  <date>     <chr>  <dbl>
-##  1 39e9dc 2017-10-10 female    62
-##  2 664549 2017-10-16 male      28
-##  3 b4d8aa 2017-10-17 male      54
-##  4 51883d 2017-10-18 male      57
-##  5 947e40 2017-10-20 female    23
-##  6 9aa197 2017-10-20 female    66
-##  7 e4b0a2 2017-10-21 female    13
-##  8 af0ac0 2017-10-21 male      10
-##  9 185911 2017-10-21 female    34
-## 10 601d2e 2017-10-22 male      11
-## 11 605322 2017-10-22 female    23
-## 12 e399b1 2017-10-23 female    23
+## # A tibble: 12 x 6
+##    id     date_of_onset date_report sex       age location    
+##    <chr>  <date>        <date>      <chr>   <dbl> <chr>       
+##  1 39e9dc 2017-10-10    2017-10-22  female     62 pseudopolis 
+##  2 664549 2017-10-16    2017-10-24  male       28 pseudopolis 
+##  3 b4d8aa 2017-10-17    2017-10-23  male       54 ankh_morpork
+##  4 51883d 2017-10-18    2017-10-22  male       57 pseudopolis 
+##  5 947e40 2017-10-20    2017-10-25  female     23 ankh_morpork
+##  6 9aa197 2017-10-20    2017-10-23  female     66 ankh_morpork
+##  7 e4b0a2 2017-10-21    2017-10-24  female     13 ankh_morpork
+##  8 af0ac0 2017-10-21    2017-10-26  male       10 ankh_morpork
+##  9 185911 2017-10-21    2017-10-26  female     34 ankh_morpork
+## 10 601d2e 2017-10-22    2017-10-28  unknown    11 ankh_morpork
+## 11 605322 2017-10-22    2017-10-28  female     23 ankh_morpork
+## 12 e399b1 2017-10-23    2017-10-28  female     23 ankh_morpork
 ## 
 ##   // contacts
 ## 
@@ -247,7 +342,7 @@ If you pay close attention to the dates on the x-axis, you may notice that somet
 ``` r
 
 database_date <- as.Date("2017-10-27")
-i <- incidence(linelist$onset, last_date = database_date)
+i <- incidence(linelist$date_of_onset, last_date = database_date)
 i
 ## <incidence object>
 ## [12 cases from days 2017-10-10 to 2017-10-27]
@@ -268,6 +363,9 @@ plot(i, show_cases = TRUE) +
 
 <img src="practical-ebola-response_files/figure-markdown_github/incidence_rectif-1.png" width="80%" />
 
+<!-- ------------------------------------------- -->
+<!-- ------------------------------------------- -->
+<!-- ------------------------------------------- -->
 Statistical analyses
 ====================
 
@@ -537,10 +635,10 @@ project(i, R = R$R_ml, si = si, n_sim = 5, n_days = 10, R_fix_within = TRUE)
 ## 
 ##  // first rows/columns:
 ##            [,1] [,2] [,3] [,4] [,5]
-## 2017-10-28    3    1    0    1    2
-## 2017-10-29    1    2    2    0    3
-## 2017-10-30    2    2    1    0    0
-## 2017-10-31    2    3    2    2    2
+## 2017-10-28    0    0    3    1    0
+## 2017-10-29    1    0    2    1    1
+## 2017-10-30    1    0    1    3    4
+## 2017-10-31    0    0    1    4    1
 ##  .
 ##  .
 ##  .
@@ -571,33 +669,33 @@ Interpret the following summary:
 ``` r
 apply(proj, 1, summary)
 ##         2017-10-28 2017-10-29 2017-10-30 2017-10-31 2017-11-01 2017-11-02
-## Min.         0.000      0.000       0.00      0.000      0.000      0.000
-## 1st Qu.      1.000      1.000       1.00      1.000      1.000      1.000
-## Median       1.000      1.000       1.00      1.000      2.000      2.000
-## Mean         1.639      1.566       1.61      1.769      1.914      2.123
-## 3rd Qu.      2.000      2.000       2.00      3.000      3.000      3.000
-## Max.         8.000     10.000       7.00     11.000      9.000     11.000
+## Min.         0.000      0.000      0.000      0.000      0.000       0.00
+## 1st Qu.      1.000      1.000      1.000      1.000      1.000       1.00
+## Median       1.000      1.000      1.000      1.000      2.000       2.00
+## Mean         1.547      1.567      1.659      1.686      1.875       2.08
+## 3rd Qu.      2.000      2.000      2.000      2.000      3.000       3.00
+## Max.         7.000      7.000      7.000      9.000      9.000      11.00
 ##         2017-11-03 2017-11-04 2017-11-05 2017-11-06 2017-11-07 2017-11-08
 ## Min.          0.00      0.000      0.000      0.000      0.000      0.000
 ## 1st Qu.       1.00      1.000      1.000      1.000      1.000      1.000
-## Median        2.00      2.000      2.000      3.000      3.000      3.000
-## Mean          2.28      2.475      2.775      3.065      3.422      3.718
+## Median        2.00      2.000      2.000      2.000      3.000      3.000
+## Mean          2.29      2.427      2.757      3.057      3.289      3.673
 ## 3rd Qu.       3.00      3.000      4.000      4.000      5.000      5.000
-## Max.         13.00     14.000     15.000     17.000     28.000     27.000
+## Max.         11.00     16.000     19.000     18.000     21.000     34.000
 ##         2017-11-09 2017-11-10
 ## Min.         0.000      0.000
 ## 1st Qu.      1.000      2.000
 ## Median       3.000      3.000
-## Mean         4.287      4.753
-## 3rd Qu.      6.000      6.000
-## Max.        30.000     49.000
+## Mean         3.995      4.661
+## 3rd Qu.      5.000      6.000
+## Max.        30.000     42.000
 apply(proj, 1, function(x) mean(x>0))
 ## 2017-10-28 2017-10-29 2017-10-30 2017-10-31 2017-11-01 2017-11-02 
-##      0.790      0.769      0.766      0.778      0.814      0.836 
+##      0.777      0.759      0.769      0.792      0.800      0.825 
 ## 2017-11-03 2017-11-04 2017-11-05 2017-11-06 2017-11-07 2017-11-08 
-##      0.834      0.855      0.858      0.875      0.872      0.891 
+##      0.850      0.839      0.868      0.876      0.885      0.887 
 ## 2017-11-09 2017-11-10 
-##      0.887      0.904
+##      0.883      0.911
 ```
 
 <font class="question">According to these results, what are the chances that more cases will appear in the near future?</font><font class="question">Is this outbreak being brought under control?</font> <font class="question">Would you recommend scaling up / down the response?</font>
