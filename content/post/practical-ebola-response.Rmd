@@ -4,7 +4,7 @@ author: Thibaut Jombart, Finlay Campbell
 authors: ["Thibaut Jombart","Finlay Campbell"]
 categories: ["practicals"]
 topics: ["simulation", "response", "ebola", "epicurve", "reproduction number"]
-date: 2018-04-09
+date: 2019-11-12
 image: img/highres/ebola.jpg
 slug: simulated-evd-early
 showonlyimage: true
@@ -13,9 +13,9 @@ licenses: CC-BY
 
 	
 ```{r options, include = FALSE, message = FALSE, warning = FALSE, error = FALSE}
+
 library(knitr)
 opts_chunk$set(collapse = TRUE)
-
 
 ```
 
@@ -31,6 +31,11 @@ transmission chain reconstruction using *outbreaker2*.
     
 <br>
 
+
+
+<!-- ------------------------------------------- -->
+<!-- ------------------------------------------- -->
+<!-- ------------------------------------------- -->
 	
 # A novel EVD outbreak in Ankh, Republic of Morporkia
 
@@ -49,6 +54,10 @@ The following packages are needed for this case study:
   `.xlsx` files in
 - [`ggplot2`](https://cran.r-project.org/web/packages/ggplot2/index.html) for
   graphics
+- [`dplyr`](https://cran.r-project.org/web/packages/dplyr/index.html) for data
+  handling
+- [`magrittr`](https://cran.r-project.org/web/packages/magrittr/index.html) for data
+  handling 
 - [`outbreaks`](http://www.repidemicsconsortium.org/outbreaks/) for some other
   outbreak data
 - [`linelist`](http://www.repidemicsconsortium.org/linelist/) for data cleaning
@@ -76,6 +85,7 @@ install these packages if they are not already present on your system.
 ## instructions for CRAN packages
 install.packages("rio")
 install.packages("ggplot2")
+install.packages("dplyr")
 install.packages("magrittr")
 install.packages("outbreaks")
 install.packages("incidence")
@@ -90,12 +100,55 @@ remotes::install_github("reconhub/projections")
 
 ```
 
+
+
+<details>
+
+<summary><b>What if you can use a
+[*Deployer*](https://github.com/reconhub/deployer) to install packages?</b>
+</summary>
+
+The RECON deployer should contain all the right versions of the different
+packages; if you are using a *deployer*, you can install all needed packages by:
+
+1. go to the deployer, double-click on the `.Rproj` file to open a new Rstudio
+   session in the right folder (no need to close the session you have opened for
+   the practical)
+
+2. type the instructions below:
+
+```{r install_deployer, eval = FALSE}
+## activate the deployer
+source("activate.R")
+
+## install packages from the deployer
+install.packages("rio")
+install.packages("ggplot2")
+install.packages("dplyr")
+install.packages("magrittr")
+install.packages("outbreaks")
+install.packages("incidence")
+install.packages("distcrete")
+install.packages("epitrix")
+install.packages("epicontacts")
+install.packages("linelist")
+install.packages("earlyR")
+install.packages("projections")
+
+```
+
+</details>
+
+
+
+
 To load these packages, type:
 
 ```{r load_packages}
 
 library(rio)
 library(ggplot2)
+library(dplyr)
 library(magrittr)
 library(outbreaks)
 library(incidence)
@@ -108,16 +161,18 @@ library(projections)
 
 ```
 
+
+
     
-## Early data
+## Importing data
 	
 While a new data update is pending, you have been given the following linelist
 and contact data, from the early stages of the outbreak:
 
-- [PHM-EVD-linelist-2017-10-27.xlsx](../../data/PHM-EVD-linelist-2017-10-27.xlsx):
+- [phm_evd_linelist_2017-10-27.xlsx](../../data/phm_evd_linelist_2017-10-27.xlsx):
   a linelist containing case information up to the 27th October 2017
 
-- [PHM-EVD-contacts-2017-10-27.xlsx](../../data/PHM-EVD-contacts-2017-10-27.xlsx):
+- [phm_evd_contacts_2017-10-27.xlsx](../../data/phm_evd_contacts_2017-10-27.xlsx):
   a list of contacts reported between cases up to the 27th October 2017, where
   `from` indicates a potential source of infection, and `to` the recipient of
   the contact.
@@ -129,34 +184,108 @@ as a `tibble` object. Call the first one `linelist`, and the second one
 `contacts`. For instance, you first command line could look like:
 	
 ```{r eval = FALSE}
-linelist <- rio::import("PHM-EVD-linelist-2017-10-27.xlsx")
+linelist <- rio::import("phm_evd_linelist-2017-10-27.xlsx")
 ```
 
 Note that for further analyses, you will need to make sure all dates are stored
 as `Date` objects. This could be done manually using `as.Date`, but will be
 taken care of here using *linelist*'s `clean_data`:
 
-```{r data_import, echo = -c(1:3)}
+```{r data_import, echo = FALSE}
 
-linelist <- rio::import("../../static/data/PHM-EVD-linelist-2017-10-27.xlsx")
-contacts <- rio::import("../../static/data/PHM-EVD-contacts-2017-10-27.xlsx")
-linelist <- clean_data(linelist, guess_dates = 2)
-contacts <- clean_data(contacts)
+linelist_raw <- rio::import("../../static/data/phm_evd_linelist_2017-10-27.xlsx")
+contacts_raw <- rio::import("../../static/data/phm_evd_contacts_2017-10-27.xlsx")
 
 ```
 
 
-Once imported, the data should look like:
+## Data cleaning
+
+Once imported, the raw data should look like:
           
-```{r read_files}
+```{r raw_data}
+
 ## linelist: one line per case
-linelist
+linelist_raw
 
 ## contacts: pairs of cases with reported contacts
+contacts_raw
+
+```
+
+Examine these data and try to list existing issues. 
+
+
+<details>
+
+<summary><b>What is wrong with the raw data?</b> </summary>
+
+The raw data, whilst very small in size, have a number of issues, including:
+
+* **capitalisation**: mixture of upper case and lower cases
+
+* **dates**: their format is very heterogeneous, so that dates are not readily useable
+
+* **special characters**: accents, various separators and trailing / heading white spaces
+
+* **typos / inconsistent coding**: gender is sometimes indicated in full words,
+  sometimes abbreviated; location has some obvious abbreviations and typos
+
+</details>
+
+
+We will use the function `clean_data()` from the *linelist* package to clean
+these data. This function will:
+
+* set all characters to lower case
+* use `_` as universal separator
+* remove all heading and trailing separators
+* replace all accentuated characters by their closest ASCII match
+* detect date formats and convert entries to `Date` when relevant (see argument
+  `guess_dates`)
+* replace typos and recode variables (see argument `wordlists`)
+
+
+For this last part, we need to load a separate file containing cleaning rules: 
+[phm_evd_cleaning_rules.xlsx](../../data/phm_evd_cleaning_rules.xlsx).
+
+Examine this file (and read the '*explanations*' tab), import it as the other
+files, and save the resulting `data.frame` as and object called
+`cleaning_rules`. The output should look like:
+
+```{r cleaning_rules, echo = -(1:2)}
+
+cleaning_rules <- rio::import("../../static/data/phm_evd_cleaning_rules.xlsx")
+cleaning_rules
+
+```
+
+We can now clean our data using `clean_data`; execute and interprete the
+following commands:
+
+```{r clean_data}
+
+## clean linelist
+linelist <- linelist_raw %>%
+  clean_data(wordlist = cleaning_rules) %>%
+  mutate_at(vars(contains("date")), guess_dates)
+
+linelist
+
+
+## clean contacts
+contacts <- clean_data(contacts_raw)
 contacts
+
 ```
 
 
+
+
+
+<!-- ------------------------------------------- -->
+<!-- ------------------------------------------- -->
+<!-- ------------------------------------------- -->
 
 # Descriptive analyses
 
@@ -169,7 +298,10 @@ function `make_epicontacts` in the `epicontacts` package, create a new
 ```{r epicontacts, echo = -c(1,2)}
 library(epicontacts)
 x <- make_epicontacts(linelist,
-                      contacts, directed = TRUE)
+                      contacts,
+                      from = "source_case_id",
+                      to = "case_id",
+                      directed = TRUE)
 x
 ```
 
@@ -178,7 +310,7 @@ You can easily plot these contacts, but with a little bit of tweaking (see
 
 ```{r epicontacts_plot, echo = 1:2, eval = -2}
 p <- plot(x, node_shape = "sex",
-          shapes = c(male = "male", female = "female"),
+          shapes = c(male = "male", female = "female", unknown = "question-circle"),
           selector = FALSE)
 p
 learn::save_and_use_widget(p, "epicontacts_plot.html")
@@ -204,7 +336,7 @@ is your first time using *ggplot2*):
 
 ```{r incidence, echo = 3, out.width = "80%", fig.width = 10}
 
-i <- incidence(linelist$onset)
+i <- incidence(linelist$date_of_onset)
 i
 large_txt <- ggplot2::theme(text = ggplot2::element_text(size = 16),
                             axis.text = ggplot2::element_text(size = 14))
@@ -219,12 +351,13 @@ plot(i, show_cases = TRUE) +
 
 ```
 
-where `large_txt` can be defined as:
+we provide two items `large_txt` and `rotate_x_txt` which you can add to your
+*ggplot* object to mimic the graph above:
 
 ```{r large_txt, eval = FALSE}
 
 large_txt <- ggplot2::theme(text = ggplot2::element_text(size = 16),
-                            axis.text = ggplot2::element_text(size = 14))
+                            axis.text = ggplot2::element_text(size = 12))
 
 rotate_x_txt <- theme(axis.text.x = element_text(angle = 45,
                                                  hjust = 1))
@@ -241,7 +374,7 @@ using the argument `last_date` in the `incidence` function:
 ```{r incidence_rectif, out.width = "80%", fig.width = 10}
 
 database_date <- as.Date("2017-10-27")
-i <- incidence(linelist$onset, last_date = database_date)
+i <- incidence(linelist$date_of_onset, last_date = database_date)
 i
 
 plot(i, show_cases = TRUE) +
@@ -253,6 +386,13 @@ plot(i, show_cases = TRUE) +
 ```
 
 
+
+
+
+
+<!-- ------------------------------------------- -->
+<!-- ------------------------------------------- -->
+<!-- ------------------------------------------- -->
 
 # Statistical analyses
 
