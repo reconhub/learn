@@ -66,13 +66,13 @@ remotes::install_github("reconhub/projections")
 
 <details>
 
-<summary><b>What if you are using a *Deployer*?</b> </summary>
+<summary><b>What if you can use a [*Deployer*](https://github.com/reconhub/deployer) to install packages?</b> </summary>
 
 The RECON deployer should contain all the right versions of the different packages; if you are using a *deployer*, you can install all needed packages by:
 
 1.  go to the deployer, double-click on the `.Rproj` file to open a new Rstudio session in the right folder (no need to close the session you have opened for the practical)
 
-2.  type the instruction below:
+2.  type the instructions below:
 
 ``` r
 ## activate the deployer
@@ -656,10 +656,10 @@ project(i, R = R$R_ml, si = si, n_sim = 5, n_days = 10, R_fix_within = TRUE)
 ## 
 ##  // first rows/columns:
 ##            [,1] [,2] [,3] [,4] [,5]
-## 2017-10-28    4    0    1    1    0
-## 2017-10-29    2    2    4    1    2
-## 2017-10-30    4    2    4    0    4
-## 2017-10-31    3    2    1    1    1
+## 2017-10-28    1    1    0    1    0
+## 2017-10-29    1    3    1    5    0
+## 2017-10-30    1    0    6    0    0
+## 2017-10-31    2    1    1    0    0
 ##  .
 ##  .
 ##  .
@@ -690,33 +690,33 @@ Interpret the following summary:
 ``` r
 apply(proj, 1, summary)
 ##         2017-10-28 2017-10-29 2017-10-30 2017-10-31 2017-11-01 2017-11-02
-## Min.         0.000      0.000      0.000      0.000       0.00      0.000
-## 1st Qu.      1.000      1.000      1.000      1.000       1.00      1.000
-## Median       1.000      1.000      1.000      1.000       2.00      2.000
-## Mean         1.511      1.658      1.651      1.673       1.85      2.105
-## 3rd Qu.      2.000      2.000      2.000      2.000       3.00      3.000
-## Max.         7.000      9.000      8.000      9.000       8.00     11.000
+## Min.         0.000      0.000      0.000      0.000      0.000      0.000
+## 1st Qu.      1.000      0.750      1.000      1.000      1.000      1.000
+## Median       1.000      1.000      1.000      1.000      2.000      2.000
+## Mean         1.584      1.541      1.693      1.796      1.884      2.073
+## 3rd Qu.      2.000      2.000      2.000      3.000      3.000      3.000
+## Max.         8.000      9.000      8.000      8.000     10.000      9.000
 ##         2017-11-03 2017-11-04 2017-11-05 2017-11-06 2017-11-07 2017-11-08
-## Min.          0.00      0.000      0.000      0.000      0.000      0.000
-## 1st Qu.       1.00      1.000      1.000      1.000      1.000      1.000
-## Median        2.00      2.000      2.000      2.000      2.000      3.000
-## Mean          2.18      2.439      2.697      3.018      3.331      3.738
-## 3rd Qu.       3.00      3.000      4.000      4.000      5.000      5.000
-## Max.         13.00     12.000     14.000     20.000     21.000     26.000
+## Min.         0.000      0.000      0.000      0.000      0.000      0.000
+## 1st Qu.      1.000      1.000      1.000      1.000      1.000      1.000
+## Median       2.000      2.000      2.000      2.000      3.000      3.000
+## Mean         2.356      2.469      2.715      3.104      3.402      3.869
+## 3rd Qu.      3.000      3.000      4.000      4.000      5.000      5.000
+## Max.        10.000     16.000     19.000     20.000     24.000     34.000
 ##         2017-11-09 2017-11-10
 ## Min.         0.000      0.000
-## 1st Qu.      1.000      1.000
+## 1st Qu.      1.000      2.000
 ## Median       3.000      3.000
-## Mean         4.239      4.528
+## Mean         4.265      4.834
 ## 3rd Qu.      6.000      6.000
-## Max.        33.000     33.000
+## Max.        33.000     40.000
 apply(proj, 1, function(x) mean(x>0))
 ## 2017-10-28 2017-10-29 2017-10-30 2017-10-31 2017-11-01 2017-11-02 
-##      0.756      0.792      0.774      0.766      0.804      0.822 
+##      0.787      0.750      0.802      0.790      0.795      0.810 
 ## 2017-11-03 2017-11-04 2017-11-05 2017-11-06 2017-11-07 2017-11-08 
-##      0.823      0.839      0.845      0.869      0.874      0.874 
+##      0.853      0.840      0.847      0.881      0.885      0.896 
 ## 2017-11-09 2017-11-10 
-##      0.895      0.896
+##      0.892      0.926
 ```
 
 <font class="question">According to these results, what are the chances that more cases will appear in the near future?</font><font class="question">Is this outbreak being brought under control?</font> <font class="question">Would you recommend scaling up / down the response?</font>

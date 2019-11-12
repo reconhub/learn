@@ -104,7 +104,9 @@ remotes::install_github("reconhub/projections")
 
 <details>
 
-<summary><b>What if you are using a *Deployer*?</b> </summary>
+<summary><b>What if you can use a
+[*Deployer*](https://github.com/reconhub/deployer) to install packages?</b>
+</summary>
 
 The RECON deployer should contain all the right versions of the different
 packages; if you are using a *deployer*, you can install all needed packages by:
@@ -113,7 +115,7 @@ packages; if you are using a *deployer*, you can install all needed packages by:
    session in the right folder (no need to close the session you have opened for
    the practical)
 
-2. type the instruction below:
+2. type the instructions below:
 
 ```{r install_deployer, eval = FALSE}
 ## activate the deployer
