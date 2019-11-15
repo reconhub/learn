@@ -4,7 +4,7 @@ author: Thibaut Jombart
 authors: ["Thibaut Jombart"]
 categories: ["lectures"]
 topics: ["rmarkdown", "data science", "reproducibility", "outbreak", "response"]
-date: 2018-10-23
+date: 2019-11-14
 image: img/highres/control_room.jpg
 slug: infrastructure
 showonlyimage: true
@@ -12,7 +12,7 @@ css: css/custom.css
 licenses: CC-BY
 ---
 
-Beyond the availability of data and methods, and the use of good practices for reproducible science, the outbreak response context poses a number of practical challenges. In this lecture, we outline tools which can help address some of these challenges, and create more robust and efficient data analytics pipelines using **R**.
+Beyond the availability of data and methods, and the use of good practices for reproducible science, the outbreak response context poses a number of practical challenges for data analysis. In this lecture, we introduce tools which can help address some of these challenges, and create robust, efficient, and more easily deployable data analytics pipelines using **R**.
 
 Slides
 ======
