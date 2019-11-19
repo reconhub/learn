@@ -72,6 +72,24 @@ To install this package, type:
 install.packages("rmarkdown")
 ```
 
+Other resources
+===============
+
+Golden rules for writing analysis reports
+-----------------------------------------
+
+These golden rules list several coding and statistical practices aimed at improving readability and robustness of analysis reports. Click on [this link](https://github.com/reconhub/guides/raw/master/golden_rules.html.zip) to download the current version, or visit [this page](https://github.com/reconhub/guides) for more information.
+
+Report factory templates
+------------------------
+
+This repository provides templates of report factories based on existing factories. Visit the [github project](https://github.com/reconhub/report_factories_templates) for more information.
+
+R4epi templates
+---------------
+
+The *R4epi* project provides several templates for epidemiological data analysis. Visit their [website](https://r4epis.netlify.com/) for more information.
+
 About this document
 ===================
 

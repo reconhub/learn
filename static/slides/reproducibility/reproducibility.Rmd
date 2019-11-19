@@ -1,7 +1,7 @@
 ---
 title: "Reproducible science <br>using ![Rlogo](../../img/slides/Rlogo-small.png)<br><br>"
 author: Thibaut Jombart
-date: "2017-11-10"
+date: "2019-11-19"
 output:
   ioslides_presentation
 ---
@@ -327,13 +327,68 @@ rmarkdown::render("foo.Rmd")
 
 
 
-
 ## Example of `lintr`
 
 <center>
 <img src="../../img/slides/lintr.png" width="80%"><br>
 <small>source: [https://github.com/jimhester/lintr](https://github.com/jimhester/lintr)</small>
 </center>
+
+
+
+
+
+## Structuring analysis reports: question-driven report
+
+<div style="float: left; width: 60%;">
+<img src="../../img/slides/report_question_driven.png" width="100%">
+</div>
+
+<div style="float: left; width: 40%;">
+<br>
+
+> - organised by questions / analysis topics
+
+> - <font color="#99004d">pros</font>: better narrative
+
+> - <font color="#99004d">cons</font>: harder code to follow / review
+</div>
+
+
+
+
+## Structuring analysis reports: code-driven report
+
+<div style="float: left; width: 60%;">
+<img src="../../img/slides/report_code_driven.png" width="100%">
+</div>
+
+<div style="float: left; width: 40%;">
+<br>
+
+> - organised by type of code
+
+> - <font color="#99004d">pros</font>: easier to read / review code
+
+> - <font color="#99004d">cons</font>: narrative harder to follow
+</div>
+
+
+
+
+## Structuring analysis reports: hybrid report
+
+<div style="float: left; width: 60%;">
+<img src="../../img/slides/report_hybrid.png" width="100%">
+</div>
+
+<div style="float: left; width: 40%;">
+
+> - differentiates **infrastructure** *vs* **analysis** code
+> - makes question-specific code *simple*, and *repetitive*
+> - <font color="#99004d">pros</font>: narrative and code easier to read
+> - <font color="#99004d">cons</font>: harder to design (need frequent re-factoring)
+</div>
 
 
 
@@ -355,13 +410,29 @@ Because you never know what can happen..
 <img src="../../img/slides/lost.jpg" width="40%">
 </center>
 
-<br>
-
 > - **never rely on a single computer** to store your work
 > - <font color="#99004d">backups</font> are good, <font color="#99004d">syncing</font> with a server is better (e.g. Dropbox)
 > - use <font color="#99004d">version numbers</font> to track progress
+> - use <a href="https://github.com/reconhub/reportfactory"><font color="#99004d">reportfactory</font></a> for repeated analysis updates
 > - use <font color="#99004d">version control systems</font> (e.g. GIT) for serious
     coding projects
+
+
+
+
+## Going further
+
+<center>
+<img src="../../img/slides/road.jpg" width="70%">
+</center>
+
+<br>
+
+> - check our <a href="https://github.com/reconhub/guides"><font color="#99004d">golden rules</font></a> for writing analysis reports
+> - use <a href="https://github.com/reconhub/report_factories_templates"><font color="#99004d">report factory templates</font></a> as starting points
+> - use <a href="https://r4epis.netlify.com"><font color="#99004d">R4epis templates</font></a> as starting points
+
+
 
 
 ## 

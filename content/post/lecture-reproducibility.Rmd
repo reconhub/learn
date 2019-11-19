@@ -4,7 +4,7 @@ author: Thibaut Jombart
 authors: ["Thibaut Jombart"]
 categories: ["lectures"]
 topics: ["rmarkdown", "data science", "reproducibility"]
-date: 2018-10-23
+date: 2019-11-19
 image: img/highres/printing-press.jpg
 slug: reproducibility
 showonlyimage: true
@@ -96,6 +96,50 @@ To install this package, type:
 ```{r lintr-install, eval = FALSE}
 install.packages("lintr")
 ```
+
+
+
+## `reportfactory`
+
+The `reportfactory` provides an infrastructure for handling multiple `Rmd`
+reports which need regular updating. 
+
+For more information on this package, go to:
+[https://github.com/reconhub/reportfactory](https://github.com/reconhub/reportfactory).
+
+To install this package, type:
+
+```{r reportfactory-install, eval = FALSE}
+remotes::install_github("reconhub/reportfactory")
+```
+
+
+
+
+# Other resources
+
+## Golden rules for writing analysis reports
+
+These golden rules list several coding and statistical practices aimed at
+improving readability and robustness of analysis reports. Click on 
+[this link](https://github.com/reconhub/guides/raw/master/golden_rules.html.zip) 
+to download the current version, or visit [this page](https://github.com/reconhub/guides) 
+for more information.
+
+
+
+## Report factory templates
+
+This repository provides templates of report factories based on existing
+factories. Visit the [github project](https://github.com/reconhub/report_factories_templates) 
+for more information.
+
+
+
+## R4epi templates
+
+The *R4epi* project provides several templates for epidemiological data
+analysis. Visit their [website](https://r4epis.netlify.com/) for more information.
 
 
 
