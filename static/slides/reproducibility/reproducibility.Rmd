@@ -1,7 +1,7 @@
 ---
 title: "Reproducible science <br>using ![Rlogo](../../img/slides/Rlogo-small.png)<br><br>"
 author: Thibaut Jombart
-date: "2017-11-10"
+date: "2019-11-19"
 output:
   ioslides_presentation
 ---
