@@ -1,7 +1,7 @@
 ---
 title: "A primer on statistical outbreak analysis"
 author: "Thibaut Jombart"
-date: "2018-02-25"
+date: "2019-11-21"
 output:
   ioslides_presentation:
     incremental: false
@@ -76,6 +76,99 @@ Disease-dependent, but generally includes:
 - Who is most severely affected?
 - How many cases should we expect in the next days / weeks?
 - ...
+
+
+
+
+
+# Refresher on statistics
+
+## Some basic definitions
+
+> - <font color="#99004d">**population**</font>: set of all possible observations of a given process/entity
+<br>**example**: all possible cases of cholera in location *xxx* 
+
+> - <font color="#99004d">**sample**</font>: subset of the *population*
+<br>**example**: all cases of cholera in *xxx* reported last week
+
+> - a <font color="#99004d">**statistic**</font>: quantity used to describe *sample* / *population*
+<br>**example**: % of fatalities in cholera cases in *xxx* last week
+
+> - <font color="#99004d">**inference**</font>: statement about *population(s)* from *sample(s)*
+<br>**example**: % of fatalities in cholera cases in *xxx* is greater than in *yyy*
+
+
+
+
+## Population, sample, uncertainty
+
+<center>
+<img src="../../img/slides/sampling.png" width="90%">
+</center>
+
+
+
+
+## Uncertainty *vs* variability
+
+<center>
+<img src="../../img/slides/uncertainty_vs_variability.png" width="90%">
+</center>
+
+
+
+
+## Good statistical practices
+
+<center>
+<img src="../../img/slides/bad_stats_kill_kittens.png" width="60%">
+</center>
+
+<br>
+
+> - when presenting <font color="#99004d">**estimates**</font>, show the
+associated <font color="#99004d">**uncertainty**</font>
+
+> - always <font color="#99004d">**show the data**</font> when possible (not just a model)
+
+> - account for the <font color="#99004d">**variability**</font> in the data
+
+
+
+
+## Bad practice example 1 {.smaller}
+
+<center>
+<img src="../../img/slides/bad_stats_practice_1.png" width="100%">
+</center>
+
+Source: Ebola response epicell weekly presentation, Goma (DRC), 19 June 2019
+
+
+
+
+
+## Bad practice example 2 {.smaller}
+
+<center>
+<img src="../../img/slides/bad_stats_practice_2.png" width="100%">
+</center>
+
+**Source:** Ebola response epicell weekly presentation, Goma (DRC), 29 May 2019
+
+
+
+
+
+## Bad practice example 3 {.smaller}
+
+<center>
+<img src="../../img/slides/bad_stats_practice_3.png" width="100%">
+</center>
+
+**Source:** Ebola response epicell weekly presentation, Goma (DRC), 29 May 2019
+
+
 
 
 
