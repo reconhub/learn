@@ -3,8 +3,8 @@ title: A primer on statistical outbreak analysis
 author: "Thibaut Jombart"
 authors: ["Thibaut Jombart"]
 categories: ["lectures"]
-topics: ["epicurve", "delays", "reproduction number", "forecasting"]
-date: 2018-10-07
+topics: ["epicurve", "delays", "uncertainty", "variability", "reproduction number", "forecasting"]
+date: 2019-11-21
 image: img/highres/stats-notebook.jpg
 slug: "outbreakstatsprimer"
 showonlyimage: true
