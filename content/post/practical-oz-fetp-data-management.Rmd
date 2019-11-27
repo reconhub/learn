@@ -1,0 +1,1309 @@
+---
+title: Analysis of Public Health Data
+author: Arminder Deol
+authors: ["Catherine D'Este", "Tambri Housen", "Alice Richardson", "Nidhi Menon", "Arminder Deol"]
+
+categories: ["practicals"]
+topics: ["topics1","topics2"]
+date: 2019-11-27
+image: img/highres/oz-fetp-data-management.jpg
+showonlyimage: yes
+bibliography: oz-fetp-data-management.bib
+licenses: CC-BY
+always_allow_html: yes
+output:
+  md_document:
+    variant: markdown_github
+    preserve_yaml: yes
+---
+
+	
+```{r options, include = FALSE, message = FALSE, warning = FALSE, error = FALSE}
+library(knitr)
+opts_chunk$set(collapse = TRUE)
+
+
+CACHE <- TRUE
+
+```
+
+This manual was created for the [Australian Field Epidemiology Training
+Program---Masters of Philosophy (Applied
+Epidemiology)](https://rsph.anu.edu.au/study/master-degrees/master-philosophy-applied-epidemiology),
+Australian National University. CRICOS Provider No. 00120C
+
+***
+### Learning objectives
+
+This module provides an introduction to the R statistical package. On completion of this module you should:
+
+
+1. Have an understanding of basic features of the R statistical program 
+2. Be familiar with the R environment 
+3. Be able to undertake basic R commands to input, view, describe and save data 
+4. Be able to generate basic graphs 
+5. Have an understanding of the requirements for data checking and data cleaning 
+6. Be able to undertake manipulation of variables, including dates 
+7. Be able to undertake manipulation of datasets, such as appending, merging and reshaping
+
+***
+
+#### Textbook 
+
++	Kirkwood B and Sterne J. Essential Medical Statistics, 2nd Edition. May 2003, ©2003, Wiley-Blackwell. 
+
+#### References 
+
++	Donegan K, King B and Bryan P. Safety of pertussis vaccination in pregnant women in UK: observational study. BMJ 2014;349:g4219 doi: 10.1136/bmj.g4219 (Published 11 July 2014). 
+
++	Gregoire AJ, Kumar R, Everitt B, Henderson AF, Studd JW. Transdermal oestrogen for treatment of severe postnatal depression. Lancet. 1996 Apr 6;347(9006):930-3. 
+
++ Rabe-Hesketh S and Everitt B. A Handbook of Statistical Analyses Using R; Fourth Edition. 2007, Chapman & Hall/CRC. 
+
++ Spanos A, Harrell FE, Durack DT. Differential diagnosis of acute meningitis: An analysis of the predictive value of initial observations. JAMA, 1989; 262: 2700-2707. 
+
+#### Datasets 
+
+##### *Meningitis data* 
+
++ meningitis.csv dataset: dataset in csv (comma delimited) format 
+
+##### *Pertussis data*
+
++ pertussis.csv 
+
+##### *Dates data*
+
++ date exercise.csv: date exercise in csv (comma delimited) format 
+
+##### *Postnatal depression data* 
+
++	depress1a.csv
++ depress1b.csv 
++ depress2.csv 
++ depress3b.csv 
++ depress4_5.csv 
++ depress6a.csv 
++ depress6b.csv 
+
+
+``` {r, include=FALSE}
+if (!require(psych)) {
+    install.packages("psych")
+    require(psych)
+}
+if (!require(ggplot2)) {
+    install.packages("ggplot2")
+    require(ggplot2)
+}
+if (!require(dplyr)) {
+    install.packages("dplyr")
+    require(dplyr)
+}
+if (!require(reshape)) {
+    install.packages("reshape")
+    require(reshape)
+}
+``` 
+
+### Introduction to R and Describing Data
+
+R is a very powerful, and relatively easy to use Statistical package which
+allows you to undertake data management and manipulation, perform a range of
+basic and complex statistical tests and analyses, and generate a wide variety
+of different graphs. For this course, you will be required to use R to
+undertake basic analysis and graphics.
+
+R is a dialect of the S language. It is a case-sensitive, interpreted language.
+You can enter commands one at a time at the command prompt (>) or run a set of
+commands from a source file. There is a wide variety of data types, including
+vectors (numerical, character, logical), matrices, data frames, and lists. Most
+functionality is provided through built-in and user-created functions and all
+data objects are kept in memory during an interactive session. Basic functions
+are available by default. Other functions are contained in packages that can be
+attached to a current session as needed.
+
+R packages are bundles of functions which extend the capabilities of R.
+Thousands of add-on packages are available in the main online repository (CRAN)
+and several more packages can be found on GitHub. These packages can be found
+and installed online. 
+
+Stata and R have minor difference in default setting and methods. In this
+document, we will follow the Stata analysis as closely as possible, but small
+and usually important difference in Stata and R will be noted. Unlike Stata, R
+can hold multiple datasets in memory simultaneously and so, there is no need to
+save intermediate files or close and re-open datasets. 
+
+You need to communicate with R in a way that the program understands; i.e. you
+need to be able to tell R what you want in a way that it understands. You can
+do this by typing in commands using an appropriate “language”.
+
+Syntax, also sometimes referred to as “code” or “programming”, refers to the
+grammatical rules that you need to follow so that R understands what you want
+it to do. Syntax does not necessarily follow rules of English grammar! You tell
+R to do something by using the correct command or set of commands. An R command
+is a combination of syntax elements, expressed following the rules of ‘R
+language’. 
+
+
+### R Studio
+
+R Studio is an integrated development environment (IDE) for R. It includes a console, syntax-highlighting editor that supports direct code execution, as well as tools for plotting, history, and debugging and workspace management.  It is available in open source and commercial editions on the desktop (Windows, Mac, and Linux) and from a web browser to a Linux server running R Studio Server or R Studio Server Pro. In this course, we will be using R Studio. The R Studio environment is similar to the Stata environment and we hope will help ease the transition from Stata to R. 
+
+Ensure you have the latest [Java](https://www.java.com/en/download/) installed. Download and install [R](https://cran.r-project.org/) and [RStudio](https://www.rstudio.com/products/rstudio/download/)
+
+### The R Program 
+
+Open the R program using RStudio by double-clicking on the icon (as you would open any other program that you are familiar with).
+
+```{r, fig.align='center', out.width = "100px", echo=FALSE}
+knitr::include_graphics("fig1_Ricon.png")
+```
+
+### RStudio Interface
+
+The diagram below shows the open RStudio program; you will see that there are various different components or windows. The R windows are: 
+
++ R Script– where you type in R commands one by one (visible once you open or create a new R scropt file) 
+
++ Console window – this shows a log of everything you do in R session, including commands and results of these commands 
+
++ History – keeps a record of every command you enter in R session 
+
++	Environment–stored all the datasets, arrays, lists and variables created in R
+
++	Figures – Displays all plots and figures created in R. You can use the arrows to move between images. The export option can be used to save the plots as pdf or image, or to copy plots to clipboard. 
+
++ Packages – you can select the packages to be installed from the list of packages 
+
+```{r, fig.align='center', out.width = "750px", echo=FALSE}
+knitr::include_graphics("fig2_Rstudio_screenshot.png")
+```
+
+### RStudio Menu 
+
+On the top left hand side of the screen you will see the set of R icons.
+
+
+```{r, fig.align='center', out.width = "750px", echo=FALSE}
+knitr::include_graphics("fig3_Rstudio_screenshot_2nd.png")
+```
+
+
+    On your computer, identify: 
+    
+    1. the R console
+    2. the R script
+    3. the R environment
+
+
+### Datasets
+
+The first dataset we will be using has been modified from a dataset for 581 patients with acute meningitis (Table 1). Data from a subset of 422 patients were used to examine factors associated with differentiating between acute viral or acute bacterial meningitis^[Spanos A, Harrell FE, Durack DT. Differential diagnosis of acute meningitis: An analysis of the predictive value of initial observations. JAMA, 1989; 262: 2700-2707]. The original dataset can be found at: http://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/Cabm.html
+
+The dataset is available as **meningitis.csv** dataset: A comma delimited Excel file which can be imported into R or other statistical programs; this type of file has a .csv extension. 
+
+
+**Table 1:**  Format of meningitis dataset
+
+```{r, fig.align='center', out.width = "750px", echo=FALSE}
+knitr::include_graphics("table1_formatting.png")
+```
+
+
+## Opening data 
+
+### Creating a new project
+
+Create a new R project under “File > New Project…” and select “New Directory > New Project” (noting file path so that you know where to save .csv files etc. on your computer). 
+
+The project file name you just created will end in .Rproj. Locate the folder containing this file. This will be your working directory.  This method is recommended each time you are working on a new project. 
+
+Save all .csv files to the folder containing your .Rproj file (you may need to convert some data files to .csv files). 
+
+### Reading your datasets. 
+
+To import data from a .csv file:
+This can be done by saving your excel or R file as a .csv file and importing in directly into R 
+
+
+```{r}
+meningitis <- read.csv("meningitis.csv")
+```
+
+
+*Menu driven method:*
+
+You can import data in another format, using the File Menu. These include, csv, excel, SPSS, SAS and Stata files. Click on the File > Import Dataset, and specify the type of file you want to open – for .csv file, specify “From Text (readr)”.
+
+Use the “browse” icon to specify the directory and dataset to be opened.
+
+
+You can preview the first 50 observation in the dataset and the corresponding code to open the dataset. 
+
+```{r, fig.align='center', out.width = "750px", echo=FALSE}
+knitr::include_graphics("fig5_screenshot_4th.png")
+```
+*Note: the code displayed varies from the one mentioned above. This is an example of the flexibility R provides the user with. There are multiple ways to do the same thing in R.*
+
+The file has the variable names in the first row – you therefore you need to click on this box. 
+
+When you specify the required dataset, R will show you part of the dataset, as shown above. You can see that the first row of the file includes the names of the variables (this will generally be the case for most datasets that you will be working with), and you need to check the box First row as variable names.
+
+    Open the dataset using the read.csv command or File Import Menu. You can play around with opening the different 
+    types of datasets. 
+
+    What do you see in each of the windows when you open the dataset?
+
+### Browsing your data
+
+R Studio has a nice feature where everything is in one browser window, so you can browse your dataset and your code without having to switch between windows. 
+
+```{r,eval=FALSE }
+#to view your dataset 
+View(meningitis)
+``` 
+
+Alternatively, you can also view your dataset by clicking on “meningitis” in on the top right panel in R studio browser (in the "Environment" panel), as shown below:
+
+
+```{r, fig.align='center', out.width = "750px", echo=FALSE}
+knitr::include_graphics("fig6_screenshot_5th.png")
+```
+
+      How many variables are there? How many observations? 
+      What do you think that the NA values mean? (More on this later!)
+
+### R help function 
+
+The `help()` function and `?` help operator in R provide access to the documentation pages for R functions, data sets, and other objects, both for packages in the standard R distribution and for contributed packages. 
+Example: To access documentation for the standard *lm* (linear model) function, for example, enter the command `help(lm)` or `help("lm")`, or `?lm` in R console. Another way is shown below:
+
+```{r, fig.align='center', out.width = "750px", echo=FALSE}
+knitr::include_graphics("fig7_screenshot_6th.png")
+```
+
+
+### R Commands vs Menu
+
+
+So far we have used the menus to do what we want in R as well as typing the command directly into the console and then pressing the enter key (note that no commands will be read by R until you have hit enter). You may have noticed that when you use the menus, the commands actually appear in the console. This is very helpful as you can clearly see what commands you have undertaken, and can also enable you to copy and save commands into a file which you can later review or run again. Unlike Stata, R is more command driven than menu driven and the menu-driven methods allow for limited functions in R. 
+
+Almost everything in R is done through functions. A function is a piece of code written to carry out a specified task; it may accept arguments or parameters (or not) and it may return one or more values (or not!). The core of R is an interpreted computer language which allows branching and looping as well as modular programming using functions. R allows integration with the procedures written in the C, C++, .Net, Python or FORTRAN languages for efficiency.
+
+
+**Table 2:** Some commonly used R commands
+
+```{r, fig.align='center', out.width = "750px", echo=FALSE}
+knitr::include_graphics("table2_r_commands.png")
+```
+
+### The summary command
+
+    1. Type the word summary(dataset) in the console and press enter. 
+       What has happened? How many variables are there? How many observations?
+
+    2. Type summary(sex) into the command bar. 
+       How is this result different to the one above?
+
+
+### Variable Types 
+
+Variables in R can contain numbers or strings (characters which can be letters or numbers, or sometimes other special characters). String variables can be up to 244 characters long. Numeric variables are stored either as integers (bytes, integers or longs) or floating point (float or double). The variable type is listed under the second column in the `str()` command output. You can check the length of the character variables using the `nchar()` command. 
+
+It is important to be familiar with different types of variables and the way they are stored in R. Some analyses require that data be stored as numeric rather than string variables. This means for example that sex is better stored as numbers (e.g. 0 or 1) rather than string variables (ie “female” or “male”). 
+
+While storing variable values as numbers is important for analysis, we need to be know what each of these values represent; for example if we code sex as 0 or 1, which value represents males and which females? We need to have a data dictionary, which “translates” the numeric values in to character labels. You can label the numeric values of a variable in R so that the words rather than the numeric values are displayed; the numeric values will be retained for analysis purposes. We will discuss this later.
+
+    Type dataset_name in the console and press enter. What does this show? 
+    Type dataset_name$var1 then press enter. What does this show?
+
+
+### Summarising and Describing Data
+
+Tabulating data: 
+
+```{r, eval=FALSE}
+#attach the dataset before analysis
+attach(meningitis_csv_dataset)
+table (sex)
+
+# or you can avoid the 'attach(dataset)' by using the '$' operator to specify which dataset the variable comes from:
+table(meningitis$sex)
+````
+
+What does the results window show? How many males and females are in the data set? 
+
+### Two-Way Table
+
+```{r, eval=FALSE}
+
+tab <- table(meningitis$sex, meningitis$abm)
+tab
+
+margin.table(tab, 1) # A frequencies (summed over B)
+margin.table(tab, 2) # B frequencies (summed over A)
+
+prop.table(tab) # Cell percentages
+
+prop.table(tab,1) # Row percentages
+
+```
+
+    We have previously generated the table of acute bacterial meningitis by sex, with row percentages (ie the percentage of males and females who had acute bacterial meningitis). Now use R commands to generate column percentage; 
+    i.e. the % of those with and without acute bacterial meningitis who were female.
+
+### The Summary Command
+
+One method of obtaining descriptive statistics is to use the summary command and follow it with the `sapply( )` function with a specified summary statistic (e.g. SD).
+
+```{r, eval=FALSE}
+sapply(meningitis$wbc, sd, na.rm=TRUE)
+```
+
+Other possible functions used in sapply include mean, var, min, max, median, range, and quantile.
+
+Alternatively, you can also use `describe()` command available in `library(psych)` - after first downloading the package under Packages tab > install, in the bottom right hand RStudio window.
+
+    What is the minimum, maximum, mean, standard deviation and median value for blood glucose? 
+
+```{r, eval=FALSE}
+library(psych)
+describe(meningitis$bloodgl)
+```
+
+### The order command 
+
+The `order` command allows you to arrange the observations in the dataset in increasing or decreasing order of a particular variable, or set of variables. For example you may want to sort the observations in order of patient id number 
+
+The default method of sorting is in ascending order. To sort in decreasing order a minus sign (ie “-“) must be placed in front of the variable to be sorted.  To preserve the original dataset, we create two new datasets (m1) and (m2) where:
+
+m1 is the dataset where we have sorted the original dataset in ascending order of variable “casenum”.
+
+m2 is the dataset where we have sorted the original dataset in descending order of variable “casenum”.
+
+You can confirm this by viewing both datasets, as shown below. 
+
+``` {r, eval=TRUE, echo=TRUE}
+m1 <- meningitis[order(meningitis$casenum),]
+head(m1, n=10) # selects first 10 rows for you to view - observe the order of the variable "casenum"
+
+m2 <- meningitis[order(-meningitis$casenum),]
+head(m2, n=10)
+```
+
+    What has now happened to the observations?
+
+
+Multiple variables can be used to sort the observations. For example, a dataset includes individuals with more than one record, such as baseline data and data for two follow-up visits, we could sort by patient and id and then visit number (or date). We can sort one (or more) variable in increasing order and another (or more) in decreasing order. When we list more than one variable for sorting, observations are sorted by the first variable and then for each value of the first variable, observations are ordered by the second variable, and so on. You can sort by any type of variable – continuous, categorical, and binary or string.
+
+    Sort the observations by increasing year of admission and then by increasing age, and look at the data. Now sort by increasing year of admission and decreasing age and see what has happened. Sort by CSF glucose within sex. How has R dealt with missing values?
+
+
+Some procedures require that the data be sorted by particular variable/s. The menus will often undertake a data sort for many procedures requiring sorted data, however using R code / commands may still require you to sort the data before performing a particular procedure or operation; If that is the case R will give you an error message specifying that the data have not been sorted.
+
+
+### To Repeat Commands by Groups. 
+
+R doesn’t use the if and by command as STATA to repeat commands across groups. It is done differently as shown below. 
+
+To produce the separate tables of acute bacterial meningitis for males and females, we can tabulate abm with sex as we did above:
+
+```{r, eval=TRUE}
+table(meningitis$abm, meningitis$sex)
+
+# to make it easier to interpret, we can add table labels: 
+
+table(abm=meningitis$abm,sex=meningitis$sex)
+
+```
+
+    Does acute bacterial meningitis appear to be higher for males or females? Does R account for missing values? 
+
+
+Table ignores missing values. To include NA as a category in counts, include the table option `exclude=NULL` if the variable is a vector. If the variable is a factor you have to create a new factor using `newfactor <- factor(oldfactor, exclude=NULL)`.
+
+If we are interested in obtaining summary statistics on white blood count for females, we can use the summarize command (without and with the detail option):
+
+
+```{r, eval=TRUE}
+summary(meningitis$wbc[meningitis$sex==1])
+
+```
+
+Note that  we have to specify two equal signs: == not =. Double equal signs are always required for such commands. This is one of the syntax rules of R and the command won’t run if this is not specified correctly.
+
+You can also use the above command to specify a range of values to be included in the analysis: 
+
+```{r, eval=TRUE}
+table(meningitis$abm[meningitis$wbc>=5 & meningitis$wbc<=10])
+
+```
+
+    What is the mean CSF protein for participants aged between 20 and 70? 
+    What proportion of white females had acute bacterial meningitis? 
+
+    ```{r, eval=TRUE}
+    summary(meningitis$pr[meningitis$age>=20 & meningitis$age<=70])
+
+    t <- table(meningitis$sex, meningitis$abm, meningitis$race==2)
+    prop.table(t,1)*100
+
+```
+
+
+### The keep and drop commands
+
+In R, its is easier to keep the variables than drop them. There is no keep command, but we can specify the variables you want to retain in the dataset. It is always better to create a new dataset with the fewer variables than modify the existing dataset. 
+
+There are 3 major ways to do this in R
+
+##### Select variables v1, v2, v3
+`myvars <- c("v1", "v2", "v3")` 
+
+`newdata <- mydata[myvars]`
+
+##### Another method
+`myvars <- paste("v", 1:3, sep="")`
+
+`newdata <- mydata[myvars]gc`
+
+##### Select 1st and 5th thru 10th variables
+`newdata <- mydata[c(1,5:10)]`
+
+Example: you can subset the meningitis dataset as:
+
+```{r, eval=FALSE}
+Meningitis1 <- meningitis[c(1:11,13:14)]
+
+```
+
+To drop or exclude variables, you can use the following syntax: 
+
+##### Exclude variables v1, v2, v3
+`myvars <- names(mydata) %in% c("v1", "v2", "v3")`
+
+`newdata <- mydata[!myvars]`
+
+If we have a very large dataset and want to retain only a small number of variables then the keep statement would be more efficient.  
+
+##### To remove observations with particular characteristics
+
+For example if want a dataset which only includes meningitis patients aged less than 20 we could use either of the following statements:
+
+
+```{r, eval=FALSE}
+newdata <- meningitis[ which(meningitis$age <20 ),]
+
+```
+
+
+#### Generating Graphs
+
+Graphs are a very useful way of summarising and describing data, and enable you to look at the shape of the distribution. R has very good graphics packages including `ggplot2`. 
+
+
+##### Histograms
+We will first generate a histogram for white blood count (WBC). 
+
+
+```{r}
+# The below code generates a histogram
+hist(meningitis$wbc, freq = FALSE, breaks = 17, xlim = c(0,80)) # freq FALSE will plot density on y-axis instead of frequency and xlim sets the range on the x axis to be from 0 to 80, with 17 breaks (bins)
+
+# The below code generates the same histogram but without the breaks specification and x-axis limitation
+hist(meningitis$wbc)
+
+```
+
+
+    What do you think about the distribution for white blood count?
+
+    Generate a histogram for blood glucose. What do you think about the shape of the distribution? Regenerate the 
+    histogram but add the breaks option and specify 20. What does this do?
+
+    Also note what is the default number of bins specified when we use the `hist()` command alone
+
+
+If we want to see how close to a normal distribution our histogram is we can overlay a normal curve.
+
+To do this, we first calculate mean and standard deviation for bloodgl. 
+
+```{r}
+x <- na.omit(meningitis$bloodgl)
+h <- hist(x)
+xfit<-seq(min(x),max(x),length=40) 
+yfit<-dnorm(xfit,mean=mean(x),sd=sd(x)) 
+yfit <- yfit*diff(h$mids[1:2])*length(x) 
+lines(xfit, yfit, col="blue", lwd=2)
+```
+
+    Generate a graph of CSF glucose with 25 bins and a normal curve overlay. What does this graph show? Does it look reasonable? What might you interpret from this graph?
+
+
+```{r}
+x <- na.omit(meningitis$gl)
+h <- hist(x, breaks = 25, xlim = c(0,250))
+
+xfit<-seq(min(x),max(x),length=40) 
+yfit<-dnorm(xfit,mean=mean(x),sd=sd(x)) 
+yfit <- yfit*diff(h$mids[1:2])*length(x) 
+lines(xfit, yfit, col="red", lwd=2)
+```
+
+    Using the command line rather than the graphics menu, generate a graph of CSF glucose with a normal curve overlay for: a) males only; b) for participants aged between 15 and 75.
+
+```{r}
+
+#a) 
+x <- subset(meningitis, sex==2) # subsetting dataset by males only
+x <- na.omit(meningitis$gl) 
+h <- hist(x, breaks = 25, xlim = c(0,250) , main = "Histogram of glucose CSF \n for males", xlab = " glucose CSF") # main heading and x-axis titles have been added here
+xfit<-seq(min(x),max(x),length=40) 
+yfit<-dnorm(xfit,mean=mean(x),sd=sd(x)) 
+yfit <- yfit*diff(h$mids[1:2])*length(x) 
+lines(xfit, yfit, col="blue", lwd=2)
+
+#b) 
+
+x1 <- na.omit(meningitis$gl[meningitis$age >=15 & meningitis$age<=75])
+h <- hist(x1, breaks = 11, xlim = c(0,200), main = "Histogram of glucose CSF", xlab = " glucose CSF")
+
+xfit<-seq(min(x1),max(x1),length=40) 
+yfit<-dnorm(xfit,mean=mean(x1),sd=sd(x1)) 
+yfit <- yfit*diff(h$mids[1:2])*length(x1) 
+lines(xfit, yfit, col="blue", lwd=2)
+
+```
+
+
+### Scatter plots 
+
+Histograms display variables one at a time. A scatterplot will show the relationship between two continuous variables. We will obtain a scatterplot of heart rate versus mean blood pressure. 
+
+```{r}
+#pch command will give sold circles to mark points in a graph
+plot(meningitis$gl, meningitis$bloodgl, pch = 19, col = "darkblue")
+```
+
+
+There are a very large range of options in R for specifying the look of the graph, including titles, labelling and defining axes, the colour and shape of the markers (i.e. the points on the graph), legend specification and location, subsetting, putting multiple plots on the same graph, etc. An example of R code to produce a graph of CSF versus blood glucose, separately for males and females is shown below with the corresponding graph.
+
+```{r}
+plot(meningitis$bloodgl, meningitis$gl, pch = c(21, 19), col= c("blue", "red")[unclass(meningitis$sex)], main = "Graph of CSF glucose vs blood glucose by sex")
+
+#Add legend
+legend(1,195, legend = c("Male", "Female"), col = c("Red","Blue"), pch = c(21, 19), cex = 0.8)
+
+```
+
+    Play around with generation of scatter plots of white blood count versus total leukocytes separately for patients with and without acute bacterial meningitis. Try and change the colour and type of markers, axes, title and 
+    legends.
+
+
+### Saving results and commands 
+
+It is very important to retain a copy of your results so that you, or anyone can check this, and to be able to re-run your analysis at any time. In addition you will often want to, add to, repeat or revise your analyses. You do not want to have to type in your commands or re-do all of the menu analysis again, thus you also should save a copy of all of your commands.
+
+
+#### Saving graphs 
+
+Graphs are not saved in the results window, or the log file, and need to be individually saved. 
+
+To do this click on Export and save as either Image or pdf. You can also copy the plot onto your clipboard.
+
+```{r, fig.align='center', out.width = "200px", echo=FALSE}
+knitr::include_graphics("r_scripts.png")
+```
+
+This then opens up a black page, something like a Word document, which you can put all of your commands. This is a good strategy, especially when you first start using R. Alternatively, you can also open a new R script using Ctrl+ Shift+ N. 
+
+You can add comments on a line after a hashtag (#) as shown in the R script example below. 
+
+In computer programming, a comment is a programmer-readable explanation in the source code of a computer program. They are added with the purpose of making the source code easier to understand, and are generally ignored by compilers and interpreters.
+
+The `setwd` command at the start of the file tells R to change your working directory to the one specified. This means that you don’t have to specify the directory every time you open or save a file.
+
+```{r, fig.align='center', out.width = "800px", echo=FALSE}
+knitr::include_graphics("swd_command.png")
+```
+
+
+    Have a play around with R, using both the icons and command line. Tabulate each of the variables individually; 
+    e.g. year. Do all of the values seem reasonable? Are there any unusual or extreme values? Generate some two way 
+    tables; e.g. race abm, and look at the relationship between these variables. See what different types of graphs 
+    you can generate using the commands. 
+
+
+### Descriptive Statistics
+
+This section describes how to generate confidence intervals and undertake hypothesis tests using R. 
+
+You can obtain confidence intervals and undertake hypotheses testing using the R package in two ways: 
+
+As for many types of analyses there is more than one command which provide the same/similar results. This section only focuses on how to undertake hypothesis tests in R, and does not consider the appropriateness of the test, nor assumptions checks.
+
+#### Confidence Intervals for a Single Mean or Proportion 
+
+
+    We want to obtain the 95% confidence interval for mean birthweight for a sample with the following features: 
+    o	20 observations 
+    o	Sample mean of 3159 grams 
+    o	Sample standard deviation of 220 grams 
+
+Unlike Stata, we need to construct the 95% CI for mean. The 95% confidence interval for the population mean can be expressed as:
+
+$$\overline{X}\pm1.96\sigma/\sqrt{n}$$
+```{r}
+## Descriptive statistics
+# 95% CI for mean
+n <- 20
+xbar <- 3159
+sd <- 220
+
+# calculate standard error
+se <- sd/(sqrt(n))
+E <- 1.96*se
+# or alternatively, E <- qnorm(0.975)*se
+ci<- xbar + c (-E, E)
+ci
+```
+
+The 95% CI is (3063, 3255). We are 95% sure that the true (population) mean lies between 3063 and 3255; if we were to undertake this study 100 times, 95 of the CIs would include the true mean.
+
+If we would like a higher level of precision we might want to obtain 99% confidence intervals:
+
+```{r}
+## Descriptive statistics
+# 99% CI for mean
+n <- 20
+xbar <- 3159
+sd <- 220
+
+# calculate standard error
+se <- sd/(sqrt(n))
+E <- qnorm(0.995)*se
+ci<- xbar + c (-E, E)
+ci
+```
+
+The 99% CI is (3032, 3286). What is the interpretation of this interval? 
+
+Table 3 shows the birthweight summary statistics by an observational study on the safety of pertussis vaccination in pregnant women in the UK ^[Donegan K, King B and Bryan P. Safety of pertussis vaccination in pregnant women in UK: observational study. BMJ 2014;349:g4219 doi: 10.1136/bmj.g4219 (Published 11 July 2014].
+
+    Calculate the 95% confidence interval for mean birthweight for babies of mothers: 
+    a) who were vaccine; and 
+    b) who were not vaccinated
+
+**Table 3:**  Birthweight summary statistics 
+
+```{r, fig.align='center', out.width = "800px", echo=FALSE}
+knitr::include_graphics("Table3_summary.png")
+```
+
+    We want to estimate the proportion (%) of Australian adults who have diabetes with 95% CI. Of a sample of 11247 
+    Australian adults, 844 have diabetes. What is the proportion and 95% CI?
+
+Like the 95% CI for mean, we need to construct the 95% CI for proportion. The 95% confidence interval for the population proportion can be expressed as:
+
+
+
+$$\hat{p}\pm z\sqrt\frac{\hat{p}(1-\hat{p})}{n}$$
+
+```{r}
+# 95% CI for proportion
+n <- 11247
+k <- 844
+pbar <- k/n
+
+# calculate standard error
+se <- sqrt(pbar*(1-pbar)/n)
+se # 'prints (shows) the se value
+E <- 1.96*se
+# or alternatively, E <- qnorm(0.975)*se
+ci<- pbar + c (-E, E)
+ci
+```
+
+The estimate of the proportion of Australian adults with diabetes is 0.075 (or 7.5%) with 95% CI (0.070, 0.080). How do we interpret this CI?
+
+### Using a Dataset 
+
+You can also obtain a confidence interval for a mean for a variable in a dataset. 
+
+#### CI for a Mean
+
+    Open the meningitis dataset in R. We want the 95% confidence interval for mean white blood cell count.
+
+```{r}
+# 95% CI for wbc
+wbc <- na.omit(meningitis$wbc)
+xbar <- mean(wbc) # no need for the meningitis$ as we have created a new wbc above
+n <- length(wbc)
+sd <- sd(wbc)
+
+# calculate standard error
+se <- sd/(sqrt(n))
+se
+E <- 1.96*se
+# or alternatively, E <- qnorm(0.975)*se
+ci<- xbar + c (-E, E)
+ci
+```
+
+The 95% CI is (13.1, 14.6). 
+
+    How would you change the above code to generate the 99% CIs?
+
+We may be interested in obtaining the CI for a particular subgroup: the following code provide the 95% CI for mean white blood count in black patients.
+
+```{r}
+# 95% CI for wbc
+wbc <- na.omit(meningitis$wbc[which(meningitis$race==1)])
+xbar <- mean(wbc) # no need for the meningitis$ as we have created a new wbc above
+n <- length(wbc)
+sd <- sd(wbc)
+
+# calculate standard error
+se <- sd/(sqrt(n))
+se
+E <- 1.96*se
+# or alternatively, E <- qnorm(0.975)*se
+ci<- xbar + c (-E, E)
+ci
+```
+
+We can also obtain separate CIs for subgroups; here we generate the 95% CIs by race.To perform this analysis, we use the `%>%` operator.  `%>%` is an operator that pipes functions in order to improve readability and productivity as it's easier to follow the flow of multiple functions through these pipes than going backwards when multiple function are nested. We also require the package `dplyr` to proceed with this analysis.
+
+```{r}
+require(dplyr)
+meningitis %>%
+  group_by(race) %>% # for each race
+  summarize(obs = length(na.omit(wbc)), # calculates number of observations
+            mean=mean(na.omit(wbc)), # calculates mean
+            SE = sd(na.omit(wbc))/sqrt(obs), # calculates SE in each category
+            # the below calculate the 95% CI for mean wbc in each category
+            lower = mean - qnorm(0.975)*SE, 
+            upper = mean + qnorm(0.975)*SE)
+
+```
+
+Please note that the output might differ from that obtained using STATA.
+
+    Obtain the 99% CI for mean Total leukocytes in CFS: a) overall; and b) for males.
+
+#### CI for a Proportion
+
+Using the meningitis data, we want to estimate the proportion (or %) of patients who had acute bacterial meningitis, with 95% CI. 
+
+```{r}
+# 95% CI for proportion - abm
+abm <- na.omit(meningitis$abm)
+n <- length(abm)
+n
+k <- sum(abm ==1)
+pbar <- k/n
+pbar
+# calculate standard error
+se <- sqrt(pbar*(1-pbar)/n)
+se # 'prints (shows) the se value
+E <- 1.96*se
+# or alternatively, E <- qnorm(0.975)*se
+ci<- pbar + c (-E, E)
+ci
+```
+
+
+The patients who had acute bacterial meningitis is 0.43 (or 43%) with 95% CI (0.39, 0.48), or (39%, 48%).
+
+
+### Hypothesis Test for a Single Mean
+
+A hypothesis test for a single mean involves comparing the sample mean to a population (or hypothesised mean). 
+
+##### Using Summary Data
+
+Please note that this is not possible to do in R and the researcher would have to calculate test statistics manually as a function is not available to perform this as in STATA. 
+
+    Open the meningitis data in R. We want to test the hypothesis that the mean white blood cell count differs to the population mean of 11 (the upper limit of normal). 
+
+```{r}
+t.test(meningitis$wbc, mu =11)
+
+```
+
+
+The value of the t-statistic is 7.026, for 439 degrees of freedom and a two-tailed p-value of < 0.0001. Using a significance level of 5% (or even much smaller!!!) we reject the null hypothesis and conclude that the mean white blood cell count in patients with meningitis is statistically significantly higher than the population mean. 
+
+If it was appropriate we could undertake the hypothesis test separately for males and females by subsetting our original dataset. 
+
+```{r}
+# we create a new dataset “A” with observations for only males (sex==1)
+A <- subset(meningitis, meningitis$sex==1)
+
+#run the t.test() command on the new dataset
+t.test(A$wbc, mu = 11)
+```
+
+For males, the value of the t-statistic is 4.807, for 240 degrees of freedom and a two-tailed p-value of < 0.0001. Using a significance level of 5% we reject the null hypothesis and conclude that the mean white blood cell count for males with meningitis patients is statistically significantly higher than the population mean.
+
+
+### Hypothesis Test for a Single Proportion
+
+
+#### Using Summary Data
+
+`prop.test` can be used for testing the null that the proportions (probabilities of success) in several groups are the same, or that they equal certain given values.
+
+    We want to test the hypothesis that the prevalence of diabetes in a sample of adult smokers is different to the prevalence in the Australian population, which is known to be 7.5%. In a sample of 305 adult smokers, 31 had 
+    diabetes. 
+
+    Is this consistent with the national prevalence? 
+
+    ```{r}
+    prop.test(31, 305, p=0.075, correct = FALSE)
+
+```
+
+The value of the chi-square statistic is 3.1199, with two-tailed p value of 0.077. Using a significance level of 5%, we failed to reject the null hypothesis and conclude that the prevalence of diabetes in smokers is similar to that in the general population.
+
+#### Using a Dataset
+
+    Using the meningitis data, undertake an appropriate hypothesis test to determine whether the proportion of 
+    patients with acute bacterial meningitis is different to 50%, using a 5% significance level. 
+
+    ```{r}
+    x <- table(meningitis$abm)
+    x
+    prop.test(x,p=0.5)
+```
+
+The value of the chi-square statistic is 8.6946, with two-tailed p value of 0.0031 Using a significance level of 5%, we reject the null hypothesis and conclude that the proportion of patients with acute bacterial meningitis is statistically significantly greater than 50%. Please note that the output might differ from that obtained using STATA.
+
+
+### Confidence Intervals and Hypothesis Tests for a Difference in Means
+
+#### Using Summary Data
+Please note that this is not possible to do in R and the researcher would have to calculate test statistics manually as a function is not available to perform this as in STATA. 
+
+
+#### Using a Dataset
+
+    Using the meningitis dataset obtain the 95% CI and undertake a hypothesis test for the difference in white blood cell count between patients with and without acute bacterial meningitis.
+
+We first slide the data to get wbc counts for patients with and without abm separately.
+
+```{r}
+# two sample test of means
+L <- meningitis$abm == 0
+# wbc for those without abm
+wbc.noabm <- meningitis[L,]$wbc
+# wbc for those with abm
+wbc.abm <- meningitis[!L,]$wbc
+
+t.test(wbc.noabm, wbc.abm)
+```
+
+The difference in means white blood cell count between patients without and those with acute bacterial meningitis is – 5.98, with 95% CI (-7.61, -4.35). The value of the t statistic is -7.21, with 226.6 degrees of freedom and a p value < 0.0001.
+
+
+    What do you conclude about the relationship between white blood cell count between patients and acute bacterial 
+    meningitis? Why? What do the negative values for the difference between means, 95% CI, and t-statistic mean?
+
+### Confidence Intervals and Hypothesis Tests for a Difference in Proportions
+
+#### Using Summary Data
+
+You are a public health official investigating an outbreak of gastroenteritis at a festival. You suspect the cause is soft-serve ice cream. As part of your investigation into the outbreak you collect the following data.
+
+```{r, fig.align='center', out.width = "750px", echo=FALSE}
+knitr::include_graphics("gastro_data.png")
+``` 
+
+What is the difference in the proportion of individuals who developed gastroenteritis between those who did and 
+did not each ice cream, with 95% CI?
+
+```{r}
+res <-prop.test(x=c(170,10), n=c(250,80))
+res
+
+```
+
+    What is the difference in proportion of festival-goers who did and did not eat ice cream who developed 
+    gastroenteritis and the 95% CI? 
+
+    Provide an interpretation of these values. 
+
+    What are the values of the test statistic and how would you interpret these? 
+
+    What do you conclude about the relationship between eating ice-cream and developing gastroenteritis? 
+
+In the meningitis dataset we want to obtain an estimate of the difference in the proportion of males and females who had acute bacterial meningitis. 
+
+```{r}
+prop.test(table(meningitis$abm, meningitis$sex), correct = F)
+```
+
+    What is the difference in proportion of males and females who had acute bacterial meningitis, and the 95% CI, and what are the results of the hypothesis test? Provide an interpretation of these values and your conclusion 
+    regarding the relationship between sex and acute bacterial meningitis. 
+
+
+    Using the meningitis dataset, obtain appropriate measure of effect and Confidence Intervals, and undertake 
+    appropriate hypotheses tests to investigate the relationship a) race; b) blood glucose and acute bacterial 
+    meningitis using a 1% significance level.
+
+
+
+### Data Management – Managing variables
+
+This section describes various processes and commands for checking, managing and manipulating variables. We will use different datasets to that used previously. The first dataset is based on notifications of pertussis from 2012. Cases were notified by the treating clinician and/or laboratory. Each notified case was then called by a public health nurse of surveillance officer working at the regional public health unit. A standardized questionnaire was administered which asked about certain demographic details, date of illness onset and whether anyone else in their contact circle had been ill with a similar illness before the case got sick (essentially trying to identify the source). The dataset is called pertussis.csv and the data format is provided below (Table 4)
+
+**Table 4:** Format of pertussis surveillance dataset
+
+```{r, fig.align='center', out.width = "650px", echo=FALSE}
+knitr::include_graphics("Table4_summary.png")
+``` 
+
+Open the dataset as you did with the meningitis data earlier, describe the data and obtain the codebook for all variables. 
+
+```{r}
+pertussis <- read.csv("pertussis.csv")
+```
+
+### Creating new variables 
+
+We often want to create new variables in our dataset; for example categorising a continuous variable, or combining two or more variables, such as generating BMI from weight and height. We want to create a categorical variable from age, with categories of < 10, 10-19, 20-49, 50+.
+
+```{r}
+pertussis$agegroup<-ifelse(pertussis$age <= 9,rr2 <- 1,
+                           ifelse(pertussis$age>=10 & pertussis$age<=19,rr2<-2,
+                                  ifelse(pertussis$age>=20 & pertussis$age<=49,rr2<-3,
+                                         rr2 <- 4 )))
+
+```
+
+You should check any new variable created including tabulating against the original variable where appropriate. 
+
+```{r}
+table(pertussis$agegroup)
+table(pertussis$age,pertussis$agegroup) # age groups = 1-4
+```
+
+We can see that age group has been correctly generated. Note the missing values for **agegroup** corresponding to the five missing values for age.
+
+### Missing Values 
+
+In the dataset above there are several cells without any numbers, but which have a “NA”. These represent missing values in R. They could represent questions which have not been answered by participants, or that are not applicable.
+
+ A not applicable response may be relevant for example for: 
+
++	Responses for males in a general population survey for questions asking about mammography screening or pap smears; or 
++	Questions asking about the number of cigarettes smoked, where participants have previously indicated that they are non-smokers 
+
+Many datasets use actual numbers to represent missing values or not applicable responses: values such as 9, 99, 999 – 9, etc are often used to represent missing values and 8, 88, 888, -8 to represent not applicable responses; a 0 can also sometimes be used 
+
+Observations with missing values are generally excluded from analysis. If your dataset has numerical values representing missing data you will need to change these values to “NA” Otherwise R will think that the values are meaningful numbers and include these data in the analysis – you can end up with all sorts of strange results from this! 
+
+The data format for the pertussis dataset, provided in the table above, indicate that some variables have missing values coded as 9. To ensure that these missing values are not included in analyses, we should change these values to NA. 
+
+```{r}
+table(pertussis$mother)
+pertussis$mother[pertussis$mother==9] <-NA
+```
+
+We should then check the revised variable.
+
+```{r}
+table(pertussis$mother)
+```
+
+Unlike Stata, R does not consider a missing value to be a very large value (like infinity). So missing values do not end up being allocated a category. While Stata considers a missing value (.) to be a very large number, SAS treats missing values as infinitesimally small number. 
+
+When creating new variables you also need to be very careful with </> and <= / >=. For example if consider the following syntax to generate age group:
+
+```{r, eval=FALSE}
+pertussis$agegroup<-ifelse(pertussis$age <= 9,rr2 <- 1,
+                           ifelse(pertussis$age>10 & pertussis$age<=19)
+```
+
+
+The first age category includes those aged 9 or under, and the second age category includes those aged more than 10: we have excluded 10 year olds from the age category! You can come across similar problems due to rounding errors, depending on how the variables / numbers are stored. We won’t discuss this in any more detail here, but any such problems should be highlighted / identified by cross tabulating newly created variables with the original variable, and by checking the number of missing values in all variables.
+
+
+### Labelling and formatting variables
+
+We can make our data and results easier to interpret by labelling the variables (ie assigning a more meaningful name) and allocating names to numeric categories of a variable. Both of these processes can be undertaken using different version of the label command.
+
+To give a variable a more meaningful name or label:
+
+```{r, eval=FALSE}
+names(pertussis)[8] <= "type  of laboratory confirmation"
+table(pertussis$howconfirmed)
+```
+
+When we created the categorical age variable above, we allocated values 1, 2, 3, 4 to the categories. We could have created a string variable with categories “0-9”, “10-19”, “20-49”, “50+”, however some analyses require numeric rather than string variables. It is generally preferable to have numeric rather than strong variable (although sometimes it can be useful to have id variables stored as string). To be able to easily see what each category represents, we allocated labels to the categories. This is a twostep process. Firstly we define the label, and then we allocate it to the relevant variable/ variables. We can allocate the same label format to multiple variables; for example if we have numerous variable with values of 1 or 0 representing yes or no, we can create one label and allocated it to all of the 1/0 variables. You do need to be careful though, because sometimes, even within the same dataset, some yes/no variable can be coded as 1/0 and others as 1/2.  We will now create and allocate a label for **agegroup**. 
+
+```{r}
+pertussis$agegroup <- factor(pertussis$agegroup, levels=c(1,2,3,4), labels = c("0-9", "10-19", "20-49", "50+"))
+table(pertussis$agegroup)
+```
+
+### Types of variables
+
+Sometimes you may want to change the type of variable, for example sex may be a string variable (male or female) and you need to convert to numeric to be able to perform a particular procedure or undertake specific analysis. The following commands can be used to convert string variable to numeric or vice versa, and they all involve generating a new variable These commands will not be considered in detail; if you want to use these then you will need to check the R help menu.
+
+`is.numeric()`, `is.character()`, `as.numeric()`, `as.character()` are some examples of functions to convert data types.
+
+### Checking for duplicates
+
+`duplicated()` determines which elements of a vector or data frame are duplicates of elements with smaller subscripts, and returns a logical vector indicating which elements (rows) are duplicates. `anyDuplicated()` is a “generalized” more efficient shortcut for `any(duplicated())`.
+However, this command when used alone will return only `TRUE` or `FALSE` values for any duplicates in the dataset. To extract duplicate values from the dataset, we need to use this command effectively. We will now check whether there are duplicate ids in the pertussis dataset:
+
+```{r, eval=FALSE}
+pertussis[duplicated(pertussis$id),]
+```
+
+This command extract all rows with duplicate id values in the dataset. It appears that there are quite a few duplicate ids in this dataset. However we also have notification date, so maybe the some individuals have multiple notifications. We should therefore check for duplicates with the same combination of id and notification date.
+
+
+```{r, eval=FALSE}
+pertussis[duplicated(c(is.na(pertussis$id),is.na(pertussis$notificationdate))),]
+```
+
+If you want to only know the duplicated ids, use the following code:
+
+```{r, eval=FALSE}
+pertussis[duplicated(pertussis$id),][1]
+```
+
+### Dealing with dates 
+
+In order to perform any operations on date variables, for example subtracting admission date from date of discharge to determine long of stay in hospital, dates need to have a numeric value. R stores dates as a numeric value that is the number of days since 1st January 1960. This date is just used as a reference point by R (Stata and SAS).
+Dates prior to 1st January 1960 have a negative number and dates after this date have a positive number. 
+
+Dates are often entered in string format and therefore must be converted into the R date format, which involves generating a new specific date variable from the string variable. 
+
+Sometimes dates can be entered as three separate variables: one variable for day, one for month and one for year. R has a range of date and time formats; you need to determine the most appropriate format for your data, and this will depend on whether you have date and time, date only, and how the dates have been entered: dd/mm/yy, mm/dd/yy, dd/mm/yyyy, whether as separate variables for day, month and year, etc. 
+
+`Sys.Date( )` returns today's date. 
+`date()` returns the current date and time.
+The following symbols can be used with the `format( )` function to print dates.
+
+The meningitis dataset had one variable for month of admission and a separate variable for year of admission. The pertussis dataset has three date variables: birthdate (date of birth), notificationdate (date of notification) and onsetdate (date of onset). 
+
+
+The following symbols can be used with the `format( )` function to print dates:
+
+```{r, fig.align='center', out.width = "350px", echo=FALSE}
+knitr::include_graphics("Table5_format.png")
+``` 
+
+The variables have all been entered as one date, as string variables and in the format dd/mm/yyyy. We have had to guess the format here, but generally you would expect to have a data dictionary of some kind which specifies the structure of the dataset. The following syntax will generate a date variable for date of birth:
+
+```{r}
+pertussis$date_of_birth <-as.Date(pertussis$birthdate, "%d/%m/%Y")
+pertussis$date_of_birth <- as.numeric(pertussis$date_of_birth) # converts the date into the internally stored form
+```
+
+Now let’s see what our new variable looks like; we will list it with the original birthdate string variable and age. Note that the “1:10” statement lists the first 10 observation in the dataset and “c(1,4,15)” lists the column numbers to be displayed in the output. 
+
+```{r}
+pertussis[1:10, c(1,4,16)] # or replace '16' with '15' if agegroup was not added as a variable 
+```
+
+OK, we can see that our date_of_birth variable is numeric representing the number of days since January 1st, 1960 (feel free to check this!). Individuals born before January 1st, 1960 have a negative value for date. This will be good for any calculations involving dates, but not particularly helpful to us as we can’t really easily tell what the date. We can format the date_of_birth variable so that it is displayed in a more palatable format (but still retains its number value for manipulation). This has been shown below and can be done using the `format` command in R. 
+
+```{r}
+pertussis$date_of_birth <-as.Date(pertussis$birthdate, "%d/%m/%Y")
+pertussis$date_of_birth <- format(pertussis$date_of_birth, "%B/%d/%Y")
+pertussis[1:5, c(1,4,16)]
+```
+
+Date_of_birth is now displayed in standard, readable date format. Dealing with dates can be quite complicated, and there is quite a bit of documentation in R on this, so if you are doing anything more complex than what we have just done you should read this carefully.
+
+    Generate date variables for notification date and onset date and calculate the time between onset and notification.
+
+
+### Data checking and cleaning
+
+It is important that all data should be carefully checked before undertaking any analysis. Even though what we really want to do is a complicated multiple regression, we have to hold back until we have done the seemingly mundane, but absolutely essential data checking. There are a range of standard checks that should be undertaken, including, but not necessarily limited to the following: 
+
+* Check that the total number of observations are as expected (it is surprising how often you can “lose” participants) 
+
+* Check that all expected variables are included 
+
+*	Check for duplicates and manage appropriately 
+
+*	Tabulate all variables – particularly categorical but can also be useful to look at all of the values of continuous variables, as long as there are not too many different values.
+
+*	It is important that all data should be carefully checked before undertaking any analysis. Even though what we really want to do is a complicated multiple regression, we have to hold back until we have done the seemingly mundane, but absolutely essential data checking. There are a range of standard checks that should be undertaken, including, but not necessarily limited to the following: 
+
+    +	Check that the total number of observations are as expected (it is surprising how often you can “lose” participants) 
+    +	Check that all expected variables are included 
+    +	Check for duplicates and manage appropriately 
+    +	Summarise continuous variables and generate appropriate graphs (histogram, boxplot, etc) 
+    +	Check for out of range or unusual values 
+    +	Check the code for missing, not applicable, etc – you may need to change these to actual missing values in R (eg if missing is coded as 9, then this will be analysed as an actual value; you need to set to the R missing code of “NA”) 
+    +	Check that variables are the appropriate type for analyses; you may need to create numeric variables from string variables 
+
+
+*	Whenever you generate a new variable, always tabulate or undertake some other appropriate check against the original variable/s 
+
+*	Assign meaningful names to variables and generate labels for categorical variable (eg if sex is coded as 0 or 1, generate a sex format and allocate label of male and female to the appropriate categories) 
+
+*	Undertake appropriate logic checks; for example:
+    +	Have females completed questions on prostate cancer screening?
+    +	Have participants who have stated that they are non-smokers specified the number of cigarettes smoked per day
+
+*	Undertake bivariate checks before doing more complex regression analyses 
+
+*	Check assumptions of all test and analyses undertaken 
+
+*	Always check any comments that R provides in the output (R console) 
+
+* Check the number of observations for all of your analyses (as per the comment for the first point - it is surprising how often you can “lose” participants!) 
+
+
+    Undertake some of the data checking / cleaning procedures for the pertussis dataset: check for missing values and recode as appropriate, generate frequency tables, summary statistics and graphs as appropriate, label the variables and values of categorical variables. You should also try categorising some of the continuous variables. 
+
+
+### Data Management in R (II) – Managing datasets
+
+Often data for a study are provided in more than one dataset which need to be combined in some way. Different datasets could represent: 
+
+*	The same (or similar) data taken from different sites – for example data from multiple hospitals or public health units 
+
+* Different types of data - for example clinical measures and survey data 
+
+* The same data taken at different times – for example follow-up data for longitudinal studies or clinical trials 
+
+* The design of the study database – for example multiple data tables in an ACCESS or other database 
+
+* Messy data! 
+
+Even if we have a single or combined dataset, it may not be in the format that we need for a specific analysis. For example we may have a dataset which includes baseline and follow-up data, with a different observation (or record or “line” of data) for each set of measurements: ie we have two observations for each individual and we want to combine these into one observation or record per person. 
+
+We can (relatively) easily do dataset management and manipulation in R, however it is crucial that we are very careful, document every step of the process and make sure to check everything (for example do we have the number of records that we think we should have?). 
+
+This section describes how to go about combining datasets by: 
+
+1.  Appending: adding one dataset to the end of another, which would be appropriate for example if we had the same type of data from different sites (different hospitals or different public health units) which we wanted to combine 
+2.  Merging: if we have different types of data (clinical and survey data) or the same data at different times (longitudinal or follow-up data) which we want to combine 
+
+The data for this exercise are from a study of treatment of post-natal depression ^[Gregoire AJ, Kumar R, Everitt B, Henderson AF, Studd JW. Transdermal oestrogen for treatment of severe postnatal depression. Lancet. 1996 Apr 6;347(9006):930-3]. Sixty-one women with major depression were randomised to receive active treatment (1) or placebo (0) and had a baseline assessment for depression. They were then assessed monthly for six months. The outcome of interest was the score on the Edinburgh postnatal depression scale (EPDS). 
+
+The data, which have been slightly modified from the original data, are included in several different files. The data for the first follow-up were provided in two separate files, depress1a.csv and depress1b.csv files. Data for time 2 and time 3 follow-up are included in depress2.csv and depress3b.csv, respectively. The data for follow-up times 4 and 5 have already been appended into a single file – depress4_5.csv, while the 6 month follow-up data are included in two separate files (similar to time 1 data): depress6a.csv and depress6b.csv. The structure of the datasets is shown in Table 5 below.
+
+**Table 5:** Format of depression datasets
+
+```{r, fig.align='center', out.width = "650px", echo=FALSE}
+knitr::include_graphics("Table6_depress_dataformat.png")
+``` 
+
+
+### Appending datasets 
+
+**Append** – adds cases/observations to a dataset. This document will use the `rbind` function. Appending two datasets require that both have variables with exactly the same name. If using categorical data make sure the categories on both datasets refer to exactly the same thing (i.e. 1 “Agree”, 2”Disagree”, 3 “DK” on both).
+
+
+```{r}
+# Read in the data files
+depress1a <- read.csv("depress1a.csv")
+depress1b <- read.csv("depress1b.csv")
+depress2 <- read.csv("depress2.csv")
+depress3b <- read.csv("depress3b.csv")
+depress4_5 <- read.csv("depress4_5.csv")
+depress6a <- read.csv("depress6a.csv")
+depress6b <- read.csv("depress6b.csv")
+```
+
+We want to append the two datasets for first follow-up data (depress1a.dta and depress1b.dat) into a single file. You should have opened and checked each of the individual files before appending; however we will not do that here to save space. 
+
+```{r}
+depress1ab <- merge(depress1a, depress1b, by = c("subject", "group", "pre", "dep1"), all = TRUE)
+```
+
+Adding the option “all=TRUE” includes all cases from both datasets. The appended dataset now has 61 observations.
+
+
+
+#### Merging datasets
+
+The merge command requires specification of the variables to be merged or linked on. This is usually the identification number – in the postnatal depression study individuals are merged or linked using the patient identification number. Multiple variables can be used to link observations, for example patient id and date. `merge` merges only common cases to both datasets.
+
+Open the appended data for the first follow-up for the postnatal depression study. Then merge with the data for the second follow-up.
+
+```{r}
+depress1ab_2 <- merge(depress1ab, depress2, by = "subject", all= TRUE)
+```
+
+```{r, fig.align='center', out.width = "600px", echo=FALSE}
+knitr::include_graphics("figure_last.png")
+``` 
+
+Now let’s try merging with the time 3 data (depress3b.csv).
+
+```{r}
+depress1ab2_3b <- merge(depress1ab_2, depress3b , by = "subject", all= TRUE)
+```
+
+View the dataset by typing `View(depress1ab2_3b)`. Note: Subject 2,23,34,36 and 57 will be excluded from the dataset if you don’t specify all = TRUE.
+
+Subjects 5, 23, 34, 36 and 57 had data for follow-up times 1 and 2 but not for time 3: these observations may have been lost to follow-up (not uncommon in longitudinal studies). However subjects 134 and 136 were included in the time 3 follow-up but not time 1 or time 2. We might be suspicious that the id number for these two time 3 participants has been entered incorrect: 134 might be 34 and 136 might be 36. 
+
+In practice we should go back and carefully check this, although we have no additional information to investigate further for your example data.
+
+
+#### Reshaping datasets
+
+We now have generated a dataset which includes, in addition to the baseline or pre-intervention values of the Edinburgh postnatal depression scale, values of the EPDS at three follow times. All of the data for each individual are included in a single record or observation: this is called **wide** format. This is appropriate for some analyses, but other statistical methods require data in a format where there is one record for each individual for each measurement time: this is called **long** format. Hadley Wickhan has created a comprehensive package called `reshape` for this purpose. 
+
+As we have data in wide format and want to reshape to long format we will look at that process first, and discuss each component of the command. `reshape` is the name of the library used. We use the `melt` command (or procedure) to reshape the data.  Note that in our dataset the variables representing the EPDS scores at follow-up times 1, 2 and 3 are called dep1, dep2 and dep3. These variables all have the same name except that they end in a different number, representing the different measurement time. 
+
+```{r}
+# Install the 'reshape' package first if you don't already have, using: install.packages("reshape") 
+library(reshape)
+reshape <- melt(depress1ab2_3b, id = c("subject", "group", "pre"))
+#sort by subjects
+long <- reshape[order(reshape$subject),] # Then view the data by: View(long)
+```
+
+To reshape our current dataset from long to wide: 
+
+```{r}
+wide <- reshape(long, idvar = c("subject", "group", "pre"), timevar = "variable", direction = "wide")
+```
+
+Success! The dataset is not back to the original format; except that the variable names have now changed slightly, however this does not matter.
+
+
+    We will now combine the rest of the data for the Postnatal Depression Study and produce a final combined dataset in long format. There are various ways that this can be done but the following process is suggested: 
+
+      1. Append the two 6 month follow-up datasets. 
+      2. Reshape the combined (appended) 4 and 5 month datasets from long to wide. 
+      3. Merge the combined (wide) dataset for the time 1, 2 and 3 month follow-up data you generated earlier with 
+         the (wide) 4 and 5 month follow-up dataset. 
+      4. Merge the now combined (wide) dataset for the 1-5 month follow-up data with the appended 6 month follow-up 
+         dataset. 
+      5. Reshape the (wide) combined 1-6 month follow-up dataset to long format. 
+
+    If you are feeling adventurous you might want to try one (or multiple) other methods of getting the data into the appropriate format.
+
+# About this document
+
+
+## Contributors
+
+- Catherine D'Este: initial STATA version
+- Tambri Housen: updated STATA version
+- Alice Richardson: updated STATA version
+- Nidhi Menon: R translation
+- Arminder Deol: R translation
+
+Contributions are welcome via [pull requests](https://github.com/reconhub/learn/pulls).
+
+
+## Legal stuff
+
+**License**: [CC-BY](https://creativecommons.org/licenses/by/3.0/)
+**Copyright**: Arminder Deol, 2019
