@@ -342,11 +342,6 @@ While storing variable values as numbers is important for analysis, we need to b
 Tabulating data: 
 
 ```{r, eval=FALSE}
-#attach the dataset before analysis
-attach(meningitis_csv_dataset)
-table (sex)
-
-# or you can avoid the 'attach(dataset)' by using the '$' operator to specify which dataset the variable comes from:
 table(meningitis$sex)
 ````
 
