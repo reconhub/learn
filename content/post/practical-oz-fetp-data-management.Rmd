@@ -199,8 +199,7 @@ knitr::include_graphics("fig3_Rstudio_screenshot_2nd.png")
 
 ### Datasets
 
-The first dataset we will be using has been modified from a dataset for 581 patients with acute meningitis (Table 1). Data from a subset of 422 patients were used to examine factors associated with differentiating between acute viral or acute bacterial meningitis^[Spanos A, Harrell FE, Durack DT. Differential diagnosis of acute meningitis: An analysis of the predictive value of initial observations. JAMA, 1989; 262: 2700-2707]. The original dataset can be found at: http://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/Cabm.html
-
+The first dataset we will be using has been modified from a dataset for 581 patients with acute meningitis (Table 1). Data from a subset of 422 patients were used to examine factors associated with differentiating between acute viral or acute bacterial meningitis^[Spanos A, Harrell FE, Durack DT. Differential diagnosis of acute meningitis: An analysis of the predictive value of initial observations. JAMA, 1989; 262: 2700-2707]. The original dataset can be found at: http://biostat.mc.vanderbilt.edu/wiki/Main/DataSets
 The dataset is available as **meningitis.csv** dataset: A comma delimited Excel file which can be imported into R or other statistical programs; this type of file has a .csv extension. 
 
 
@@ -354,12 +353,11 @@ What does the results window show? How many males and females are in the data se
 tab <- table(meningitis$sex, meningitis$abm)
 tab
 
-margin.table(tab, 1) # A frequencies (summed over B)
-margin.table(tab, 2) # B frequencies (summed over A)
+addmargins(tab) # frequencies (summed over rows and columns)
 
 prop.table(tab) # Cell percentages
 
-prop.table(tab,1) # Row percentages
+prop.table(tab, margin = 1) # Row percentages
 
 ```
 
