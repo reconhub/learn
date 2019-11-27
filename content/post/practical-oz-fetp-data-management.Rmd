@@ -305,9 +305,16 @@ Almost everything in R is done through functions. A function is a piece of code 
 
 **Table 2:** Some commonly used R commands
 
-```{r, fig.align='center', out.width = "750px", echo=FALSE}
-knitr::include_graphics("table2_r_commands.png")
-```
+
+|Command           |Explanation                                                                                                   |
+|------------------|--------------------------------------------------------------------------------------------------------------|
+|`str(dataset)`    |Describes the internal structure of the dataset or R object                                                   |
+|`summary(dataset)`|Summarizes information from all variables in the dataset                                                      |
+|`print(dataset)`  |Shows all observations in the dataset                                                                         |
+|`dataset$age`     |Access the 'age' column in the dataset                                                                        |
+|`View(dataset)`   |Allows you to browse all of a subset of your data                                                             |
+|`table()`         |Tabulates one or more variables                                                                               |
+|`order()`         |Will order the observations in **increasing order** of the values of a particular variable or set of variables|
 
 ### The summary command
 
