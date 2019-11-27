@@ -206,10 +206,21 @@ The dataset is available as **meningitis.csv** dataset: A comma delimited Excel 
 
 **Table 1:**  Format of meningitis dataset
 
-```{r, fig.align='center', out.width = "750px", echo=FALSE}
-knitr::include_graphics("table1_formatting.png")
-```
-
+|Variable Name|Variable Description                 |Type of Variable                     |Representation in R|
+|-------------|-------------------------------------|-------------------------------------|-------------------|
+|casenum      |Patient identification(id) number    |integer                              |`integer`          |
+|year         |Year of admission (years since 1900) |integer                              |`integer`          |
+|month        |Month of admission                   |integer                              |`integer`          |
+|age          |Age in years                         |continuous                           |`numeric`          |
+|race         |Race                                 |Binary, decimal: 1 = Black, 2 = White|`integer`          |
+|sex          |Sex                                  |Binary, decimal: 0 = male, 1 = female|`integer`          |
+|wbc          |White blood cell count               |continuous [count/1000]              |`numeric`          |
+|bloodgl      |Blood glucose                        |continuous [mg/dl]                   |`integer`          |
+|gl           |Cerebrospinal fluid (CFS) Glucose    |continuous [mg/dl]                   |`integer`          |
+|pr           |CSF Protein                          |continuous [mg/dl]                   |`integer`          |
+|whites       |Total leukocytes in CFS              |continuous [count/mm3]               |`integer`          |
+|polys        |% Polymorphonuclear Leukocytes in CSF|continuous percentage                |`integer`          |
+|abm          |Acute Bacterial Meningitis           |Binary, numeric: 0 = no, 1 = yes     |`integer`          |
 
 ## Opening data 
 
