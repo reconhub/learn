@@ -708,9 +708,10 @@ Table 3 shows the birthweight summary statistics by an observational study on th
 
 **Table 3:**  Birthweight summary statistics 
 
-```{r, fig.align='center', out.width = "800px", echo=FALSE}
-knitr::include_graphics("Table3_summary.png")
-```
+|Group           |Number of Observations|Mean|Standard Deviation|Standard Error|95% CI            |
+|----------------|----------------------|----|------------------|--------------|------------------|
+|**Vaccinated**  |6185                  |3495|670               |8.519         |3478.299, 3511.701|
+|**Unvaccinated**|18523                 |3510|639               |4.695         |3500.927, 3519.073|
 
     We want to estimate the proportion (%) of Australian adults who have diabetes with 95% CI. Of a sample of 11247 
     Australian adults, 844 have diabetes. What is the proportion and 95% CI?
