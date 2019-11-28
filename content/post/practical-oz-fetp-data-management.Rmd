@@ -976,6 +976,23 @@ This section describes various processes and commands for checking, managing and
 knitr::include_graphics("Table4_summary.png")
 ``` 
 
+|Variable name   |Variable Description                                     |Variable Format                                                      |
+|----------------|---------------------------------------------------------|---------------------------------------------------------------------|
+|ID              |Unique identification number                             |numeric, missing=.                                                   |
+|sex             |Sex of case                                              |Male, Female, missing=.                                              |
+|postcode        |Postcode of place of usual residence                     |numeric, missing=.                                                   |
+|birthdate       |Date of birth                                            |dd/mm/yyyy, missing=.                                                |
+|age             |Age in Years (stated by case)                            |numeric                                                              |
+|notificationdate|Date of notification (from laboratory or clinician)      |dd/mm/yyyy, missing=.                                                |
+|onsetdate       |Date of illness onset (from case)                        |dd/mm/yyyy, missing=.                                                |
+|howconfirmed    |Type of laboratory confirmation                          |4-digit code starting with P=PCR, starting with S=serology, missing=.|
+|mother          |Mother unewll prior to illness onset                     |yes=1, no=0, missing=9                                               |
+|father          |Father unewll prior to illness onset                     |yes=1, no=0, missing=9                                               |
+|sibling         |Any sibling unewll prior to illness onset                |yes=1, no=0, missing=9                                               |
+|spouse          |Spouse unewll prior to illness onset                     |yes=1, no=0, missing=9                                               |
+|otherhousehold  |Any other household contact unewll prior to illness onset|yes=1, no=0, missing=9                                               |
+|workplace       |Any workplace colleague unewll prior to illness onset    |yes=1, no=0, missing=9                                               |
+
 Open the dataset as you did with the meningitis data earlier, describe the data and obtain the codebook for all variables. 
 
 ```{r}
