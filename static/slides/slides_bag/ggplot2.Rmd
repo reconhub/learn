@@ -116,7 +116,7 @@ Learn more about *ggplot2*:
 - check the package's [website](https://ggplot2.tidyverse.org/)
 - a list of [all available `geoms_`](https://ggplot2.tidyverse.org/reference/index.html#section-layer-geoms) (types of plot)
 - a list of [`aes()` specifications](https://ggplot2.tidyverse.org/articles/ggplot2-specs.html) (colors / shapes / etc.)
-- a [gallery of extensions](http://www.ggplot2-exts.org/gallery/) to *ggplot2*
+- a [gallery of extensions](https://exts.ggplot2.tidyverse.org/gallery/) to *ggplot2*
 
 
 
