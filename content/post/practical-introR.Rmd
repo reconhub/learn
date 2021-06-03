@@ -490,7 +490,7 @@ library(tidyverse)
 Let's open and explore a data set imported from Excel
 
 This is the data set from our RECON practical on early outbreak analysis:
-- [PHM-EVD-linelist-2017-10-27.xlsx](../../data/PHM-EVD-linelist-2017-10-27.xlsx):
+- [PHM-EVD-linelist-2017-11-25.xlsx](https://github.com/reconhub/learn/raw/master/static/data/PHM-EVD-linelist-2017-11-25.xlsx):
 
 Let's save this data set in the same directory in which we are currently working.
 
@@ -499,7 +499,7 @@ To import data sets from Excel, we can use the library `readxl`, which is linked
 ```{r, eval=FALSE}
 library(readxl)
 library(here)
-dat <- read_excel(here("data/PHM-EVD-linelist-2017-10-27.xlsx"))
+dat <- read_excel(here("data/PHM-EVD-linelist-2017-11-25.xlsx"))
 
 ```
 
