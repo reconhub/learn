@@ -3,8 +3,8 @@ title: "An introduction to R and RStudio"
 author: "Zulma M. Cucunuba"
 date: '2019-06-01'
 output:
-  html_document:
-    df_print: paged
+  # html_document:
+  #   df_print: paged
   md_document:
     preserve_yaml: yes
     variant: markdown_github
@@ -54,13 +54,13 @@ history, and source documents.
 
 To create this, do the following steps:
 
-1)  Open RStudio and on the top right corner find *New Project*  
-2)  Create a new RStudio project in a new directory that you can call
+1.  Open RStudio and on the top right corner find *New Project*  
+2.  Create a new RStudio project in a new directory that you can call
     “introR”
 
 ![Screenshot New Directory](../../img/screenshots/NewDirectory.png)
 
-3)  Create the sub folders you need for organising your work (i.e. data,
+1.  Create the sub folders you need for organising your work (i.e. data,
     scripts, figs)
 
 In the end, your project should look something like this image
@@ -72,23 +72,20 @@ In the end, your project should look something like this image
 According to Hadley Wickham, in his Advanced R book
 \[<http://adv-r.had.co.nz/>\], there are two types of structures in R:
 
-  - Homogeneous: atomic vectors (1d), matrices (2d), and arrays (nd)
-  - Heterogeneous: data frames and lists
+-   Homogeneous: atomic vectors (1d), matrices (2d), and arrays (nd)
+-   Heterogeneous: data frames and lists
 
 ### Atomic vectors
 
 These are the most basic structures in R and have only one dimension
 (1d):
 
-  - Double (numeric)
-  - Logic
-  - Character
-  - Integer
-
-<!-- end list -->
+-   Double (numeric)
+-   Logic
+-   Character
+-   Integer
 
 ``` r
-
 vector_double <- c(1, 2, 3, 4)  
 
 vector_logic <- c(TRUE, FALSE, FALSE, TRUE)
@@ -117,23 +114,22 @@ typeof(vector_integer)
 Matrices are structures a bit more complex than vectors, with two main
 characteristics:
 
-  - A matrix is composed of only one type of vector
-  - A matrix has two dimensions
+-   A matrix is composed of only one type of vector
+-   A matrix has two dimensions
 
 A command to build a `matrix` uses three arguments:
 
-  - `data` corresponds to the list of vectors we want to use in the
+-   `data` corresponds to the list of vectors we want to use in the
     matrix
-  - `nrow` the number of rows where the data is going to be split (first
+-   `nrow` the number of rows where the data is going to be split (first
     dimension)
-  - `ncol` the number of columns where the data is going to be split
+-   `ncol` the number of columns where the data is going to be split
     (second dimension)
 
 By default the matrix is filled by column, unless we specify otherwise
 using `byrow = TRUE`
 
 ``` r
-
 matrix_of_doub <-  matrix(data = vector_double, nrow = 2, ncol = 2)
 matrix_of_doub
 ##      [,1] [,2]
@@ -170,7 +166,6 @@ being: 1) number of rows, 2) number of columns and 3) number of
 dimensions.
 
 ``` r
-
 vector_example <-1:18
 array_example <- array(data = vector_example, dim = c(2, 3, 3))
 
@@ -212,17 +207,15 @@ frame coerces the vector to its length.
 
 ``` r
 
-
 data_example <- data.frame(vector_character, vector_double, vector_logic, vector_integer)
 ```
 
 To access the general structure of a data frame we use the command `str`
 
 ``` r
-
 str(data_example)
 ## 'data.frame':    4 obs. of  4 variables:
-##  $ vector_character: Factor w/ 4 levels "A","B","C","D": 1 2 3 4
+##  $ vector_character: chr  "A" "B" "C" "D"
 ##  $ vector_double   : num  1 2 3 4
 ##  $ vector_logic    : logi  TRUE FALSE FALSE TRUE
 ##  $ vector_integer  : int  1 2 3 4
@@ -233,7 +226,6 @@ To access the different components of the data frame we use this syntax
 dimension to columns.
 
 ``` r
-
 data_example[1, 2]
 ## [1] 1
 ```
@@ -244,7 +236,6 @@ A `list` is the most complex structure in base R. A list can be composed
 of any type of objects of any dimension.
 
 ``` r
-
 list_example <- list(vector_character,
                      matrix_of_doub,
                      data_example)
@@ -254,7 +245,6 @@ To access the different components of a list, we use the syntax `[]`
 where the argument is simply the order within the list.
 
 ``` r
-
 list_example[1]
 ## [[1]]
 ## [1] "A" "B" "C" "D"
@@ -267,28 +257,28 @@ platform for programming.
 
 There are various types of functions
 
-  - *Primitive or base functions*: these are the default functions in
+-   *Primitive or base functions*: these are the default functions in
     *R* under the *base package*. For instance, these can include basic
     arithmetic operations, but also more complex operations such as
     extraction of median values `median` or `summary` of a variable.
-  - *Functions from packages* : these are functions created within a
+-   *Functions from packages* : these are functions created within a
     package. For example the function `glm` in the *stats* package.
-  - *User-built functions*: these are functions that any user creates
+-   *User-built functions*: these are functions that any user creates
     for a customized routine. These functions could become part of a
     package.
 
 The basic components of a function are:
 
-  - *name*: this is the name that we give to our function (for example:
+-   *name*: this is the name that we give to our function (for example:
     `myfun`)
-  - *formals or arguments*: these are the series of elements that
+-   *formals or arguments*: these are the series of elements that
     control how to call the function.
-  - *body*: this is the series of operations or modifications to the
+-   *body*: this is the series of operations or modifications to the
     arguments.
-  - *output*: this is the results after modifying the arguments. If this
+-   *output*: this is the results after modifying the arguments. If this
     output corresponds to a series of data, we can extract it using the
     command `return`.
-  - *function internal environment*: means the specific rules and
+-   *function internal environment*: means the specific rules and
     objects within a function. Those rules and objects will not work
     outside the function.
 
@@ -297,7 +287,6 @@ The basic components of a function are:
 Let’s build a function that calculates our Body Mass Index (BMI)
 
 ``` r
-
 # The name (myfun)
 myfun <- function(weight, 
                   height) # The arguments (weight and height)
@@ -321,7 +310,7 @@ body(myfun)
 ##     return(BMI)
 ## }
 environment(myfun)
-## <environment: 0x557de6e9e788>
+## <environment: R_GlobalEnv>
 
 myfun(weight = 88, height = 1.78)
 ## [1] 27.77427
@@ -333,7 +322,6 @@ Let’s build a function that has default values. This way, we don’t need
 to specify some of the arguments as they can be set by default.
 
 ``` r
-
 # The name (myfun2)
 myfun2 <- function(weight, 
                    height,
@@ -361,9 +349,9 @@ As described by Hadley Wickham in his book *R packages*, a package is
 the fundamental unit of reproducible R code. A package should include at
 least:
 
-  - Reusable R functions
-  - Documentation
-  - Sample data
+-   Reusable R functions
+-   Documentation
+-   Sample data
 
 Any R user can build a package that can then be used or modified by
 others as they are open-source.
@@ -395,14 +383,12 @@ use `browseVignettes("incidence")`
 # Scoping and Environments
 
 A new environment is created when we create a function. This is
-important\! When we call a function, R first looks for the elements
+important! When we call a function, R first looks for the elements
 within that function; if the elements do not exist within that function,
 then R looks for them in the global environment.
 
-  - Example of a function in which objects are only avalible in the
+-   Example of a function in which objects are only avalible in the
     global environment
-
-<!-- end list -->
 
 ``` r
 mynewfun <- function() {
@@ -418,10 +404,8 @@ mynewfun()
 ## [1] 4
 ```
 
-  - Example of a function in which objects are defined partially in the
+-   Example of a function in which objects are defined partially in the
     local environment and partially in the global envoronment
-
-<!-- end list -->
 
 ``` r
 mynewfun <- function(xx) {
@@ -449,11 +433,11 @@ you will have the general idea of how to work with the others
 For example, for a normal distribution we use `?dnorm` to explore the
 arguments in this function
 
-  - `dnorm` = density function with default arguments `(x, mean = 0, sd
-    = 1, log = FALSE)`
-  - `pnorm` gives the distribution function
-  - `qnorm` gives the quantile function
-  - `rnorm` generates random deviates
+-   `dnorm` = density function with default arguments
+    `(x, mean = 0, sd = 1, log = FALSE)`
+-   `pnorm` gives the distribution function
+-   `qnorm` gives the quantile function
+-   `rnorm` generates random deviates
 
 Many distributions are part of the `stats` package that comes by default
 with R such as the *uniform*, *poisson*, and *binomial*, among others.
@@ -478,7 +462,7 @@ and then pasting the result here.
 -->
 
 | name              | probability  | quantile     | distribution | random       |
-| :---------------- | :----------- | :----------- | :----------- | :----------- |
+|:------------------|:-------------|:-------------|:-------------|:-------------|
 | Beta              | `pbeta()`    | `qbeta()`    | `dbeta()`    | `rbeta()`    |
 | Binomial          | `pbinom()`   | `qbinom()`   | `dbinom()`   | `rbinom()`   |
 | Cauchy            | `pcauchy()`  | `qcauchy()`  | `dcauchy()`  | `rcauchy()`  |
@@ -499,10 +483,10 @@ and then pasting the result here.
 R allows users not only to open but also to create data sets. There are
 three sources of data sets:
 
-  - Data set imported as such (from `.xlsx`, `.csv`, `.stata`, or `.RDS`
+-   Data set imported as such (from `.xlsx`, `.csv`, `.stata`, or `.RDS`
     formats, among many others)
-  - Data set that is part of a R package
-  - Data set created in our R session
+-   Data set that is part of a R package
+-   Data set created in our R session
 
 # Tidyverse
 
@@ -519,7 +503,7 @@ Let’s open and explore a data set imported from Excel
 
 This is the data set from our RECON practical on early outbreak
 analysis: -
-[PHM-EVD-linelist-2017-10-27.xlsx](../../data/PHM-EVD-linelist-2017-10-27.xlsx):
+[PHM-EVD-linelist-2017-11-25.xlsx](https://github.com/reconhub/learn/raw/master/static/data/PHM-EVD-linelist-2017-11-25.xlsx):
 
 Let’s save this data set in the same directory in which we are currently
 working.
@@ -531,7 +515,7 @@ library, as it is not a core tidyverse package.
 ``` r
 library(readxl)
 library(here)
-dat <- read_excel(here("data/PHM-EVD-linelist-2017-10-27.xlsx"))
+dat <- read_excel(here("data/PHM-EVD-linelist-2017-11-25.xlsx"))
 ```
 
 Next, we will take a look at some of the most commonly used functions
@@ -543,23 +527,21 @@ user to emphasize a sequence of actions on an object.
 
 From the package `dyplr`, the most common functions are:
 
-  - `glimpse`: used to rapidly explore a data set
-  - `arrange`: arranges the data set by the value of a particular
+-   `glimpse`: used to rapidly explore a data set
+-   `arrange`: arranges the data set by the value of a particular
     variable if numeric, or by alphabetic order if it is a character.
-  - `mutate`: generates a new variable
-  - `rename`: changes a variable’s name
-  - `summarise`: reduces the dimensions of a data set
-
-<!-- end list -->
+-   `mutate`: generates a new variable
+-   `rename`: changes a variable’s name
+-   `summarise`: reduces the dimensions of a data set
 
 ``` r
 glimpse(dat)
-## Observations: 50
-## Variables: 4
-## $ case_id <chr> "39e9dc", "664549", "b4d8aa", "51883d", "947e40", "9aa19…
-## $ onset   <dttm> 2017-10-10, 2017-10-16, 2017-10-17, 2017-10-18, 2017-10…
-## $ sex     <chr> "female", "male", "male", "male", "female", "female", "f…
-## $ age     <dbl> 62, 28, 54, 57, 23, 66, 13, 10, 34, 11, 23, 23, 9, 68, 3…
+## Rows: 50
+## Columns: 4
+## $ case_id <chr> "39e9dc", "664549", "b4d8aa", "51883d", "947e40", "9aa197", "e~
+## $ onset   <dttm> 2017-10-10, 2017-10-16, 2017-10-17, 2017-10-18, 2017-10-20, 2~
+## $ sex     <chr> "female", "male", "male", "male", "female", "female", "female"~
+## $ age     <dbl> 62, 28, 54, 57, 23, 66, 13, 10, 34, 11, 23, 23, 9, 68, 37, 13,~
 
 dat %>% arrange(age)
 ## # A tibble: 50 x 4
@@ -575,7 +557,7 @@ dat %>% arrange(age)
 ##  8 59e66c  2017-11-16 00:00:00 male       9
 ##  9 af0ac0  2017-10-21 00:00:00 male      10
 ## 10 778316  2017-11-04 00:00:00 female    10
-## # … with 40 more rows
+## # ... with 40 more rows
 dat %>% mutate(fecha_inicio_sintomas = onset)
 ## # A tibble: 50 x 5
 ##    case_id onset               sex      age fecha_inicio_sintomas
@@ -590,7 +572,7 @@ dat %>% mutate(fecha_inicio_sintomas = onset)
 ##  8 af0ac0  2017-10-21 00:00:00 male      10 2017-10-21 00:00:00  
 ##  9 185911  2017-10-21 00:00:00 female    34 2017-10-21 00:00:00  
 ## 10 601d2e  2017-10-22 00:00:00 male      11 2017-10-22 00:00:00  
-## # … with 40 more rows
+## # ... with 40 more rows
 
 dat %>% rename(edad = age)
 ## # A tibble: 50 x 4
@@ -606,14 +588,14 @@ dat %>% rename(edad = age)
 ##  8 af0ac0  2017-10-21 00:00:00 male      10
 ##  9 185911  2017-10-21 00:00:00 female    34
 ## 10 601d2e  2017-10-22 00:00:00 male      11
-## # … with 40 more rows
+## # ... with 40 more rows
 glimpse(dat)
-## Observations: 50
-## Variables: 4
-## $ case_id <chr> "39e9dc", "664549", "b4d8aa", "51883d", "947e40", "9aa19…
-## $ onset   <dttm> 2017-10-10, 2017-10-16, 2017-10-17, 2017-10-18, 2017-10…
-## $ sex     <chr> "female", "male", "male", "male", "female", "female", "f…
-## $ age     <dbl> 62, 28, 54, 57, 23, 66, 13, 10, 34, 11, 23, 23, 9, 68, 3…
+## Rows: 50
+## Columns: 4
+## $ case_id <chr> "39e9dc", "664549", "b4d8aa", "51883d", "947e40", "9aa197", "e~
+## $ onset   <dttm> 2017-10-10, 2017-10-16, 2017-10-17, 2017-10-18, 2017-10-20, 2~
+## $ sex     <chr> "female", "male", "male", "male", "female", "female", "female"~
+## $ age     <dbl> 62, 28, 54, 57, 23, 66, 13, 10, 34, 11, 23, 23, 9, 68, 37, 13,~
 
 dat %>% group_by(sex) %>% summarise(number = n())
 ## # A tibble: 2 x 2
@@ -636,7 +618,7 @@ dat %>% filter(age >14)
 ##  8 605322  2017-10-22 00:00:00 female    23
 ##  9 e399b1  2017-10-23 00:00:00 female    23
 ## 10 f658bc  2017-10-28 00:00:00 male      68
-## # … with 24 more rows
+## # ... with 24 more rows
 
 select(dat, starts_with("date"))
 ## # A tibble: 50 x 0
@@ -694,6 +676,7 @@ Let’s open and explore a data set that is part of a package
 ``` r
 # install.packages("outbreaks")
 library(outbreaks)
+## Warning: package 'outbreaks' was built under R version 4.0.4
 measles_dat <- outbreaks::measles_hagelloch_1861
 class(measles_dat)
 ## [1] "data.frame"
@@ -713,31 +696,30 @@ head(measles_dat)
 ## 5        42     1           yes 145.0 120.0
 ## 6        42     2           yes 145.0 120.0
 tail(measles_dat)
-##     case_ID infector date_of_prodrome date_of_rash date_of_death age
-## 183     183      184       1861-11-11   1861-11-15          <NA>   4
-## 184     184       NA       1861-10-30   1861-11-06          <NA>  13
-## 185     185       82       1861-12-03   1861-12-07          <NA>   3
-## 186     186       45       1861-11-22   1861-11-26          <NA>   6
-## 187     187       82       1861-12-07   1861-12-11          <NA>   0
-## 188     188      175       1861-11-23   1861-11-27          <NA>   1
-##     gender family_ID class complications x_loc y_loc
-## 183      m         4     0           yes 182.5 200.0
-## 184   <NA>        51     2           yes 182.5 200.0
-## 185      m        21     0           yes 205.0 182.5
-## 186   <NA>        57     0           yes 212.5  90.0
-## 187      m        21     0           yes 205.0 182.5
-## 188   <NA>        57     0           yes 212.5  90.0
+##     case_ID infector date_of_prodrome date_of_rash date_of_death age gender
+## 183     183      184       1861-11-11   1861-11-15          <NA>   4      m
+## 184     184       NA       1861-10-30   1861-11-06          <NA>  13   <NA>
+## 185     185       82       1861-12-03   1861-12-07          <NA>   3      m
+## 186     186       45       1861-11-22   1861-11-26          <NA>   6   <NA>
+## 187     187       82       1861-12-07   1861-12-11          <NA>   0      m
+## 188     188      175       1861-11-23   1861-11-27          <NA>   1   <NA>
+##     family_ID class complications x_loc y_loc
+## 183         4     0           yes 182.5 200.0
+## 184        51     2           yes 182.5 200.0
+## 185        21     0           yes 205.0 182.5
+## 186        57     0           yes 212.5  90.0
+## 187        21     0           yes 205.0 182.5
+## 188        57     0           yes 212.5  90.0
 ```
 
 From the package `tidyr`, the most common functions are:
 
-  - `gather`: makes wide data longer
-  - `spread`: makes long data wider
+-   `gather`: makes wide data longer
+-   `spread`: makes long data wider
 
 Example:
 
 ``` r
-
 malaria <- tibble(
   name = letters[1:10],
   age = round(rnorm(10, 30, 10), 0),
@@ -745,27 +727,27 @@ malaria <- tibble(
   infection = rep(c('falciparum', 'vivax', 'vivax', 'vivax', 'vivax'), 2)
   ) 
 glimpse(malaria)
-## Observations: 10
-## Variables: 4
+## Rows: 10
+## Columns: 4
 ## $ name      <chr> "a", "b", "c", "d", "e", "f", "g", "h", "i", "j"
-## $ age       <dbl> 25, 47, 21, 24, 34, 24, 39, 19, 31, 33
+## $ age       <dbl> 29, 41, 39, 22, 33, 32, 48, 27, 37, 24
 ## $ gender    <chr> "f", "m", "f", "m", "f", "m", "f", "m", "f", "m"
-## $ infection <chr> "falciparum", "vivax", "vivax", "vivax", "vivax", "fal…
+## $ infection <chr> "falciparum", "vivax", "vivax", "vivax", "vivax", "falciparu~
 
 malaria %>% spread(key = 'infection', gender)
 ## # A tibble: 10 x 4
 ##    name    age falciparum vivax
 ##    <chr> <dbl> <chr>      <chr>
-##  1 a        25 f          <NA> 
-##  2 b        47 <NA>       m    
-##  3 c        21 <NA>       f    
-##  4 d        24 <NA>       m    
-##  5 e        34 <NA>       f    
-##  6 f        24 m          <NA> 
-##  7 g        39 <NA>       f    
-##  8 h        19 <NA>       m    
-##  9 i        31 <NA>       f    
-## 10 j        33 <NA>       m
+##  1 a        29 f          NA   
+##  2 b        41 NA         m    
+##  3 c        39 NA         f    
+##  4 d        22 NA         m    
+##  5 e        33 NA         f    
+##  6 f        32 m          NA   
+##  7 g        48 NA         f    
+##  8 h        27 NA         m    
+##  9 i        37 NA         f    
+## 10 j        24 NA         m
 ```
 
 # ggplot2
@@ -778,12 +760,12 @@ bars).”
 
 The main components of a ggplot2 plot are:
 
-  - *data frame*
-  - *aesthesic mappings* this refers to the indications on how the data
+-   *data frame*
+-   *aesthesic mappings* this refers to the indications on how the data
     should be mapped (x, y) to colour, size, etc
-  - *geoms* refers to geometric objects such as points, lines, shapes
-  - *facets* for conditional plots
-  - *coodinate system*
+-   *geoms* refers to geometric objects such as points, lines, shapes
+-   *facets* for conditional plots
+-   *coodinate system*
 
 ## Basic functions in ggplot
 
@@ -793,13 +775,13 @@ can be associated using the symbol `+` to other types of functions, such
 as the *geoms* that will draw a particular type of shape. Some of the
 most commonly used are:
 
-  - `geom_point()` : for points
-  - `geom_line()` : for lines
-  - `geom_bar()` : for bar charts
-  - `geom_histogram()`: for histograms
+-   `geom_point()` : for points
+-   `geom_line()` : for lines
+-   `geom_bar()` : for bar charts
+-   `geom_histogram()`: for histograms
 
-All of these commands will use the same syntax for the aesthetics `(x,
-y, colour, fill, shape)`.
+All of these commands will use the same syntax for the aesthetics
+`(x, y, colour, fill, shape)`.
 
 ### GGplot example with the measles data set
 
@@ -807,9 +789,9 @@ Let’s use the measles data set from the `outbreaks` package that we
 imported above. In this case, we want to make a graph that displays the
 time-series of cases by week coloured by gender. We have to define that:
 
-  - `x` = time
-  - `y` = aggregated number of cases by week and gender
-  - `colour` = gender
+-   `x` = time
+-   `y` = aggregated number of cases by week and gender
+-   `colour` = gender
 
 An important thing to be of aware is that for a single instruction,
 ggplot will only use variables that belong to the same data set. So, we
@@ -842,11 +824,11 @@ To reformat the data frame, we can use various functions explained above
 from the `dplyr` package.
 
 ``` r
-
 measles_grouped <- measles_dat %>% 
   filter(!is.na(gender)) %>%
   group_by(date_of_rash, gender) %>% 
   summarise(cases = n())
+## `summarise()` has grouped output by 'date_of_rash'. You can override using the `.groups` argument.
 
 head(measles_grouped, 5)
 ## # A tibble: 5 x 3
@@ -867,7 +849,7 @@ ggplot(data = measles_grouped) +
   geom_line(aes(x = date_of_rash, y = cases, colour = gender))
 ```
 
-![](practical-introR_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](practical-introR_files/figure-markdown_github/unnamed-chunk-24-1.png)
 
 By default, ggplot makes several decisions for us, such as the colours
 used, the size of the lines, the font size, etc. Sometimes we may want
@@ -877,7 +859,6 @@ Here is an alternative way of presenting the same data. Modify some of
 the lines, and see how the plot changes.
 
 ``` r
-
 p <- ggplot(data = measles_grouped, 
             aes(x = date_of_rash, y = cases, fill = gender)) +
   geom_bar(stat = 'identity', colour = 'black', alpha = 0.5) +
@@ -893,7 +874,7 @@ p <- ggplot(data = measles_grouped,
 p
 ```
 
-![](practical-introR_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
+![](practical-introR_files/figure-markdown_github/unnamed-chunk-25-1.png)
 
 Finally, ggplot has a useful feature that allows users to add layers on
 top of existing ggplot objects. For instance, if we decide to change the
@@ -905,11 +886,11 @@ the previous plot.
 p + 
   ggtitle('another title') +
   scale_fill_manual(values =c('blue', 'lightblue')) 
-## Scale for 'fill' is already present. Adding another scale for 'fill',
-## which will replace the existing scale.
+## Scale for 'fill' is already present. Adding another scale for 'fill', which
+## will replace the existing scale.
 ```
 
-![](practical-introR_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
+![](practical-introR_files/figure-markdown_github/unnamed-chunk-26-1.png)
 
 # Further learning
 
@@ -922,15 +903,15 @@ the RECON learn website <https://www.reconlearn.org/post/stegen.html>
 Much of the content for this basic R tutorial came from well-known books
 by Hadley Wickham which are mostly available online.
 
-  - R for Data Science <https://r4ds.had.co.nz/index.html>
-  - Advanced R <http://adv-r.had.co.nz/>
-  - R packages <http://r-pkgs.had.co.nz/>
+-   R for Data Science <https://r4ds.had.co.nz/index.html>
+-   Advanced R <http://adv-r.had.co.nz/>
+-   R packages <http://r-pkgs.had.co.nz/>
 
 ## Contributors
 
-  - Zulma M. Cucunuba: initial version
-  - Zhian N. Kamvar: minor edits
-  - Kelly A. Charniga: minor edits
+-   Zulma M. Cucunuba: initial version
+-   Zhian N. Kamvar: minor edits
+-   Kelly A. Charniga: minor edits
 
 Contributions are welcome via [pull
 requests](https://github.com/reconhub/learn/pulls).
@@ -947,33 +928,33 @@ this document can be found
 
 **You are free:**
 
-  - to Share - to copy, distribute and transmit the work
-  - to Remix - to adapt the work Under the following conditions:
-  - Attribution - You must attribute the work in the manner specified by
+-   to Share - to copy, distribute and transmit the work
+-   to Remix - to adapt the work Under the following conditions:
+-   Attribution - You must attribute the work in the manner specified by
     the author or licensor (but not in any way that suggests that they
     endorse you or your use of the work). The best way to do this is to
     keep as it is the list of contributors: sources, authors and
     reviewers.
-  - Share Alike - If you alter, transform, or build upon this work, you
+-   Share Alike - If you alter, transform, or build upon this work, you
     may distribute the resulting work only under the same or similar
     license to this one. Your changes must be documented. Under that
     condition, you are allowed to add your name to the list of
     contributors.
-  - You cannot sell this work alone but you can use it as part of a
+-   You cannot sell this work alone but you can use it as part of a
     teaching. With the understanding that:
-  - Waiver - Any of the above conditions can be waived if you get
+-   Waiver - Any of the above conditions can be waived if you get
     permission from the copyright holder.
-  - Public Domain - Where the work or any of its elements is in the
+-   Public Domain - Where the work or any of its elements is in the
     public domain under applicable law, that status is in no way
     affected by the license.
-  - Other Rights - In no way are any of the following rights affected by
+-   Other Rights - In no way are any of the following rights affected by
     the license:
-  - Your fair dealing or fair use rights, or other applicable copyright
+-   Your fair dealing or fair use rights, or other applicable copyright
     exceptions and limitations;
-  - The author’s moral rights;
-  - Rights other persons may have either in the work itself or in how
+-   The author’s moral rights;
+-   Rights other persons may have either in the work itself or in how
     the work is used, such as publicity or privacy rights.
-  - Notice - For any reuse or distribution, you must make clear to
+-   Notice - For any reuse or distribution, you must make clear to
     others the license terms of this work by keeping together this work
     and the current license. This licence is based on
     <http://creativecommons.org/licenses/by-sa/3.0/>

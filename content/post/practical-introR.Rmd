@@ -3,8 +3,8 @@ title: "An introduction to R and RStudio"
 author: "Zulma M. Cucunuba"
 date: '2019-06-01'
 output:
-  html_document:
-    df_print: paged
+  # html_document:
+  #   df_print: paged
   md_document:
     preserve_yaml: yes
     variant: markdown_github
