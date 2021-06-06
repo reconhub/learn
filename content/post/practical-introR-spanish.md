@@ -1,10 +1,9 @@
 ---
 title: "Una introducción a R y RStudio"
-author: Zulma M. Cucunuba
-authors: ["Zulma M. Cucunuba"]
+authors: ["Zulma M. Cucunuba","José M. Velasco-España","Andree Valle-Campos"]
 categories: ["practicals"]
-topics: ["R","Rstudio"]
-date: 2021-05-05
+topics: ["R","Rstudio","Spanish"]
+date: '2019-06-01'
 image: img/highres/introR.jpg
 showonlyimage: yes
 bibliography: null
@@ -448,10 +447,13 @@ por lo que si aprende a trabajar con una, tendrá la idea general de cómo
 trabajar con las demás.
 
 Por ejemplo, para una distribución normal se usa `?dnorm` para explorar
-los argumentos en esta función - `dnorm` = función de densidad con
-argumentos predeterminados `(x, mean = 0, sd = 1, log = FALSE)` -
-`pnorm` da la función de distribución - `qnorm` da la función cuantil -
-`rnorm` genera datos aleatorios
+los argumentos en esta función
+
+-   `dnorm` = función de densidad con argumentos predeterminados
+    `(x, mean = 0, sd = 1, log = FALSE)`
+-   `pnorm` da la función de distribución
+-   `qnorm` da la función cuantil
+-   `rnorm` genera datos aleatorios
 
 Muchas distribuciones son parte del paquete `stats` que viene por
 defecto con R, como *uniform*, *poisson* y *binomial*, entre otros. Para
@@ -460,21 +462,22 @@ que necesite instalar otros paquetes. Para obtener una lista no
 exhaustiva de las distribuciones más utilizadas y sus argumentos,
 consultar la siguiente tabla:
 
-–\> \|Nombre \|probabilidad \|cuantil \|distribución \|random \|
-\|:—————–\|:————\|:————\|:————\|:————\| \|Beta \|`pbeta()` \|`qbeta()`
-\|`dbeta()` \|`rbeta()` \| \|Binomial \|`pbinom()` \|`qbinom()`
-\|`dbinom()` \|`rbinom()` \| \|Cauchy \|`pcauchy()` \|`qcauchy()`
-\|`dcauchy()` \|`rcauchy()` \| \|Chi-Square \|`pchisq()` \|`qchisq()`
-\|`dchisq()` \|`rchisq()` \| \|Exponential \|`pexp()` \|`qexp()`
-\|`dexp()` \|`rexp()` \| \|Gamma \|`pgamma()` \|`qgamma()` \|`dgamma()`
-\|`rgamma()` \| \|Logistic \|`plogis()` \|`qlogis()` \|`dlogis()`
-\|`rlogis()` \| \|Log Normal \|`plnorm()` \|`qlnorm()` \|`dlnorm()`
-\|`rlnorm()` \| \|Negative Binomial \|`pnbinom()` \|`qnbinom()`
-\|`dnbinom()` \|`rnbinom()` \| \|Normal \|`pnorm()` \|`qnorm()`
-\|`dnorm()` \|`rnorm()` \| \|Poisson \|`ppois()` \|`qpois()` \|`dpois()`
-\|`rpois()` \| \|Student’s t \|`pt()` \|`qt()` \|`dt()` \|`rt()` \|
-\|Uniform \|`punif()` \|`qunif()` \|`dunif()` \|`runif()` \| \|Weibull
-\|`pweibull()` \|`qweibull()` \|`dweibull()` \|`rweibull()` \|
+| Nombre            | probabilidad | cuantil      | distribución | random       |
+|:------------------|:-------------|:-------------|:-------------|:-------------|
+| Beta              | `pbeta()`    | `qbeta()`    | `dbeta()`    | `rbeta()`    |
+| Binomial          | `pbinom()`   | `qbinom()`   | `dbinom()`   | `rbinom()`   |
+| Cauchy            | `pcauchy()`  | `qcauchy()`  | `dcauchy()`  | `rcauchy()`  |
+| Chi-Square        | `pchisq()`   | `qchisq()`   | `dchisq()`   | `rchisq()`   |
+| Exponential       | `pexp()`     | `qexp()`     | `dexp()`     | `rexp()`     |
+| Gamma             | `pgamma()`   | `qgamma()`   | `dgamma()`   | `rgamma()`   |
+| Logistic          | `plogis()`   | `qlogis()`   | `dlogis()`   | `rlogis()`   |
+| Log Normal        | `plnorm()`   | `qlnorm()`   | `dlnorm()`   | `rlnorm()`   |
+| Negative Binomial | `pnbinom()`  | `qnbinom()`  | `dnbinom()`  | `rnbinom()`  |
+| Normal            | `pnorm()`    | `qnorm()`    | `dnorm()`    | `rnorm()`    |
+| Poisson           | `ppois()`    | `qpois()`    | `dpois()`    | `rpois()`    |
+| Student’s t       | `pt()`       | `qt()`       | `dt()`       | `rt()`       |
+| Uniform           | `punif()`    | `qunif()`    | `dunif()`    | `runif()`    |
+| Weibull           | `pweibull()` | `qweibull()` | `dweibull()` | `rweibull()` |
 
 # Crear y abrir conjuntos de datos
 
@@ -733,7 +736,7 @@ glimpse(malaria)
 ## Rows: 10
 ## Columns: 4
 ## $ name      <chr> "a", "b", "c", "d", "e", "f", "g", "h", "i", "j"
-## $ age       <dbl> 34, 32, 45, 37, 45, 32, 28, 43, 26, 44
+## $ age       <dbl> 35, 33, 35, 44, 37, 18, 12, 27, 33, 24
 ## $ gender    <chr> "f", "m", "f", "m", "f", "m", "f", "m", "f", "m"
 ## $ infection <chr> "falciparum", "vivax", "vivax", "vivax", "vivax", "falciparu~
 
@@ -741,16 +744,16 @@ malaria %>% spread(key = 'infection', gender)
 ## # A tibble: 10 x 4
 ##    name    age falciparum vivax
 ##    <chr> <dbl> <chr>      <chr>
-##  1 a        34 f          NA   
-##  2 b        32 NA         m    
-##  3 c        45 NA         f    
-##  4 d        37 NA         m    
-##  5 e        45 NA         f    
-##  6 f        32 m          NA   
-##  7 g        28 NA         f    
-##  8 h        43 NA         m    
-##  9 i        26 NA         f    
-## 10 j        44 NA         m
+##  1 a        35 f          NA   
+##  2 b        33 NA         m    
+##  3 c        35 NA         f    
+##  4 d        44 NA         m    
+##  5 e        37 NA         f    
+##  6 f        18 m          NA   
+##  7 g        12 NA         f    
+##  8 h        27 NA         m    
+##  9 i        33 NA         f    
+## 10 j        24 NA         m
 ```
 
 # ggplot2
@@ -919,6 +922,8 @@ línea.
 -   Zulma M. Cucunuba: Versión inicial
 -   Zhian N. Kamvar: Ediciones menores
 -   Kelly A. Charniga: Ediciones menores
+-   José M. Velasco-España: Traducción de Inglés a Español
+-   Andree Valle-Campos: Ediciones menores
 
 Los colaboradores son bienvenidos vía
 <https://github.com/reconhub/learn/pulls>).

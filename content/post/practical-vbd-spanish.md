@@ -1,10 +1,10 @@
 ---
 title: ' VBD: Construyendo un modelo simple para Zika'
 author: "Zulma Cucunuba & Pierre Nouvellet"
-authors: ["Zulma Cucunuba", "Pierre Nouvellet"]
-date: 2021-05-27
+authors: ["Zulma Cucunuba", "Pierre Nouvellet","José M. Velasco-España","Andree Valle-Campos"]
+date: 2019-06-10
 image: img/highres/mosquito.jpg
-topics: ["zika", "compartmental models"]
+topics: ["zika", "compartmental models","Spanish"]
 categories: practicals
 licenses: CC-BY
 always_allow_html: yes
@@ -360,6 +360,7 @@ viables? ¿Son rentables?
 -   Zulma Cucunuba & Pierre Nouvellet: Versión incial
 -   Kelly Charinga & Zhian N. Kamvar: Edición
 -   José M. Velasco-España: Traducción de Inglés a Español
+-   Andree Valle-Campos: Ediciones menores
 
 Contribuciones son bienvenidas vía [pull
 requests](https://github.com/reconhub/learn/pulls). El archivo fuente de

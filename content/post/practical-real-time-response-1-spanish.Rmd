@@ -1,10 +1,9 @@
 ---
 title: "Análisis de brotes en tiempo real: el ébola como estudio de caso - parte 1"
-author: Anne Cori, Natsuko Imai, Finlay Campbell, Zhian N. Kamvar, Thibaut Jombart
-authors: ["Anne Cori", "Natsuko Imai", "Finlay Campbell", "Zhian N. Kamvar", "Thibaut Jombart"]
+authors: ["Anne Cori", "Natsuko Imai", "Finlay Campbell", "Zhian N. Kamvar", "José M. Velasco-España","Andree Valle-Campos", "Thibaut Jombart"]
 categories: ["practicals"]
-topics: ["simulation", "response", "ebola", "epicurve", "reproduction number"]
-date: 2021-05-05
+topics: ["simulation", "response", "ebola", "epicurve", "reproduction number","Spanish"]
+date: 2019-06-11
 image: img/highres/ebola-strikes-back.jpg
 slug: real-time-response-1-spanish
 showonlyimage: yes
@@ -16,7 +15,7 @@ output:
     variant: markdown_github
     preserve_yaml: yes
 params:
-  full_version: true
+  full_version: false
 ---
 
 ```{r setup, include=FALSE}
@@ -320,3 +319,12 @@ saveRDS(linelist, here("data/clean/linelist.rds"))
 saveRDS(linelist_clean, here("data/clean/linelist_clean.rds"))
 saveRDS(contacts, here("data/clean/contacts.rds"))
 ```
+
+
+## Colaboradores
+
+- Anne Cori, Natsuko Imai, Finlay Campbell, Zhian N. Kamvar & Thibaut Jombart: Versión inicial
+- José M. Velasco-España: Traducción de Inglés a Español
+- Andree Valle-Campos: Ediciones menores
+
+Los colaboradores son bienvenidos vía https://github.com/reconhub/learn/pulls).

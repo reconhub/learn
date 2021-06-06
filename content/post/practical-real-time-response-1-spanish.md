@@ -1,10 +1,9 @@
 ---
 title: "Análisis de brotes en tiempo real: el ébola como estudio de caso - parte 1"
-author: Anne Cori, Natsuko Imai, Finlay Campbell, Zhian N. Kamvar, Thibaut Jombart
-authors: ["Anne Cori", "Natsuko Imai", "Finlay Campbell", "Zhian N. Kamvar", "Thibaut Jombart"]
+authors: ["Anne Cori", "Natsuko Imai", "Finlay Campbell", "Zhian N. Kamvar", "José M. Velasco-España","Andree Valle-Campos", "Thibaut Jombart"]
 categories: ["practicals"]
-topics: ["simulation", "response", "ebola", "epicurve", "reproduction number"]
-date: 2021-05-05
+topics: ["simulation", "response", "ebola", "epicurve", "reproduction number","Spanish"]
+date: 2019-06-11
 image: img/highres/ebola-strikes-back.jpg
 slug: real-time-response-1-spanish
 showonlyimage: yes
@@ -16,7 +15,7 @@ output:
     variant: markdown_github
     preserve_yaml: yes
 params:
-  full_version: true
+  full_version: false
 ---
 
 ## Introducción
@@ -151,10 +150,6 @@ song-and-dance to appease the directory gods.
 linelist <- read_excel(here("data/linelist_20140701.xlsx"), na = c("", "NA"))
 ```
 
-``` r
-contacts <- read_excel(here("data/contacts_20140701.xlsx"), na = c("", "NA"))
-```
-
 Tómese su tiempo para mirar los datos y la estructura aquí.
 
 -   ¿Son los datos y el formato similares a las listas de líneas que ha
@@ -162,15 +157,9 @@ Tómese su tiempo para mirar los datos y la estructura aquí.
 -   Si fuera parte del equipo de investigación de un brote, ¿qué otra
     información le gustaría recopilar?
 
-``` r
-dim(linelist)
-```
+<!-- -->
 
     ## [1] 169  11
-
-``` r
-head(linelist)
-```
 
     ## # A tibble: 6 x 11
     ##   case_id generation date_of_infection date_of_onset date_of_hospitalisation
@@ -184,21 +173,12 @@ head(linelist)
     ## # ... with 6 more variables: date_of_outcome <chr>, outcome <chr>,
     ## #   gender <chr>, hospital <chr>, lon <dbl>, lat <dbl>
 
--   You may want to also collect data on date of report, age, household
-    identifier, occupation, etc.
-
 Tenga en cuenta que para análisis posteriores, deberá asegurarse de que
 todas las fechas estén almacenadas correctamente como `Date` objects.
 Puede hacer esto usando la función `as.Date`, por ejemplo:
 
 ``` r
 linelist$date_of_onset <- as.Date(linelist$date_of_onset, format = "%Y-%m-%d")
-```
-
-``` r
-linelist$date_of_infection <- as.Date(linelist$date_of_infection, format = "%Y-%m-%d")
-linelist$date_of_hospitalisation <- as.Date(linelist$date_of_hospitalisation, format = "%Y-%m-%d")
-linelist$date_of_outcome <- as.Date(linelist$date_of_outcome, format = "%Y-%m-%d")
 ```
 
 Los datos ahora deberían verse así:
@@ -231,9 +211,7 @@ Mire más de cerca los datos contenidos en este `linelist`.
 
 -   ¿Qué observa?
 
-``` r
-head(linelist)
-```
+<!-- -->
 
     ## # A tibble: 6 x 11
     ##   case_id generation date_of_infection date_of_onset date_of_hospitalisation
@@ -246,10 +224,6 @@ head(linelist)
     ## 6 49731d           0 2014-03-19        2014-04-25    2014-05-02             
     ## # ... with 6 more variables: date_of_outcome <date>, outcome <chr>,
     ## #   gender <chr>, hospital <chr>, lon <dbl>, lat <dbl>
-
-``` r
-names(linelist)
-```
 
     ##  [1] "case_id"                 "generation"             
     ##  [3] "date_of_infection"       "date_of_onset"          
@@ -274,17 +248,7 @@ mistakes
 linelist[mistakes, ]
 ```
 
-``` r
-## identificar errores en la entrada de datos (período de incubación negativo)
-mistakes <- which(linelist$date_of_onset <= linelist$date_of_infection)
-mistakes
-```
-
     ## [1]  46  63 110
-
-``` r
-linelist[mistakes, ] # muestre solo las primeras entradas en las que haya tiempos de incubación negativos o 0.
-```
 
     ## # A tibble: 3 x 11
     ##   case_id         generation date_of_infection date_of_onset date_of_hospitalis~
@@ -304,11 +268,6 @@ linelist_clean <- linelist[-mistakes, ]
 
 ¿Qué otras fechas negativas o errores podría querer verificar si tuviera
 el conjunto de datos completo?
-
--   Es posible que desee ver si hay errores que incluyen, entre
-    otros: i) aparición de síntomas negativos en la hospitalización o
-    retrasos en los resultados y ii) errores de ortografía en hospitales
-    y nombres
 
 ## Calculemos la tasa de letalidad (CFR)
 
@@ -335,12 +294,6 @@ cfr_with_CI <- binom.confint(n_dead, n_known_outcome, method = "exact")
 cfr_wrong_with_CI <- binom.confint(n_dead, n_all, method = "exact")
 ```
 
--   No contabilizar adecuadamente los casos con un estado de resultado
-    desconocido generalmente conduce a una subestimación del CFR. Esto
-    es particularmente problemático al principio de un brote en el que
-    aún no se ha observado el estado final de una gran proporción de
-    casos.
-
 ## Miremos las curvas de incidencia
 
 La primera pregunta que queremos saber es simplemente: ¿qué tan mal
@@ -352,10 +305,6 @@ Usando el paquete`incidence` calcular la incidencia diaria a partir del
 `linelist_clean` basado en las fechas de inicio de los síntomas.
 Almacene el resultado en un objeto llamado i_daily; el resultado debería
 verse así:
-
-``` r
-i_daily <- incidence(linelist_clean$date_of_onset) # daily incidence
-```
 
 ``` r
 i_daily
@@ -385,13 +334,6 @@ de la lista de líneas (de cualquier entrada) es, de hecho, un poco
 posterior (1 de julio de 2014). Puede usar el argumento `last_date` en
 la función `incidence` para cambiar esto.
 
-``` r
-#extend last date:
-i_daily <- incidence(linelist_clean$date_of_onset, 
-                     last_date = as.Date(max(linelist_clean$date_of_hospitalisation, na.rm = TRUE)))
-i_daily
-```
-
     ## <incidence object>
     ## [166 cases from days 2014-04-07 to 2014-07-01]
     ## 
@@ -401,10 +343,6 @@ i_daily
     ## $interval: 1 day
     ## $timespan: 86 days
     ## $cumulative: FALSE
-
-``` r
-plot(i_daily, border = "black")
-```
 
 ![](practical-real-time-response-1-spanish_files/figure-markdown_github/update_last_date-1.png)
 
@@ -449,3 +387,13 @@ saveRDS(linelist, here("data/clean/linelist.rds"))
 saveRDS(linelist_clean, here("data/clean/linelist_clean.rds"))
 saveRDS(contacts, here("data/clean/contacts.rds"))
 ```
+
+## Colaboradores
+
+-   Anne Cori, Natsuko Imai, Finlay Campbell, Zhian N. Kamvar & Thibaut
+    Jombart: Versión inicial
+-   José M. Velasco-España: Traducción de Inglés a Español
+-   Andree Valle-Campos: Ediciones menores
+
+Los colaboradores son bienvenidos vía
+<https://github.com/reconhub/learn/pulls>).

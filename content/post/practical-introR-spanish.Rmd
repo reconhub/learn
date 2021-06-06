@@ -1,10 +1,9 @@
 ---
 title: "Una introducción a R y RStudio"
-author: Zulma M. Cucunuba
-authors: ["Zulma M. Cucunuba"]
+authors: ["Zulma M. Cucunuba","José M. Velasco-España","Andree Valle-Campos"]
 categories: ["practicals"]
-topics: ["R","Rstudio"]
-date: 2021-05-05
+topics: ["R","Rstudio","Spanish"]
+date: '2019-06-01'
 image: img/highres/introR.jpg
 showonlyimage: yes
 bibliography: null
@@ -416,6 +415,7 @@ Esta característica de R es muy importante al ejecutar cualquier análisis o ru
 Todas las distribuciones en R se pueden explorar mediante el uso de funciones que nos permiten obtener diferentes formas de distribución. Afortunadamente, todas las distribuciones funcionan de la misma manera, por lo que si aprende a trabajar con una, tendrá la idea general de cómo trabajar con las demás.
 
 Por ejemplo, para una distribución normal se usa `?dnorm` para explorar los argumentos en esta función
+
  - `dnorm` = función de densidad con argumentos predeterminados `(x, mean = 0, sd = 1, log = FALSE)`
  - `pnorm` da la función de distribución
  - `qnorm` da la función cuantil
@@ -423,7 +423,7 @@ Por ejemplo, para una distribución normal se usa `?dnorm` para explorar los arg
 
 Muchas distribuciones son parte del paquete `stats` que viene por defecto con R, como _uniform_, _poisson_ y _binomial_, entre otros. Para otras distribuciones que se utilizan con menos frecuencia, a veces puede que necesite instalar otros paquetes. Para obtener una lista no exhaustiva de las distribuciones más utilizadas y sus argumentos, consultar la siguiente tabla:
 
--->
+
 |Nombre            |probabilidad |cuantil      |distribución |random       |
 |:-----------------|:------------|:------------|:------------|:------------|
 |Beta              |`pbeta()`    |`qbeta()`    |`dbeta()`    |`rbeta()`    |
@@ -667,6 +667,8 @@ Gran parte del contenido de este tutorial básico de R provino de libros conocid
 - Zulma M. Cucunuba: Versión inicial
 - Zhian N. Kamvar: Ediciones menores
 - Kelly A. Charniga: Ediciones menores
+- José M. Velasco-España: Traducción de Inglés a Español
+- Andree Valle-Campos: Ediciones menores
 
 Los colaboradores son bienvenidos vía https://github.com/reconhub/learn/pulls).
 
