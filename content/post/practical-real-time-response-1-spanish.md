@@ -12,7 +12,7 @@ licenses: CC-BY
 always_allow_html: yes
 output:
   md_document:
-    variant: markdown_github
+    variant: gfm
     preserve_yaml: yes
 params:
   full_version: false
@@ -119,13 +119,13 @@ library(here)
 
 Se le ha proporcionado la siguiente lista de líneas y datos de contacto:
 
-[linelist_20140701.xlsx](https://github.com/reconhub/learn/raw/master/static/data/linelist_20140701.xlsx):
+[linelist\_20140701.xlsx](https://github.com/reconhub/learn/raw/master/static/data/linelist_20140701.xlsx):
 una lista de líneas que contiene información de casos hasta el 1 de
 julio de 2014; y
 
-[contact_20140701.xlsx](https://github.com/reconhub/learn/raw/master/static/data/contacts_20140701.xlsx):
+[contact\_20140701.xlsx](https://github.com/reconhub/learn/raw/master/static/data/contacts_20140701.xlsx):
 una lista de contactos reportados por los casos hasta el 1 de julio de
-2014. “infector” indica una fuente potencial de infección y “case_id”
+2014. “infector” indica una fuente potencial de infección y “case\_id”
 con quién se tuvo el contacto.
 
 Para leer en R, descargue estos archivos y use la función `read_xlsx()`
@@ -303,8 +303,8 @@ lo largo del tiempo por fecha de inicio de los síntomas.
 
 Usando el paquete`incidence` calcular la incidencia diaria a partir del
 `linelist_clean` basado en las fechas de inicio de los síntomas.
-Almacene el resultado en un objeto llamado i_daily; el resultado debería
-verse así:
+Almacene el resultado en un objeto llamado i\_daily; el resultado
+debería verse así:
 
 ``` r
 i_daily
@@ -324,7 +324,7 @@ i_daily
 plot(i_daily, border = "black")
 ```
 
-![](practical-real-time-response-1-spanish_files/figure-markdown_github/show_incidence-1.png)
+![](practical-real-time-response-1-spanish_files/figure-gfm/show_incidence-1.png)<!-- -->
 
 Es posible que observe que las fechas de incidencia `i_daily$dates` se
 detienen en la última fecha en la que tenemos datos sobre la fecha de
@@ -344,7 +344,7 @@ la función `incidence` para cambiar esto.
     ## $timespan: 86 days
     ## $cumulative: FALSE
 
-![](practical-real-time-response-1-spanish_files/figure-markdown_github/update_last_date-1.png)
+![](practical-real-time-response-1-spanish_files/figure-gfm/update_last_date-1.png)<!-- -->
 
 Otro problema es que puede ser difícil interpretar las tendencias al
 observar la incidencia diaria, por lo que también calcule y grafique la
@@ -371,7 +371,7 @@ i_weekly
 plot(i_weekly, border = "black")
 ```
 
-![](practical-real-time-response-1-spanish_files/figure-markdown_github/show_weekly_incidence-1.png)
+![](practical-real-time-response-1-spanish_files/figure-gfm/show_weekly_incidence-1.png)<!-- -->
 
 ## Guardar datos y resultados
 

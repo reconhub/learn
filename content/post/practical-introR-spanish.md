@@ -11,7 +11,7 @@ licenses: CC-BY
 always_allow_html: yes
 output:
   md_document:
-    variant: markdown_github
+    variant: gfm
     preserve_yaml: yes
 ---
 
@@ -53,12 +53,13 @@ fuente.
 Para crear un Proyecto en R, siga los siguientes pasos:
 
 1.  Abra RStudio y en la esquina superior derecha, seleccione la pestaña
-    *File* (Archivo) -\> *New Project…* (Proyecto Nuevo).
+    *File* (Archivo) -&gt; *New Project…* (Proyecto Nuevo).
 2.  Se desplegará una ventana con encabezado *New Project Wizard: Create
     Project*, ahora seleccione *New Directory* (Directorio Nuevo).
 3.  En la ventana *Project Type*, cree un nuevo proyecto en Rstudio
-    seleccionando *New Project* -\> *Create New Project*, en la casilla
-    *Directory Name* (Nombre del Directorio) coloque el nombre “introR”.
+    seleccionando *New Project* -&gt; *Create New Project*, en la
+    casilla *Directory Name* (Nombre del Directorio) coloque el nombre
+    “introR”.
 
 ![Screenshot New Directory](../../img/screenshots/NewDirectory.png)
 
@@ -84,10 +85,10 @@ Según Hadley Wickham, en su libro R Avanzado
 Estas son las estructuras más básicas en R y tienen solo una dimensión
 (1d):
 
--   Vector Doble (numérico) *vector_double*
--   Vector Lógico *vector_logic*
--   Vector de caracteres *vector_character*
--   Vector Entero *vector_integer*
+-   Vector Doble (numérico) *vector\_double*
+-   Vector Lógico *vector\_logic*
+-   Vector de caracteres *vector\_character*
+-   Vector Entero *vector\_integer*
 
 ``` r
 vector_double <- c(1, 2, 3, 4)  
@@ -736,7 +737,7 @@ glimpse(malaria)
 ## Rows: 10
 ## Columns: 4
 ## $ name      <chr> "a", "b", "c", "d", "e", "f", "g", "h", "i", "j"
-## $ age       <dbl> 35, 33, 35, 44, 37, 18, 12, 27, 33, 24
+## $ age       <dbl> 16, 30, 26, 14, 44, 24, 25, 36, 34, 35
 ## $ gender    <chr> "f", "m", "f", "m", "f", "m", "f", "m", "f", "m"
 ## $ infection <chr> "falciparum", "vivax", "vivax", "vivax", "vivax", "falciparu~
 
@@ -744,16 +745,16 @@ malaria %>% spread(key = 'infection', gender)
 ## # A tibble: 10 x 4
 ##    name    age falciparum vivax
 ##    <chr> <dbl> <chr>      <chr>
-##  1 a        35 f          NA   
-##  2 b        33 NA         m    
-##  3 c        35 NA         f    
-##  4 d        44 NA         m    
-##  5 e        37 NA         f    
-##  6 f        18 m          NA   
-##  7 g        12 NA         f    
-##  8 h        27 NA         m    
-##  9 i        33 NA         f    
-## 10 j        24 NA         m
+##  1 a        16 f          NA   
+##  2 b        30 NA         m    
+##  3 c        26 NA         f    
+##  4 d        14 NA         m    
+##  5 e        44 NA         f    
+##  6 f        24 m          NA   
+##  7 g        25 NA         f    
+##  8 h        36 NA         m    
+##  9 i        34 NA         f    
+## 10 j        35 NA         m
 ```
 
 # ggplot2
@@ -857,7 +858,7 @@ ggplot(data = measles_grouped) +
   geom_line(aes(x = date_of_rash, y = cases, colour = gender))
 ```
 
-![](practical-introR-spanish_files/figure-markdown_github/unnamed-chunk-24-1.png)
+![](practical-introR-spanish_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
 Por defecto, ggplot toma varias decisiones por si solo, como los colores
 utilizados, el tamaño de las líneas, el tamaño de la fuente, etc. En
@@ -883,7 +884,7 @@ p <- ggplot(data = measles_grouped,
 p
 ```
 
-![](practical-introR-spanish_files/figure-markdown_github/unnamed-chunk-25-1.png)
+![](practical-introR-spanish_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
 
 Finalmente, ggplot tiene una función útil que permite a los usuarios
 agregar capas sobre los objetos existentes de ggplot. Por ejemplo, si se
@@ -899,7 +900,7 @@ p +
 ## will replace the existing scale.
 ```
 
-![](practical-introR-spanish_files/figure-markdown_github/unnamed-chunk-26-1.png)
+![](practical-introR-spanish_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
 
 # Más aprendizaje
 
