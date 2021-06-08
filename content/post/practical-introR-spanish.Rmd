@@ -1,6 +1,6 @@
 ---
 title: "Una introducción a R y RStudio"
-authors: ["Zulma M. Cucunuba","José M. Velasco-España","Andree Valle-Campos"]
+authors: ["Zulma M. Cucunuba"]
 categories: ["practicals"]
 topics: ["R","Rstudio","Spanish"]
 date: '2019-06-01'
@@ -657,12 +657,15 @@ Para aplicar estos conceptos básicos a un caso particular, se recomienda hacer 
 
 Gran parte del contenido de este tutorial básico de R provino de libros conocidos de Hadley Wickham, que en su mayoría están disponibles en línea.
 
-- R for Data Science https://r4ds.had.co.nz/index.html
+- R for Data Science - versión en español https://es.r4ds.hadley.nz/
+- The Epidemiologist R Handbook https://epirhandbook.com/
 - Advanced R http://adv-r.had.co.nz/
 - R packages http://r-pkgs.had.co.nz/
 
 
-## Colaboradores
+# Sobre este documento
+
+## Contribuciones
 
 - Zulma M. Cucunuba: Versión inicial
 - Zhian N. Kamvar: Ediciones menores
@@ -670,7 +673,7 @@ Gran parte del contenido de este tutorial básico de R provino de libros conocid
 - José M. Velasco-España: Traducción de Inglés a Español
 - Andree Valle-Campos: Ediciones menores
 
-Los colaboradores son bienvenidos vía https://github.com/reconhub/learn/pulls).
+Contribuciones son bienvenidas vía [pull requests](https://github.com/reconhub/learn/pulls).
 
 
 ## Asuntos legales

@@ -1,6 +1,6 @@
 ---
 title: "Análisis de brotes en tiempo real: el ébola como estudio de caso - parte 1"
-authors: ["Anne Cori", "Natsuko Imai", "Finlay Campbell", "Zhian N. Kamvar", "José M. Velasco-España","Andree Valle-Campos", "Thibaut Jombart"]
+authors: ["Anne Cori", "Natsuko Imai", "Finlay Campbell", "Zhian N. Kamvar", "Thibaut Jombart"]
 categories: ["practicals"]
 topics: ["simulation", "response", "ebola", "epicurve", "reproduction number","Spanish"]
 date: 2019-06-11
@@ -388,12 +388,14 @@ saveRDS(linelist_clean, here("data/clean/linelist_clean.rds"))
 saveRDS(contacts, here("data/clean/contacts.rds"))
 ```
 
-## Colaboradores
+# Sobre este documento
+
+## Contribuciones
 
 -   Anne Cori, Natsuko Imai, Finlay Campbell, Zhian N. Kamvar & Thibaut
     Jombart: Versión inicial
 -   José M. Velasco-España: Traducción de Inglés a Español
 -   Andree Valle-Campos: Ediciones menores
 
-Los colaboradores son bienvenidos vía
-<https://github.com/reconhub/learn/pulls>).
+Contribuciones son bienvenidas vía [pull
+requests](https://github.com/reconhub/learn/pulls).

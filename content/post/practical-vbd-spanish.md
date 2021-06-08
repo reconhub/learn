@@ -1,7 +1,7 @@
 ---
 title: ' VBD: Construyendo un modelo simple para Zika'
 author: "Zulma Cucunuba & Pierre Nouvellet"
-authors: ["Zulma Cucunuba", "Pierre Nouvellet","José M. Velasco-España","Andree Valle-Campos"]
+authors: ["Zulma Cucunuba", "Pierre Nouvellet"]
 date: 2019-06-10
 image: img/highres/mosquito.jpg
 topics: ["zika", "compartmental models","Spanish"]
@@ -10,7 +10,7 @@ licenses: CC-BY
 always_allow_html: yes
 output:
   md_document:
-    variant: markdown_github
+    variant: gfm
     preserve_yaml: yes
 # params:
 #   full_version: true
@@ -253,7 +253,7 @@ p4h <- ggplot(data = out, aes(y = Rh/10000, x = years)) +
 grid.arrange(p1h, p2h, p3h, p4h, ncol = 2)
 ```
 
-![](practical-vbd-spanish_files/figure-markdown_github/p1-1.png)
+![](practical-vbd-spanish_files/figure-gfm/p1-1.png)<!-- -->
 
 ### Comportamiento General (Población de vectores)
 
@@ -283,7 +283,7 @@ p4v <- ggplot(data = out, aes(y = Iv, x = years)) +
 grid.arrange(p1v, p2v, p3v, p4v, ncol = 2)
 ```
 
-![](practical-vbd-spanish_files/figure-markdown_github/p2-1.png)
+![](practical-vbd-spanish_files/figure-gfm/p2-1.png)<!-- -->
 
 ### Proporción
 
@@ -308,7 +308,7 @@ p3 <- ggplot(data = out, aes(y = Rh/(Sh+Ih+Rh), x = years)) +
 grid.arrange(p1, p2, p3, ncol = 2)
 ```
 
-![](practical-vbd-spanish_files/figure-markdown_github/p3-1.png)
+![](practical-vbd-spanish_files/figure-gfm/p3-1.png)<!-- -->
 
 ### La primera epidemia
 
@@ -332,7 +332,7 @@ p2e <- ggplot(dat, aes(y = Rh/10000, x = weeks)) +
 grid.arrange(p1e, p2e)
 ```
 
-![](practical-vbd-spanish_files/figure-markdown_github/p4-1.png)
+![](practical-vbd-spanish_files/figure-gfm/p4-1.png)<!-- -->
 
 ### Discutamos algunos aspectos
 

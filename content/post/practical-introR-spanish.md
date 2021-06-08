@@ -1,6 +1,6 @@
 ---
 title: "Una introducción a R y RStudio"
-authors: ["Zulma M. Cucunuba","José M. Velasco-España","Andree Valle-Campos"]
+authors: ["Zulma M. Cucunuba"]
 categories: ["practicals"]
 topics: ["R","Rstudio","Spanish"]
 date: '2019-06-01'
@@ -737,7 +737,7 @@ glimpse(malaria)
 ## Rows: 10
 ## Columns: 4
 ## $ name      <chr> "a", "b", "c", "d", "e", "f", "g", "h", "i", "j"
-## $ age       <dbl> 16, 30, 26, 14, 44, 24, 25, 36, 34, 35
+## $ age       <dbl> 36, 14, 22, 23, 33, 28, 30, 18, 27, 27
 ## $ gender    <chr> "f", "m", "f", "m", "f", "m", "f", "m", "f", "m"
 ## $ infection <chr> "falciparum", "vivax", "vivax", "vivax", "vivax", "falciparu~
 
@@ -745,16 +745,16 @@ malaria %>% spread(key = 'infection', gender)
 ## # A tibble: 10 x 4
 ##    name    age falciparum vivax
 ##    <chr> <dbl> <chr>      <chr>
-##  1 a        16 f          NA   
-##  2 b        30 NA         m    
-##  3 c        26 NA         f    
-##  4 d        14 NA         m    
-##  5 e        44 NA         f    
-##  6 f        24 m          NA   
-##  7 g        25 NA         f    
-##  8 h        36 NA         m    
-##  9 i        34 NA         f    
-## 10 j        35 NA         m
+##  1 a        36 f          NA   
+##  2 b        14 NA         m    
+##  3 c        22 NA         f    
+##  4 d        23 NA         m    
+##  5 e        33 NA         f    
+##  6 f        28 m          NA   
+##  7 g        30 NA         f    
+##  8 h        18 NA         m    
+##  9 i        27 NA         f    
+## 10 j        27 NA         m
 ```
 
 # ggplot2
@@ -914,11 +914,14 @@ Gran parte del contenido de este tutorial básico de R provino de libros
 conocidos de Hadley Wickham, que en su mayoría están disponibles en
 línea.
 
--   R for Data Science <https://r4ds.had.co.nz/index.html>
+-   R for Data Science - versión en español <https://es.r4ds.hadley.nz/>
+-   The Epidemiologist R Handbook <https://epirhandbook.com/>
 -   Advanced R <http://adv-r.had.co.nz/>
 -   R packages <http://r-pkgs.had.co.nz/>
 
-## Colaboradores
+# Sobre este documento
+
+## Contribuciones
 
 -   Zulma M. Cucunuba: Versión inicial
 -   Zhian N. Kamvar: Ediciones menores
@@ -926,8 +929,8 @@ línea.
 -   José M. Velasco-España: Traducción de Inglés a Español
 -   Andree Valle-Campos: Ediciones menores
 
-Los colaboradores son bienvenidos vía
-<https://github.com/reconhub/learn/pulls>).
+Contribuciones son bienvenidas vía [pull
+requests](https://github.com/reconhub/learn/pulls).
 
 ## Asuntos legales
 
