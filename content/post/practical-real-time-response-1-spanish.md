@@ -388,9 +388,9 @@ saveRDS(linelist_clean, here("data/clean/linelist_clean.rds"))
 saveRDS(contacts, here("data/clean/contacts.rds"))
 ```
 
-# Sobre este documento
+## Sobre este documento
 
-## Contribuciones
+### Contribuciones
 
 -   Anne Cori, Natsuko Imai, Finlay Campbell, Zhian N. Kamvar & Thibaut
     Jombart: Versión inicial

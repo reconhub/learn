@@ -321,9 +321,9 @@ saveRDS(contacts, here("data/clean/contacts.rds"))
 ```
 
 
-# Sobre este documento
+## Sobre este documento
 
-## Contribuciones
+### Contribuciones
 
 - Anne Cori, Natsuko Imai, Finlay Campbell, Zhian N. Kamvar & Thibaut Jombart: Versión inicial
 - José M. Velasco-España: Traducción de Inglés a Español

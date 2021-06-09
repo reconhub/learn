@@ -353,9 +353,9 @@ Intente encontrar literatura que explique estas intervenciones y
 describa cómo parametrizará el modelo. ¿Todas estas intervenciones son
 viables? ¿Son rentables?
 
-# Sobre este documento
+## Sobre este documento
 
-## Contribuciones
+### Contribuciones
 
 -   Zulma Cucunuba & Pierre Nouvellet: Versión incial
 -   Kelly Charinga & Zhian N. Kamvar: Edición
@@ -367,9 +367,9 @@ requests](https://github.com/reconhub/learn/pulls). El archivo fuente de
 este documento puede ser encontrado
 [**aquí**](https://raw.githubusercontent.com/reconhub/learn/master/content/post/practical-vbd.Rmd).
 
-## Asuntos legales
+### Asuntos legales
 
 **Licencia**: [CC-BY](https://creativecommons.org/licenses/by/3.0/)
 **Copyright**: Zulma Cucunuba & Pierre Nouvellet, 2017
 
-# Referencias
+<!-- ## Referencias -->
