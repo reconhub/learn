@@ -517,8 +517,7 @@ paquete tidyverse principal.
 
 ``` r
 library(readxl)
-library(here)
-dat <- read_excel(here("data/PHM-EVD-linelist-2017-11-25.xlsx"))
+dat <- read_excel("data/PHM-EVD-linelist-2017-11-25.xlsx")
 ```
 
 A continuación, verá algunas de las funciones más utilizadas de
@@ -737,7 +736,7 @@ glimpse(malaria)
 ## Rows: 10
 ## Columns: 4
 ## $ name      <chr> "a", "b", "c", "d", "e", "f", "g", "h", "i", "j"
-## $ age       <dbl> 36, 14, 22, 23, 33, 28, 30, 18, 27, 27
+## $ age       <dbl> 32, 29, 26, 46, 32, 37, 23, 22, 29, 25
 ## $ gender    <chr> "f", "m", "f", "m", "f", "m", "f", "m", "f", "m"
 ## $ infection <chr> "falciparum", "vivax", "vivax", "vivax", "vivax", "falciparu~
 
@@ -745,16 +744,16 @@ malaria %>% spread(key = 'infection', gender)
 ## # A tibble: 10 x 4
 ##    name    age falciparum vivax
 ##    <chr> <dbl> <chr>      <chr>
-##  1 a        36 f          NA   
-##  2 b        14 NA         m    
-##  3 c        22 NA         f    
-##  4 d        23 NA         m    
-##  5 e        33 NA         f    
-##  6 f        28 m          NA   
-##  7 g        30 NA         f    
-##  8 h        18 NA         m    
-##  9 i        27 NA         f    
-## 10 j        27 NA         m
+##  1 a        32 f          NA   
+##  2 b        29 NA         m    
+##  3 c        26 NA         f    
+##  4 d        46 NA         m    
+##  5 e        32 NA         f    
+##  6 f        37 m          NA   
+##  7 g        23 NA         f    
+##  8 h        22 NA         m    
+##  9 i        29 NA         f    
+## 10 j        25 NA         m
 ```
 
 # ggplot2

@@ -28,7 +28,6 @@ opts_chunk$set(collapse = TRUE)
 knitr::opts_chunk$set(echo = TRUE)
 
 library(readxl)
-library(here)
 library(tidyverse)
 
 ```
@@ -471,14 +470,13 @@ Para importar conjuntos de datos desde Excel, se puede usar la biblioteca `readx
 
 ```{r, eval=FALSE}
 library(readxl)
-library(here)
-dat <- read_excel(here("data/PHM-EVD-linelist-2017-11-25.xlsx"))
+dat <- read_excel("data/PHM-EVD-linelist-2017-11-25.xlsx")
 
 ```
 
     
 ```{r include = FALSE}
-
+library(here)
 dat <- readxl::read_xlsx(here("static/data/PHM-EVD-linelist-2017-11-25.xlsx"))
 
 ```
