@@ -625,10 +625,21 @@ dat %>% filter(age >14)
 ## 10 f658bc  2017-10-28 00:00:00 male      68
 ## # ... with 24 more rows
 
-select(dat, starts_with("date"))
-## # A tibble: 50 x 0
-select(dat, ends_with("loc"))
-## # A tibble: 50 x 0
+select(dat, starts_with("on"))
+## # A tibble: 50 x 1
+##    onset              
+##    <dttm>             
+##  1 2017-10-10 00:00:00
+##  2 2017-10-16 00:00:00
+##  3 2017-10-17 00:00:00
+##  4 2017-10-18 00:00:00
+##  5 2017-10-20 00:00:00
+##  6 2017-10-20 00:00:00
+##  7 2017-10-21 00:00:00
+##  8 2017-10-21 00:00:00
+##  9 2017-10-21 00:00:00
+## 10 2017-10-22 00:00:00
+## # ... with 40 more rows
 
 slice(dat, 10:15)
 ## # A tibble: 6 x 4
@@ -736,7 +747,7 @@ glimpse(malaria)
 ## Rows: 10
 ## Columns: 4
 ## $ name      <chr> "a", "b", "c", "d", "e", "f", "g", "h", "i", "j"
-## $ age       <dbl> 32, 29, 26, 46, 32, 37, 23, 22, 29, 25
+## $ age       <dbl> 27, 13, 30, 29, 45, 30, 23, 38, 29, 26
 ## $ gender    <chr> "f", "m", "f", "m", "f", "m", "f", "m", "f", "m"
 ## $ infection <chr> "falciparum", "vivax", "vivax", "vivax", "vivax", "falciparu~
 
@@ -744,16 +755,16 @@ malaria %>% spread(key = 'infection', gender)
 ## # A tibble: 10 x 4
 ##    name    age falciparum vivax
 ##    <chr> <dbl> <chr>      <chr>
-##  1 a        32 f          NA   
-##  2 b        29 NA         m    
-##  3 c        26 NA         f    
-##  4 d        46 NA         m    
-##  5 e        32 NA         f    
-##  6 f        37 m          NA   
+##  1 a        27 f          NA   
+##  2 b        13 NA         m    
+##  3 c        30 NA         f    
+##  4 d        29 NA         m    
+##  5 e        45 NA         f    
+##  6 f        30 m          NA   
 ##  7 g        23 NA         f    
-##  8 h        22 NA         m    
+##  8 h        38 NA         m    
 ##  9 i        29 NA         f    
-## 10 j        25 NA         m
+## 10 j        26 NA         m
 ```
 
 # ggplot2

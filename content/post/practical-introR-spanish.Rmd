@@ -512,8 +512,7 @@ dat %>% group_by(sex) %>% summarise(number = n())
 
 dat %>% filter(age >14)
 
-select(dat, starts_with("date"))
-select(dat, ends_with("loc"))
+select(dat, starts_with("on"))
 
 slice(dat, 10:15)
 dat[10:15, ]
