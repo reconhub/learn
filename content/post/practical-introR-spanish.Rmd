@@ -254,7 +254,7 @@ Una función es una de las estructuras que hace de * R * una plataforma muy pote
 
 Hay varios tipos de funciones:
 
-- *Funciones básicas o primitivas*: estas son las funciones predeterminadas en _R_ bajo el _ base package (paquete base)_. Por ejemplo, pueden incluir operaciones aritméticas básicas, pero también operaciones más complejas como la extracción de valores medianos `median (mediana)` o `summary (resumen)` de una variable.
+- *Funciones básicas o primitivas*: estas son las funciones predeterminadas en _R_ bajo el _base package (paquete base)_. Por ejemplo, pueden incluir operaciones aritméticas básicas, pero también operaciones más complejas como la extracción de valores medianos `median (mediana)` o `summary (resumen)` de una variable.
   - *Funciones de paquetes*: son funciones creadas dentro de un paquete. Por ejemplo, la función `glm` en el paquete *stats* (*stats* package).
   - *Funciones creadas por el usuario*: son funciones que cualquier usuario crea para una rutina personalizada. Estas funciones podrían formar parte de un paquete.
 
@@ -358,8 +358,11 @@ Estos son los comandos básicos para usar paquetes:
 
 Para instalar y cargar un paquete de RECON, escribir en R
 
-```{r, eval=FALSE}
+```{r,eval=FALSE,echo=TRUE}
 install.packages('incidence')
+```
+
+```{r, eval=FALSE}
 library(incidence)
 
 ```
@@ -453,6 +456,10 @@ R permite a los usuarios no solo abrir, sino también crear conjuntos de datos. 
 
 Para administrar mejor los conjuntos de datos, se recomienda instalar y usar el paquete `tidyverse`, el cual carga automáticamente varios paquetes (dplyr, tidyr, tibble, readr, purr, entre otros) que son útiles para la manipulación de datos.
 
+```{r,eval=FALSE,echo=TRUE}
+install.packages('tidyverse')
+```
+
 ```{r, echo = TRUE, include=TRUE, eval= TRUE}
 library(tidyverse)
 ```
@@ -464,7 +471,7 @@ Abrir y explorar un conjunto de datos importados de Excel
 Este es el conjunto de datos para esta práctica de RECON sobre análisis temprano de brotes:
 - [PHM-EVD-linelist-2017-11-25.xlsx](https://github.com/reconhub/learn/raw/master/static/data/PHM-EVD-linelist-2017-11-25.xlsx):
 
-Guarde este conjunto de datos en el mismo directorio en el que se esta trabajando actualmente.
+Dentro del directorio en el que está trabajando actualmente, cree una carpeta llamada _data_. Guarde el conjunto de datos descargado en la carpeta _data_ que acaba de crear.
 
 Para importar conjuntos de datos desde Excel, se puede usar la biblioteca `readxl`, que está vinculada a tidyverse. Sin embargo, todavía es necesario cargar la biblioteca `readxl`, ya que no es un paquete tidyverse principal.
 
@@ -490,68 +497,85 @@ La función de tubería (pipe function) `%>%` es una función de uso continuo. P
 Del paquete `dyplr`, las funciones más comunes son:
 
  - `glimpse`: utilizado para explorar rápidamente un conjunto de datos
- - `arrange`: organiza el conjunto de datos por el valor de una variable particular si es numérico, o por orden alfabético si es un carácter.
+ - `select`: extrae columnas de un conjunto de datos
+ - `filter`: extrae filas de un conjunto de casos
+ - `arrange`: ordena filas de un conjunto de datos por el valor de una variable particular si es numérico, o por orden alfabético si es un carácter.
+ - `summarise`: genera tablas resumen. reduce las dimensiones de un conjunto de datos
+ - `group_by`: crea grupos dentro de un conjunto de datos. las funciones del `dplyr` manipulan cada grupo por separado y luego combina los resultados. 
  - `mutate`: genera una nueva variable
  - `rename`: cambia el nombre de la variable
- - `summarise`: reduce las dimensiones de un conjunto de datos
+ 
 
 
 
 
 ```{r}
-glimpse(dat)
+dat %>% glimpse()
+
+dat %>% select(onset)
+
+dat %>% filter(age >14)
+
+dat %>% filter(sex == "female", age <= 30)
 
 dat %>% arrange(age)
+
+dat %>% summarise(number = n())
+
+dat %>% group_by(sex) %>% summarise(number = n(), mean_age = mean(age))
+
 dat %>% mutate(fecha_inicio_sintomas = onset)
 
 dat %>% rename(edad = age)
 
-glimpse(dat)
+dat %>% slice(10:15)
 
-dat %>% group_by(sex) %>% summarise(number = n())
-
-dat %>% filter(age >14)
-
-select(dat, starts_with("on"))
-
-slice(dat, 10:15)
 dat[10:15, ]
-
-filter(dat, sex == "female", age <= 30)
-
 ```
 
 Ahora, se abrirá y explorará un conjunto de datos que forma parte de un paquete
 
+```{r,echo=TRUE,eval=FALSE}
+install.packages("outbreaks")
+```
+
 ```{r, echo = TRUE, include=TRUE}
-# install.packages("outbreaks")
 library(outbreaks)
+
 measles_dat <- outbreaks::measles_hagelloch_1861
+
 class(measles_dat)
+
 head(measles_dat)
+
 tail(measles_dat)
 
+measles_dat %>% select(starts_with("date_")) %>% head()
 ```
 
 Del paquete`tidyr`, las funciones más comunes son:
 
- - `gather`: apila en filas datos dispersos en filas y columnas
- - `spread`: dispersa en filas y columnas datos apilados
+ - `pivot_longer`: apila en filas datos dispersos en columnas. es una versión actualizada de `gather`
+ - `pivot_wider`: dispersa en columnas datos apilados. es una versión actualizada de `spread`
 
-Example:
+Ejemplo:
 
 ```{r, message=FALSE, warning=FALSE}
 
-malaria <- tibble(
-  name = letters[1:10],
-  age = round(rnorm(10, 30, 10), 0),
+malaria_wide <- tibble(
+  district = rep(letters[1:5],each = 2),
   gender = rep(c('f', 'm'), 5),
-  infection = rep(c('falciparum', 'vivax', 'vivax', 'vivax', 'vivax'), 2)
+  falciparum = round(rnorm(10, 30, 10), 0),
+  vivax = round(rnorm(10, 30, 10), 0)
   ) 
-glimpse(malaria)
+malaria_wide
 
-malaria %>% spread(key = 'infection', gender)
+malaria_long <- malaria_wide %>% 
+  pivot_longer(falciparum:vivax, names_to = "infection", values_to = "cases")
+malaria_long
 
+malaria_long %>% 
+  pivot_wider(names_from = infection, values_from = cases)
 ```
 
 # ggplot2
@@ -586,7 +610,7 @@ A continuación, se usará el conjunto de datos de sarampión del paquete `outbr
  - `y` = número agregado de casos por semana y género
  - `colour` = género
 
-Una cosa importante a tener en cuenta es que para una sola instrucción, ggplot solo usará variables que pertenezcan al mismo conjunto de datos. Entonces, necesitamos tener las tres variables (x, y y colour) en el mismo marco de datos (con la misma longitud).
+Una cosa importante a tener en cuenta es que para una sola instrucción, ggplot solo usará variables que pertenezcan al mismo conjunto de datos. Entonces, necesitamos tener las tres variables (x, y, colour) en el mismo marco de datos (con la misma longitud).
 
 ```{r}
 head(measles_dat, 5)

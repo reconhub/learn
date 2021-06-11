@@ -267,7 +267,7 @@ muy potente para la programación.
 Hay varios tipos de funciones:
 
 -   *Funciones básicas o primitivas*: estas son las funciones
-    predeterminadas en *R* bajo el \_ base package (paquete base)\_. Por
+    predeterminadas en *R* bajo el *base package (paquete base)*. Por
     ejemplo, pueden incluir operaciones aritméticas básicas, pero
     también operaciones más complejas como la extracción de valores
     medianos `median (mediana)` o `summary (resumen)` de una variable.
@@ -385,6 +385,9 @@ Para instalar y cargar un paquete de RECON, escribir en R
 
 ``` r
 install.packages('incidence')
+```
+
+``` r
 library(incidence)
 ```
 
@@ -498,6 +501,10 @@ paquetes (dplyr, tidyr, tibble, readr, purr, entre otros) que son útiles
 para la manipulación de datos.
 
 ``` r
+install.packages('tidyverse')
+```
+
+``` r
 library(tidyverse)
 ```
 
@@ -507,8 +514,9 @@ Este es el conjunto de datos para esta práctica de RECON sobre análisis
 temprano de brotes: -
 [PHM-EVD-linelist-2017-11-25.xlsx](https://github.com/reconhub/learn/raw/master/static/data/PHM-EVD-linelist-2017-11-25.xlsx):
 
-Guarde este conjunto de datos en el mismo directorio en el que se esta
-trabajando actualmente.
+Dentro del directorio en el que está trabajando actualmente, cree una
+carpeta llamada *data*. Guarde el conjunto de datos descargado en la
+carpeta *data* que acaba de crear.
 
 Para importar conjuntos de datos desde Excel, se puede usar la
 biblioteca `readxl`, que está vinculada a tidyverse. Sin embargo,
@@ -531,21 +539,83 @@ secuencia de acciones en un objeto.
 Del paquete `dyplr`, las funciones más comunes son:
 
 -   `glimpse`: utilizado para explorar rápidamente un conjunto de datos
--   `arrange`: organiza el conjunto de datos por el valor de una
+-   `select`: extrae columnas de un conjunto de datos
+-   `filter`: extrae filas de un conjunto de casos
+-   `arrange`: ordena filas de un conjunto de datos por el valor de una
     variable particular si es numérico, o por orden alfabético si es un
     carácter.
+-   `summarise`: genera tablas resumen. reduce las dimensiones de un
+    conjunto de datos
+-   `group_by`: crea grupos dentro de un conjunto de datos. las
+    funciones del `dplyr` manipulan cada grupo por separado y luego
+    combina los resultados.
 -   `mutate`: genera una nueva variable
 -   `rename`: cambia el nombre de la variable
--   `summarise`: reduce las dimensiones de un conjunto de datos
 
 ``` r
-glimpse(dat)
+dat %>% glimpse()
 ## Rows: 50
 ## Columns: 4
 ## $ case_id <chr> "39e9dc", "664549", "b4d8aa", "51883d", "947e40", "9aa197", "e~
 ## $ onset   <dttm> 2017-10-10, 2017-10-16, 2017-10-17, 2017-10-18, 2017-10-20, 2~
 ## $ sex     <chr> "female", "male", "male", "male", "female", "female", "female"~
 ## $ age     <dbl> 62, 28, 54, 57, 23, 66, 13, 10, 34, 11, 23, 23, 9, 68, 37, 13,~
+
+dat %>% select(onset)
+## # A tibble: 50 x 1
+##    onset              
+##    <dttm>             
+##  1 2017-10-10 00:00:00
+##  2 2017-10-16 00:00:00
+##  3 2017-10-17 00:00:00
+##  4 2017-10-18 00:00:00
+##  5 2017-10-20 00:00:00
+##  6 2017-10-20 00:00:00
+##  7 2017-10-21 00:00:00
+##  8 2017-10-21 00:00:00
+##  9 2017-10-21 00:00:00
+## 10 2017-10-22 00:00:00
+## # ... with 40 more rows
+
+dat %>% filter(age >14)
+## # A tibble: 34 x 4
+##    case_id onset               sex      age
+##    <chr>   <dttm>              <chr>  <dbl>
+##  1 39e9dc  2017-10-10 00:00:00 female    62
+##  2 664549  2017-10-16 00:00:00 male      28
+##  3 b4d8aa  2017-10-17 00:00:00 male      54
+##  4 51883d  2017-10-18 00:00:00 male      57
+##  5 947e40  2017-10-20 00:00:00 female    23
+##  6 9aa197  2017-10-20 00:00:00 female    66
+##  7 185911  2017-10-21 00:00:00 female    34
+##  8 605322  2017-10-22 00:00:00 female    23
+##  9 e399b1  2017-10-23 00:00:00 female    23
+## 10 f658bc  2017-10-28 00:00:00 male      68
+## # ... with 24 more rows
+
+dat %>% filter(sex == "female", age <= 30)
+## # A tibble: 19 x 4
+##    case_id onset               sex      age
+##    <chr>   <dttm>              <chr>  <dbl>
+##  1 947e40  2017-10-20 00:00:00 female    23
+##  2 e4b0a2  2017-10-21 00:00:00 female    13
+##  3 605322  2017-10-22 00:00:00 female    23
+##  4 e399b1  2017-10-23 00:00:00 female    23
+##  5 e37897  2017-10-28 00:00:00 female     9
+##  6 8c5776  2017-11-02 00:00:00 female     7
+##  7 88526e  2017-11-03 00:00:00 female    20
+##  8 778316  2017-11-04 00:00:00 female    10
+##  9 525dfa  2017-11-06 00:00:00 female    10
+## 10 b5ad13  2017-11-07 00:00:00 female    21
+## 11 8bed66  2017-11-08 00:00:00 female    29
+## 12 426b6d  2017-11-08 00:00:00 female     7
+## 13 c2a389  2017-11-10 00:00:00 female    26
+## 14 5eb2b0  2017-11-13 00:00:00 female     7
+## 15 b7faf4  2017-11-16 00:00:00 female    10
+## 16 944ba3  2017-11-19 00:00:00 female    30
+## 17 95fc1d  2017-11-19 00:00:00 female    15
+## 18 5c5c05  2017-11-20 00:00:00 female    21
+## 19 ac8d9d  2017-11-23 00:00:00 female     5
 
 dat %>% arrange(age)
 ## # A tibble: 50 x 4
@@ -562,6 +632,20 @@ dat %>% arrange(age)
 ##  9 af0ac0  2017-10-21 00:00:00 male      10
 ## 10 778316  2017-11-04 00:00:00 female    10
 ## # ... with 40 more rows
+
+dat %>% summarise(number = n())
+## # A tibble: 1 x 1
+##   number
+##    <int>
+## 1     50
+
+dat %>% group_by(sex) %>% summarise(number = n(), mean_age = mean(age))
+## # A tibble: 2 x 3
+##   sex    number mean_age
+##   <chr>   <int>    <dbl>
+## 1 female     26     23.7
+## 2 male       24     24.5
+
 dat %>% mutate(fecha_inicio_sintomas = onset)
 ## # A tibble: 50 x 5
 ##    case_id onset               sex      age fecha_inicio_sintomas
@@ -594,54 +678,7 @@ dat %>% rename(edad = age)
 ## 10 601d2e  2017-10-22 00:00:00 male      11
 ## # ... with 40 more rows
 
-glimpse(dat)
-## Rows: 50
-## Columns: 4
-## $ case_id <chr> "39e9dc", "664549", "b4d8aa", "51883d", "947e40", "9aa197", "e~
-## $ onset   <dttm> 2017-10-10, 2017-10-16, 2017-10-17, 2017-10-18, 2017-10-20, 2~
-## $ sex     <chr> "female", "male", "male", "male", "female", "female", "female"~
-## $ age     <dbl> 62, 28, 54, 57, 23, 66, 13, 10, 34, 11, 23, 23, 9, 68, 37, 13,~
-
-dat %>% group_by(sex) %>% summarise(number = n())
-## # A tibble: 2 x 2
-##   sex    number
-##   <chr>   <int>
-## 1 female     26
-## 2 male       24
-
-dat %>% filter(age >14)
-## # A tibble: 34 x 4
-##    case_id onset               sex      age
-##    <chr>   <dttm>              <chr>  <dbl>
-##  1 39e9dc  2017-10-10 00:00:00 female    62
-##  2 664549  2017-10-16 00:00:00 male      28
-##  3 b4d8aa  2017-10-17 00:00:00 male      54
-##  4 51883d  2017-10-18 00:00:00 male      57
-##  5 947e40  2017-10-20 00:00:00 female    23
-##  6 9aa197  2017-10-20 00:00:00 female    66
-##  7 185911  2017-10-21 00:00:00 female    34
-##  8 605322  2017-10-22 00:00:00 female    23
-##  9 e399b1  2017-10-23 00:00:00 female    23
-## 10 f658bc  2017-10-28 00:00:00 male      68
-## # ... with 24 more rows
-
-select(dat, starts_with("on"))
-## # A tibble: 50 x 1
-##    onset              
-##    <dttm>             
-##  1 2017-10-10 00:00:00
-##  2 2017-10-16 00:00:00
-##  3 2017-10-17 00:00:00
-##  4 2017-10-18 00:00:00
-##  5 2017-10-20 00:00:00
-##  6 2017-10-20 00:00:00
-##  7 2017-10-21 00:00:00
-##  8 2017-10-21 00:00:00
-##  9 2017-10-21 00:00:00
-## 10 2017-10-22 00:00:00
-## # ... with 40 more rows
-
-slice(dat, 10:15)
+dat %>% slice(10:15)
 ## # A tibble: 6 x 4
 ##   case_id onset               sex      age
 ##   <chr>   <dttm>              <chr>  <dbl>
@@ -651,6 +688,7 @@ slice(dat, 10:15)
 ## 4 e37897  2017-10-28 00:00:00 female     9
 ## 5 f658bc  2017-10-28 00:00:00 male      68
 ## 6 a8e9d8  2017-10-29 00:00:00 female    37
+
 dat[10:15, ]
 ## # A tibble: 6 x 4
 ##   case_id onset               sex      age
@@ -661,42 +699,24 @@ dat[10:15, ]
 ## 4 e37897  2017-10-28 00:00:00 female     9
 ## 5 f658bc  2017-10-28 00:00:00 male      68
 ## 6 a8e9d8  2017-10-29 00:00:00 female    37
-
-filter(dat, sex == "female", age <= 30)
-## # A tibble: 19 x 4
-##    case_id onset               sex      age
-##    <chr>   <dttm>              <chr>  <dbl>
-##  1 947e40  2017-10-20 00:00:00 female    23
-##  2 e4b0a2  2017-10-21 00:00:00 female    13
-##  3 605322  2017-10-22 00:00:00 female    23
-##  4 e399b1  2017-10-23 00:00:00 female    23
-##  5 e37897  2017-10-28 00:00:00 female     9
-##  6 8c5776  2017-11-02 00:00:00 female     7
-##  7 88526e  2017-11-03 00:00:00 female    20
-##  8 778316  2017-11-04 00:00:00 female    10
-##  9 525dfa  2017-11-06 00:00:00 female    10
-## 10 b5ad13  2017-11-07 00:00:00 female    21
-## 11 8bed66  2017-11-08 00:00:00 female    29
-## 12 426b6d  2017-11-08 00:00:00 female     7
-## 13 c2a389  2017-11-10 00:00:00 female    26
-## 14 5eb2b0  2017-11-13 00:00:00 female     7
-## 15 b7faf4  2017-11-16 00:00:00 female    10
-## 16 944ba3  2017-11-19 00:00:00 female    30
-## 17 95fc1d  2017-11-19 00:00:00 female    15
-## 18 5c5c05  2017-11-20 00:00:00 female    21
-## 19 ac8d9d  2017-11-23 00:00:00 female     5
 ```
 
 Ahora, se abrirá y explorará un conjunto de datos que forma parte de un
 paquete
 
 ``` r
-# install.packages("outbreaks")
+install.packages("outbreaks")
+```
+
+``` r
 library(outbreaks)
-## Warning: package 'outbreaks' was built under R version 4.0.4
+## Warning: package 'outbreaks' was built under R version 4.0.5
+
 measles_dat <- outbreaks::measles_hagelloch_1861
+
 class(measles_dat)
 ## [1] "data.frame"
+
 head(measles_dat)
 ##   case_ID infector date_of_prodrome date_of_rash date_of_death age gender
 ## 1       1       45       1861-11-21   1861-11-25          <NA>   7      f
@@ -712,6 +732,7 @@ head(measles_dat)
 ## 4        61     2           yes 165.0 102.5
 ## 5        42     1           yes 145.0 120.0
 ## 6        42     2           yes 145.0 120.0
+
 tail(measles_dat)
 ##     case_ID infector date_of_prodrome date_of_rash date_of_death age gender
 ## 183     183      184       1861-11-11   1861-11-15          <NA>   4      m
@@ -727,44 +748,90 @@ tail(measles_dat)
 ## 186        57     0           yes 212.5  90.0
 ## 187        21     0           yes 205.0 182.5
 ## 188        57     0           yes 212.5  90.0
+
+measles_dat %>% select(starts_with("date_")) %>% head()
+##   date_of_prodrome date_of_rash date_of_death
+## 1       1861-11-21   1861-11-25          <NA>
+## 2       1861-11-23   1861-11-27          <NA>
+## 3       1861-11-28   1861-12-02          <NA>
+## 4       1861-11-27   1861-11-28          <NA>
+## 5       1861-11-22   1861-11-27          <NA>
+## 6       1861-11-26   1861-11-29          <NA>
 ```
 
 Del paquete`tidyr`, las funciones más comunes son:
 
--   `gather`: apila en filas datos dispersos en filas y columnas
--   `spread`: dispersa en filas y columnas datos apilados
+-   `pivot_longer`: apila en filas datos dispersos en columnas. es una
+    versión actualizada de `gather`
+-   `pivot_wider`: dispersa en columnas datos apilados. es una versión
+    actualizada de `spread`
 
-Example:
+Ejemplo:
 
 ``` r
-malaria <- tibble(
-  name = letters[1:10],
-  age = round(rnorm(10, 30, 10), 0),
+malaria_wide <- tibble(
+  district = rep(letters[1:5],each = 2),
   gender = rep(c('f', 'm'), 5),
-  infection = rep(c('falciparum', 'vivax', 'vivax', 'vivax', 'vivax'), 2)
+  falciparum = round(rnorm(10, 30, 10), 0),
+  vivax = round(rnorm(10, 30, 10), 0)
   ) 
-glimpse(malaria)
-## Rows: 10
-## Columns: 4
-## $ name      <chr> "a", "b", "c", "d", "e", "f", "g", "h", "i", "j"
-## $ age       <dbl> 29, 21, 1, 45, 30, 36, 14, 19, 27, 27
-## $ gender    <chr> "f", "m", "f", "m", "f", "m", "f", "m", "f", "m"
-## $ infection <chr> "falciparum", "vivax", "vivax", "vivax", "vivax", "falciparu~
-
-malaria %>% spread(key = 'infection', gender)
+malaria_wide
 ## # A tibble: 10 x 4
-##    name    age falciparum vivax
-##    <chr> <dbl> <chr>      <chr>
-##  1 a        29 f          NA   
-##  2 b        21 NA         m    
-##  3 c         1 NA         f    
-##  4 d        45 NA         m    
-##  5 e        30 NA         f    
-##  6 f        36 m          NA   
-##  7 g        14 NA         f    
-##  8 h        19 NA         m    
-##  9 i        27 NA         f    
-## 10 j        27 NA         m
+##    district gender falciparum vivax
+##    <chr>    <chr>       <dbl> <dbl>
+##  1 a        f              33    42
+##  2 a        m              28    42
+##  3 b        f              22    33
+##  4 b        m              15    47
+##  5 c        f              44    17
+##  6 c        m              35    25
+##  7 d        f              33    37
+##  8 d        m              32    24
+##  9 e        f              41    28
+## 10 e        m              37    29
+
+malaria_long <- malaria_wide %>% 
+  pivot_longer(falciparum:vivax, names_to = "infection", values_to = "cases")
+malaria_long
+## # A tibble: 20 x 4
+##    district gender infection  cases
+##    <chr>    <chr>  <chr>      <dbl>
+##  1 a        f      falciparum    33
+##  2 a        f      vivax         42
+##  3 a        m      falciparum    28
+##  4 a        m      vivax         42
+##  5 b        f      falciparum    22
+##  6 b        f      vivax         33
+##  7 b        m      falciparum    15
+##  8 b        m      vivax         47
+##  9 c        f      falciparum    44
+## 10 c        f      vivax         17
+## 11 c        m      falciparum    35
+## 12 c        m      vivax         25
+## 13 d        f      falciparum    33
+## 14 d        f      vivax         37
+## 15 d        m      falciparum    32
+## 16 d        m      vivax         24
+## 17 e        f      falciparum    41
+## 18 e        f      vivax         28
+## 19 e        m      falciparum    37
+## 20 e        m      vivax         29
+
+malaria_long %>% 
+  pivot_wider(names_from = infection, values_from = cases)
+## # A tibble: 10 x 4
+##    district gender falciparum vivax
+##    <chr>    <chr>       <dbl> <dbl>
+##  1 a        f              33    42
+##  2 a        m              28    42
+##  3 b        f              22    33
+##  4 b        m              15    47
+##  5 c        f              44    17
+##  6 c        m              35    25
+##  7 d        f              33    37
+##  8 d        m              32    24
+##  9 e        f              41    28
+## 10 e        m              37    29
 ```
 
 # ggplot2
@@ -814,7 +881,7 @@ coloreada por género. Para lo cuál se define:
 
 Una cosa importante a tener en cuenta es que para una sola instrucción,
 ggplot solo usará variables que pertenezcan al mismo conjunto de datos.
-Entonces, necesitamos tener las tres variables (x, y y colour) en el
+Entonces, necesitamos tener las tres variables (x, y, colour) en el
 mismo marco de datos (con la misma longitud).
 
 ``` r
@@ -868,7 +935,7 @@ ggplot(data = measles_grouped) +
   geom_line(aes(x = date_of_rash, y = cases, colour = gender))
 ```
 
-![](practical-introR-spanish_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](practical-introR-spanish_files/figure-gfm/unnamed-chunk-27-1.png)<!-- -->
 
 Por defecto, ggplot toma varias decisiones por si solo, como los colores
 utilizados, el tamaño de las líneas, el tamaño de la fuente, etc. En
@@ -894,7 +961,7 @@ p <- ggplot(data = measles_grouped,
 p
 ```
 
-![](practical-introR-spanish_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
+![](practical-introR-spanish_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
 
 Finalmente, ggplot tiene una función útil que permite a los usuarios
 agregar capas sobre los objetos existentes de ggplot. Por ejemplo, si se
@@ -910,7 +977,7 @@ p +
 ## will replace the existing scale.
 ```
 
-![](practical-introR-spanish_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
+![](practical-introR-spanish_files/figure-gfm/unnamed-chunk-29-1.png)<!-- -->
 
 # Más aprendizaje
 
