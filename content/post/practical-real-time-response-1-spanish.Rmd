@@ -1,6 +1,6 @@
 ---
 title: "Análisis de brotes en tiempo real: el ébola como estudio de caso - parte 1"
-authors: ["Anne Cori", "Natsuko Imai", "Finlay Campbell", "Zhian N. Kamvar", "Thibaut Jombart"]
+authors: ["Anne Cori", "Natsuko Imai", "Finlay Campbell", "Zhian N. Kamvar", "Thibaut Jombart","José M. Velasco-España"]
 categories: ["practicals"]
 topics: ["simulation", "response", "ebola", "epicurve", "reproduction number","Spanish"]
 date: 2019-06-11

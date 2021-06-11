@@ -1,6 +1,6 @@
 ---
 title: "Una introducción a R y RStudio"
-authors: ["Zulma M. Cucunuba"]
+authors: ["Zulma M. Cucunuba","José M. Velasco-España","Andree Valle-Campos"]
 categories: ["practicals"]
 topics: ["R","Rstudio","Spanish"]
 date: '2019-06-01'

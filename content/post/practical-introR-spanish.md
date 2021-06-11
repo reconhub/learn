@@ -1,6 +1,6 @@
 ---
 title: "Una introducción a R y RStudio"
-authors: ["Zulma M. Cucunuba"]
+authors: ["Zulma M. Cucunuba","José M. Velasco-España","Andree Valle-Campos"]
 categories: ["practicals"]
 topics: ["R","Rstudio","Spanish"]
 date: '2019-06-01'
@@ -747,7 +747,7 @@ glimpse(malaria)
 ## Rows: 10
 ## Columns: 4
 ## $ name      <chr> "a", "b", "c", "d", "e", "f", "g", "h", "i", "j"
-## $ age       <dbl> 27, 13, 30, 29, 45, 30, 23, 38, 29, 26
+## $ age       <dbl> 29, 21, 1, 45, 30, 36, 14, 19, 27, 27
 ## $ gender    <chr> "f", "m", "f", "m", "f", "m", "f", "m", "f", "m"
 ## $ infection <chr> "falciparum", "vivax", "vivax", "vivax", "vivax", "falciparu~
 
@@ -755,16 +755,16 @@ malaria %>% spread(key = 'infection', gender)
 ## # A tibble: 10 x 4
 ##    name    age falciparum vivax
 ##    <chr> <dbl> <chr>      <chr>
-##  1 a        27 f          NA   
-##  2 b        13 NA         m    
-##  3 c        30 NA         f    
-##  4 d        29 NA         m    
-##  5 e        45 NA         f    
-##  6 f        30 m          NA   
-##  7 g        23 NA         f    
-##  8 h        38 NA         m    
-##  9 i        29 NA         f    
-## 10 j        26 NA         m
+##  1 a        29 f          NA   
+##  2 b        21 NA         m    
+##  3 c         1 NA         f    
+##  4 d        45 NA         m    
+##  5 e        30 NA         f    
+##  6 f        36 m          NA   
+##  7 g        14 NA         f    
+##  8 h        19 NA         m    
+##  9 i        27 NA         f    
+## 10 j        27 NA         m
 ```
 
 # ggplot2
