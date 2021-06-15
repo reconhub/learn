@@ -1,0 +1,647 @@
+---
+title: "Análisis de brotes en tiempo real: el ébola como estudio de caso - parte 2"
+authors: ["Anne Cori", "Natsuko Imai", "Finlay Campbell", "Zhian N. Kamvar", "Thibaut Jombart","José M. Velasco-España"]
+categories: ["practicals"]
+topics: ["simulation", "response", "ebola", "epicurve", "reproduction number","Spanish"]
+date: 2019-06-11
+image: img/highres/ebola-strikes-back-2.jpg
+slug: real-time-response-2-spanish
+showonlyimage: yes
+bibliography: null
+licenses: CC-BY
+always_allow_html: yes
+output:
+  md_document:
+    variant: gfm
+    preserve_yaml: yes
+params:
+  full_version: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# toggle to render full version 
+render_snippet <- if (params$full_version) 'asis' else FALSE
+```
+
+## Introducción
+
+Esta práctica es la segunda parte (de tres) de una práctica que simula la evaluación temprana y la reconstrucción de un brote de enfermedad por el virus del Ébola (EVE). Asegúrese de haber pasado por la  [parte 1](./real-time-response-1-spanish.html) antes de comenzar la [parte 2](./real-time-response-2-spanish.html). 
+En la [parte 2](./real-time-response-2-spanish.html) de la práctica, presentamos varios aspectos del análisis de la etapa inicial de un brote, incluida la estimación de la tasa de crecimiento, los datos del rastreo de contactos, los atrasos y las estimaciones de transmisibilidad. La parte 3 de la práctica ofrecerá una introducción a la reconstrucción de la cadena de transmisión mediante el uso de outbreaker2.
+
+> Nota: Esta práctica se deriva de las prácticas [Ebola
+> simulation part 1: early outbreak assessment](./simulated-evd-early.html) y
+> [Ebola simulation part 2: outbreak
+> reconstruction](./practical-ebola-reconstruction.html)
+
+## Resultados del aprendizaje
+
+Al final de esta práctica ([parte 2](./real-time-response-2-spanish.html)), será capaz de:
+
+-  Estimar e interpretar la tasa de crecimiento y el tiempo en que se duplica la epidemia.
+
+- Estimar el intervalo de serie a partir de los datos pareados de individuos infectantes/ individuos infectados.
+
+- Estimar e interpretar el número de reproducción de la epidemia.
+
+- Prever a corto plazo la incidencia futura 
+
+## Contexto: un nuevo brote de EVE en un país ficticio de África occidental
+
+Se ha notificado un nuevo brote de EVE en un país ficticio de África occidental. El Ministerio de Salud se encarga de coordinar la respuesta al brote, y lo ha contratado como consultor en análisis epidémico para informar la respuesta en tiempo real. Usted ya leyó un análisis descriptivo realizado de los datos (la [parte 1](./real-time-response-1-spanish.html) de la práctica). ¡Ahora hagamos algunos análisis estadísticos!
+
+## Paquetes necesarios
+
+Los siguientes paquetes, disponibles en CRAN o github, son necesarios para este análisis.
+Estos programas los instalamos en la [parte 1](./real-time-response-1-spanish.html), pero si no es así, instale los paquetes necesarios de la siguiente manera:
+
+```{r install_packages, eval = TRUE, echo = TRUE}
+# install.packages("remotes")
+# install.packages("readxl")
+# install.packages("outbreaks")
+# install.packages("incidence")
+# remotes::install_github("reconhub/epicontacts@ttree")
+# install.packages("distcrete")
+# install.packages("epitrix")
+# remotes::install_github("annecori/EpiEstim")
+# remotes::install_github("reconhub/projections")
+# install.packages("ggplot2")
+# install.packages("magrittr")
+# install.packages("binom")
+# install.packages("ape")
+# install.packages("outbreaker2")
+# install.packages("here")
+```
+
+Una vez instalados los paquetes, es posible que deba abrir una nueva sesión de R. Luego cargue las bibliotecas de la siguiente manera:
+
+```{r load_library, warning = FALSE, message=FALSE}
+library(readxl)
+library(outbreaks)
+library(incidence)
+library(epicontacts)
+library(distcrete)
+library(epitrix)
+library(EpiEstim)
+library(projections)
+library(ggplot2)
+library(magrittr)
+library(binom)
+library(ape)
+library(outbreaker2)
+library(here)
+```
+
+##  Leer los datos procesados en la [ parte 1 ](./real-time-response-1-spanish.html)
+
+
+<!--
+ZNK: These two chunks are needed because of the way the documents are structured
+in blogdown. The source that we edit is not the same as the site that is
+rendered. Everything in this directory will end up in the same directory as the
+"static" when the website is displayed, but the current directory structure is
+present when the practicals are built, so we have to do this silly 
+song-and-dance to appease the directory gods.
+-->
+
+```{r read_data_ni, include = FALSE}
+i_daily <- readRDS(here("static/data/clean/i_daily.rds"))
+i_weekly <- readRDS(here("static/data/clean/i_weekly.rds"))
+linelist <- readRDS(here("static/data/clean/linelist.rds"))
+linelist_clean <- readRDS(here("static/data/clean/linelist_clean.rds"))
+contacts <- readRDS(here("static/data/clean/contacts.rds"))
+```
+
+```{r read_data, eval = FALSE}
+i_daily <- readRDS(here("data/clean/i_daily.rds"))
+i_weekly <- readRDS(here("data/clean/i_weekly.rds"))
+linelist <- readRDS(here("data/clean/linelist.rds"))
+linelist_clean <- readRDS(here("data/clean/linelist_clean.rds"))
+contacts <- readRDS(here("data/clean/contacts.rds"))
+```
+
+## Estimación de la tasa de crecimiento mediante un modelo log-lineal
+
+El modelo de incidencia más simple es probablemente el modelo log-lineal, es decir, un modelo de regresión lineal sobre incidencias transformadas logarítmicamente. 
+Para ello trabajaremos con incidencia semanal, para evitar tener demasiados problemas con incidencia cero (que no se pueden registrar). 
+
+Grafique la incidencia transformada logarítmicamente: 
+
+```{r log_transform_weekly}
+ggplot(as.data.frame(i_weekly)) + 
+  geom_point(aes(x = dates, y = log(counts))) + 
+  scale_x_incidence(i_weekly) +
+  xlab("date") +
+  ylab("log weekly incidence") + 
+  theme_minimal()
+```  
+¿Qué le dice esta gráfica sobre la epidemia?   
+
+En el paquete `incidence` , la función` fit` estimará los parámetros de este modelo a partir de un objeto de incidencia (aquí, `i_weekly` ). Aplíquelo a los datos y almacene el resultado en un nuevo objeto llamado `f` . Puede imprimir y usar `f` para derivar estimaciones de la tasa de crecimiento r y el tiempo de duplicación, y agregar el modelo correspondiente a la gráfica de incidencia:  
+
+Ajuste un modelo log-lineal a los datos de incidencia semanal:  
+
+```{r log_linear_full}
+f <- incidence::fit(i_weekly)
+f
+plot(i_weekly, fit = f)
+```
+
+Mirando la gráfica y el ajuste, ¿cree que este es un ajuste razonable?   
+
+## Encuentre una fecha límite adecuada para el modelo log-lineal, en función de los retrasos observados
+
+Utilizando la gráfica del logaritmo (incidencia) que grafico anteriormente, y pensando en por qué el crecimiento exponencial no puede observarse en las últimas semanas, elija una fecha límite y ajuste el modelo logarítmico lineal a una sección adecuada de la epicurva donde crea que puede estimar de manera más confiable la tasa de crecimiento r, y el tiempo de duplicación.  
+
+Es posible que desee examinar cuánto tiempo después de la aparición de los síntomas los casos son hospitalizados; para obtener un reporte de una fecha especifica, siga estos comandos: 
+
+```{r delays_in_reporting}
+summary(as.numeric(linelist_clean$date_of_hospitalisation - linelist_clean$date_of_onset))
+```
+
+```{r delays_in_reporting_answers, echo = FALSE, results = render_snippet, eval = params$full_version}
+cat("- suponiendo que los casos solo se notifiquen durante la hospitalización o después de ella, vemos que la hospitalización toma en promedio 4 días, pero hay retrasos de hasta 22 días, por lo que las demoras en la notificación pueden ser largas y es sensato asumir que es probable que los datos de las últimas dos o tres semanas estén incompletos.") 
+```
+
+```{r log_plot_snippet, echo = FALSE, results = render_snippet, eval = params$full_version}
+cat("- El crecimiento exponencial se observa solo hasta principios o principios o mediados de junio\n")  
+cat("- Es probable que esto se deba a la demora entre el inicio y la notificación. Esto significa que los casos de inicio más reciente no se han informado y no aparecen en la lista de líneas \n")  
+cat("- Cuando solo se mira la epicurva puede resultar en una interpretación potencialmente errónea de las tendencias recientes en la incidencia.\n")  
+```
+
+```{r n_weeks_to_remove, eval = FALSE}
+# cuántas semanas debe descartar al final de la epicurva 
+n_weeks_to_discard <- 
+```
+  
+```{r n_weeks_to_remove_answer, echo = params$full_version}
+# cuántas semanas debe descartar al final de la epicurva
+n_weeks_to_discard <- 2
+```
+  
+```{r trunc_incidence}
+min_date <- min(i_daily$dates)
+max_date <- max(i_daily$dates) - n_weeks_to_discard * 7
+# Para truncar la incidencia semanal 
+i_weekly_trunc <- subset(i_weekly, 
+                         from = min_date, 
+                         to = max_date) # descarte las últimas semanas de datos
+# incidencia diaria truncada 
+# no la usamos para la regresión lineal pero se puede usar más adelante
+i_daily_trunc <- subset(i_daily, 
+                         from = min_date, 
+                         to = max_date) # eliminamos las últimas dos semanas de datos
+```
+  
+Vuelva a montar y a graficar el modelo logarítmico lineal, pero utilizando los datos truncados `i_weekly_trunc`. 
+  
+```{r fit_truncated, echo = params$full_version}
+f <- incidence::fit(i_weekly_trunc)
+f
+plot(i_weekly_trunc, fit = f)
+```
+  
+Observe las estadísticas resumidas de su ajuste:
+
+```{r fit_summary}
+summary(f$model)
+```
+
+Puede observar la bondad del ajuste (Rsquared), la pendiente estimada (tasa de crecimiento/growth rate) y el tiempo de duplicación correspondiente como se muestra a continuación:  
+
+```{r growth_rate}
+# ¿El modelo se ajusta bien a los datos?
+adjRsq_model_fit <- summary(f$model)$adj.r.squared
+# ¿ Cuál es la tasa de crecimiento estimada de la epidemia?
+daily_growth_rate <- f$model$coefficients['dates.x']
+# intervalo de confianza:
+daily_growth_rate_CI <- confint(f$model, 'dates.x', level=0.95)
+# ¿Cuál es el tiempo de duplicación de la epidemia?
+doubling_time_days <- log(2) / daily_growth_rate
+# intervalo de confianza:
+doubling_time_days_CI <- log(2) / rev(daily_growth_rate_CI)
+```
+
+Aunque el log-lineal es un método simple y rápido para la evaluación temprana de una epidemia, se debe tener cuidado de ajustar solo hasta el punto en que haya un crecimiento epidémico. Tenga en cuenta que puede resultar difícil definir este punto.  
+
+```{r notes_growth_rate, echo = FALSE, results = render_snippet, eval = params$full_version}
+cat("- El modelo log-lineal no se puede aplicar fácilmente si hay días sin casos, ya que no puede tomar el registro de 0). Aquí hemos agregado los datos semanales para evitar este problema y hemos establecido semanas con 0 casos como NA, por lo que se ignoran en el análisis. \ N " )  
+cat("- Aquí tuvimos bastantes semanas de datos con los que trabajar, pero al principio de un brote, un análisis similar puede llevar a estimaciones muy inciertas de la tasa de crecimiento y el tiempo de duplicación debido al tamaño pequeño de la muestra. \ n " )  
+cat("- Si los datos sobre las demoras en los informes hubieran estado disponibles, se podría haber tomado una decisión más informada sobre el número de semanas / días para descartar.\n")  
+```
+ 
+## Seguimiento de contactos: vigile los contactos
+
+El rastreo de contactos es uno de los pilares de la respuesta a un brote de ébola. Esto implica identificar y hacer un seguimiento de las personas en riesgo que hayan tenido contacto con un caso conocido, es decir, que puedan haber sido infectadas. Para el ébola, los contactos se vigilan durante 21 días (el límite superior del período de incubación). Esto asegura que los contactos que se vuelven sintomáticos puedan aislarse rápidamente, reduciendo la posibilidad de una mayor transmisión. Para esto usamos la lista de líneas completa en lugar de `linelist_clean` donde descartamos las entradas con errores en las fechas, porque apesar del error el contacto aún puede ser válido.
+
+Usando la función `make_epicontacts` en el paquete ` epicontacts` paquete, cree un nuevo objeto `epicontacts` llamado ` epi_contacts` . Asegúrese de comprobar los nombres de las columnas de los argumentos relevantes " to " y "from" .
+
+
+```{r epicontacts, echo = params$full_version}
+epi_contacts <- make_epicontacts(linelist = linelist, contacts = contacts, 
+                                 id = "case_id", # nombre del identificador en la lista de líneas
+                                 from = "infector", # nombre de la columna 'from' en los contactos
+                                 to = "case_id",  # nombre de la columna 'to' en los contactos
+                                 directed = TRUE)
+```
+
+```{r show_output_contacts}
+epi_contacts
+```
+
+
+Usted puede graficar fácilmente estos contactos, pero con un poco de ajuste (ver `?vis_epicontacts`) puede personalizar, por ejemplo, símbolos por género y colores de flechas por fuente de exposición (u otras variables de interés):
+
+```{r table_contact_type}
+# por ejemplo, observe la fuente de infección reportada de los contactos.
+table(epi_contacts$contacts$source, useNA = "ifany")
+```
+
+```{r plot_contacts, eval = FALSE}
+p <- plot(epi_contacts, node_shape = "gender", shapes = c(m = "male", f = "female"), node_color = "gender", edge_color = "source", selector = FALSE)
+p
+```
+
+```{r plot_contacts-ns, echo = FALSE}
+p <- plot(epi_contacts, node_shape = "gender", shapes = c(m = "male", f = "female"), node_color = "gender", edge_color = "source", selector = FALSE)
+learn::save_and_use_widget(p, 'real-time-response-2-nework.html')
+```
+
+Usando la función `match` ( ver` ? Match` ) verifique que los contactos visualizados sean realmente casos.
+
+```{r check_contact_cases, echo = params$full_version}
+match(contacts$case_id, linelist$case_id)
+```
+
+Una vez se asegure de que todos estos son casos, mire la red: 
+
+- ¿Parece que hay superpropagación (transmisión heterogénea)?
+- Al observar el género de los casos, ¿puede deducir algo de esto? ¿Existen diferencias visibles por género?
+   
+```{r superspreading_snippet, echo = FALSE, results = render_snippet, eval = params$full_version}
+#table(contacts$infector)
+cat("- Parece haber una superpropagación, y algunos casos provienen de un solo caso (11f8ea infecta a otros 5 individuos. No parece haber diferencias inmediatas entre el género de los casos " )
+```
+
+## Estimación de la transmisibilidad (`$R$`)  
+
+### Modelo de proceso de ramificación  
+
+La transmisibilidad de la enfermedad puede evaluarse mediante la estimación del número de reproducción R, definido como el número esperado de casos secundarios por caso infectado. En las primeras etapas de un brote, y asumiendo una gran población sin inmunidad, esta cantidad es también el número de reproducción básico `$R_0$`, es decir, `$R$` en una gran población totalmente susceptible.  
+
+El paquete `EpiEstim` implementa una estimación bayesiana de `$R$`, utilizando las fechas de inicio de los síntomas y la información sobre la distribución del intervalo de serie, es decir, la distribución del tiempo desde el inicio de los síntomas en un caso y el inicio de los síntomas en quien lo infecto (infectante) (ver Cori et al., 2013, AJE 178: 1505-1512).
+
+En resumen, `EpiEstim` usa un modelo simple que describe la incidencia en un día dado como la distribución de Poisson, con una media determinada por la fuerza total de infección en ese día:
+
+`$$ I_t  ∼  Poisson(\lambda_t)$$`
+
+donde `$I_t$` es la incidencia (basada en la aparición de los síntomas), `$t$` es el día y `$\lambda_t$`  es la fuerza de la infección ese día. Teniendo en cuenta R el número de reproducción y w () la distribución de intervalo de serie discreta, tenemos:
+
+ `$$\lambda_t = R \sum_{s=1}^t I_sw(t-s)$$`
+
+La verosimilitud (probabilidad de observar los datos dados el modelo y los parámetros) se define como una función de R:
+
+ `$$L(I) = p(I|R) = \prod_{t = 1}^{T} f_P(I_t, \lambda_t)$$`
+
+donde `$f_P(.,\mu)$` es la función de masa de probabilidad de una distribución de Poisson con media `$\mu$`.
+
+### Estimación del intervalo de serie (SI)
+
+Dado que los datos se recopilaron sobre pares de individuos infectantes e infectados, esto debería ser suficiente para estimar la distribución del intervalo en serie. Si ese no fuera el caso, podríamos haber utilizado datos de brotes pasados en su lugar.  
+
+Utilice la función `get_pairwise` para extraer el intervalo de la serie, es decir, la diferencia en la fecha de aparición entre los individuos infectantes e infectados:
+
+```{r si_estim}
+si_obs <- get_pairwise(epi_contacts, "date_of_onset")
+summary(si_obs)
+## Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+## 1.000   5.000   6.500   9.117  12.250  30.000 
+hist(si_obs, breaks = 0:30,
+     xlab = "Días después de la aparición de los síntomas", ylab = "Frecuencia",
+     main = "Intervalo de serie (distribución empírica)",
+     col = "grey", border = "white")
+```
+
+¿Qué opina de esta distribución? Realice cualquier ajuste que considere necesario y luego use la función `fit_disc_gamma` del paquete` epitrix` para ajustar estos datos a una distribución Gamma de valores discretos. Sus resultados deberían verse aproximadamente como:  
+
+```{r fit_gamma}
+si_fit <- fit_disc_gamma(si_obs, w = 1)
+si_fit
+```
+  
+`si_fit` contiene información diversa sobre los retrasos ajustados, incluida la distribución estimada en la ranura `$distribution`. Puede comparar esta distribución con los datos empíricos en la siguiente gráfica: 
+
+```{r compare_empirical}
+si <- si_fit$distribution
+si
+## compare fitted distribution
+hist(si_obs, xlab = "Días después de la aparición de los síntomas", ylab = "Frecuencia",
+     main = "Intervalo de serie: ajustar a los datos", col = "salmon", border = "white",
+     50, ylim = c(0, 0.15), freq = FALSE, breaks = 0:35)
+points(0:60, si$d(0:60), col = "#9933ff", pch = 20)
+points(0:60, si$d(0:60), col = "#9933ff", type = "l", lty = 2)
+```  
+
+¿Confiaría en esta estimación del tiempo de generación? ¿Cómo lo compararía con las estimaciones reales del brote de EVE en África occidental (Equipo de respuesta al ébola de la OMS (2014) NEJM 371: 1481–1495) con una media de 15,3 días y una desviación estándar de 9,3 días?  
+
+```{r si_snippet, echo = FALSE, results = render_snippet, eval = params$full_version}
+cat("- distribución sesgada con una media mucho más corta que la estimada en NEJM 371:1481–1495\n")  
+cat("- la gran mayoría de las parejas tienen un SI <15 días\n")  
+cat("- los casos pueden recordar con mayor precisión sus exposiciones recientes, lo que puede llevar a una subestimación del intervalo de serie\n" )  
+cat("- al estimar el intervalo de serie en tiempo real, es posible que aún no se hayan observado intervalos de serie más largos debido a la censura por la derecha\n" )  
+cat("- esta estimación se basa en pocas observaciones, por lo que hay incertidumbre en
+    las estimaciones del intervalo de serie\n")  
+```
+
+### Estimación del número de reproducción
+
+Ahora que tenemos estimaciones del intervalo de la serie, podemos usar esta información para estimar la transmisibilidad de la enfermedad (medida por `$R_0$`). Asegúrese de utilizar el objeto de incidencia diaria (no semanal) truncado al período en el que ha decidido que hay un crecimiento exponencial (`i_daily_trunc`).  
+
+Utilizando las estimaciones de la media y la desviación estándar del intervalo de serie que acaba de obtener, utilice la función `estimate_R` para estimar el número de reproducción (consulte `?estimate_R`) y almacene el resultado en un nuevo objeto `R` .  
+
+Antes de usar `estimate_R`, necesita crear un objeto` config` usando la función `make_config` , donde usted debe especificar la ventana de tiempo en la cual desea estimar el número de reproducción, así como el` mean_si` y `std_si` a usar . Para la ventana de tiempo, use `t_start = 2` (solo puede estimar R apartir del día 2 en adelante, dado que está condicionando la incidencia observada en el pasado) y especifique t_end = length(i_daily_trunc$counts)` para estimar R hasta la último fecha de su incidencia truncada `i_daily_trunc` .  
+
+```{r config}
+config <- make_config(mean_si = si_fit$mu, # media de la distribución si estimada anteriormente
+                      std_si = si_fit$sd,  # desviación estándar de la distribución si estimada anteriormente
+                      t_start = 2,         # día de inicio de la ventana de tiempo
+                      t_end = length(i_daily_trunc$counts)) # último día de la ventana de tiempo
+```
+
+```{r, eval = FALSE}
+R <- # use estimate_R usando el método = "parametric_si"
+plot(R, legend = FALSE)  
+```
+
+```{r calc_R, echo = params$full_version, warning = FALSE}
+R <- estimate_R(i_daily_trunc, method = "parametric_si", config = config)
+plot(R, legend = FALSE)
+```
+
+Extraiga la mediana y los intervalos de credibilidad del 95% (95% CrI) para el número de reproducción de la siguiente manera:
+
+```{r calc_R2}
+R_median <- R$R$`Median(R)`
+R_CrI <- c(R$R$`Quantile.0.025(R)`, R$R$`Quantile.0.975(R)`)
+R_median
+R_CrI
+```
+
+Interprete estos resultados: ¿qué opina del número de reproducción? ¿Qué refleja? Con base en la última parte de la epicurva, algunos colegas sugieren que la incidencia está disminuyendo y que el brote puede estar bajo control. ¿Qué opina de esto? 
+
+```{r R_snippet, echo = FALSE, results = render_snippet, eval = params$full_version}  
+cat ("- Tenga en cuenta que estos resultados dependen en gran medida del intervalo de serie estimado; un SI medio más alto conducirá a estimaciones de R más altas.\n")
+cat ("- Los resultados también serán sensibles al número de puntos de datos descartados hacia el final de los datos disponibles.")  
+```
+
+Tenga en cuenta que podría haber estimado R0 directamente a partir de la tasa de crecimiento y el intervalo de serie, utilizando la fórmula descrita en Wallinga y Lipsitch, Proc Biol Sci, 2007: 
+
+`$R_0 = \frac{1}{\int_{s=0}^{+\infty}e^{-rs}w(s)ds}$`, e implementando la función `r2R0` del paquete `epitrix`. Aunque esto puede parecer una fórmula complicada, el razonamiento detrás de ella es simple y se ilustra en la figura siguiente: para una curva de incidencia observada que crece exponencialmente, si conoce el intervalo de serie, puede derivar el número de reproducción.
+
+![Estimación de R0 a partir de la tasa de crecimiento y el intervalo de serie.](../../img/R0fromr.png)
+
+En comparación con la figura anterior, hay incertidumbre en la tasa de crecimiento r, y el intervalo de serie tiene una distribución completa en lugar de un valor único. Esto se puede tener en cuenta al estimar R de la siguiente manera: 
+
+Compared to the figure above, there is uncertainty in the growth rate r, and the serial interval has a full distribution rather than a single value. This can be accounted for in estimating R as follows:
+
+```{r R_from_growth_rate}
+# genere una muestra de estimaciones de R0 a partir de la tasa de crecimiento y el intervalo de serie que estimamos anteriormente 
+R_sample_from_growth_rate <- lm2R0_sample(f$model, # modelo log-lineal que contiene nuestras estimaciones de la tasa de crecimiento r
+                                          si$d(1:100), # distribución de intervalo de serie (truncado después de 100 días)
+                                          n = 1000) # tamaño de muestra deseado
+# Grafique esto:
+hist(R_sample_from_growth_rate)
+# ¿Cuál es la mediana?
+R_median_from_growth_rate <- median(R_sample_from_growth_rate)
+R_median_from_growth_rate # compare with R_median
+# ¿ Cuál es el IC del 95%?
+R_CI_from_growth_rate <- quantile(R_sample_from_growth_rate, c(0.025, 0.975))
+R_CI_from_growth_rate # compare con R_CrI
+```
+
+Tenga en cuenta que las estimaciones anteriores son ligeramente diferentes de las obtenidas utilizando el modelo de proceso de ramificación. 
+Hay algunas razones para esto. 
+En primer lugar, usted utilizó datos más detallados (incidencia diaria frente a incidencia semanal) para la estimación del proceso de ramificación (EpiEstim). 
+Además, el modelo log-lineal pone el mismo peso en todos los puntos de datos, mientras que el modelo de proceso de ramificación pone un peso diferente en cada punto de datos (dependiendo de la incidencia observada en cada paso de tiempo). 
+Esto puede llevar a estimaciones de R ligeramente diferentes.
+
+## Previsión de incidencia a corto plazo  
+
+La función `project` del paquete `projections` se puede utilizar para simular trayectorias epidémicas plausibles simulando la incidencia diaria utilizando el mismo proceso de ramificación que se utilizó para estimar `$R$` en `EpiEstim`. Todo lo que se necesita es uno o varios valores de `$R$` y una distribución de intervalo en serie, almacenados como un objeto `distcrete`.  
+
+Aquí, primero ilustramos cómo podemos simular 5 trayectorias aleatorias usando un valor fijo de `$R$` = `r signif(R_median, 3)`, la estimación mediana de R desde arriba.  
+Utilice el mismo objeto de incidencia truncado diario que el anterior para simular una incidencia futura.  
+
+```{r projections}
+#?project
+small_proj <- project(i_daily_trunc,# objeto de incidencia
+                      R = R_median, # R estimado a utilizar
+                      si = si,      # distribución de intervalo de serie
+                      n_sim = 5,    # simula 5 trayectorias
+                      n_days = 10,  # durante 10 días
+                      R_fix_within = TRUE) # mantiene el mismo valor de R todos los días
+
+# mire cada trayectoria proyectada (como columnas):
+as.matrix(small_proj)
+```
+
+```{r R_fix_within_explanation, echo = FALSE, results = render_snippet, eval = params$full_version}
+cat("- Puede usar un solo valor R para toda la trayectoria (R_fix_within = TRUE) o volver a muestrear R en cada paso de tiempo (R_fix_within = FALSE).\n")  
+cat("- `R_fix_within = TRUE` significa que la trayectoria está asociada con un solo valor R y es más fácil de entender \n")  
+cat("- Esto también da valores más extremos de R y proyecciones más conservadoras")  
+```
+
+Usando el mismo principio, genere 1,000 trayectorias durante las próximas 2 semanas, usando un rango de valores plausibles de `$R$`.  
+La distribución posterior de R tiene una distribución gamma (ver Cori et al. AJE 2013), por lo que puede usar la función `rgamma` para extraer valores aleatoriamente de esa distribución. También necesitará utilizar la función `gamma_mucv2shapescale` del paquete `epitrix` como se muestra a continuación.  
+
+```{r sampling_posterior_R}
+sample_R <- function(R, n_sim = 1000)
+{
+  mu <- R$R$`Mean(R)`
+  sigma <- R$R$`Std(R)`
+  Rshapescale <- gamma_mucv2shapescale(mu = mu, cv = sigma / mu)
+  R_sample <- rgamma(n_sim, shape = Rshapescale$shape, scale = Rshapescale$scale)
+  return(R_sample)
+}
+R_sample <- sample_R(R, 1000) # obtiene una muestra de 1000 valores de R de la distribución posterior
+hist(R_sample, col = "grey")  # Grafíca un histograma de la muestra 
+abline(v = R_median, col = "red") # muestra la mediana estimada de R como una línea vertical roja sólida
+abline(v = R_CrI, col = "red", lty = 2) # muestra el 95% de CrI de R como líneas verticales punteadas rojas
+```
+
+Almacene los resultados de sus nuevas proyecciones en un objeto llamado `proj`.
+
+```{r projections2, echo = params$full_version}
+proj <- project(x = i_daily_trunc, 
+                R = R_sample, # ahora usando una muestra de valores R
+                si = si, 
+                n_sim = 1000, 
+                n_days = 14, # proyecto durante 2 semanas
+                R_fix_within = TRUE)
+```
+
+Puede visualizar las proyecciones de la siguiente manera:
+
+```{r plot_projections}
+plot(i_daily_trunc) %>% add_projections(proj, c(0.025, 0.5, 0.975))
+```
+
+¿Cómo interpretaría el siguiente resumen de las proyecciones?
+
+```{r interpret_results}
+apply(proj, 1, summary)
+apply(proj, 1, function(x) mean(x > 0)) # proporción de trayectorias con al menos
+                                        # un caso en cada día contemplado
+apply(proj, 1, mean) # número medio diario de casos
+apply(apply(proj, 2, cumsum), 1, summary) # muestra la proyección del número acumulado de casos en
+                                          # las próximas dos semanas
+```
+
+```{r interpret_results_answers, echo = FALSE, results = render_snippet, eval = params$full_version}
+cat("- `apply(proj, 1, summary)` muestra un resumen de la incidencia en cada día\n")  
+cat("- `apply(proj, 1, function(x) mean(x > 0))` muestra la proporción de trayectorias con al menos un caso en cada día contemplado \n")  
+cat("- `apply(proj, 1, mean)` muestra el número medio diario de casos \n")  
+cat("- `apply(apply(proj, 2, cumsum), 1, summary)` muestra la proyección del número adicional de casos acumulados en las próximas dos semanas\n")  
+```
+
+Según estos resultados, ¿cuáles son las posibilidades de que aparezcan más casos en un futuro próximo? ¿Se está controlando este brote? ¿Recomendaría ampliar o reducir la respuesta? ¿Es esto consistente con su estimación de `$R$`?
+
+```{r R_snippet_proj, echo = FALSE, results = render_snippet, eval = params$full_version}
+cat("- la incertidumbre es amplia y se hace más amplia cuanto más avance en el futuro.\n")  
+  
+cat("- la tendencia central sugiere un número creciente de casos \n")  
+  
+cat("- esto se basa en la suposición de que la transmisibilidad se ha mantenido constante durante el transcurso del brote hasta ahora y permanecerá constante en el futuro \n" )  
+    
+cat("- todo esto se basa en nuestra distribución estimada de intervalo de serie - un SI medio más alto conduciría a estimaciones de R más grandes y, por lo tanto, a proyecciones de incidencia más pesimistas.")  
+```
+
+## ¡Pare!
+
+Por favor, informe a un tutor cuando haya llegado a este punto antes de continuar. 
+
+## Tenga en cuenta la incertidumbre en las estimaciones del intervalo de serie al estimar el número de reproducción 
+
+Tenga en cuenta que esta sección es independiente de las siguientes, omita si no tiene tiempo. 
+
+EpiEstim permite tener en cuenta explícitamente la incertidumbre en las estimaciones del intervalo de serie debido al tamaño limitado de la muestra de pares de individuo infetante / individuo infectado. Tenga en cuenta que también permite tener en cuenta la incertidumbre sobre las fechas de inicio de los síntomas para cada uno de estos pares (que no es necesario aquí). 
+
+Utilice la opción `method = "si_from_data"` en `estimate_R`.
+Para utilizar esta opción, debe crear un marco de datos con 4 columnas: 
+`EL`, `ER`, `SL` y `SR`. (L) para el límite izquierdo y (R) para el límite derecho del tiempo observado de síntomas para los casos infectantes (E) e infectados (S). Aquí derivamos esto de `si_obs` de la siguiente manera:
+
+```{r si_data}
+si_data <- data.frame(EL = rep(0L, length(si_obs)), 
+                      ER = rep(1L, length(si_obs)), 
+                      SL = si_obs, SR = si_obs + 1L)
+```
+
+A continuación, podemos introducir esto en `estimate_R` (pero esto llevará algún tiempo para ejecutarse, ya que estima la distribución del intervalo de serie utilizando un MCMC y tiene en cuenta por completo la incertidumbre en el intervalo de serie para estimar el número de reproducción). 
+
+```{r R_variableSI, warning = FALSE, cache = TRUE}
+config <- make_config(t_start = 2, 
+                      t_end = length(i_daily_trunc$counts))
+R_variableSI <- estimate_R(i_daily_trunc, method = "si_from_data", 
+                           si_data = si_data,
+                           config = config)
+# compruebe que la MCMC convergió
+R_variableSI$MCMC_converged
+# grafique el resultado:
+plot(R_variableSI)
+```
+
+Observe la nueva mediana estimada de R y el 95% de CrI: ¿en qué se diferencian de sus estimaciones anteriores? ¿Crees que el tamaño del conjunto de datos de contactos ha tenido un impacto en tus resultados?
+
+```{r summary_R_variableSI}
+R_variableSI_median <- R_variableSI$R$`Median(R)`
+R_variableSI_CrI <- c(R_variableSI$R$`Quantile.0.025(R)`, R_variableSI$R$`Quantile.0.975(R)`)
+R_variableSI_median
+R_variableSI_CrI
+```
+
+##  Estimación de la transmisibilidad variable en el tiempo  
+
+Cuando la suposición de que (`$R$`) es constante en el tiempo se vuelve insostenible, una alternativa es estimar la transmisibilidad variable en el tiempo utilizando el número de reproducción instantánea (`$R_t$`). Este enfoque, introducido por Cori et al. (2013), también se implementa en el paquete `EpiEstim`. Estima ( `$ R_t $` ) para ventanas de tiempo personalizadas (el valor predeterminado es una sucesión de ventanas de tiempo deslizantes), utilizando la misma probabilidad de Poisson descrita anteriormente. A continuación, estimamos la transmisibilidad para ventanas de tiempo deslizantes de 1 semana (el valor predeterminado de `estimate_R`):  
+
+```{r config_Rt}
+config = make_config(list(mean_si = si_fit$mu, std_si = si_fit$sd))  
+# t_start y t_end se configuran automáticamente para estimar R en ventanas deslizantes para 1 semana de forma predeterminada.
+```
+
+```{r, eval = FALSE}
+Rt <-         # use estimate_R usando método = "parametric_si"
+  
+# mire las estimaciones de Rt más recientes:
+tail(Rt$R[, c("t_start", "t_end", "Median(R)", 
+             "Quantile.0.025(R)", "Quantile.0.975(R)")])
+```
+
+```{r timevarying_r, echo = params$full_version, warning = FALSE}
+Rt <- estimate_R(incid = i_daily_trunc,      # objeto de incidencia
+                 method = "parametric_si",   # use intervalo de serie paramétrico
+                 config = config)            # configuración especificada arriba
+
+# mire las estimaciones de Rt más recientes:
+tail(Rt$R[, c("t_start", "t_end", "Median(R)", 
+             "Quantile.0.025(R)", "Quantile.0.975(R)")])
+```
+
+Grafique la estimación de `$R$` sobre le tiempo:
+```{r new_EpiEstim, warnings = FALSE}
+plot(Rt, legend = FALSE)
+```
+
+¿Cómo interpretaría este resultado? ¿Cuál es la salvedad de esta representación?
+
+¿Qué habría concluido si en lugar de usar `i_daily_trunc` como se indicó anteriormente, hubiera usado toda la curva de epidemias, es decir, `i_daily` ?
+
+```{r, eval = FALSE}
+Rt_whole_incid <-            # use estimate_R usando method = "parametric_si",
+ # la misma configuración que la anterior pero i_daily en lugar de i_daily_trunc
+    
+# mire las estimaciones de Rt más recientes:
+tail(Rt_whole_incid$R[, c("t_start", "t_end", 
+                         "Median(R)", "Quantile.0.025(R)", "Quantile.0.975(R)")])  
+```
+
+```{r timevarying_r_whole_incid, echo = params$full_version}
+Rt_whole_incid <- estimate_R(incid = i_daily, 
+                             method = "parametric_si", 
+                             config = config) 
+tail(Rt_whole_incid$R[, c("t_start", "t_end", 
+                         "Median(R)", "Quantile.0.025(R)", "Quantile.0.975(R)")])  
+# lo anterior infiere incorrectamente que la transmisibilidad reciente es <1
+```
+
+```{r Rt_plot, echo = FALSE, results = render_snippet, eval = params$full_version}
+cat("- lo anterior asume un R constante dentro de una ventana de tiempo deslizante ")  
+```
+
+##  Guardar datos y salidas
+
+Este es el final de la [parte 2](./real-time-response-2-spanish.html) de la práctica.
+Antes de continuar con la [parte 3](./real-time-response-3.html), deberá guardar los siguientes objetos: 
+
+```{r save_data_ni, include = FALSE}
+saveRDS(linelist, here("static/data/clean/linelist.rds"))
+saveRDS(linelist_clean, here("static/data/clean/linelist_clean.rds"))
+saveRDS(epi_contacts, here("static/data/clean/epi_contacts.rds"))
+saveRDS(si, here("static/data/clean/si.rds"))
+```
+
+```{r save_data, eval = FALSE}
+saveRDS(linelist, here("data/clean/linelist.rds"))
+saveRDS(linelist_clean, here("data/clean/linelist_clean.rds"))
+saveRDS(epi_contacts, here("data/clean/epi_contacts.rds"))
+saveRDS(si, here("data/clean/si.rds"))
+```
+
+## Sobre este documento
+
+### Contribuciones
+
+- Anne Cori, Natsuko Imai, Finlay Campbell, Zhian N. Kamvar & Thibaut Jombart: Versión inicial
+- José M. Velasco-España: Traducción de Inglés a Español
+- Andree Valle-Campos: Ediciones menores
+
+Contribuciones son bienvenidas vía [pull requests](https://github.com/reconhub/learn/pulls).
