@@ -3,7 +3,7 @@ title: "Taller R Markdown"
 authors: ["Carlos Javier Rincon"]
 categories: ["practicals"]
 topics: ["Reproducibilidad","R","R Markdown","Spanish"]
-date: 2021-05-27
+date: '2019-06-01'
 image: img/highres/IR.jpg
 showonlyimage: yes
 bibliography: practical-rmarkdown-spanish.bib

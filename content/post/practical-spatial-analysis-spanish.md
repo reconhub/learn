@@ -3,7 +3,7 @@ title: "Visualización y Análisis de datos espaciales en salud pública"
 authors: ["Gabriel Carrasco-Escobar", "Antony Barja", "Jesus Quispe"]
 categories: ["practicals"]
 topics: ["spatial analysis", "COVID19", "sf", "clustering", "Spanish"]
-date: '2021-06-09'
+date: '2019-06-01'
 image: img/highres/spat-cover.png
 slug: spatial-analysis-1-spanish
 showonlyimage: yes
@@ -1139,13 +1139,10 @@ m_p <- covid_p %>%
 m_p
 ```
 
-<!-- ```{r warning=F, message=F, echo=F} -->
-<!-- m_p <- covid_p %>%  -->
-<!--   filter(FECHA_RESULTADO == "2020-12-10") %>% -->
-<!--   mapview(layer.name = "puntos") -->
-<!-- # m_p -->
-<!-- learn::save_and_use_widget(m_p, "m_p.html") -->
-<!-- ``` -->
+<!--html_preserve-->
+<iframe src="widgets/m_p.html" width="100%" height="500px">
+</iframe>
+<!--/html_preserve-->
 
 ### Datos en polígonos
 
@@ -1208,7 +1205,7 @@ covid_sf %>%
   geom_sf()
 ```
 
-![](practical-spatial-analysis-spanish_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](practical-spatial-analysis-spanish_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 ``` r
 m_sf <- covid_sf %>% 
@@ -1218,13 +1215,10 @@ m_sf <- covid_sf %>%
 m_sf
 ```
 
-<!-- ```{r warning=F, message=F, echo=F} -->
-<!-- m_sf <- covid_sf %>%  -->
-<!--   filter(FECHA_RESULTADO == "2020-12-11") %>% -->
-<!--   mapview(layer.name = "distritos") -->
-<!-- # m_sf -->
-<!-- learn::save_and_use_widget(m_sf, "m_sf.html") -->
-<!-- ``` -->
+<!--html_preserve-->
+<iframe src="widgets/m_sf.html" width="100%" height="500px">
+</iframe>
+<!--/html_preserve-->
 
 ### Múltiples capas
 
@@ -1242,14 +1236,15 @@ ggplot() +
             filter(FECHA_RESULTADO == "2020-12-11"))
 ```
 
-![](practical-spatial-analysis-spanish_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+![](practical-spatial-analysis-spanish_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
 ``` r
 m_p + m_sf
 ```
 
 <!-- ```{r warning=F, message=F, echo=F} -->
-<!-- m_p_sf <- m_p + m_sf -->
+<!-- m_p_sf1 <- m_p + m_sf -->
+<!-- m_p_sf <- m_p_sf1@map -->
 <!-- learn::save_and_use_widget(m_p_sf, "m_p_sf.html") -->
 <!-- ``` -->
 
@@ -1277,7 +1272,7 @@ covid_p %>%
   facet_wrap(.~SEXO)
 ```
 
-![](practical-spatial-analysis-spanish_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+![](practical-spatial-analysis-spanish_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
 
 En el caso de la visualización dinámica con `mapview` el color se asigna
 con el argumento `zcol`. Usaremos el argumento `burst = T` para que cada
@@ -1290,12 +1285,10 @@ covid_p %>%
   mapview(layer.name = "points", zcol = "SEXO", burst = T)
 ```
 
-<!-- ```{r warning=F, message=F, echo=F} -->
-<!-- m_uni <- covid_p %>%  -->
-<!--   filter(FECHA_RESULTADO == "2020-12-11") %>% -->
-<!--   mapview(layer.name = "points", zcol = "SEXO", burst = T) -->
-<!-- learn::save_and_use_widget(m_uni, "m_uni.html") -->
-<!-- ``` -->
+<!--html_preserve-->
+<iframe src="widgets/m_uni.html" width="100%" height="500px">
+</iframe>
+<!--/html_preserve-->
 
 **Dos o mas variable**
 
@@ -1313,7 +1306,7 @@ covid_p %>%
   guides(col = F)
 ```
 
-![](practical-spatial-analysis-spanish_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+![](practical-spatial-analysis-spanish_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
 `mapview` permite agrupar múltiples capas con los operadores `+` y `|`.
 Más detalles en la [documentación del
@@ -1333,10 +1326,10 @@ m2 <- covid_p %>%
 m1 + m2
 ```
 
-<!-- ```{r warning=F, message=F, echo=F} -->
-<!-- m1_2 <- m1 + m2 -->
-<!-- learn::save_and_use_widget(m1_2, "m1_2.html") -->
-<!-- ``` -->
+<!--html_preserve-->
+<iframe src="widgets/m1_2.html" width="100%" height="500px">
+</iframe>
+<!--/html_preserve-->
 
 **Composición**
 
@@ -1361,7 +1354,7 @@ covid_p %>%
   theme_bw()
 ```
 
-![](practical-spatial-analysis-spanish_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](practical-spatial-analysis-spanish_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
 ### Datos en polígonos
 
@@ -1384,7 +1377,7 @@ covid_sf %>%
   geom_sf(aes(fill = casos))
 ```
 
-![](practical-spatial-analysis-spanish_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
+![](practical-spatial-analysis-spanish_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
 
 En el caso de la visualización dinámica con `mapview` el relleno también
 se asigna con el argumento `zcol`.
@@ -1395,12 +1388,10 @@ covid_sf %>%
   mapview(layer.name = "casos", zcol = "casos")
 ```
 
-<!-- ```{r warning=F, message=F, echo=F} -->
-<!-- m_casos <- covid_sf %>%  -->
-<!--   filter(FECHA_RESULTADO == "2020-12-11") %>% -->
-<!--   mapview(layer.name = "casos", zcol = "casos") -->
-<!-- learn::save_and_use_widget(m_casos, "m_casos.html") -->
-<!-- ``` -->
+<!--html_preserve-->
+<iframe src="widgets/m_casos.html" width="100%" height="500px">
+</iframe>
+<!--/html_preserve-->
 
 **Dos o mas variable**
 
@@ -1415,7 +1406,7 @@ covid_sf %>%
   facet_grid(.~FECHA_RESULTADO)
 ```
 
-![](practical-spatial-analysis-spanish_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
+![](practical-spatial-analysis-spanish_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
 
 También podemos visualizar la distribución espacial de ambas fechas de
 forma dinámica.
@@ -1434,10 +1425,10 @@ d2 <- covid_sf %>%
 d1 + d2
 ```
 
-<!-- ```{r warning=F, message=F, echo=F} -->
-<!-- d1_2 <- d1 + d2 -->
-<!-- learn::save_and_use_widget(d1_2, "d1_2.html") -->
-<!-- ``` -->
+<!--html_preserve-->
+<iframe src="widgets/d1_2.html" width="100%" height="500px">
+</iframe>
+<!--/html_preserve-->
 
 **Composición**
 
@@ -1457,7 +1448,7 @@ covid_sf %>%
   theme_void()
 ```
 
-![](practical-spatial-analysis-spanish_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
+![](practical-spatial-analysis-spanish_files/figure-gfm/unnamed-chunk-32-1.png)<!-- -->
 
 > Otro paquete importante de revisar para la representación de
 > estructuras espaciales es:
@@ -1511,11 +1502,10 @@ densidad_raster_cov %>%
   mapview()
 ```
 
-<!-- ```{r,message=F,warning=F} -->
-<!-- densidad <- densidad_raster_cov %>%  -->
-<!--   mapview() -->
-<!-- learn::save_and_use_widget(densidad, "densidad.html") -->
-<!-- ``` -->
+<!--html_preserve-->
+<iframe src="widgets/densidad.html" width="100%" height="500px">
+</iframe>
+<!--/html_preserve-->
 
 ## Detección de clústers
 
@@ -1751,7 +1741,7 @@ covid_sf_lisa %>%
   theme_bw()
 ```
 
-![](practical-spatial-analysis-spanish_files/figure-gfm/unnamed-chunk-43-1.png)<!-- -->
+![](practical-spatial-analysis-spanish_files/figure-gfm/unnamed-chunk-50-1.png)<!-- -->
 
 Se puede visualizar que en la zona central y sur de lima la existencia
 de **clústers** espaciales de alta y baja concentración de casos

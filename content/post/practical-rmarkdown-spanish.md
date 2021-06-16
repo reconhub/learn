@@ -3,7 +3,7 @@ title: "Taller R Markdown"
 authors: ["Carlos Javier Rincon"]
 categories: ["practicals"]
 topics: ["Reproducibilidad","R","R Markdown","Spanish"]
-date: 2021-05-27
+date: '2019-06-01'
 image: img/highres/IR.jpg
 showonlyimage: yes
 bibliography: practical-rmarkdown-spanish.bib
@@ -333,7 +333,7 @@ Markdown, e ir *“tejiendo”* su documento.
 
 Primero, obtengamos las primeras 20 localizaciones con el mayor número
 de casos de covid a la fecha de descargue del archivo (es decir hoy:
-2021-06-15).
+2021-06-16).
 
 ``` r
 library(tidyverse)
@@ -348,26 +348,26 @@ B<-A[1:20,];B
 ## # A tibble: 20 x 2
 ##    location           casos
 ##    <chr>              <dbl>
-##  1 World          175793316
-##  2 Asia            52825711
-##  3 Europe          47846260
-##  4 North America   39277661
-##  5 United States   33474691
-##  6 European Union  32873399
-##  7 South America   30734455
-##  8 India           29570881
-##  9 Brazil          17452612
-## 10 France           6151679
-## 11 Russia           5162049
-## 12 Africa           5057604
-## 13 United Kingdom   4589400
-## 14 Turkey           4512848
-## 15 Italy            4245779
-## 16 Argentina        4145482
-## 17 Colombia         3777600
-## 18 Spain            3741767
-## 19 Germany          3724168
-## 20 Iran             3039432
+##  1 World          176168718
+##  2 Asia            52965244
+##  3 Europe          47885988
+##  4 North America   39303369
+##  5 United States   33486037
+##  6 European Union  32889091
+##  7 South America   30885017
+##  8 India           29633105
+##  9 Brazil          17533221
+## 10 France           6154922
+## 11 Russia           5176051
+## 12 Africa           5077344
+## 13 United Kingdom   4596994
+## 14 Turkey           4518803
+## 15 Italy            4247032
+## 16 Argentina        4172742
+## 17 Colombia         3802052
+## 18 Spain            3745199
+## 19 Germany          3725328
+## 20 Iran             3049648
 ```
 
 Se puede utilizar la función `ktable` del paquete `knitr` (Xie \[aut et
@@ -381,26 +381,26 @@ kable(B, caption = "Tabla usando kable")
 
 | location       |     casos |
 |:---------------|----------:|
-| World          | 175793316 |
-| Asia           |  52825711 |
-| Europe         |  47846260 |
-| North America  |  39277661 |
-| United States  |  33474691 |
-| European Union |  32873399 |
-| South America  |  30734455 |
-| India          |  29570881 |
-| Brazil         |  17452612 |
-| France         |   6151679 |
-| Russia         |   5162049 |
-| Africa         |   5057604 |
-| United Kingdom |   4589400 |
-| Turkey         |   4512848 |
-| Italy          |   4245779 |
-| Argentina      |   4145482 |
-| Colombia       |   3777600 |
-| Spain          |   3741767 |
-| Germany        |   3724168 |
-| Iran           |   3039432 |
+| World          | 176168718 |
+| Asia           |  52965244 |
+| Europe         |  47885988 |
+| North America  |  39303369 |
+| United States  |  33486037 |
+| European Union |  32889091 |
+| South America  |  30885017 |
+| India          |  29633105 |
+| Brazil         |  17533221 |
+| France         |   6154922 |
+| Russia         |   5176051 |
+| Africa         |   5077344 |
+| United Kingdom |   4596994 |
+| Turkey         |   4518803 |
+| Italy          |   4247032 |
+| Argentina      |   4172742 |
+| Colombia       |   3802052 |
+| Spain          |   3745199 |
+| Germany        |   3725328 |
+| Iran           |   3049648 |
 
 Tabla usando kable
 

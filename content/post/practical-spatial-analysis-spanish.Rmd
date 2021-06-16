@@ -3,7 +3,7 @@ title: "Visualización y Análisis de datos espaciales en salud pública"
 authors: ["Gabriel Carrasco-Escobar", "Antony Barja", "Jesus Quispe"]
 categories: ["practicals"]
 topics: ["spatial analysis", "COVID19", "sf", "clustering", "Spanish"]
-date: '2021-06-09'
+date: '2019-06-01'
 image: img/highres/spat-cover.png
 slug: spatial-analysis-1-spanish
 showonlyimage: yes
@@ -249,15 +249,15 @@ m_p <- covid_p %>%
 m_p
 ```
 
-<!-- ```{r warning=F, message=F, echo=F} -->
-<!-- m_p <- covid_p %>%  -->
-<!--   filter(FECHA_RESULTADO == "2020-12-10") %>% -->
-<!--   mapview(layer.name = "puntos") -->
+```{r warning=F, message=F, echo=F}
+m_p1 <- covid_p %>% 
+  filter(FECHA_RESULTADO == "2020-12-10") %>%
+  mapview(layer.name = "puntos")
 
-<!-- # m_p -->
+m_p <- m_p1@map
 
-<!-- learn::save_and_use_widget(m_p, "m_p.html") -->
-<!-- ``` -->
+learn::save_and_use_widget(m_p, "m_p.html")
+```
 
 ### Datos en polígonos
 
@@ -314,14 +314,15 @@ m_sf <- covid_sf %>%
 m_sf
 ```
 
-<!-- ```{r warning=F, message=F, echo=F} -->
-<!-- m_sf <- covid_sf %>%  -->
-<!--   filter(FECHA_RESULTADO == "2020-12-11") %>% -->
-<!--   mapview(layer.name = "distritos") -->
+```{r warning=F, message=F, echo=F}
+m_sf1 <- covid_sf %>% 
+  filter(FECHA_RESULTADO == "2020-12-11") %>%
+  mapview(layer.name = "distritos")
 
-<!-- # m_sf -->
-<!-- learn::save_and_use_widget(m_sf, "m_sf.html") -->
-<!-- ``` -->
+m_sf <- m_sf1@map
+
+learn::save_and_use_widget(m_sf, "m_sf.html")
+```
 
 ### Múltiples capas
 
@@ -342,7 +343,9 @@ m_p + m_sf
 ```
 
 <!-- ```{r warning=F, message=F, echo=F} -->
-<!-- m_p_sf <- m_p + m_sf -->
+<!-- m_p_sf1 <- m_p + m_sf -->
+
+<!-- m_p_sf <- m_p_sf1@map -->
 
 <!-- learn::save_and_use_widget(m_p_sf, "m_p_sf.html") -->
 <!-- ``` -->
@@ -375,13 +378,15 @@ covid_p %>%
   mapview(layer.name = "points", zcol = "SEXO", burst = T)
 ```
 
-<!-- ```{r warning=F, message=F, echo=F} -->
-<!-- m_uni <- covid_p %>%  -->
-<!--   filter(FECHA_RESULTADO == "2020-12-11") %>% -->
-<!--   mapview(layer.name = "points", zcol = "SEXO", burst = T) -->
+```{r warning=F, message=F, echo=F}
+m_uni1 <- covid_p %>% 
+  filter(FECHA_RESULTADO == "2020-12-11") %>%
+  mapview(layer.name = "points", zcol = "SEXO", burst = T)
 
-<!-- learn::save_and_use_widget(m_uni, "m_uni.html") -->
-<!-- ``` -->
+m_uni <- m_uni1@map
+
+learn::save_and_use_widget(m_uni, "m_uni.html")
+```
 
 **Dos o mas variable**
 
@@ -413,11 +418,13 @@ m2 <- covid_p %>%
 m1 + m2
 ```
 
-<!-- ```{r warning=F, message=F, echo=F} -->
-<!-- m1_2 <- m1 + m2 -->
+```{r warning=F, message=F, echo=F}
+m1_2_a <- m1 + m2
 
-<!-- learn::save_and_use_widget(m1_2, "m1_2.html") -->
-<!-- ``` -->
+m1_2 <- m1_2_a@map
+
+learn::save_and_use_widget(m1_2, "m1_2.html")
+```
 
 **Composición**
 
@@ -459,13 +466,15 @@ covid_sf %>%
   mapview(layer.name = "casos", zcol = "casos")
 ```
 
-<!-- ```{r warning=F, message=F, echo=F} -->
-<!-- m_casos <- covid_sf %>%  -->
-<!--   filter(FECHA_RESULTADO == "2020-12-11") %>% -->
-<!--   mapview(layer.name = "casos", zcol = "casos") -->
+```{r warning=F, message=F, echo=F}
+m_casos1 <- covid_sf %>% 
+  filter(FECHA_RESULTADO == "2020-12-11") %>%
+  mapview(layer.name = "casos", zcol = "casos")
 
-<!-- learn::save_and_use_widget(m_casos, "m_casos.html") -->
-<!-- ``` -->
+m_casos <- m_casos1@map
+
+learn::save_and_use_widget(m_casos, "m_casos.html")
+```
 
 **Dos o mas variable**
 
@@ -496,11 +505,13 @@ d2 <- covid_sf %>%
 d1 + d2
 ```
 
-<!-- ```{r warning=F, message=F, echo=F} -->
-<!-- d1_2 <- d1 + d2 -->
+```{r warning=F, message=F, echo=F}
+d1_2_a <- d1 + d2
 
-<!-- learn::save_and_use_widget(d1_2, "d1_2.html") -->
-<!-- ``` -->
+d1_2 <- d1_2_a@map
+
+learn::save_and_use_widget(d1_2, "d1_2.html")
+```
 
 **Composición**
 
@@ -557,12 +568,14 @@ densidad_raster_cov %>%
   mapview()
 ```
 
-<!-- ```{r,message=F,warning=F} -->
-<!-- densidad <- densidad_raster_cov %>%  -->
-<!--   mapview() -->
+```{r,message=F,warning=F, echo=F}
+densidad1 <- densidad_raster_cov %>% 
+  mapview()
 
-<!-- learn::save_and_use_widget(densidad, "densidad.html") -->
-<!-- ``` -->
+densidad <- densidad1@map
+
+learn::save_and_use_widget(densidad, "densidad.html")
+```
 
 ## Detección de clústers 
 
