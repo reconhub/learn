@@ -1242,11 +1242,10 @@ ggplot() +
 m_p + m_sf
 ```
 
-<!-- ```{r warning=F, message=F, echo=F} -->
-<!-- m_p_sf1 <- m_p + m_sf -->
-<!-- m_p_sf <- m_p_sf1@map -->
-<!-- learn::save_and_use_widget(m_p_sf, "m_p_sf.html") -->
-<!-- ``` -->
+<!--html_preserve-->
+<iframe src="widgets/m_p_sf.html" width="100%" height="500px">
+</iframe>
+<!--/html_preserve-->
 
 ## Visualización de datos espaciales
 
@@ -1272,7 +1271,7 @@ covid_p %>%
   facet_wrap(.~SEXO)
 ```
 
-![](practical-spatial-analysis-spanish_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+![](practical-spatial-analysis-spanish_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
 
 En el caso de la visualización dinámica con `mapview` el color se asigna
 con el argumento `zcol`. Usaremos el argumento `burst = T` para que cada
@@ -1306,7 +1305,7 @@ covid_p %>%
   guides(col = F)
 ```
 
-![](practical-spatial-analysis-spanish_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](practical-spatial-analysis-spanish_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
 
 `mapview` permite agrupar múltiples capas con los operadores `+` y `|`.
 Más detalles en la [documentación del
@@ -1315,11 +1314,11 @@ paquete](https://r-spatial.github.io/mapview/reference/ops.html).
 ``` r
 m1 <- covid_p %>%
   filter(FECHA_RESULTADO == "2020-04-11") %>%
-  mapview(zcol = "SEXO", burst = T)
+  mapview(zcol = "SEXO", layer.name = "2020-04-11 - SEXO")
 
 m2 <- covid_p %>%
   filter(FECHA_RESULTADO == "2020-12-11") %>%
-  mapview(zcol = "SEXO", burst = T)
+  mapview(zcol = "SEXO", layer.name = "2020-12-11 - SEXO")
 ```
 
 ``` r
@@ -1354,7 +1353,7 @@ covid_p %>%
   theme_bw()
 ```
 
-![](practical-spatial-analysis-spanish_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](practical-spatial-analysis-spanish_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
 
 ### Datos en polígonos
 
@@ -1377,7 +1376,7 @@ covid_sf %>%
   geom_sf(aes(fill = casos))
 ```
 
-![](practical-spatial-analysis-spanish_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
+![](practical-spatial-analysis-spanish_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
 
 En el caso de la visualización dinámica con `mapview` el relleno también
 se asigna con el argumento `zcol`.
@@ -1406,7 +1405,7 @@ covid_sf %>%
   facet_grid(.~FECHA_RESULTADO)
 ```
 
-![](practical-spatial-analysis-spanish_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
+![](practical-spatial-analysis-spanish_files/figure-gfm/unnamed-chunk-29-1.png)<!-- -->
 
 También podemos visualizar la distribución espacial de ambas fechas de
 forma dinámica.
@@ -1414,11 +1413,11 @@ forma dinámica.
 ``` r
 d1 <- covid_sf %>%
   filter(FECHA_RESULTADO == "2020-04-11") %>%
-  mapview(zcol = "casos")
+  mapview(zcol = "casos", layer.name = "2020-04-11 - casos")
 
 d2 <- covid_sf %>%
   filter(FECHA_RESULTADO == "2020-12-11") %>%
-  mapview(zcol = "casos")
+  mapview(zcol = "casos", layer.name = "2020-12-11 - casos")
 ```
 
 ``` r
@@ -1448,7 +1447,7 @@ covid_sf %>%
   theme_void()
 ```
 
-![](practical-spatial-analysis-spanish_files/figure-gfm/unnamed-chunk-32-1.png)<!-- -->
+![](practical-spatial-analysis-spanish_files/figure-gfm/unnamed-chunk-33-1.png)<!-- -->
 
 > Otro paquete importante de revisar para la representación de
 > estructuras espaciales es:
@@ -1741,7 +1740,7 @@ covid_sf_lisa %>%
   theme_bw()
 ```
 
-![](practical-spatial-analysis-spanish_files/figure-gfm/unnamed-chunk-50-1.png)<!-- -->
+![](practical-spatial-analysis-spanish_files/figure-gfm/unnamed-chunk-51-1.png)<!-- -->
 
 Se puede visualizar que en la zona central y sur de lima la existencia
 de **clústers** espaciales de alta y baja concentración de casos

@@ -342,13 +342,21 @@ ggplot() +
 m_p + m_sf
 ```
 
-<!-- ```{r warning=F, message=F, echo=F} -->
-<!-- m_p_sf1 <- m_p + m_sf -->
+```{r warning=F, message=F, echo=F}
+m_p1 <- covid_p %>% 
+  filter(FECHA_RESULTADO == "2020-12-10") %>%
+  mapview(layer.name = "puntos")
 
-<!-- m_p_sf <- m_p_sf1@map -->
+m_sf1 <- covid_sf %>% 
+  filter(FECHA_RESULTADO == "2020-12-11") %>%
+  mapview(layer.name = "distritos")
 
-<!-- learn::save_and_use_widget(m_p_sf, "m_p_sf.html") -->
-<!-- ``` -->
+m_p_sf1 <- m_p1 + m_sf1
+
+m_p_sf <- m_p_sf1@map
+
+learn::save_and_use_widget(m_p_sf, "m_p_sf.html")
+```
 
 ## Visualización de datos espaciales
 
@@ -407,11 +415,11 @@ covid_p %>%
 ```{r warning=F, message=F}
 m1 <- covid_p %>%
   filter(FECHA_RESULTADO == "2020-04-11") %>%
-  mapview(zcol = "SEXO", burst = T)
+  mapview(zcol = "SEXO", layer.name = "2020-04-11 - SEXO")
 
 m2 <- covid_p %>%
   filter(FECHA_RESULTADO == "2020-12-11") %>%
-  mapview(zcol = "SEXO", burst = T)
+  mapview(zcol = "SEXO", layer.name = "2020-12-11 - SEXO")
 ```
 
 ```{r eval=F}
@@ -494,11 +502,11 @@ También podemos visualizar la distribución espacial de ambas fechas de forma d
 ```{r warning=F, message=F}
 d1 <- covid_sf %>%
   filter(FECHA_RESULTADO == "2020-04-11") %>%
-  mapview(zcol = "casos")
+  mapview(zcol = "casos", layer.name = "2020-04-11 - casos")
 
 d2 <- covid_sf %>%
   filter(FECHA_RESULTADO == "2020-12-11") %>%
-  mapview(zcol = "casos")
+  mapview(zcol = "casos", layer.name = "2020-12-11 - casos")
 ```
 
 ```{r eval=F}
