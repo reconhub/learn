@@ -204,10 +204,10 @@ Se pueden construir tablas escribiendo uno a uno los valores en cada celda, así
 ```
 :Tabla 1. título
 
-|derecha|izquierda|centrada|
-|:---|---:|:---:|:---|
-|texto 1|23.5|28.6|na|
-|texto 2|65.4|-5.6|BOGOTA D.C.|
+|izquierda|derecha|centrada|
+|:---|---:|:---:|
+|texto 1|23.5|na|
+|texto 2|65.4|BOGOTA D.C.|
 |texto 3|$\bar{x}$|Cund.|
 ```
 

@@ -233,10 +233,10 @@ celda, así:
 
     :Tabla 1. título
 
-    |derecha|izquierda|centrada|
-    |:---|---:|:---:|:---|
-    |texto 1|23.5|28.6|na|
-    |texto 2|65.4|-5.6|BOGOTA D.C.|
+    |izquierda|derecha|centrada|
+    |:---|---:|:---:|
+    |texto 1|23.5|na|
+    |texto 2|65.4|BOGOTA D.C.|
     |texto 3|$\bar{x}$|Cund.|
 
 la ubicación de los : en la segunda línea de la tabla define la
@@ -333,7 +333,7 @@ Markdown, e ir *“tejiendo”* su documento.
 
 Primero, obtengamos las primeras 20 localizaciones con el mayor número
 de casos de covid a la fecha de descargue del archivo (es decir hoy:
-2021-06-16).
+2021-06-19).
 
 ``` r
 library(tidyverse)
@@ -348,26 +348,26 @@ B<-A[1:20,];B
 ## # A tibble: 20 x 2
 ##    location           casos
 ##    <chr>              <dbl>
-##  1 World          176168718
-##  2 Asia            52965244
-##  3 Europe          47885988
-##  4 North America   39303369
-##  5 United States   33486037
-##  6 European Union  32889091
-##  7 South America   30885017
-##  8 India           29633105
-##  9 Brazil          17533221
-## 10 France           6154922
-## 11 Russia           5176051
-## 12 Africa           5077344
-## 13 United Kingdom   4596994
-## 14 Turkey           4518803
-## 15 Italy            4247032
-## 16 Argentina        4172742
-## 17 Colombia         3802052
-## 18 Spain            3745199
-## 19 Germany          3725328
-## 20 Iran             3049648
+##  1 World          177350313
+##  2 Asia            53384818
+##  3 Europe          48012381
+##  4 North America   39373594
+##  5 United States   33516174
+##  6 European Union  32932975
+##  7 South America   31373932
+##  8 India           29823546
+##  9 Brazil          17801462
+## 10 France           6163315
+## 11 Russia           5220168
+## 12 Africa           5153347
+## 13 United Kingdom   4626915
+## 14 Turkey           4536503
+## 15 Italy            4250902
+## 16 Argentina        4242763
+## 17 Colombia         3888614
+## 18 Spain            3757442
+## 19 Germany          3728601
+## 20 Iran             3080526
 ```
 
 Se puede utilizar la función `ktable` del paquete `knitr` (Xie \[aut et
@@ -381,26 +381,26 @@ kable(B, caption = "Tabla usando kable")
 
 | location       |     casos |
 |:---------------|----------:|
-| World          | 176168718 |
-| Asia           |  52965244 |
-| Europe         |  47885988 |
-| North America  |  39303369 |
-| United States  |  33486037 |
-| European Union |  32889091 |
-| South America  |  30885017 |
-| India          |  29633105 |
-| Brazil         |  17533221 |
-| France         |   6154922 |
-| Russia         |   5176051 |
-| Africa         |   5077344 |
-| United Kingdom |   4596994 |
-| Turkey         |   4518803 |
-| Italy          |   4247032 |
-| Argentina      |   4172742 |
-| Colombia       |   3802052 |
-| Spain          |   3745199 |
-| Germany        |   3725328 |
-| Iran           |   3049648 |
+| World          | 177350313 |
+| Asia           |  53384818 |
+| Europe         |  48012381 |
+| North America  |  39373594 |
+| United States  |  33516174 |
+| European Union |  32932975 |
+| South America  |  31373932 |
+| India          |  29823546 |
+| Brazil         |  17801462 |
+| France         |   6163315 |
+| Russia         |   5220168 |
+| Africa         |   5153347 |
+| United Kingdom |   4626915 |
+| Turkey         |   4536503 |
+| Italy          |   4250902 |
+| Argentina      |   4242763 |
+| Colombia       |   3888614 |
+| Spain          |   3757442 |
+| Germany        |   3728601 |
+| Iran           |   3080526 |
 
 Tabla usando kable
 
