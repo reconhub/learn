@@ -15,7 +15,7 @@ output:
     variant: gfm
     preserve_yaml: yes
 params:
-  full_version: false
+  full_version: true
 ---
 
 ## Introducción
@@ -217,9 +217,31 @@ summary(as.numeric(linelist_clean$date_of_hospitalisation - linelist_clean$date_
     ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
     ##    0.00    1.00    2.00    3.53    5.00   22.00
 
+-   suponiendo que los casos solo se notifiquen durante la
+    hospitalización o después de ella, vemos que la hospitalización toma
+    en promedio 4 días, pero hay retrasos de hasta 22 días, por lo que
+    las demoras en la notificación pueden ser largas y es sensato asumir
+    que es probable que los datos de las últimas dos o tres semanas
+    estén incompletos.
+
+-   El crecimiento exponencial se observa solo hasta principios o
+    principios o mediados de junio
+
+-   Es probable que esto se deba a la demora entre el inicio y la
+    notificación. Esto significa que los casos de inicio más reciente no
+    se han informado y no aparecen en la base de datos de casos
+
+-   Cuando solo se mira la epicurva puede resultar en una interpretación
+    potencialmente errónea de las tendencias recientes en la incidencia.
+
 ``` r
 # cuántas semanas debe descartar al final de la epicurva 
 n_weeks_to_discard <- 
+```
+
+``` r
+# cuántas semanas debe descartar al final de la epicurva
+n_weeks_to_discard <- 2
 ```
 
 ``` r
@@ -238,6 +260,11 @@ i_daily_trunc <- subset(i_daily,
 
 Vuelva a montar y a graficar el modelo logarítmico lineal, pero
 utilizando los datos truncados `i_weekly_trunc`.
+
+``` r
+f <- incidence::fit(i_weekly_trunc)
+f
+```
 
     ## <incidence_fit object>
     ## 
@@ -259,6 +286,10 @@ utilizando los datos truncados `i_weekly_trunc`.
     ## [1,] 10.82034 22.06609
     ## 
     ##   $pred: data.frame of incidence predictions (11 rows, 5 columns)
+
+``` r
+plot(i_weekly_trunc, fit = f)
+```
 
 ![](practical-real-time-response-2-spanish_files/figure-gfm/fit_truncated-1.png)<!-- -->
 
@@ -309,6 +340,18 @@ temprana de una epidemia, se debe tener cuidado de ajustar solo hasta el
 punto en que haya un crecimiento epidémico. Tenga en cuenta que puede
 resultar difícil definir este punto.
 
+-   El modelo log-lineal no se puede aplicar fácilmente si hay días sin
+    casos, ya que no puede tomar el registro de 0). Aquí hemos agregado
+    los datos semanales para evitar este problema y hemos establecido
+    semanas con 0 casos como NA, por lo que se ignoran en el análisis.
+    N - Aquí tuvimos bastantes semanas de datos con los que trabajar,
+    pero al principio de un brote, un análisis similar puede llevar a
+    estimaciones muy inciertas de la tasa de crecimiento y el tiempo de
+    duplicación debido al tamaño pequeño de la muestra. n - Si los datos
+    sobre las demoras en los informes hubieran estado disponibles, se
+    podría haber tomado una decisión más informada sobre el número de
+    semanas / días para descartar.
+
 ## Seguimiento de contactos: vigile los contactos
 
 El rastreo de contactos es uno de los pilares de la respuesta a un brote
@@ -326,6 +369,14 @@ Usando la función `make_epicontacts` en el paquete `epicontacts`
 paquete, cree un nuevo objeto `epicontacts` llamado `epi_contacts` .
 Asegúrese de comprobar los nombres de las columnas de los argumentos
 relevantes " to " y “from” .
+
+``` r
+epi_contacts <- make_epicontacts(linelist = linelist, contacts = contacts, 
+                                 id = "case_id", # nombre del identificador en la base de datos de casos
+                                 from = "infector", # nombre de la columna 'from' en los contactos
+                                 to = "case_id",  # nombre de la columna 'to' en los contactos
+                                 directed = TRUE)
+```
 
 ``` r
 epi_contacts
@@ -402,6 +453,10 @@ p
 Usando la función `match` ( ver`? Match` ) verifique que los contactos
 visualizados sean realmente casos.
 
+``` r
+match(contacts$case_id, linelist$case_id)
+```
+
     ##  [1]   2   5   8  14  15  16  18  20  21  22  24  25  26  27  30  33  37  38  40
     ## [20]  46  48  51  58  59  62  64  68  69  70  71  73  75  79  84  86  88  90  94
     ## [39]  95  96  98 103 108 115 116 122 126 131 133 142 145 146 147 148 153 155 157
@@ -410,8 +465,13 @@ visualizados sean realmente casos.
 Una vez se asegure de que todos estos son casos, mire la red:
 
 -   ¿Parece que hay superpropagación (transmisión heterogénea)?
+
 -   Al observar el género de los casos, ¿puede deducir algo de esto?
     ¿Existen diferencias visibles por género?
+
+-   Parece haber una superpropagación, y algunos casos provienen de un
+    solo caso (11f8ea infecta a otros 5 individuos. No parece haber
+    diferencias inmediatas entre el género de los casos
 
 ## Estimación de la transmisibilidad (`$R$`)
 
@@ -547,6 +607,18 @@ occidental (Equipo de respuesta al ébola de la OMS (2014) NEJM 371:
 1481–1495) con una media de 15,3 días y una desviación estándar de 9,3
 días?
 
+-   distribución sesgada con una media mucho más corta que la estimada
+    en NEJM 371:1481–1495
+-   la gran mayoría de las parejas tienen un SI &lt;15 días
+-   los casos pueden recordar con mayor precisión sus exposiciones
+    recientes, lo que puede llevar a una subestimación del intervalo de
+    serie
+-   al estimar el intervalo de serie en tiempo real, es posible que aún
+    no se hayan observado intervalos de serie más largos debido a la
+    censura por la derecha
+-   esta estimación se basa en pocas observaciones, por lo que hay
+    incertidumbre en las estimaciones del intervalo de serie
+
 ### Estimación del número de reproducción
 
 Ahora que tenemos estimaciones del intervalo de la serie, podemos usar
@@ -582,6 +654,11 @@ R <- # use estimate_R usando el método = "parametric_si"
 plot(R, legend = FALSE)  
 ```
 
+``` r
+R <- estimate_R(i_daily_trunc, method = "parametric_si", config = config)
+plot(R, legend = FALSE)
+```
+
 ![](practical-real-time-response-2-spanish_files/figure-gfm/calc_R-1.png)<!-- -->
 
 Extraiga la mediana y los intervalos de credibilidad del 95% (95% CrI)
@@ -605,6 +682,12 @@ Interprete estos resultados: ¿qué opina del número de reproducción? ¿Qué
 refleja? Con base en la última parte de la epicurva, algunos colegas
 sugieren que la incidencia está disminuyendo y que el brote puede estar
 bajo control. ¿Qué opina de esto?
+
+-   Tenga en cuenta que estos resultados dependen en gran medida del
+    intervalo de serie estimado; un SI medio más alto conducirá a
+    estimaciones de R más altas.
+-   Los resultados también serán sensibles al número de puntos de datos
+    descartados hacia el final de los datos disponibles.
 
 Tenga en cuenta que podría haber estimado R0 directamente a partir de la
 tasa de crecimiento y el intervalo de serie, utilizando la fórmula
@@ -642,7 +725,7 @@ R_median_from_growth_rate <- median(R_sample_from_growth_rate)
 R_median_from_growth_rate # compare with R_median
 ```
 
-    ## [1] 1.414806
+    ## [1] 1.418092
 
 ``` r
 # ¿ Cuál es el IC del 95%?
@@ -651,7 +734,7 @@ R_CI_from_growth_rate # compare con R_CrI
 ```
 
     ##     2.5%    97.5% 
-    ## 1.257963 1.580479
+    ## 1.266280 1.581886
 
 Tenga en cuenta que las estimaciones anteriores son ligeramente
 diferentes de las obtenidas utilizando el modelo de proceso de
@@ -693,18 +776,26 @@ as.matrix(small_proj)
 ```
 
     ##            [,1] [,2] [,3] [,4] [,5]
-    ## 2014-06-18    5    3    4    5    4
-    ## 2014-06-19    3    1    4    4    4
-    ## 2014-06-20    2    2    3    4    3
-    ## 2014-06-21   10    6    6    9    8
-    ## 2014-06-22    5    6    6    7    2
-    ## 2014-06-23    5    7    3    3    4
-    ## 2014-06-24    5    6   10    4    5
-    ## 2014-06-25    6    1    7    3    5
-    ## 2014-06-26    6    4    6    1    8
-    ## 2014-06-27    6    3    3    5    4
+    ## 2014-06-18    5    3    8    4    4
+    ## 2014-06-19    2    4    6    4    0
+    ## 2014-06-20    6    3    5    5    2
+    ## 2014-06-21    3    1    6    2    6
+    ## 2014-06-22    5    6    7    7    1
+    ## 2014-06-23    4    2   10    3    6
+    ## 2014-06-24    4    8    6    7    1
+    ## 2014-06-25    6    5   13    3    3
+    ## 2014-06-26    3    5    4    2    2
+    ## 2014-06-27    2    3    8    1    2
     ## attr(,"class")
     ## [1] "matrix" "array"
+
+-   Puede usar un solo valor R para toda la trayectoria (R\_fix\_within
+    = TRUE) o volver a muestrear R en cada paso de tiempo
+    (R\_fix\_within = FALSE).
+-   `R_fix_within = TRUE` significa que la trayectoria está asociada con
+    un solo valor R y es más fácil de entender
+-   Esto también da valores más extremos de R y proyecciones más
+    conservadoras
 
 Usando el mismo principio, genere 1,000 trayectorias durante las
 próximas 2 semanas, usando un rango de valores plausibles de `$R$`.  
@@ -734,6 +825,15 @@ abline(v = R_CrI, col = "red", lty = 2) # muestra el 95% de CrI de R como línea
 Almacene los resultados de sus nuevas proyecciones en un objeto llamado
 `proj`.
 
+``` r
+proj <- project(x = i_daily_trunc, 
+                R = R_sample, # ahora usando una muestra de valores R
+                si = si, 
+                n_sim = 1000, 
+                n_days = 14, # proyecto durante 2 semanas
+                R_fix_within = TRUE)
+```
+
 Puede visualizar las proyecciones de la siguiente manera:
 
 ``` r
@@ -752,35 +852,35 @@ apply(proj, 1, summary)
 ```
 
     ##         2014-06-18 2014-06-19 2014-06-20 2014-06-21 2014-06-22 2014-06-23
-    ## Min.         0.000      0.000      0.000      0.000      0.000      0.000
-    ## 1st Qu.      3.000      3.000      3.000      3.000      3.000      3.000
-    ## Median       4.000      4.000      4.000      4.000      4.000      4.000
-    ## Mean         3.962      4.019      4.123      4.277      4.447      4.517
-    ## 3rd Qu.      5.000      5.000      5.000      6.000      6.000      6.000
-    ## Max.        12.000     12.000     13.000     14.000     13.000     14.000
+    ## Min.          0.00      0.000      0.000      0.000       0.00      0.000
+    ## 1st Qu.       2.00      2.000      3.000      3.000       3.00      3.000
+    ## Median        4.00      4.000      4.000      4.000       4.00      4.000
+    ## Mean          3.86      3.981      4.154      4.407       4.46      4.701
+    ## 3rd Qu.       5.00      5.000      5.000      6.000       6.00      6.000
+    ## Max.         13.00     11.000     12.000     12.000      13.00     13.000
     ##         2014-06-24 2014-06-25 2014-06-26 2014-06-27 2014-06-28 2014-06-29
     ## Min.         0.000      0.000      0.000      0.000      0.000      0.000
-    ## 1st Qu.      3.000      3.000      3.000      3.000      3.000      3.000
-    ## Median       4.000      5.000      5.000      5.000      5.000      5.000
-    ## Mean         4.708      4.834      4.902      5.192      5.212      5.429
-    ## 3rd Qu.      6.000      6.000      6.000      7.000      7.000      7.000
-    ## Max.        14.000     12.000     15.000     15.000     15.000     20.000
+    ## 1st Qu.      3.000      3.000      3.000      3.000      3.000      4.000
+    ## Median       5.000      5.000      5.000      5.000      5.000      5.000
+    ## Mean         4.707      4.751      4.989      5.096      5.253      5.506
+    ## 3rd Qu.      6.000      6.000      7.000      7.000      7.000      7.000
+    ## Max.        17.000     15.000     16.000     15.000     18.000     19.000
     ##         2014-06-30 2014-07-01
     ## Min.         0.000      0.000
-    ## 1st Qu.      4.000      3.000
-    ## Median       5.000      5.000
-    ## Mean         5.661      5.614
-    ## 3rd Qu.      7.000      7.000
-    ## Max.        22.000     17.000
+    ## 1st Qu.      4.000      4.000
+    ## Median       5.000      6.000
+    ## Mean         5.762      5.754
+    ## 3rd Qu.      8.000      8.000
+    ## Max.        18.000     17.000
 
 ``` r
 apply(proj, 1, function(x) mean(x > 0)) # proporción de trayectorias con al menos
 ```
 
     ## 2014-06-18 2014-06-19 2014-06-20 2014-06-21 2014-06-22 2014-06-23 2014-06-24 
-    ##      0.983      0.974      0.980      0.986      0.986      0.988      0.986 
+    ##      0.982      0.985      0.984      0.986      0.987      0.989      0.986 
     ## 2014-06-25 2014-06-26 2014-06-27 2014-06-28 2014-06-29 2014-06-30 2014-07-01 
-    ##      0.992      0.988      0.983      0.991      0.987      0.991      0.992
+    ##      0.983      0.987      0.991      0.986      0.992      0.993      0.992
 
 ``` r
                                         # un caso en cada día contemplado
@@ -788,44 +888,63 @@ apply(proj, 1, mean) # número medio diario de casos
 ```
 
     ## 2014-06-18 2014-06-19 2014-06-20 2014-06-21 2014-06-22 2014-06-23 2014-06-24 
-    ##      3.962      4.019      4.123      4.277      4.447      4.517      4.708 
+    ##      3.860      3.981      4.154      4.407      4.460      4.701      4.707 
     ## 2014-06-25 2014-06-26 2014-06-27 2014-06-28 2014-06-29 2014-06-30 2014-07-01 
-    ##      4.834      4.902      5.192      5.212      5.429      5.661      5.614
+    ##      4.751      4.989      5.096      5.253      5.506      5.762      5.754
 
 ``` r
 apply(apply(proj, 2, cumsum), 1, summary) # muestra la proyección del número acumulado de casos en
 ```
 
     ##         2014-06-18 2014-06-19 2014-06-20 2014-06-21 2014-06-22 2014-06-23
-    ## Min.         0.000      1.000      3.000      4.000      5.000      7.000
-    ## 1st Qu.      3.000      6.000      9.000     13.000     17.000     21.000
-    ## Median       4.000      8.000     12.000     16.000     20.000     25.000
-    ## Mean         3.962      7.981     12.104     16.381     20.828     25.345
-    ## 3rd Qu.      5.000     10.000     14.250     19.000     24.000     29.000
-    ## Max.        12.000     19.000     27.000     34.000     44.000     55.000
+    ## Min.          0.00      0.000      3.000      5.000      8.000     10.000
+    ## 1st Qu.       2.00      6.000     10.000     13.000     17.000     21.000
+    ## Median        4.00      8.000     12.000     16.000     21.000     25.000
+    ## Mean          3.86      7.841     11.995     16.402     20.862     25.563
+    ## 3rd Qu.       5.00     10.000     14.000     19.000     24.000     30.000
+    ## Max.         13.00     18.000     25.000     33.000     44.000     54.000
     ##         2014-06-24 2014-06-25 2014-06-26 2014-06-27 2014-06-28 2014-06-29
-    ## Min.        10.000     13.000     14.000     15.000     20.000     22.000
-    ## 1st Qu.     25.000     29.000     33.000     37.000     41.000     45.000
-    ## Median      29.000     34.000     39.000     43.000     49.000     54.000
-    ## Mean        30.053     34.887     39.789     44.981     50.193     55.622
-    ## 3rd Qu.     34.250     40.000     45.000     51.250     57.000     64.000
-    ## Max.        64.000     73.000     84.000     95.000    106.000    121.000
+    ## Min.         12.00     12.000      15.00     16.000     19.000     20.000
+    ## 1st Qu.      25.00     29.000      32.00     37.000     41.000     46.000
+    ## Median       30.00     34.000      39.00     44.000     49.000     55.000
+    ## Mean         30.27     35.021      40.01     45.106     50.359     55.865
+    ## 3rd Qu.      35.00     41.000      47.00     53.000     58.000     65.000
+    ## Max.         61.00     73.000      89.00    102.000    120.000    139.000
     ##         2014-06-30 2014-07-01
-    ## Min.        22.000     23.000
+    ## Min.        25.000     25.000
     ## 1st Qu.     50.000     55.000
-    ## Median      59.000     65.000
-    ## Mean        61.283     66.897
-    ## 3rd Qu.     70.000     77.000
-    ## Max.       143.000    153.000
+    ## Median      60.000     66.000
+    ## Mean        61.627     67.381
+    ## 3rd Qu.     72.000     79.000
+    ## Max.       155.000    168.000
 
 ``` r
                                           # las próximas dos semanas
 ```
 
+-   `apply(proj, 1, summary)` muestra un resumen de la incidencia en
+    cada día
+-   `apply(proj, 1, function(x) mean(x > 0))` muestra la proporción de
+    trayectorias con al menos un caso en cada día contemplado
+-   `apply(proj, 1, mean)` muestra el número medio diario de casos
+-   `apply(apply(proj, 2, cumsum), 1, summary)` muestra la proyección
+    del número adicional de casos acumulados en las próximas dos semanas
+
 Según estos resultados, ¿cuáles son las posibilidades de que aparezcan
 más casos en un futuro próximo? ¿Se está controlando este brote?
 ¿Recomendaría ampliar o reducir la respuesta? ¿Es esto consistente con
 su estimación de `$R$`?
+
+-   la incertidumbre es amplia y se hace más amplia cuanto más avance en
+    el futuro.
+-   la tendencia central sugiere un número creciente de casos
+-   esto se basa en la suposición de que la transmisibilidad se ha
+    mantenido constante durante el transcurso del brote hasta ahora y
+    permanecerá constante en el futuro
+-   todo esto se basa en nuestra distribución estimada de intervalo de
+    serie - un SI medio más alto conduciría a estimaciones de R más
+    grandes y, por lo tanto, a proyecciones de incidencia más
+    pesimistas.
 
 ## ¡Pare!
 
@@ -998,8 +1117,20 @@ tail(Rt$R[, c("t_start", "t_end", "Median(R)",
              "Quantile.0.025(R)", "Quantile.0.975(R)")])
 ```
 
+``` r
+Rt <- estimate_R(incid = i_daily_trunc,      # objeto de incidencia
+                 method = "parametric_si",   # use intervalo de serie paramétrico
+                 config = config)            # configuración especificada arriba
+```
+
     ## Default config will estimate R on weekly sliding windows.
     ##     To change this change the t_start and t_end arguments.
+
+``` r
+# mire las estimaciones de Rt más recientes:
+tail(Rt$R[, c("t_start", "t_end", "Median(R)", 
+             "Quantile.0.025(R)", "Quantile.0.975(R)")])
+```
 
     ##    t_start t_end Median(R) Quantile.0.025(R) Quantile.0.975(R)
     ## 60      61    67 1.2417304         0.8144152          1.797603
@@ -1035,11 +1166,22 @@ tail(Rt_whole_incid$R[, c("t_start", "t_end",
                          "Median(R)", "Quantile.0.025(R)", "Quantile.0.975(R)")])  
 ```
 
+``` r
+Rt_whole_incid <- estimate_R(incid = i_daily, 
+                             method = "parametric_si", 
+                             config = config) 
+```
+
     ## Default config will estimate R on weekly sliding windows.
     ##     To change this change the t_start and t_end arguments.
 
     ## Warning in estimate_R_func(incid = incid, method = method, si_sample = si_sample, : You're estimating R too early in the epidemic to get the desired
     ##             posterior CV.
+
+``` r
+tail(Rt_whole_incid$R[, c("t_start", "t_end", 
+                         "Median(R)", "Quantile.0.025(R)", "Quantile.0.975(R)")])  
+```
 
     ##    t_start t_end Median(R) Quantile.0.025(R) Quantile.0.975(R)
     ## 74      75    81 1.2330741         0.8412787         1.7310657
@@ -1048,6 +1190,13 @@ tail(Rt_whole_incid$R[, c("t_start", "t_end",
     ## 77      78    84 0.8202251         0.5158976         1.2258508
     ## 78      79    85 0.7452526         0.4566772         1.1356909
     ## 79      80    86 0.5146158         0.2811874         0.8515131
+
+``` r
+# lo anterior infiere incorrectamente que la transmisibilidad reciente es <1
+```
+
+-   lo anterior asume un R constante dentro de una ventana de tiempo
+    deslizante
 
 ## Guardar datos y salidas
 
