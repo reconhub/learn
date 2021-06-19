@@ -46,8 +46,8 @@ Al final de esta práctica, usted será capaz de:
 -   Estimar la tasa de letalidad (CFR) ([parte
     1](./real-time-response-1-spanish.html))
 
--   Calcular y graficar la incidencia de la lista de líneas ([parte
-    1](./real-time-response-1-spanish.html))
+-   Calcular y graficar la incidencia de la base de datos de casos
+    ([parte 1](./real-time-response-1-spanish.html))
 
 -   Estimar e interpretar la tasa de crecimiento y el tiempo de
     duplicación de la epidemia ([parte 2](./real-time-response-2.html))
@@ -117,11 +117,12 @@ library(here)
 
 ## Datos iniciales (lectura de datos en R)
 
-Se le ha proporcionado la siguiente lista de líneas y datos de contacto:
+Se le ha proporcionado la siguiente base de datos de casos (*linelist*
+en inglés) y datos de contacto:
 
 [linelist\_20140701.xlsx](https://github.com/reconhub/learn/raw/master/static/data/linelist_20140701.xlsx):
-una lista de líneas que contiene información de casos hasta el 1 de
-julio de 2014; y
+una base de datos de casos que contiene información de casos hasta el 1
+de julio de 2014; y
 
 [contact\_20140701.xlsx](https://github.com/reconhub/learn/raw/master/static/data/contacts_20140701.xlsx):
 una lista de contactos reportados por los casos hasta el 1 de julio de
@@ -147,13 +148,13 @@ song-and-dance to appease the directory gods.
 -->
 
 ``` r
-linelist <- read_excel(here("data/linelist_20140701.xlsx"), na = c("", "NA"))
+linelist <- read_excel("data/linelist_20140701.xlsx", na = c("", "NA"))
 ```
 
 Tómese su tiempo para mirar los datos y la estructura aquí.
 
--   ¿Son los datos y el formato similares a las listas de líneas que ha
-    visto en el pasado?
+-   ¿Son los datos y el formato similares a bases de datos de casos que
+    ha visto en el pasado?
 -   Si fuera parte del equipo de investigación de un brote, ¿qué otra
     información le gustaría recopilar?
 
@@ -259,7 +260,7 @@ linelist[mistakes, ]
     ## # ... with 6 more variables: date_of_outcome <date>, outcome <chr>,
     ## #   gender <chr>, hospital <chr>, lon <dbl>, lat <dbl>
 
-Guarde su lista de líneas “limpia” como un objeto nuevo:
+Guarde su base de datos de casos “limpia” como un objeto nuevo:
 `linelist_clean`
 
 ``` r
@@ -329,10 +330,10 @@ plot(i_daily, border = "black")
 Es posible que observe que las fechas de incidencia `i_daily$dates` se
 detienen en la última fecha en la que tenemos datos sobre la fecha de
 inicio de los síntomas (29 de junio de 2014). Sin embargo, una
-inspección minuciosa de la lista de líneas muestra que la última fecha
-de la lista de líneas (de cualquier entrada) es, de hecho, un poco
-posterior (1 de julio de 2014). Puede usar el argumento `last_date` en
-la función `incidence` para cambiar esto.
+inspección minuciosa de la base de datos de casos muestra que la última
+fecha (de cualquier entrada) es, de hecho, un poco posterior (1 de julio
+de 2014). Puede usar el argumento `last_date` en la función `incidence`
+para cambiar esto.
 
     ## <incidence object>
     ## [166 cases from days 2014-04-07 to 2014-07-01]
@@ -380,12 +381,12 @@ Este es el final de la práctica de la [parte
 2](./real-time-response-2.html), deberá guardar los siguientes objetos:
 
 ``` r
-dir.create(here("data/clean")) # cree un directorio de datos limpio si no existe
-saveRDS(i_daily, here("data/clean/i_daily.rds"))
-saveRDS(i_weekly, here("data/clean/i_weekly.rds"))
-saveRDS(linelist, here("data/clean/linelist.rds"))
-saveRDS(linelist_clean, here("data/clean/linelist_clean.rds"))
-saveRDS(contacts, here("data/clean/contacts.rds"))
+dir.create("data/clean") # cree un directorio de datos limpio si no existe
+saveRDS(i_daily, "data/clean/i_daily.rds")
+saveRDS(i_weekly, "data/clean/i_weekly.rds")
+saveRDS(linelist, "data/clean/linelist.rds")
+saveRDS(linelist_clean, "data/clean/linelist_clean.rds")
+saveRDS(contacts, "data/clean/contacts.rds")
 ```
 
 ## Sobre este documento

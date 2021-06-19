@@ -113,11 +113,11 @@ contacts <- readRDS(here("static/data/clean/contacts.rds"))
 ```
 
 ```{r read_data, eval = FALSE}
-i_daily <- readRDS(here("data/clean/i_daily.rds"))
-i_weekly <- readRDS(here("data/clean/i_weekly.rds"))
-linelist <- readRDS(here("data/clean/linelist.rds"))
-linelist_clean <- readRDS(here("data/clean/linelist_clean.rds"))
-contacts <- readRDS(here("data/clean/contacts.rds"))
+i_daily <- readRDS("data/clean/i_daily.rds")
+i_weekly <- readRDS("data/clean/i_weekly.rds")
+linelist <- readRDS("data/clean/linelist.rds")
+linelist_clean <- readRDS("data/clean/linelist_clean.rds")
+contacts <- readRDS("data/clean/contacts.rds")
 ```
 
 ## Estimación de la tasa de crecimiento mediante un modelo log-lineal
@@ -165,7 +165,7 @@ cat("- suponiendo que los casos solo se notifiquen durante la hospitalización o
 
 ```{r log_plot_snippet, echo = FALSE, results = render_snippet, eval = params$full_version}
 cat("- El crecimiento exponencial se observa solo hasta principios o principios o mediados de junio\n")  
-cat("- Es probable que esto se deba a la demora entre el inicio y la notificación. Esto significa que los casos de inicio más reciente no se han informado y no aparecen en la lista de líneas \n")  
+cat("- Es probable que esto se deba a la demora entre el inicio y la notificación. Esto significa que los casos de inicio más reciente no se han informado y no aparecen en la base de datos de casos \n")  
 cat("- Cuando solo se mira la epicurva puede resultar en una interpretación potencialmente errónea de las tendencias recientes en la incidencia.\n")  
 ```
 
@@ -232,14 +232,14 @@ cat("- Si los datos sobre las demoras en los informes hubieran estado disponible
  
 ## Seguimiento de contactos: vigile los contactos
 
-El rastreo de contactos es uno de los pilares de la respuesta a un brote de ébola. Esto implica identificar y hacer un seguimiento de las personas en riesgo que hayan tenido contacto con un caso conocido, es decir, que puedan haber sido infectadas. Para el ébola, los contactos se vigilan durante 21 días (el límite superior del período de incubación). Esto asegura que los contactos que se vuelven sintomáticos puedan aislarse rápidamente, reduciendo la posibilidad de una mayor transmisión. Para esto usamos la lista de líneas completa en lugar de `linelist_clean` donde descartamos las entradas con errores en las fechas, porque apesar del error el contacto aún puede ser válido.
+El rastreo de contactos es uno de los pilares de la respuesta a un brote de ébola. Esto implica identificar y hacer un seguimiento de las personas en riesgo que hayan tenido contacto con un caso conocido, es decir, que puedan haber sido infectadas. Para el ébola, los contactos se vigilan durante 21 días (el límite superior del período de incubación). Esto asegura que los contactos que se vuelven sintomáticos puedan aislarse rápidamente, reduciendo la posibilidad de una mayor transmisión. Para esto usamos la base de datos de casos completa en lugar de `linelist_clean` donde descartamos las entradas con errores en las fechas, porque apesar del error el contacto aún puede ser válido.
 
 Usando la función `make_epicontacts` en el paquete ` epicontacts` paquete, cree un nuevo objeto `epicontacts` llamado ` epi_contacts` . Asegúrese de comprobar los nombres de las columnas de los argumentos relevantes " to " y "from" .
 
 
 ```{r epicontacts, echo = params$full_version}
 epi_contacts <- make_epicontacts(linelist = linelist, contacts = contacts, 
-                                 id = "case_id", # nombre del identificador en la lista de líneas
+                                 id = "case_id", # nombre del identificador en la base de datos de casos
                                  from = "infector", # nombre de la columna 'from' en los contactos
                                  to = "case_id",  # nombre de la columna 'to' en los contactos
                                  directed = TRUE)
@@ -630,10 +630,10 @@ saveRDS(si, here("static/data/clean/si.rds"))
 ```
 
 ```{r save_data, eval = FALSE}
-saveRDS(linelist, here("data/clean/linelist.rds"))
-saveRDS(linelist_clean, here("data/clean/linelist_clean.rds"))
-saveRDS(epi_contacts, here("data/clean/epi_contacts.rds"))
-saveRDS(si, here("data/clean/si.rds"))
+saveRDS(linelist, "data/clean/linelist.rds")
+saveRDS(linelist_clean, "data/clean/linelist_clean.rds")
+saveRDS(epi_contacts, "data/clean/epi_contacts.rds")
+saveRDS(si, "data/clean/si.rds")
 ```
 
 ## Sobre este documento

@@ -119,11 +119,11 @@ song-and-dance to appease the directory gods.
 -->
 
 ``` r
-i_daily <- readRDS(here("data/clean/i_daily.rds"))
-i_weekly <- readRDS(here("data/clean/i_weekly.rds"))
-linelist <- readRDS(here("data/clean/linelist.rds"))
-linelist_clean <- readRDS(here("data/clean/linelist_clean.rds"))
-contacts <- readRDS(here("data/clean/contacts.rds"))
+i_daily <- readRDS("data/clean/i_daily.rds")
+i_weekly <- readRDS("data/clean/i_weekly.rds")
+linelist <- readRDS("data/clean/linelist.rds")
+linelist_clean <- readRDS("data/clean/linelist_clean.rds")
+contacts <- readRDS("data/clean/contacts.rds")
 ```
 
 ## Estimación de la tasa de crecimiento mediante un modelo log-lineal
@@ -318,9 +318,9 @@ decir, que puedan haber sido infectadas. Para el ébola, los contactos se
 vigilan durante 21 días (el límite superior del período de incubación).
 Esto asegura que los contactos que se vuelven sintomáticos puedan
 aislarse rápidamente, reduciendo la posibilidad de una mayor
-transmisión. Para esto usamos la lista de líneas completa en lugar de
-`linelist_clean` donde descartamos las entradas con errores en las
-fechas, porque apesar del error el contacto aún puede ser válido.
+transmisión. Para esto usamos la base de datos de casos completa en
+lugar de `linelist_clean` donde descartamos las entradas con errores en
+las fechas, porque apesar del error el contacto aún puede ser válido.
 
 Usando la función `make_epicontacts` en el paquete `epicontacts`
 paquete, cree un nuevo objeto `epicontacts` llamado `epi_contacts` .
@@ -646,7 +646,7 @@ R_median_from_growth_rate <- median(R_sample_from_growth_rate)
 R_median_from_growth_rate # compare with R_median
 ```
 
-    ## [1] 1.414242
+    ## [1] 1.413427
 
 ``` r
 # ¿ Cuál es el IC del 95%?
@@ -655,7 +655,7 @@ R_CI_from_growth_rate # compare con R_CrI
 ```
 
     ##     2.5%    97.5% 
-    ## 1.279223 1.582415
+    ## 1.266061 1.564891
 
 Tenga en cuenta que las estimaciones anteriores son ligeramente
 diferentes de las obtenidas utilizando el modelo de proceso de
@@ -697,16 +697,16 @@ as.matrix(small_proj)
 ```
 
     ##            [,1] [,2] [,3] [,4] [,5]
-    ## 2014-06-18    4    2    4    3    0
-    ## 2014-06-19    3    4    3    1    9
-    ## 2014-06-20    3    5    5    6    7
-    ## 2014-06-21    6    5    5    5    3
-    ## 2014-06-22    3    4    3    4    8
-    ## 2014-06-23    5    5    3    7    4
-    ## 2014-06-24    4    5    5    6    7
-    ## 2014-06-25    7    3    7    4    2
-    ## 2014-06-26    3    7    2    6    2
-    ## 2014-06-27    6    3    5    7    6
+    ## 2014-06-18    3    5    5    6    1
+    ## 2014-06-19    2    1    5    3    2
+    ## 2014-06-20    4    4    3    4    2
+    ## 2014-06-21    7    1    7    3    4
+    ## 2014-06-22    3    5    7    6    5
+    ## 2014-06-23    6    3    7    7    0
+    ## 2014-06-24    4    5    3    7    4
+    ## 2014-06-25    4    4    7    4    2
+    ## 2014-06-26    6    4    4    4    4
+    ## 2014-06-27    5    6    9    6    3
     ## attr(,"class")
     ## [1] "matrix" "array"
 
@@ -756,35 +756,35 @@ apply(proj, 1, summary)
 ```
 
     ##         2014-06-18 2014-06-19 2014-06-20 2014-06-21 2014-06-22 2014-06-23
-    ## Min.         0.000      0.000      0.000      0.000      0.000      0.000
-    ## 1st Qu.      3.000      2.000      3.000      3.000      3.000      3.000
-    ## Median       4.000      4.000      4.000      4.000      4.000      4.000
-    ## Mean         3.904      3.949      4.168      4.302      4.349      4.511
-    ## 3rd Qu.      5.000      5.000      5.000      6.000      6.000      6.000
-    ## Max.        14.000     12.000     12.000     12.000     13.000     13.000
+    ## Min.          0.00      0.000      0.000      0.000      0.000       0.00
+    ## 1st Qu.       2.00      3.000      3.000      3.000      3.000       3.00
+    ## Median        4.00      4.000      4.000      4.000      4.000       4.00
+    ## Mean          3.87      4.057      4.221      4.261      4.432       4.64
+    ## 3rd Qu.       5.00      5.000      5.000      6.000      6.000       6.00
+    ## Max.         11.00     11.000     14.000     13.000     14.000      14.00
     ##         2014-06-24 2014-06-25 2014-06-26 2014-06-27 2014-06-28 2014-06-29
     ## Min.         0.000      0.000      0.000      0.000      0.000      0.000
-    ## 1st Qu.      3.000      3.000      3.000      3.000      3.000      3.000
+    ## 1st Qu.      3.000      3.000      3.000      3.000      3.000      4.000
     ## Median       4.000      5.000      5.000      5.000      5.000      5.000
-    ## Mean         4.592      4.825      4.986      5.164      5.231      5.361
+    ## Mean         4.635      4.829      5.027      5.107      5.103      5.514
     ## 3rd Qu.      6.000      6.000      6.000      7.000      7.000      7.000
-    ## Max.        14.000     15.000     16.000     18.000     18.000     17.000
+    ## Max.        13.000     15.000     16.000     16.000     14.000     17.000
     ##         2014-06-30 2014-07-01
-    ## Min.         0.000       0.00
-    ## 1st Qu.      4.000       4.00
-    ## Median       5.000       6.00
-    ## Mean         5.515       5.77
-    ## 3rd Qu.      7.000       7.00
-    ## Max.        18.000      22.00
+    ## Min.         0.000      0.000
+    ## 1st Qu.      4.000      4.000
+    ## Median       5.000      6.000
+    ## Mean         5.711      5.949
+    ## 3rd Qu.      7.000      8.000
+    ## Max.        19.000     20.000
 
 ``` r
 apply(proj, 1, function(x) mean(x > 0)) # proporción de trayectorias con al menos
 ```
 
     ## 2014-06-18 2014-06-19 2014-06-20 2014-06-21 2014-06-22 2014-06-23 2014-06-24 
-    ##      0.975      0.973      0.976      0.979      0.990      0.988      0.986 
+    ##      0.978      0.989      0.986      0.983      0.984      0.988      0.990 
     ## 2014-06-25 2014-06-26 2014-06-27 2014-06-28 2014-06-29 2014-06-30 2014-07-01 
-    ##      0.981      0.992      0.992      0.990      0.990      0.988      0.997
+    ##      0.986      0.983      0.988      0.988      0.992      0.986      0.996
 
 ``` r
                                         # un caso en cada día contemplado
@@ -792,35 +792,35 @@ apply(proj, 1, mean) # número medio diario de casos
 ```
 
     ## 2014-06-18 2014-06-19 2014-06-20 2014-06-21 2014-06-22 2014-06-23 2014-06-24 
-    ##      3.904      3.949      4.168      4.302      4.349      4.511      4.592 
+    ##      3.870      4.057      4.221      4.261      4.432      4.640      4.635 
     ## 2014-06-25 2014-06-26 2014-06-27 2014-06-28 2014-06-29 2014-06-30 2014-07-01 
-    ##      4.825      4.986      5.164      5.231      5.361      5.515      5.770
+    ##      4.829      5.027      5.107      5.103      5.514      5.711      5.949
 
 ``` r
 apply(apply(proj, 2, cumsum), 1, summary) # muestra la proyección del número acumulado de casos en
 ```
 
     ##         2014-06-18 2014-06-19 2014-06-20 2014-06-21 2014-06-22 2014-06-23
-    ## Min.         0.000      0.000      1.000      5.000      7.000     10.000
-    ## 1st Qu.      3.000      6.000      9.000     13.000     17.000     21.000
-    ## Median       4.000      8.000     12.000     16.000     20.000     25.000
-    ## Mean         3.904      7.853     12.021     16.323     20.672     25.183
-    ## 3rd Qu.      5.000     10.000     14.000     19.000     24.000     29.000
-    ## Max.        14.000     22.000     34.000     37.000     43.000     55.000
+    ## Min.          0.00      1.000      3.000      5.000      7.000      8.000
+    ## 1st Qu.       2.00      6.000      9.000     13.000     17.000     21.000
+    ## Median        4.00      8.000     12.000     16.000     20.000     25.000
+    ## Mean          3.87      7.927     12.148     16.409     20.841     25.481
+    ## 3rd Qu.       5.00     10.000     15.000     19.250     24.000     30.000
+    ## Max.         11.00     19.000     25.000     31.000     40.000     47.000
     ##         2014-06-24 2014-06-25 2014-06-26 2014-06-27 2014-06-28 2014-06-29
-    ## Min.        12.000       13.0     17.000      18.00     20.000     22.000
-    ## 1st Qu.     24.000       28.0     33.000      37.00     41.000     45.000
-    ## Median      29.000       34.0     39.000      43.00     48.000     53.000
-    ## Mean        29.775       34.6     39.586      44.75     49.981     55.342
-    ## 3rd Qu.     34.000       40.0     46.000      52.00     58.000     65.000
-    ## Max.        66.000       78.0     85.000      99.00    112.000    124.000
+    ## Min.        11.000     15.000     17.000     18.000     21.000     24.000
+    ## 1st Qu.     25.000     29.000     33.000     37.000     41.000     45.000
+    ## Median      29.000     35.000     40.000     44.000     50.000     55.000
+    ## Mean        30.116     34.945     39.972     45.079     50.182     55.696
+    ## 3rd Qu.     35.000     41.000     46.000     52.000     58.000     64.000
+    ## Max.        54.000     62.000     71.000     81.000     95.000    107.000
     ##         2014-06-30 2014-07-01
-    ## Min.        23.000     25.000
-    ## 1st Qu.     49.000     54.000
-    ## Median      59.000     64.000
-    ## Mean        60.857     66.627
-    ## 3rd Qu.     71.000     77.000
-    ## Max.       137.000    159.000
+    ## Min.        25.000     27.000
+    ## 1st Qu.     50.000     55.000
+    ## Median      61.000     67.000
+    ## Mean        61.407     67.356
+    ## 3rd Qu.     70.250     78.000
+    ## Max.       119.000    135.000
 
 ``` r
                                           # las próximas dos semanas
@@ -1060,10 +1060,10 @@ la práctica. Antes de continuar con la [parte
 3](./real-time-response-3.html), deberá guardar los siguientes objetos:
 
 ``` r
-saveRDS(linelist, here("data/clean/linelist.rds"))
-saveRDS(linelist_clean, here("data/clean/linelist_clean.rds"))
-saveRDS(epi_contacts, here("data/clean/epi_contacts.rds"))
-saveRDS(si, here("data/clean/si.rds"))
+saveRDS(linelist, "data/clean/linelist.rds")
+saveRDS(linelist_clean, "data/clean/linelist_clean.rds")
+saveRDS(epi_contacts, "data/clean/epi_contacts.rds")
+saveRDS(si, "data/clean/si.rds")
 ```
 
 ## Sobre este documento
