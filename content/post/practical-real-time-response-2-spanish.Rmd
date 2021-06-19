@@ -467,7 +467,7 @@ abline(v = R_median, col = "red") # muestra la mediana estimada de R como una l�
 abline(v = R_CrI, col = "red", lty = 2) # muestra el 95% de CrI de R como líneas verticales punteadas rojas
 ```
 
-Almacene los resultados de sus nuevas proyecciones en un objeto llamado `proj`.
+Almacene los resultados de sus nuevas proyecciones en un objeto llamado `proj`. Utilice la nueva muestra de valores de R del objeto `R_sample`, un número de 1000 trayectorias a simular, durante un tiempo de dos semanas (14 días).
 
 ```{r projections2, echo = params$full_version}
 proj <- project(x = i_daily_trunc, 
