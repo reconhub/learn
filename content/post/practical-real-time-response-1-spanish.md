@@ -27,8 +27,8 @@ incluida la tasa de letalidad (CFR por sus siglas en inglés de Case
 Fatality Ratio), curvas epidemiológicas ([parte
 1](./real-time-response-1-spanish.html)), estimación de la tasa de
 crecimiento, datos del rastreo de contactos, retrasos y estimaciones de
-transmisibilidad ([parte 2](./real-time-response-2.html)), así como la
-reconstrucción de la cadena de transmisión mediante el uso de
+transmisibilidad ([parte 2](./real-time-response-2-spanish.html)), así
+como la reconstrucción de la cadena de transmisión mediante el uso de
 outbreaker2 ([parte 3](./real-time-response-3.html)).
 
 > Nota: Esta práctica se deriva de las prácticas [Ebola simulation part
@@ -50,17 +50,18 @@ Al final de esta práctica, usted será capaz de:
     ([parte 1](./real-time-response-1-spanish.html))
 
 -   Estimar e interpretar la tasa de crecimiento y el tiempo de
-    duplicación de la epidemia ([parte 2](./real-time-response-2.html))
+    duplicación de la epidemia ([parte
+    2](./real-time-response-2-spanish.html))
 
 -   Estimar el intervalo de serie a partir de los datos pareados de
     infectadas / personas infectadas ([parte
-    2](./real-time-response-2.html))
+    2](./real-time-response-2-spanish.html))
 
 -   Estimar e interpretar el número de reproducción de la epidemia
-    ([parte 2](./real-time-response-2.html))
+    ([parte 2](./real-time-response-2-spanish.html))
 
 -   Pronóstico de la incidencia futura a corto plazo ([parte
-    2](./real-time-response-2.html))
+    2](./real-time-response-2-spanish.html))
 
 -   Reconstruir quién infectó a quién utilizando datos epidemiológicos y
     genéticos ([parte 3](./real-time-response-3.html))
@@ -378,7 +379,8 @@ plot(i_weekly, border = "black")
 
 Este es el final de la práctica de la [parte
 1](./real-time-response-1-spanish.html). Antes de pasar a la [parte
-2](./real-time-response-2.html), deberá guardar los siguientes objetos:
+2](./real-time-response-2-spanish.html), deberá guardar los siguientes
+objetos:
 
 ``` r
 dir.create("data/clean") # cree un directorio de datos limpio si no existe
