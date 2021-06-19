@@ -402,8 +402,6 @@ Tenga en cuenta que podría haber estimado R0 directamente a partir de la tasa d
 
 En comparación con la figura anterior, hay incertidumbre en la tasa de crecimiento r, y el intervalo de serie tiene una distribución completa en lugar de un valor único. Esto se puede tener en cuenta al estimar R de la siguiente manera: 
 
-Compared to the figure above, there is uncertainty in the growth rate r, and the serial interval has a full distribution rather than a single value. This can be accounted for in estimating R as follows:
-
 ```{r R_from_growth_rate}
 # genere una muestra de estimaciones de R0 a partir de la tasa de crecimiento y el intervalo de serie que estimamos anteriormente 
 R_sample_from_growth_rate <- lm2R0_sample(f$model, # modelo log-lineal que contiene nuestras estimaciones de la tasa de crecimiento r
