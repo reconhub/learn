@@ -114,6 +114,7 @@ library(binom)
 library(ape)
 library(outbreaker2)
 library(here)
+library(tidyverse)
 ```
 
 ## Datos iniciales (lectura de datos en R)
@@ -200,6 +201,15 @@ linelist$date_of_onset <- as.Date(linelist$date_of_onset, format = "%Y-%m-%d")
 linelist$date_of_infection <- as.Date(linelist$date_of_infection, format = "%Y-%m-%d")
 linelist$date_of_hospitalisation <- as.Date(linelist$date_of_hospitalisation, format = "%Y-%m-%d")
 linelist$date_of_outcome <- as.Date(linelist$date_of_outcome, format = "%Y-%m-%d")
+```
+
+``` r
+# solucion alternativa tidyverse
+linelist <- linelist %>%
+  as_tibble() %>%
+  mutate(across(.cols = date_of_infection:date_of_outcome,
+                .fns = lubridate::as_date,
+                format = "%Y-%m-%d"))
 ```
 
 Los datos ahora deberían verse así:
@@ -296,11 +306,38 @@ linelist[mistakes, ] # muestre solo las primeras entradas en las que haya tiempo
     ## # ... with 6 more variables: date_of_outcome <date>, outcome <chr>,
     ## #   gender <chr>, hospital <chr>, lon <dbl>, lat <dbl>
 
+``` r
+# solucion alternativa tidyverse
+
+# extraer inconsistencias
+linelist_mist <- linelist %>%
+  mutate(mistake=date_of_onset-date_of_infection) %>%
+  #values 0 or less
+  filter(mistake<=0) %>%
+  select(case_id) %>%
+  pull()
+
+# mostrar inconsistencias
+# linelist_mist
+
+# mostrar filas usando magrittr::is_in()
+linelist %>%
+  filter(magrittr::is_in(case_id,linelist_mist))
+```
+
 Guarde su base de datos de casos “limpia” como un objeto nuevo:
 `linelist_clean`
 
 ``` r
 linelist_clean <- linelist[-mistakes, ]
+```
+
+``` r
+# solucion alternativa tidyverse
+
+# retirar filas usando magrittr::is_in()
+linelist_clean <- linelist %>%
+  filter(!magrittr::is_in(case_id,linelist_mist))
 ```
 
 ¿Qué otras fechas negativas o errores podría querer verificar si tuviera

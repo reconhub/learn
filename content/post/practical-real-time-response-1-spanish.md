@@ -114,6 +114,7 @@ library(binom)
 library(ape)
 library(outbreaker2)
 library(here)
+library(tidyverse)
 ```
 
 ## Datos iniciales (lectura de datos en R)
