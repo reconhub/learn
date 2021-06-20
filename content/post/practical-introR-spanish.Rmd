@@ -555,13 +555,14 @@ measles_dat %>% select(starts_with("date_")) %>% head()
 
 Del paquete`tidyr`, las funciones más comunes son:
 
- - `pivot_longer`: apila en filas datos dispersos en columnas. es una versión actualizada de `gather`
- - `pivot_wider`: dispersa en columnas datos apilados. es una versión actualizada de `spread`
+ - `pivot_longer`: apila en filas datos dispersos en columnas. Es una versión actualizada de `gather`
+ - `pivot_wider`: dispersa en columnas datos apilados. Es una versión actualizada de `spread`
 
 Ejemplo:
 
 ```{r, message=FALSE, warning=FALSE}
 
+# crear base de datos en formato "wide"
 malaria_wide <- tibble(
   district = rep(letters[1:5],each = 2),
   gender = rep(c('f', 'm'), 5),
@@ -570,12 +571,18 @@ malaria_wide <- tibble(
   ) 
 malaria_wide
 
+# transformar base "wide" a formato "long"
 malaria_long <- malaria_wide %>% 
   pivot_longer(falciparum:vivax, names_to = "infection", values_to = "cases")
 malaria_long
 
+# transformar base "long" a formato "wide" 
 malaria_long %>% 
   pivot_wider(names_from = infection, values_from = cases)
+
+# versiones equivalentes usando gather() y spread()
+# malaria_wide %>% gather(key = "infection", value = "cases",falciparum:vivax)
+# malaria_long %>% spread(key = infection, value = cases)
 ```
 
 # ggplot2
