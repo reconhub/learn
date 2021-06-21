@@ -739,16 +739,16 @@ malaria_wide
 ## # A tibble: 10 x 4
 ##    district gender falciparum vivax
 ##    <chr>    <chr>       <dbl> <dbl>
-##  1 a        f              25    12
-##  2 a        m              27    46
-##  3 b        f              33    42
-##  4 b        m              19    32
-##  5 c        f              15    23
-##  6 c        m              25    32
-##  7 d        f              31    25
-##  8 d        m              39    37
-##  9 e        f              36    46
-## 10 e        m              20    24
+##  1 a        f              34    30
+##  2 a        m              33    33
+##  3 b        f              19    40
+##  4 b        m              26    35
+##  5 c        f              28    39
+##  6 c        m              26    40
+##  7 d        f              32    29
+##  8 d        m               8    50
+##  9 e        f              26    28
+## 10 e        m              25    25
 
 # transformar base "wide" a formato "long"
 malaria_long <- malaria_wide %>% 
@@ -757,26 +757,26 @@ malaria_long
 ## # A tibble: 20 x 4
 ##    district gender infection  cases
 ##    <chr>    <chr>  <chr>      <dbl>
-##  1 a        f      falciparum    25
-##  2 a        f      vivax         12
-##  3 a        m      falciparum    27
-##  4 a        m      vivax         46
-##  5 b        f      falciparum    33
-##  6 b        f      vivax         42
-##  7 b        m      falciparum    19
-##  8 b        m      vivax         32
-##  9 c        f      falciparum    15
-## 10 c        f      vivax         23
-## 11 c        m      falciparum    25
-## 12 c        m      vivax         32
-## 13 d        f      falciparum    31
-## 14 d        f      vivax         25
-## 15 d        m      falciparum    39
-## 16 d        m      vivax         37
-## 17 e        f      falciparum    36
-## 18 e        f      vivax         46
-## 19 e        m      falciparum    20
-## 20 e        m      vivax         24
+##  1 a        f      falciparum    34
+##  2 a        f      vivax         30
+##  3 a        m      falciparum    33
+##  4 a        m      vivax         33
+##  5 b        f      falciparum    19
+##  6 b        f      vivax         40
+##  7 b        m      falciparum    26
+##  8 b        m      vivax         35
+##  9 c        f      falciparum    28
+## 10 c        f      vivax         39
+## 11 c        m      falciparum    26
+## 12 c        m      vivax         40
+## 13 d        f      falciparum    32
+## 14 d        f      vivax         29
+## 15 d        m      falciparum     8
+## 16 d        m      vivax         50
+## 17 e        f      falciparum    26
+## 18 e        f      vivax         28
+## 19 e        m      falciparum    25
+## 20 e        m      vivax         25
 
 # transformar base "long" a formato "wide" 
 malaria_long %>% 
@@ -784,16 +784,16 @@ malaria_long %>%
 ## # A tibble: 10 x 4
 ##    district gender falciparum vivax
 ##    <chr>    <chr>       <dbl> <dbl>
-##  1 a        f              25    12
-##  2 a        m              27    46
-##  3 b        f              33    42
-##  4 b        m              19    32
-##  5 c        f              15    23
-##  6 c        m              25    32
-##  7 d        f              31    25
-##  8 d        m              39    37
-##  9 e        f              36    46
-## 10 e        m              20    24
+##  1 a        f              34    30
+##  2 a        m              33    33
+##  3 b        f              19    40
+##  4 b        m              26    35
+##  5 c        f              28    39
+##  6 c        m              26    40
+##  7 d        f              32    29
+##  8 d        m               8    50
+##  9 e        f              26    28
+## 10 e        m              25    25
 
 # versiones equivalentes usando gather() y spread()
 # malaria_wide %>% gather(key = "infection", value = "cases",falciparum:vivax)
@@ -1106,7 +1106,8 @@ qnorm(p = (1-0.025))
 ### Uso de los parámetros
 
 Puedes realizar ejercicios similares con el resto de distribuciones
-usando las funciones de la [tabla de arriba](#slugtab)
+usando las funciones de la [tabla de
+arriba](#trabajar-con-distribuciones-de-probabilidad)
 
 Sin embargo, casi todas las distribuciones estadísticas emplean
 parámetros diferentes, por lo que sus funciones también requieren de

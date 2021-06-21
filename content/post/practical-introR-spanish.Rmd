@@ -642,7 +642,7 @@ p +
 
 ```
 
-# Trabajar con distribuciones de probabilidad {#slugtab}
+# Trabajar con distribuciones de probabilidad
 
 Todas las distribuciones en R se pueden explorar mediante el uso de funciones que nos permiten obtener diferentes formas de distribución. Afortunadamente, todas las distribuciones funcionan de la misma manera, por lo que si aprende a trabajar con una, tendrá la idea general de cómo trabajar con las demás.
 
@@ -808,7 +808,7 @@ qnorm(p = (1-0.025))
 
 Puedes realizar ejercicios similares con 
 el resto de distribuciones
-usando las funciones de la [tabla de arriba](#slugtab)
+usando las funciones de la [tabla de arriba](#trabajar-con-distribuciones-de-probabilidad)
 
 Sin embargo, casi todas las distribuciones estadísticas
 emplean parámetros diferentes, por lo que
