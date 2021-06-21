@@ -1,0 +1,748 @@
+---
+title: "Visualización y Análisis de datos espaciales en salud pública"
+authors: ["Gabriel Carrasco-Escobar", "Antony Barja", "Jesus Quispe"]
+categories: ["practicals"]
+topics: ["spatial analysis", "COVID19", "sf", "clustering", "Spanish"]
+date: '2019-06-01'
+image: img/highres/spat-cover.png
+slug: spatial-analysis-1-spanish
+showonlyimage: yes
+licenses: CC-BY
+always_allow_html: yes
+output:
+  md_document:
+    variant: gfm
+    preserve_yaml: yes
+params:
+  full_version: true
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# toggle to render full version 
+render_snippet <- if (params$full_version) 'asis' else FALSE
+```
+
+## Introducción
+
+Este taller consiste en 3 partes que buscan exponer al alumno a múltiples técnicas de análisis espacial en el contexto de brotes epidemiológicos. Utilizaremos datos ficticios de la pandemia de COVID-19 en Lima metropolitana para aprender a manejar datos espaciales en 'R', visualizar múltiples formatos de datos espaciales y analizar la variación espacial del riesgo de COVID-19 incluyendo la detección de clústers (agrupaciones) de casos.
+
+## Resultados del aprendizaje
+
+Al final de este taller, usted será capaz de:
+
+- Cargar y manejar datos espaciales en R
+- Visualizar múltiples formatos de datos espaciales y sus atributos (variables) correspondientes
+- Generar gráficos dinámicos para la exploración de procesos espaciales
+- Calcular la densidad kernel para determinar la variación espacial de casos de una enfermedad.
+- Determinar clústers (agrupaciones) de eventos distribuidos espacialmente en formato de puntos o polígonos.
+
+## Introducción a epidemiología espacial
+
+Desde hace dos décadas se ha dedicado mucho interés a la modelación de datos espaciales, estos análisis se han hecho en múltiples áreas del conocimiento, incluyendo a la geografía, geología, ciencias ambientales, economía, **epidemiología** o medicina. En esta sección explicaremos brevemente conceptos generales de análisis espacial aplicados a epidemiología. 
+
+> Puede expandir cada sección para revisar los detalles.
+
+<br>
+
+<details>
+  <summary>**1. ¿Qué son los datos espaciales?**</summary>
+  
+Son todos los datos que presentan un sistema de referencia de coordenadas (SRC, _CRS por sus siglas en inglés_ ).
+
+</details>
+
+<details>
+  <summary>**2. ¿Qué son los Sistemas de Referencia de Coordenadas?**</summary>
+  
+La Tierra tiene forma de un geoide y las proyecciones cartográficas intentan representar su superficie o una parte de ella en un plano (como el papel o la pantalla del computador).
+
+Los _**Sistemas de Referencia de Coordenadas (SRC ó CRS)**_ nos ayuda a establecer una relación entre cualquier punto de la superficie terrestre con un plano de referencia mediante las proyecciones cartográficas. En general, los SRC se pueden dividir en: 
+
+* Geográficas.
+
+* Proyectados (también denominados Cartesianos o rectangulares)
+
+
+```{r echo=FALSE, out.width = '70%', fig.align= "center"}
+knitr::include_graphics("https://user-images.githubusercontent.com/23284899/120653992-dbd73100-c446-11eb-836f-0a37a827ab7e.png")
+```
+
+</details>
+
+<details>
+  <summary>**3. Proyecciones geográficas**</summary>
+
+El uso de **SRC geográficos** es muy común y el más empleado. Están representadas por la **latitud** y **longitud** y tienen como unidad de medida a los grados sexagesimales. El sistema más popular se denomina **WGS 84**.
+
+```{r echo=FALSE, fig.cap="Créditos: A. Barja, 2021", out.width = '70%', fig.align= "center"}
+knitr::include_graphics("https://ambarja.github.io/OsgeoLiveUNMSM/Sesi%C3%B3n01/img/latlon.png")
+```
+
+</details>
+
+<details>
+  <summary>**4. Proyecciones cartográficas**</summary>
+  
+Entre todas las proyecciones que existen, ninguna es la mejor en un sentido absoluto, depende de las necesidades específicas a la hora de usar el mapa.
+
+La mayoría de las proyecciones que se emplean hoy en día en la cartografía son proyecciones modificadas, híbridos entre varios tipos de proyecciones que minimizan las deformaciones y permiten alcanzar resultados predeterminados.
+
+Según sus propiedades prevalecientes, las proyecciones se distinguen entre equidistantes, equivalentes y conformes; dependiendo de si mantienen la fidelidad representando _**distancias**_, _**áreas**_ o _**ángulos**_ respectivamente.
+
+Según el tipo de superficie sobre el que se realiza la proyección, existen tres proyecciones básicas:
+ 
+ - Las proyecciones cilíndricas; son efectivas para representar las áreas entre los trópicos.
+ 
+ - La proyecciones cónicas; sirven para representar áreas en latitudes medias.
+ 
+ - Las proyecciones azimutales; sirven para representar zonas en altas latitudes.
+
+```{r echo=FALSE, fig.cap="Créditos: mapnetico, 2020", out.width = '70%', fig.align= "center"}
+knitr::include_graphics("https://mapnetico.com/wp-content/uploads/2018/05/proyecciones-cartograficas.jpg")
+```
+
+**Proyección cartográfica más empleada**
+
+- Universal Tranverse Mercator (UTM)
+
+Proyección cilíndrica conforme que gira el cilindro en 90 ° y divide el elipsoide de referencia en segmentos de 6 grados de ancho (60 segmentos para llegar a los 360°). UTM está diseñado para minimizar las distorsiones dentro de la misma área. cerca del meridiano central, la distorsión es mínima y aumenta alejándose del meridiano. Es recomendable utilizar UTM sólo con mapas muy detallados.
+
+</details>
+
+<details>
+  <summary>**5. Códigos EPSG**</summary>
+  
+Todos los Sistemas de Referencia de Coordenadas (SRC ó CRS) llevan asociados un código que los identifica de forma única y que a través del cual podemos conocer los parámetros asociados al mismo. Se conoce como [Spatial Reference System Identifier (SRID)](https://spatialreference.org/) inicialmente impulsado por el European Petroleum Survey Group (EPSG).
+
+Los códigos EPSG más conocidos son: 
+- WGS84: 4326
+- UTM zona 17N: 32617
+- UTM zona 18N: 32618
+- UTM zona 18S: 32718
+
+</details>
+
+<details>
+  <summary>**6. Introducción a la estadística espacial**</summary>
+  
+Las técnica de estadística clásica suponen estudiar variables aleatorias que se consideran independientes e idénticamente distribuidas (i.i.d.). Por ello, al momento de analizar fenómenos que varían en tiempo y espacio se requiere una modelación que considere la _**(auto)correlación**_ espacial o temporal.
+
+Cuando se tienen datos espaciales intuitivamente se tiene la noción de que las observaciones cercanas están correlacionadas, por ello es necesario utilizar herramientas de análisis que consideren dicha estructura.
+
+</details>
+
+<details>
+  <summary>**7. ¿Por qué es especial lo espacial?**</summary>
+  
+**Primera Ley de Waldo Tobler**
+
+"Todo está relacionado con todo lo demás, pero las cosas más cercanas están más relacionadas que las distantes". (Tobler,1970)
+
+**Autocorrelación espacial**
+
+Es la correlación entre los valores de una sola variable estrictamente atribuible a sus posiciones de ubicación cercanas en una superficie bidimensional. Esto introduce una desviación del supuesto de iid.
+
+Para medir la autocorrelación espacial existen test estadísticos, entre ellos: 
+
+ * Test de Mantel
+
+ * Test de Moran
+
+ * Test C Geray
+
+</details>
+ 
+<br>
+ 
+Para mayor detalle recomendamos la introducción del libro [Geocomputation with R](https://geocompr.robinlovelace.net/intro.html) de Robin Lovelace, Jakub Nowosad, Jannes Muenchow.
+
+## Paquetes requeridos
+
+Los siguientes paquetes (disponibles en CRAN o gitHub) son necesarios para el análisis.
+
+```{r install_packages, eval = FALSE, echo = TRUE}
+# install.packages("remotes")
+# install.packages("tidyverse")
+# install.packages("sf")
+# install.packages("mapview")
+# install.packages("GADMTools")
+# remotes::install_github("paleolimbot/ggspatial")
+# install.packages("leaflet")
+# install.packages("leaflet.extras2")
+# install.packages("spdep")
+# install.packages("spatstat")
+# install.packages("raster")
+# install.packages("smacpod")
+# install.packages("ggspatial")
+```
+
+Cuando los paquetes estén instalados se necesita abrir una nueva sesión de R. Luego, cargar las siguientes librerías:
+
+```{r load_library, warning = FALSE, message = FALSE}
+library(tidyverse)
+library(sf)
+library(mapview)
+library(GADMTools)
+library(ggspatial)
+library(leaflet)
+library(leaflet.extras2)
+library(spdep)
+library(spatstat)  
+library(raster)
+library(smacpod)
+library(ggspatial)
+```
+
+## Caso de estudio
+
+Para este taller utilizaremos una base de datos ficticia que fue creada usando como referencia los [datos abiertos del Gobierno Peruano](https://www.datosabiertos.gob.pe/group/datos-abiertos-de-covid-19). Esta base contiene los registros de cada persona diagnosticada de COVID-19 por el Ministerio de Salud (MINSA) hasta el `24-MAY-2020`.
+
+> Los datos de georefenciación (coodenadas) de los casos fueron simulados para los propósitos de este taller. Puede descargar directamente la base de datos del repositorio de [Zenodo](https://zenodo.org/record/4915889#.YMBxoTZKhjw)
+
+```{r warning=F, message=F}
+covid <- read_csv(url("https://zenodo.org/record/4915889/files/covid19data.csv?download=1"))
+```
+
+```{r warning=F, message=F, echo=F}
+library(kableExtra)
+kbl(head(covid, 20)) %>%
+  kable_styling()
+```
+
+## Manejo de datos espaciales
+
+`R` tiene un gran universo de paquetes para representación y análisis espacial. Actualmente existen 2 formatos predominantes: [`sp`](https://cran.r-project.org/web/packages/sp/vignettes/intro_sp.pdf) y [`sf`](https://r-spatial.github.io/sf/). Para los fines de este taller utilizaremos `sf` ya que tiene una integración natural con el ecosistema `tidyverse`.
+
+Existen múltiples variedades de representaciones gráficas con datos espaciales. En este curso nos enfocaremos en la representación espacial de 1) patrones de puntos y 2) datos de polígonos ( _e.j. por áreas administrativas_ ). 
+
+### Patrones de puntos
+
+Si tenemos una base de datos georeferenciada (con coordenadas geográficas para cada observación) podemos utilizar estos valores ( _coordenadas_ ) para transformar nuestra base de datos tabular en una base de datos espacial.
+
+> Usaremos la función `st_as_sf()` para especificar los valores de latitud y longitud. Adicionalmente, tenemos que especificar el *sistema de referencia de coordenadas (CRS en ingles)* con que fueron georeferenciados nuestros datos en el área de estudio ( _ej. crs = 4326_ ).
+
+```{r warning=F, message=F}
+covid_p <- covid %>%
+  st_as_sf(coords = c("lon", "lat"), crs = 4326)
+```
+
+Haremos un gráfico simple usando `ggplot2` y la geometría `geom_sf()`.
+
+```{r warning=F, message=F}
+covid_p %>%
+  filter(FECHA_RESULTADO == "2020-12-11") %>%
+  ggplot() +
+  geom_sf() 
+```
+
+Para visualizar nuestro mapa de una forma dinámica podemos usar el paquete `mapview()`.
+
+```{r eval=F}
+m_p <- covid_p %>% 
+  filter(FECHA_RESULTADO == "2020-12-10") %>%
+  mapview(layer.name = "puntos")
+
+m_p
+```
+
+```{r warning=F, message=F, echo=F}
+m_p1 <- covid_p %>% 
+  filter(FECHA_RESULTADO == "2020-12-10") %>%
+  mapview(layer.name = "puntos")
+
+m_p <- m_p1@map
+
+learn::save_and_use_widget(m_p, "m_p.html")
+```
+
+### Datos en polígonos
+
+Para realizar las representaciones de las áreas necesitamos un archivo que contiene la geometría espacial (los bordes), hay varios formatos pero el más conocido es el `shapefile (.shp)`.
+
+> Uno puede cargar los datos del archivo `.shp` usando la función `st_read()`. Para este taller utilizaremos el paquete [`GADMTools`](https://github.com/Epiconcept-Paris/GADMTools) que contiene los datos espaciales de las divisiones políticas de todos los países. `GADMTools` descarga datos en formato `gadm_sf` del cual extraeremos el objeto **sf** con la función `pluck()`.
+
+```{r warning=F, message=F}
+peru <- gadm_sf_loadCountries("PER", level=3)
+lima_sf <- peru %>%
+  pluck("sf") %>%
+  # Filtramos los datos espaciales solo de Lima metropolitana
+  filter(NAME_2 == "Lima") %>%
+  # Editamos algunos errores en nuestros datos espaciales
+  mutate(NAME_3 = ifelse(NAME_3 == "Magdalena Vieja",
+                         "Pueblo Libre", NAME_3))
+```
+
+Ahora procesaremos los datos de la base `covid` y los datos espaciales `lim_sf` para poder hacer la unión. 
+
+> Como nuestra base de datos es a nivel individual, haremos el conteo del número de observaciones para cada fecha y distrito. Construiremos unos datos de tipo `panel`, para lo cual completaremos con `0` todas las fechas de las unidades geográficas que no reportaron casos.
+
+```{r message = FALSE, warning = FALSE}
+covid_count <- covid %>%
+  group_by(DISTRITO, FECHA_RESULTADO) %>%
+  summarise(casos = n()) %>%
+  ungroup() %>%
+  complete(FECHA_RESULTADO = seq.Date(min(FECHA_RESULTADO, na.rm =T),
+                                      max(FECHA_RESULTADO, na.rm = T),
+                                      by="day"),
+           nesting(DISTRITO), fill = list(n = 0))
+
+covid_sf <- lima_sf %>%
+  mutate(DISTRITO = toupper(NAME_3)) %>%
+  full_join(covid_count, by = "DISTRITO", "FECHA_RESULTADO")
+
+class(covid_sf)
+```
+
+Haremos un gráfico simple para verificar que nuestros datos estén proyectados en el lugar correcto.
+
+```{r warning=F, message=F}
+covid_sf %>%
+  filter(FECHA_RESULTADO == "2020-12-11") %>%
+  ggplot() +
+  geom_sf()
+```
+
+```{r eval=F}
+m_sf <- covid_sf %>% 
+  filter(FECHA_RESULTADO == "2020-12-11") %>%
+  mapview(layer.name = "distritos")
+
+m_sf
+```
+
+```{r warning=F, message=F, echo=F}
+m_sf1 <- covid_sf %>% 
+  filter(FECHA_RESULTADO == "2020-12-11") %>%
+  mapview(layer.name = "distritos")
+
+m_sf <- m_sf1@map
+
+learn::save_and_use_widget(m_sf, "m_sf.html")
+```
+
+### Múltiples capas
+
+Los contenidos en los mapas suelen representarse como capas, las cuales, podemos combinarlas y sobreponerlas para entender el evento de interés.
+
+> Cada capa es agregada como una geometría diferente con `geom_sf()`. En mapview podemos usar el símbolo `+` para graficar ambas capas.
+
+```{r warning=F, message=F}
+ggplot() +
+  geom_sf(data = covid_sf %>% 
+            filter(FECHA_RESULTADO == "2020-12-11")) + 
+  geom_sf(data = covid_p %>% 
+            filter(FECHA_RESULTADO == "2020-12-11"))
+```
+
+```{r eval=F}
+m_p + m_sf
+```
+
+```{r warning=F, message=F, echo=F}
+m_p1 <- covid_p %>% 
+  filter(FECHA_RESULTADO == "2020-12-10") %>%
+  mapview(layer.name = "puntos")
+
+m_sf1 <- covid_sf %>% 
+  filter(FECHA_RESULTADO == "2020-12-11") %>%
+  mapview(layer.name = "distritos")
+
+m_p_sf1 <- m_p1 + m_sf1
+
+m_p_sf <- m_p_sf1@map
+
+learn::save_and_use_widget(m_p_sf, "m_p_sf.html")
+```
+
+## Visualización de datos espaciales
+
+Ahora exploraremos algunas variables de interés en la base de datos para comprender mejor la transmisión de la enfermedad.
+
+### Patrones de puntos
+
+Al utilizar la base de datos a nivel individual podemos cambiar las características de nuestra geometría (puntos) de acuerdo a los atributos que deseamos graficar.
+
+**Una variable**
+
+> Usaremos el color de la geometría (argumento `col`) para representar el sexo de los pacientes con COVID-19 la base de datos.
+
+```{r warning=F, message=F}
+covid_p %>%
+  filter(FECHA_RESULTADO == "2020-12-11") %>%
+  ggplot() +
+  geom_sf(aes(col = SEXO), alpha = .2) +
+  facet_wrap(.~SEXO)
+```
+
+En el caso de la visualización dinámica con `mapview` el color se asigna con el argumento `zcol`. Usaremos el argumento `burst = T` para que cada categoría (de la variable asignada en `zcol`) se visualice como una capa separa y pueda seleccionarse u ocultarse en el mapa.
+
+```{r eval=F}
+covid_p %>% 
+  filter(FECHA_RESULTADO == "2020-12-11") %>%
+  mapview(layer.name = "points", zcol = "SEXO", burst = T)
+```
+
+```{r warning=F, message=F, echo=F}
+m_uni1 <- covid_p %>% 
+  filter(FECHA_RESULTADO == "2020-12-11") %>%
+  mapview(layer.name = "points", zcol = "SEXO", burst = T)
+
+m_uni <- m_uni1@map
+
+learn::save_and_use_widget(m_uni, "m_uni.html")
+```
+
+**Dos o mas variable**
+
+Al igual que con los gráficos de datos tabulares, podemos explorar las visualizaciones con facetas y dividir los datos de acuerdo a sub-grupos focalizados.
+
+```{r warning=F, message=F}
+covid_p %>%
+  filter(FECHA_RESULTADO == "2020-04-11" |
+         FECHA_RESULTADO == "2020-12-11") %>%
+  ggplot() +
+  geom_sf(aes(col = SEXO), alpha = .2) +
+  facet_grid(SEXO~FECHA_RESULTADO) +
+  guides(col = F)
+```
+
+`mapview` permite agrupar múltiples capas con los operadores `+` y `|`. Más detalles en la [documentación del paquete](https://r-spatial.github.io/mapview/reference/ops.html).
+
+```{r warning=F, message=F}
+m1 <- covid_p %>%
+  filter(FECHA_RESULTADO == "2020-04-11") %>%
+  mapview(zcol = "SEXO", layer.name = "2020-04-11 - SEXO")
+
+m2 <- covid_p %>%
+  filter(FECHA_RESULTADO == "2020-12-11") %>%
+  mapview(zcol = "SEXO", layer.name = "2020-12-11 - SEXO")
+```
+
+```{r eval=F}
+m1 + m2
+```
+
+```{r warning=F, message=F, echo=F}
+m1_2_a <- m1 + m2
+
+m1_2 <- m1_2_a@map
+
+learn::save_and_use_widget(m1_2, "m1_2.html")
+```
+
+**Composición**
+
+Podemos usar las mismas herramientas usadas para la creación gráficos de datos tabulares para generar una mejor composición de nuestra representación espacial. Podemos modificar las escalas de color ( `scale_color_*()` ) y el tema ( `theme_*()` ) entro otros. Cuando representamos datos espaciales es importante representar la _**escala espacial**_ de los datos y _**el norte**_. Ambas características pueden ser graficadas con el paquete `ggspatial`. 
+
+```{r warning=F, message=F}
+covid_p %>%
+  filter(FECHA_RESULTADO == "2020-12-11") %>%
+  ggplot() +
+  geom_sf(data = covid_sf) +
+  geom_sf(aes(col = EDAD), alpha = .2) +
+  scale_color_viridis_c(option = "B") +
+  annotation_scale() +
+  annotation_north_arrow(location = "tr",
+                         style = north_arrow_nautical)+
+  theme_bw()
+```
+
+### Datos en polígonos
+
+La forma de reporte más común de los sistemas de vigilancia de enfermedades infecciosas es la agrupación de casos por unidades geográficas o administrativas. En esta sección exploraremos la representación de datos en polígonos espaciales.
+
+**Una variable**
+
+> Usaremos el relleno de la geometría (argumento `fill`) para representar el número de casos de COVID-19 por distritos en Lima metropolitana. Importante notar que el argumento color (`col`) se usa para definir el color de los bordes de la geometría.
+
+```{r warning=F, message=F}
+covid_sf %>%
+  filter(FECHA_RESULTADO == "2020-12-11") %>%
+  ggplot() +
+  geom_sf(aes(fill = casos))
+```
+
+En el caso de la visualización dinámica con `mapview` el relleno también se asigna con el argumento `zcol`.
+
+```{r eval=F}
+covid_sf %>% 
+  filter(FECHA_RESULTADO == "2020-12-11") %>%
+  mapview(layer.name = "casos", zcol = "casos")
+```
+
+```{r warning=F, message=F, echo=F}
+m_casos1 <- covid_sf %>% 
+  filter(FECHA_RESULTADO == "2020-12-11") %>%
+  mapview(layer.name = "casos", zcol = "casos")
+
+m_casos <- m_casos1@map
+
+learn::save_and_use_widget(m_casos, "m_casos.html")
+```
+
+**Dos o mas variable**
+
+Seleccionaremos 2 fechas para comparar la evolución de la epidemia.
+
+```{r warning=F, message=F}
+covid_sf %>%
+  filter(FECHA_RESULTADO == "2020-04-11" |
+         FECHA_RESULTADO == "2020-12-11") %>%
+  ggplot() +
+  geom_sf(aes(fill = casos)) +
+  facet_grid(.~FECHA_RESULTADO)
+```
+
+También podemos visualizar la distribución espacial de ambas fechas de forma dinámica.
+
+```{r warning=F, message=F}
+d1 <- covid_sf %>%
+  filter(FECHA_RESULTADO == "2020-04-11") %>%
+  mapview(zcol = "casos", layer.name = "2020-04-11 - casos")
+
+d2 <- covid_sf %>%
+  filter(FECHA_RESULTADO == "2020-12-11") %>%
+  mapview(zcol = "casos", layer.name = "2020-12-11 - casos")
+```
+
+```{r eval=F}
+d1 + d2
+```
+
+```{r warning=F, message=F, echo=F}
+d1_2_a <- d1 + d2
+
+d1_2 <- d1_2_a@map
+
+learn::save_and_use_widget(d1_2, "d1_2.html")
+```
+
+**Composición**
+
+Al igual que con los datos de puntos, podemos usar las mismas herramientas para generar una mejor composición de nuestra representación espacial. 
+
+```{r warning=F, message=F}
+covid_sf %>%
+  filter(FECHA_RESULTADO == "2020-12-11") %>%
+  ggplot() +
+  geom_sf(aes(fill = casos)) +
+  scale_fill_viridis_c(option = "F", direction = -1) +
+  annotation_scale() +
+  annotation_north_arrow(location = "tr",
+                         style = north_arrow_nautical)+
+  theme_void()
+```
+
+> Otro paquete importante de revisar para la representación de estructuras espaciales es: [`tmap`](https://cran.r-project.org/web/packages/tmap/vignettes/tmap-getstarted.html).
+
+## Variación espacial del riesgo
+
+En esta sección se brindará una introducción a una metodologías para obtener representaciones gráficas de procesos espaciales como el riesgo de una enfermedad. En este taller exploraremos la _**estimación de la densidad kernel**_ para datos espaciales que representan procesos discretos (ej. brotes). Existen otras técnicas para datos espaciales que representan procesos continuos (ej. precipitación) como _**Kriging**_. 
+
+Para estimar la densidad del kernel definiremos una **ventana** espacial de análisis usando la función `owin` del paquete [`spatstat`](https://spatstat.org/)
+
+```{r,message=F,warning=F}
+covid_subset <- covid %>%
+  filter(FECHA_RESULTADO == "2020-05-05")
+
+covid_win <- owin(xrange = range(covid_subset$lon),
+                  yrange = range(covid_subset$lat))
+```
+
+Luego, definiremos el objeto patrón de puntos ( _**ppp**_ ) a partir de los registros de casos.
+
+```{r,message=F,warning=F}
+covid_ppp  <-  ppp(covid_subset$lon, 
+                   covid_subset$lat, 
+                   window = covid_win)
+```
+
+Finalmente, el objeto de la clase densidad lo convertiremos a uno de clase **rasterLayer**. Eliminaremos las áreas fuera de nuestra zona de estudio usando la función `mask` y utilizando nuestro objeto espacial de los limites de Lima metropolitana (`lima_sf`).
+
+```{r,message=F,warning=F}
+densidad_raster_cov <- raster(density(covid_ppp, bw.ppl), 
+                              crs = 4326) %>%
+  mask(lima_sf)
+```
+
+La densidad puede ser representada de la siguiente forma:
+
+```{r eval=F}
+densidad_raster_cov %>% 
+  mapview()
+```
+
+```{r,message=F,warning=F, echo=F}
+densidad1 <- densidad_raster_cov %>% 
+  mapview()
+
+densidad <- densidad1@map
+
+learn::save_and_use_widget(densidad, "densidad.html")
+```
+
+## Detección de clústers 
+
+En esta sección se brindará una introducción a algunos métodos  para detectar la agrupación espacial de casos o _**clústers**_ en diferentes tipos de datos espaciales.
+
+### Datos de patrones puntuales:
+
+#### Estadísticas de escaneo espacial (Spatial Scan Statistics-SSS):
+
+Para realizar el cálculo de las estadísticas de escaneo espacial, primero es necesario emplear datos de la clase patrones de puntos o _**ppp**_ : 
+
+> En este ejemplo, para definir una variable binaria, usaremos los casos detectados por PCR como infecciones recientes (positivo) y por otros métodos (ej. Prueba de Anticuerpos - PR) como infecciones pasadas (negativos). 
+
+```{r, message=F, warning=F}
+covid_subset_posi <- covid %>%
+  filter(FECHA_RESULTADO == "2020-05-05") %>%
+  mutate(positividad = ifelse(METODODX == "PCR", 1, 0))
+
+covid_scan_ppp <- ppp(covid_subset_posi$lon, 
+                      covid_subset_posi$lat,
+                      range(covid_subset_posi$lon),
+                      range(covid_subset_posi$lat),
+                      marks = as.factor(covid_subset_posi$positividad))
+```
+
+Aplicaremos la prueba de escaneo espacial propuesto por _**M. Kulldorff**_ en [SatScan](https://www.satscan.org/) e implementada en `R` en el paquete `smacpod`.
+
+> Por motivos de costo computacional utilizaremos **49 simulaciones** (`nsim`) de Monte Carlo para determinar el valor-p de la prueba de hipótesis. Para otros propósitos se recomienda incrementar el número de simulaciones.
+
+```{r, message=F, warning=F}
+covid_scan_test <- spscan.test(covid_scan_ppp,
+                               nsim = 49, case = 2, 
+                               maxd=.15, alpha = 0.05)
+```
+
+El objeto de tipo `spscan` contiene información del clúster detectado:
+
+- `locids`: las localizaciones incluidas en el clúster
+- `coords`: las coordenadas del centroide del clúster
+- `r`: el radio del clúster
+- `rr`: el riesgo relativo (RR) dentro del clúster
+- `pvalue`: valor=p de la prueba de hipótesis calculado por simulaciones de Monte Carlo
+
+entre otros.
+
+```{r, message=F, warning=F}
+covid_scan_test
+```
+
+Para representar gráficamente el clúster detectado, el subconjunto de análisis es convertido a una clase adecuada para la representación espacial.
+
+```{r, message=F, warning=F}
+# Construimos el centroide del clúster
+cent <- tibble(lon = covid_scan_test$clusters[[1]]$coords[,1],
+               lat = covid_scan_test$clusters[[1]]$coords[,2]) %>%
+  st_as_sf(coords = c("lon", "lat"), crs = 4326, remove = F)  
+
+# Construimos el área del clúster en base al radio
+clust <- cent %>%
+  st_buffer(dist = covid_scan_test$clusters[[1]]$r)
+```
+
+Graficaremos el clúster detectado empleando el paquete `mapview`:
+
+```{r eval=F}
+cluster <- mapview(clust, alpha.regions = 0, color = "red") 
+
+points <- covid_subset_posi %>%
+  st_as_sf(coords = c("lon", "lat"), crs = 4326) %>%
+  mapview(zcol = "positividad", alpha.regions = .4, alpha = 0) 
+
+cluster + points 
+```
+
+```{r message=F,warning=F, echo=F}
+cluster <- mapview(clust, alpha.regions = 0, color = "red", lwd = 4) 
+
+points <- covid_subset_posi %>%
+  st_as_sf(coords = c("lon", "lat"), crs = 4326) %>%
+  mapview(zcol = "positividad", alpha.regions = .4, alpha = 0) 
+
+plot <- cluster + points 
+
+plot1 <- plot@map %>% setView(cent$lon[1], cent$lat[1], zoom = 12)
+
+learn::save_and_use_widget(plot1, "plot1.html")
+```
+
+### Datos agregados (en polígonos)
+
+#### Autocorrelación espacial (global): Moran I
+
+Para llevar a cabo el cálculo de estadístico de _**Moran I**_ global, en primer lugar establecemos el conjunto de datos de análisis. Debido a la estructura longitudinal de la base de datos, filtraremos por una fecha en específico.
+
+```{r,message=F,warning=F}
+covid_sf_subset <- covid_sf %>%
+  filter(FECHA_RESULTADO == "2020-05-05") %>%
+  mutate(casos = replace_na(casos, 0))
+```
+
+Luego, a partir de la distribución de los polígonos (distritos) en el área de estudio definiremos la matriz de vecindad.
+
+```{r,message=F,warning=F}
+covid.nb <- poly2nb(covid_sf_subset, queen=TRUE,snap = 0.13)
+```
+
+Con la matriz de vecindad llevamos a cabo el cálculo de la matriz de pesos espaciales  
+
+```{r,message=F,warning=F}
+covid.lw <- nb2listw(covid.nb, style="W", zero.policy=TRUE)
+```
+  
+Finalmente, realizamos el cálculo de la **prueba de Moran global I**:
+
+```{r,message=F,warning=F}
+moran.test(covid_sf_subset$casos, covid.lw)
+```
+
+> nota: La prueba implementada por defecto utiliza un cálculo analítico del estadístico de Moran I. Esta prueba, sin embargo, es muy susceptible a polígonos distribuidos irregularmente. Por ello actualmente el paquete `spdep` cuenta con una versión de la prueba que se basa en simulaciones de Monte Carlo, la cual puede ser llevada a cabo con la función `moran.mc`.
+
+#### Autocorrelación espacial (local): Getis Ord
+
+Para el cálculo de la autocorrelación espacial local, en primer lugar establecemos los umbrales (del estadístico z) a partir de las cuales se definen lo clúster de valores altos y bajos.
+
+```{r ,message=F,warning=F}
+breaks <- c(-Inf, -1.96, 1.96, Inf)
+labels <- c("Cold spot",
+            "Not significant",
+            "Hot spot")
+```
+
+Realizamos el cálculo del estadístico de **Getis Ord**
+
+```{r,message=F,warning=F}
+covid_lg <- localG(covid_sf_subset$casos, covid.lw)
+
+covid_sf_lisa<-covid_sf_subset %>% 
+  mutate(cluster_lg=cut(covid_lg, include.lowest = TRUE,
+                        breaks = breaks, 
+                        labels = labels))
+```
+
+Finalmente realizamos el gráfico:
+
+```{r,message=F,warning=F}
+covid_sf_lisa %>%
+          ggplot() + 
+          geom_sf(aes(fill=cluster_lg)) +
+          scale_fill_brewer(name="Clúster", 
+                            palette = "RdBu", direction=-1) +
+  theme_bw()
+```
+
+Se puede visualizar que en la zona central y sur de lima la existencia de **clústers** espaciales de alta y baja concentración de casos respectivamente.
+
+## Sobre este documento
+
+### Contribuciones
+
+- Gabriel Carrasco-Escobar, Antony Barja & Jesus Quispe: Versión inicial
+
+Contribuciones son bienvenidas vía [pull requests](https://github.com/reconhub/learn/pulls).
