@@ -442,47 +442,6 @@ Esta característica de R es muy importante al ejecutar cualquier
 análisis o rutina. Siempre se recomienda NO utilizar elementos dentro de
 una función que solo estén disponibles en el entorno global.
 
-# Trabajar con distribuciones de probabilidad
-
-Todas las distribuciones en R se pueden explorar mediante el uso de
-funciones que nos permiten obtener diferentes formas de distribución.
-Afortunadamente, todas las distribuciones funcionan de la misma manera,
-por lo que si aprende a trabajar con una, tendrá la idea general de cómo
-trabajar con las demás.
-
-Por ejemplo, para una distribución normal se usa `?dnorm` para explorar
-los argumentos en esta función
-
--   `dnorm` = función de densidad con argumentos predeterminados
-    `(x, mean = 0, sd = 1, log = FALSE)`
--   `pnorm` da la función de distribución
--   `qnorm` da la función cuantil
--   `rnorm` genera datos aleatorios
-
-Muchas distribuciones son parte del paquete `stats` que viene por
-defecto con R, como *uniform*, *poisson* y *binomial*, entre otros. Para
-otras distribuciones que se utilizan con menos frecuencia, a veces puede
-que necesite instalar otros paquetes. Para obtener una lista no
-exhaustiva de las distribuciones más utilizadas y sus argumentos,
-consultar la siguiente tabla:
-
-| Nombre            | probabilidad | cuantil      | distribución | random       |
-|:------------------|:-------------|:-------------|:-------------|:-------------|
-| Beta              | `pbeta()`    | `qbeta()`    | `dbeta()`    | `rbeta()`    |
-| Binomial          | `pbinom()`   | `qbinom()`   | `dbinom()`   | `rbinom()`   |
-| Cauchy            | `pcauchy()`  | `qcauchy()`  | `dcauchy()`  | `rcauchy()`  |
-| Chi-Square        | `pchisq()`   | `qchisq()`   | `dchisq()`   | `rchisq()`   |
-| Exponential       | `pexp()`     | `qexp()`     | `dexp()`     | `rexp()`     |
-| Gamma             | `pgamma()`   | `qgamma()`   | `dgamma()`   | `rgamma()`   |
-| Logistic          | `plogis()`   | `qlogis()`   | `dlogis()`   | `rlogis()`   |
-| Log Normal        | `plnorm()`   | `qlnorm()`   | `dlnorm()`   | `rlnorm()`   |
-| Negative Binomial | `pnbinom()`  | `qnbinom()`  | `dnbinom()`  | `rnbinom()`  |
-| Normal            | `pnorm()`    | `qnorm()`    | `dnorm()`    | `rnorm()`    |
-| Poisson           | `ppois()`    | `qpois()`    | `dpois()`    | `rpois()`    |
-| Student’s t       | `pt()`       | `qt()`       | `dt()`       | `rt()`       |
-| Uniform           | `punif()`    | `qunif()`    | `dunif()`    | `runif()`    |
-| Weibull           | `pweibull()` | `qweibull()` | `dweibull()` | `rweibull()` |
-
 # Crear y abrir conjuntos de datos
 
 R permite a los usuarios no solo abrir, sino también crear conjuntos de
@@ -761,14 +720,15 @@ measles_dat %>% select(starts_with("date_")) %>% head()
 
 Del paquete`tidyr`, las funciones más comunes son:
 
--   `pivot_longer`: apila en filas datos dispersos en columnas. es una
+-   `pivot_longer`: apila en filas datos dispersos en columnas. Es una
     versión actualizada de `gather`
--   `pivot_wider`: dispersa en columnas datos apilados. es una versión
+-   `pivot_wider`: dispersa en columnas datos apilados. Es una versión
     actualizada de `spread`
 
 Ejemplo:
 
 ``` r
+# crear base de datos en formato "wide"
 malaria_wide <- tibble(
   district = rep(letters[1:5],each = 2),
   gender = rep(c('f', 'm'), 5),
@@ -779,59 +739,65 @@ malaria_wide
 ## # A tibble: 10 x 4
 ##    district gender falciparum vivax
 ##    <chr>    <chr>       <dbl> <dbl>
-##  1 a        f              33    42
-##  2 a        m              28    42
-##  3 b        f              22    33
-##  4 b        m              15    47
-##  5 c        f              44    17
-##  6 c        m              35    25
-##  7 d        f              33    37
-##  8 d        m              32    24
-##  9 e        f              41    28
-## 10 e        m              37    29
+##  1 a        f              25    12
+##  2 a        m              27    46
+##  3 b        f              33    42
+##  4 b        m              19    32
+##  5 c        f              15    23
+##  6 c        m              25    32
+##  7 d        f              31    25
+##  8 d        m              39    37
+##  9 e        f              36    46
+## 10 e        m              20    24
 
+# transformar base "wide" a formato "long"
 malaria_long <- malaria_wide %>% 
   pivot_longer(falciparum:vivax, names_to = "infection", values_to = "cases")
 malaria_long
 ## # A tibble: 20 x 4
 ##    district gender infection  cases
 ##    <chr>    <chr>  <chr>      <dbl>
-##  1 a        f      falciparum    33
-##  2 a        f      vivax         42
-##  3 a        m      falciparum    28
-##  4 a        m      vivax         42
-##  5 b        f      falciparum    22
-##  6 b        f      vivax         33
-##  7 b        m      falciparum    15
-##  8 b        m      vivax         47
-##  9 c        f      falciparum    44
-## 10 c        f      vivax         17
-## 11 c        m      falciparum    35
-## 12 c        m      vivax         25
-## 13 d        f      falciparum    33
-## 14 d        f      vivax         37
-## 15 d        m      falciparum    32
-## 16 d        m      vivax         24
-## 17 e        f      falciparum    41
-## 18 e        f      vivax         28
-## 19 e        m      falciparum    37
-## 20 e        m      vivax         29
+##  1 a        f      falciparum    25
+##  2 a        f      vivax         12
+##  3 a        m      falciparum    27
+##  4 a        m      vivax         46
+##  5 b        f      falciparum    33
+##  6 b        f      vivax         42
+##  7 b        m      falciparum    19
+##  8 b        m      vivax         32
+##  9 c        f      falciparum    15
+## 10 c        f      vivax         23
+## 11 c        m      falciparum    25
+## 12 c        m      vivax         32
+## 13 d        f      falciparum    31
+## 14 d        f      vivax         25
+## 15 d        m      falciparum    39
+## 16 d        m      vivax         37
+## 17 e        f      falciparum    36
+## 18 e        f      vivax         46
+## 19 e        m      falciparum    20
+## 20 e        m      vivax         24
 
+# transformar base "long" a formato "wide" 
 malaria_long %>% 
   pivot_wider(names_from = infection, values_from = cases)
 ## # A tibble: 10 x 4
 ##    district gender falciparum vivax
 ##    <chr>    <chr>       <dbl> <dbl>
-##  1 a        f              33    42
-##  2 a        m              28    42
-##  3 b        f              22    33
-##  4 b        m              15    47
-##  5 c        f              44    17
-##  6 c        m              35    25
-##  7 d        f              33    37
-##  8 d        m              32    24
-##  9 e        f              41    28
-## 10 e        m              37    29
+##  1 a        f              25    12
+##  2 a        m              27    46
+##  3 b        f              33    42
+##  4 b        m              19    32
+##  5 c        f              15    23
+##  6 c        m              25    32
+##  7 d        f              31    25
+##  8 d        m              39    37
+##  9 e        f              36    46
+## 10 e        m              20    24
+
+# versiones equivalentes usando gather() y spread()
+# malaria_wide %>% gather(key = "infection", value = "cases",falciparum:vivax)
+# malaria_long %>% spread(key = infection, value = cases)
 ```
 
 # ggplot2
@@ -979,6 +945,248 @@ p +
 
 ![](practical-introR-spanish_files/figure-gfm/unnamed-chunk-29-1.png)<!-- -->
 
+# Trabajar con distribuciones de probabilidad
+
+Todas las distribuciones en R se pueden explorar mediante el uso de
+funciones que nos permiten obtener diferentes formas de distribución.
+Afortunadamente, todas las distribuciones funcionan de la misma manera,
+por lo que si aprende a trabajar con una, tendrá la idea general de cómo
+trabajar con las demás.
+
+Por ejemplo, para una distribución normal se usa `dnorm`. Puedes usar
+`?dnorm` para explorar los argumentos en esta función:
+`dnorm(x, mean = 0, sd = 1, log = FALSE)` y sus funciones relacionadas:
+
+-   `dnorm` da la función de densidad
+-   `pnorm` da la función de probabilidad
+-   `qnorm` da la función cuantil
+-   `rnorm` genera valores aleatorios
+
+Muchas distribuciones son parte del paquete `stats` que viene por
+defecto con R, como *uniform*, *poisson* y *binomial*, entre otros. Para
+otras distribuciones que se utilizan con menos frecuencia, a veces puede
+que necesite instalar otros paquetes. Para obtener una lista no
+exhaustiva de las distribuciones más utilizadas y sus argumentos,
+consultar la siguiente tabla:
+
+| Nombre            | probabilidad | cuantil      | distribución | random       |
+|:------------------|:-------------|:-------------|:-------------|:-------------|
+| Beta              | `pbeta()`    | `qbeta()`    | `dbeta()`    | `rbeta()`    |
+| Binomial          | `pbinom()`   | `qbinom()`   | `dbinom()`   | `rbinom()`   |
+| Cauchy            | `pcauchy()`  | `qcauchy()`  | `dcauchy()`  | `rcauchy()`  |
+| Chi-Square        | `pchisq()`   | `qchisq()`   | `dchisq()`   | `rchisq()`   |
+| Exponential       | `pexp()`     | `qexp()`     | `dexp()`     | `rexp()`     |
+| Gamma             | `pgamma()`   | `qgamma()`   | `dgamma()`   | `rgamma()`   |
+| Logistic          | `plogis()`   | `qlogis()`   | `dlogis()`   | `rlogis()`   |
+| Log Normal        | `plnorm()`   | `qlnorm()`   | `dlnorm()`   | `rlnorm()`   |
+| Negative Binomial | `pnbinom()`  | `qnbinom()`  | `dnbinom()`  | `rnbinom()`  |
+| Normal            | `pnorm()`    | `qnorm()`    | `dnorm()`    | `rnorm()`    |
+| Poisson           | `ppois()`    | `qpois()`    | `dpois()`    | `rpois()`    |
+| Student’s t       | `pt()`       | `qt()`       | `dt()`       | `rt()`       |
+| Uniform           | `punif()`    | `qunif()`    | `dunif()`    | `runif()`    |
+| Weibull           | `pweibull()` | `qweibull()` | `dweibull()` | `rweibull()` |
+
+## Uso de las funciones
+
+### `rnorm()`
+
+Podemos ilustrar una distribución normal con media 0 y desviación
+estandar 1 dibujando un histograma con 1000 observaciones aleatorias a
+partir de esta distribución.
+
+``` r
+hist(rnorm(n = 1000))
+```
+
+Cada vez que corras esta última línea, generaras un nuevo conjunto de
+datos aleatorios. ¡Inténtalo!
+
+### `dnorm()`
+
+La densidad de la distribución aleatoria a cualquier punto dado indica
+qué tan probable son dichos valores en dicho rango.
+
+``` r
+dnorm(x = 0)
+dnorm(x = -1)
+dnorm(x = 1)
+```
+
+Tal y como vemos en la gráfica anterior tanto 1 como -1 tienen una
+densidad muy similar
+
+¿Cuál es el valor de la densidad para un valor poco probable en el
+rango, por ejemplo 4?
+
+``` r
+dnorm(x = 4)
+```
+
+### `pnorm()`
+
+Los valores de densidad no proveen los valores de la probabildiad, pero
+dan una idea de su probabilidad relativa.
+
+El percentil proporciona información sobre la probabilidad de que los
+valores de una distribución normal caigan por debajo de un valor
+determinado.
+
+¿Cuál es la probabilidad de que los valores sean inferiores a -1?
+
+``` r
+pnorm(q = -1)
+```
+
+¿Cuál es la probabilidad de que los valores sean inferiores a 0? o, ¿Qué
+proporción de valores cae por debajo de 0?
+
+``` r
+pnorm(q = 0)
+```
+
+¿Qué proporción de valores cae por debajo de 1?
+
+``` r
+pnorm(q = 1)
+```
+
+En análisis estadísticos, una distribución normal puede ser usada para
+representar potenciales observaciones debajo de una hipótesis nula. Si
+una observación cae lejos en las colas de esta distribución, sugiere que
+podemos rechazar la hipótesis nula.
+
+Para una distribución normal, ¿Cuál es la probabilidad de que una
+observación caiga debajo de -1.96?
+
+``` r
+pnorm(q = -1.96)
+```
+
+¿Cuál es la probabilidad de que una observación caiga por arriba de
+1.96?
+
+``` r
+1 - pnorm(q = 1.96)
+```
+
+Note que estos valores son frecuentemente usados como punto de corte, de
+forma que la probabilidad de una observación caiga debajo de -1.96 o
+arriba de 1.96, sumando aproximadamente `0.05`.
+
+``` r
+pnorm(q = -1.96) + (1 - pnorm(q = 1.96))
+```
+
+`0.05` representa una probabilidad aceptablemente baja de que un valor
+extremo pueda ser observado en una muestra si la hipótesis nula es
+correcta.
+
+### `qnorm()`
+
+La función cuantil permite plantear preguntas diferentes pero
+relacionadadas, Por ejemplo: ¿Por debajo de qué valor cae la mitad de la
+distribución?
+
+``` r
+qnorm(p = 0.5)
+```
+
+¿Por debajo de qué valor cae el 2.5% de la distribución?
+
+``` r
+qnorm(p = 0.025)
+```
+
+¿Por arriba de qué valor cae el 2.5% de la distribución?
+
+``` r
+qnorm(p = (1-0.025))
+```
+
+### Uso de los parámetros
+
+Puedes realizar ejercicios similares con el resto de distribuciones
+usando las funciones de la [tabla de arriba](#slugtab)
+
+Sin embargo, casi todas las distribuciones estadísticas emplean
+parámetros diferentes, por lo que sus funciones también requieren de
+diferentes argumentos.
+
+Con el aplicativo web titulado **“el zoológico de distribuciones”**
+puedes explorar de forma interactiva varias distribuciones y sus
+respectivos parámetros. Revísalo aquí:
+<https://ben18785.shinyapps.io/distribution-zoo/>
+
+Por ejemplo, la distribución binomial tiene dos parámetros, la
+probabilidad de éxito, `prob`, y el número de ensayos, `size`.
+
+La distribución binomial se suele ilustrar con una serie de lanzamientos
+de una moneda, en la que el éxito puede definirse en términos de que el
+lanzamiento de la moneda dé “cara”, y en la que `prob = 0.5` si la
+moneda es justa.
+
+La distribución binomial sólo puede tomar valores enteros no negativos,
+a diferencia de la distribución normal, que incluye cualquier número
+entre -∞ y ∞.
+
+``` r
+hist(rbinom(n=100000, size=10, prob=0.5))
+```
+
+## Uso de las distribuciones estadísticas en epidemiología
+
+### Ejemplo 1
+
+Podemos usar la distribución binomial para describir el número de
+personas infectadas en un área muestreada. Por ejemplo, si muestreamos
+un área que contiene `size = 40` personas y cada persona tiene un
+probabilidad `prob = 0.1` de estar infectada, entonces la distribución
+del número de personas infectadas dentro del área es:
+
+``` r
+hist(rbinom(n = 100000, size = 40, prob = 0.1))
+# hist(rbinom(n = 100000, size = 40, prob = 0.1),xlim = c(0,40))
+```
+
+También podemos expresarlo en términos de proporción de personas
+infectadas dividiendo por su tamaño `size`
+
+``` r
+hist(rbinom(n = 100000, size = 40, prob = 0.1)/40)
+# hist(rbinom(n = 100000, size = 40, prob = 0.1)/40,xlim = c(0,1))
+```
+
+En promedio, ¿Qué porcentaje del área tendría un 10% o menos de personas
+infectadas (es decir, 4 de 40)?
+
+``` r
+pbinom(q = 4, size = 40, prob=0.1)
+```
+
+### Ejemplo 2
+
+Podemos usar la distribución beta para describir la proporción de
+personas vacunadas en una población durante un proceso de vacunación
+
+``` r
+hist(rbeta(n = 100000, shape1 = 1, shape2 = 3.8))
+```
+
+En promedio, ¿Qué porcentaje de la población tendría un 70% o más de
+personas vacunadas?
+
+``` r
+1- pbeta(q = 0.7, shape1 = 1, shape2 = 3.8)
+```
+
+# Referencias
+
+Sparks, A.H., P.D. Esker, M. Bates, W. Dall’ Acqua, Z. Guo, V. Segovia,
+S.D. Silwal, S. Tolos, and K.A. Garrett, 2008. Ecology and Epidemiology
+in R: Disease Progress over Time. *The Plant Health Instructor*. DOI:
+<https://doi.org/10.1094/PHI-A-2008-0129-01>. [Chapter: Statistical
+distributions](https://www.apsnet.org/edcenter/disimpactmngmnt/topc/EcologyAndEpidemiologyInR/IntroductionToR/Pages/StatisticalDistributions.aspx)
+
 # Más aprendizaje
 
 Para aplicar estos conceptos básicos a un caso particular, se recomienda
@@ -992,9 +1200,13 @@ conocidos de Hadley Wickham, que en su mayoría están disponibles en
 línea.
 
 -   R for Data Science - versión en español <https://es.r4ds.hadley.nz/>
--   The Epidemiologist R Handbook <https://epirhandbook.com/>
 -   Advanced R <http://adv-r.had.co.nz/>
 -   R packages <http://r-pkgs.had.co.nz/>
+
+También puedes revisar “The Epidemiologist R Handbook”
+<https://epirhandbook.com/> que provee de ejemplos para resolver
+problemas epidemiológicos y asistir a epidemiólogos en su transisión a
+R. Si quieres apoyar en la traducción a **español**, ¡contáctalos!
 
 # Sobre este documento
 
