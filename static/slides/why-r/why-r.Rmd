@@ -1,7 +1,7 @@
 ---
 title: "<br>Why you should use ![Rlogo](../../img/slides/Rlogo-small.png)<br><br>"
 author: Zhian Kamvar
-date: "2018-10-05"
+date: "2022-08-01"
 output:
   ioslides_presentation:
     widescreen: true
@@ -32,6 +32,13 @@ knit_hooks$set(source = function(x, options){
 # Why ![Rlogo](../../img/slides/Rlogo-small.png) is awesome!
 
 
+## Credits
+
+- Content on slides 5, 6, 7 and 12 adapted from Alex Spina ([link](https://appliedepi.github.io/emory_training/presentation/slides_workflow.html#6)).
+
+- Minor edits by Thibaut Jombart.
+
+
 ## What is R? {.columns-2}
 
  - functional programming language
@@ -40,8 +47,8 @@ knit_hooks$set(source = function(x, options){
    - transparent
    - freely available
  - over 10,000 R packages
-   - Easy to install `install.packages("incidence")`
-   - Easy to use `library("incidence")`
+   - Easy to install `install.packages("incidence2")`
+   - Easy to use `library("incidence2")`
 <br>
 <br>
 <br>
@@ -130,7 +137,7 @@ source: Foster *et al.* 2017 https://doi.org/10.1371/journal.pcbi.1005404
 ## R can automate analyses
 
 <center>
-<img src="../../img/slides/automation-win.png" width="75%">
+<img src="../../img/slides/automation-win.png" width="65%">
 <center>
 source: http://blog.yhat.com/posts/R-for-excel-users.html
 
